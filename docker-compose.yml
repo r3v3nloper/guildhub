@@ -1,0 +1,19 @@
+services:
+  guildhub:
+    build: .
+    container_name: guildhub
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - guildhub-data:/data
+      - ./backups:/backups
+    networks: [proxy]
+
+volumes:
+  guildhub-data:
+
+networks:
+  proxy:
+    external: true
+    # Network the SWAG container is attached to (SPEC 12: still open).
+    name: ${SWAG_NETWORK:-swag}

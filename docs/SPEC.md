@@ -66,10 +66,10 @@ kein Vercel). Die App wird als **installierbare PWA** ausgeliefert.
 | Framework | Next.js (App Router, `output: "standalone"`) + TypeScript (strict) | Ein Repo/Container für UI + API |
 | Styling | Tailwind CSS | schnell, mobile-first |
 | Datenbank | **SQLite** (WAL-Modus) über **Drizzle ORM** + `better-sqlite3` | max. 10 Nutzer, eine Datei, triviales Backup |
-| Migrationen | drizzle-kit erzeugt sie (Dev); beim Container-Start wendet der programmatische Migrator von `drizzle-orm` sie an | kein manueller Schritt beim Update; drizzle-kit ist im Standalone-Build nicht enthalten |
+| Migrationen | drizzle-kit erzeugt sie (Dev); beim Serverstart wendet der programmatische Migrator von `drizzle-orm` sie in `src/instrumentation.ts` an, bevor Requests angenommen werden | kein manueller Schritt beim Update; drizzle-kit ist im Standalone-Build nicht enthalten |
 | Login | **Auth.js (NextAuth v5)** mit Discord-Provider, DB-Sessions in SQLite über `@auth/drizzle-adapter` | Gilde ist ohnehin auf Discord |
 | Zugang | Allowlist von Discord-User-IDs (ENV) + Admin-UI | max. 10 bekannte Personen, keine offene Registrierung |
-| PWA | Web-App-Manifest + Service Worker über `@serwist/next` | Homescreen-Installation, App-Shell-Cache |
+| PWA | Web-App-Manifest + Service Worker über `@serwist/turbopack` (+ `serwist`, `esbuild`), ausgeliefert unter `/serwist/sw.js` | Homescreen-Installation, App-Shell-Cache; `@serwist/next` setzt Webpack voraus, Next 16 baut mit Turbopack |
 | Validierung | Zod (auch für Game-Pack-Schema) | ein Schema für Laufzeit + Typen |
 | Zeit/Zeitzonen | **Luxon**, **immer IANA-Zeitzonen** | behandelt DST-Lücke und doppelte Stunde von sich aus wie in 5.2 gefordert |
 | Skripte | `tsx` für `packs:validate`, Pack-Sync und Seed in TypeScript | Skripte nutzen denselben Code wie die App |
@@ -800,7 +800,7 @@ volumes:
 networks:
   proxy:
     external: true
-    name: TODO_swag_netzwerk     # Netzwerk, in dem der SWAG-Container hängt
+    name: ${SWAG_NETWORK:-swag}  # Netzwerk, in dem der SWAG-Container hängt (aus .env)
 ```
 
 ### 11.2 SWAG (nginx) einbinden
@@ -833,14 +833,15 @@ server {
     }
 
     # Service Worker und Manifest nie lange cachen, sonst kommen PWA-Updates nicht an
-    location ~ ^/(sw\.js|manifest\.webmanifest)$ {
+    location ~ ^/(serwist/sw\.js|manifest\.webmanifest)$ {
         include /config/nginx/proxy.conf;
         include /config/nginx/resolver.conf;
         set $upstream_app guildhub;
         set $upstream_port 3000;
         set $upstream_proto http;
         proxy_pass $upstream_proto://$upstream_app:$upstream_port;
-        add_header Cache-Control "no-cache";
+        proxy_hide_header Cache-Control;   # Next liefert sw.js mit langer s-maxage aus
+        add_header Cache-Control "no-cache" always;
     }
 }
 ```
@@ -870,6 +871,7 @@ ALLOWED_DISCORD_IDS=                    # kommagetrennt
 DATABASE_PATH=/data/guildhub.db
 GUILD_NAME=                             # nur beim ersten Start genutzt, danach im Admin-Bereich änderbar
 DEFAULT_TIMEZONE=Europe/Berlin          # Guild.default_timezone beim ersten Start
+SWAG_NETWORK=                           # nur docker-compose: Netzwerk des SWAG-Containers
 # Phase 5:
 # VAPID_PUBLIC_KEY= / VAPID_PRIVATE_KEY= / VAPID_SUBJECT=mailto:...
 ```
