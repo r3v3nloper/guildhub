@@ -59,19 +59,20 @@ kein Vercel). Die App wird als **installierbare PWA** ausgeliefert.
 
 ---
 
-## 3. Tech-Stack (Vorschlag)
+## 3. Tech-Stack (festgelegt)
 
 | Bereich | Wahl | Begründung |
 |---|---|---|
 | Framework | Next.js (App Router, `output: "standalone"`) + TypeScript (strict) | Ein Repo/Container für UI + API |
 | Styling | Tailwind CSS | schnell, mobile-first |
 | Datenbank | **SQLite** (WAL-Modus) über **Drizzle ORM** + `better-sqlite3` | max. 10 Nutzer, eine Datei, triviales Backup |
-| Migrationen | drizzle-kit, laufen automatisch beim Container-Start | kein manueller Schritt beim Update |
-| Login | **Auth.js (NextAuth v5)** mit Discord-Provider, DB-Sessions in SQLite | Gilde ist ohnehin auf Discord |
+| Migrationen | drizzle-kit erzeugt sie (Dev); beim Container-Start wendet der programmatische Migrator von `drizzle-orm` sie an | kein manueller Schritt beim Update; drizzle-kit ist im Standalone-Build nicht enthalten |
+| Login | **Auth.js (NextAuth v5)** mit Discord-Provider, DB-Sessions in SQLite über `@auth/drizzle-adapter` | Gilde ist ohnehin auf Discord |
 | Zugang | Allowlist von Discord-User-IDs (ENV) + Admin-UI | max. 10 bekannte Personen, keine offene Registrierung |
-| PWA | Web-App-Manifest + Service Worker (z. B. Serwist) | Homescreen-Installation, App-Shell-Cache |
+| PWA | Web-App-Manifest + Service Worker über `@serwist/next` | Homescreen-Installation, App-Shell-Cache |
 | Validierung | Zod (auch für Game-Pack-Schema) | ein Schema für Laufzeit + Typen |
-| Zeit/Zeitzonen | Luxon oder date-fns-tz, **immer IANA-Zeitzonen** | DST-sicher |
+| Zeit/Zeitzonen | **Luxon**, **immer IANA-Zeitzonen** | behandelt DST-Lücke und doppelte Stunde von sich aus wie in 5.2 gefordert |
+| Skripte | `tsx` für `packs:validate`, Pack-Sync und Seed in TypeScript | Skripte nutzen denselben Code wie die App |
 | Tests | Vitest (Unit), Playwright (optional, später E2E) | |
 | Betrieb | Docker + docker-compose auf eigenem vServer | siehe Abschnitt 11 |
 
@@ -80,6 +81,13 @@ nur Treiber und Dialekt betrifft (keine SQLite-spezifischen SQL-Tricks in der
 Domain-Logik). Ein Wechsel ist bei max. 10 Nutzern aber nicht geplant.
 
 Keine weiteren Abhängigkeiten ohne Rückfrage.
+
+**Konventionen & Arbeitsweise:**
+- Code-Stil nach Next.js-Standard: Prettier mit Default-Einstellungen (K&R-Klammern),
+  ESLint mit `next/core-web-vitals` und `next/typescript`. Abweichende globale
+  Stilregeln (Allman-Klammern, explizite `public`-Modifier) gelten hier **nicht**.
+- Privates Projekt ohne Jira-/Branch-Ablauf und ohne OpenSpec. **Diese Datei ist die
+  einzige Spezifikation**; Entscheidungen werden hier nachgetragen.
 
 ---
 
@@ -91,6 +99,8 @@ Keine weiteren Abhängigkeiten ohne Rückfrage.
 User            id, discord_id, display_name, avatar_url,
                 timezone (Default "Europe/Berlin", nur für die Anzeige)
 Guild           id, name, discord_guild_id?, default_timezone
+                -- genau eine Zeile; wird beim ersten Start angelegt (GUILD_NAME,
+                -- DEFAULT_TIMEZONE aus der ENV), danach im Admin-Bereich umbenennbar
 GuildMember     guild_id, user_id, role: owner | officer | member,
                 status: active | disabled, disabled_at?
 AllowlistEntry  discord_id, added_by?, added_at, source: env | admin
@@ -106,6 +116,8 @@ Character       id, user_id, game_id, name, server?, faction_id?, race_id?, clas
                 spec?, level?, is_main (bool), notes?
                 -- *_id sind Fremdschlüssel auf GameCatalogEntry, nicht direkt aufs Pack.
                 -- So bleibt die DB konsistent, auch wenn ein Pack-Update etwas entfernt (6.5)
+                -- server: Katalog-ID, falls das Pack `servers` listet, sonst normalisierter
+                -- Freitext (siehe 4.6). Pflichtfelder: siehe 4.7
 CharacterProfession  character_id, profession_id, skill_level?, specialization?, notes?
 Build           id, character_id, title, url?, source? (auto aus Domain erkannt),
                 status: current | planned, target_class_id?, notes?
@@ -120,6 +132,18 @@ TaskProgress    id, task_id, scope_key, period_key, value (int), data (JSON?),
 ResourceState   id, task_id, scope_key, value (int), value_at (Zeitpunkt), updated_by
                 -- UNIQUE (task_id, scope_key); für regen und stacking (siehe 5.3)
 RecipeEntry     character_profession_id, name, notes?  -- optional, Phase 3
+SyncLog         id, game_id, started_at, finished_at,
+                status: success | skipped | error,
+                from_version?, to_version?,
+                summary (JSON: added, changed, deprecated, removed,
+                         migrations: [{kind, from, to, rows_rewritten, rows_merged}],
+                         affected_characters: [{character_id, field, old_id}]),
+                error?
+                -- Verlauf aller Syncs. Game.last_sync_at/last_sync_error bleiben als
+                -- schneller Status für Banner und Health-Check. Kein Aufräumen nötig.
+AuditLog        id, actor_user_id, action, target, details (JSON), at
+                -- Admin-Aktionen: Allowlist-Änderungen, Rollenwechsel, Deaktivieren,
+                -- endgültiges Löschen, Backup-Downloads, Gilde umbenennen
 ```
 
 **`scope_key`** bestimmt, wem ein Fortschritt gehört. Er wird aus dem `scope`
@@ -164,6 +188,7 @@ kind, category? (z. B. "PvE", "PvP", "Beruf"),
 scope: character | server | account | user,
 reset_rule_id?     -- Pack-Regel oder CustomResetRule; leer bei one_time und dauerhaftem counter
 cap?, regen_amount?, regen_interval_minutes?, regen_alignment?: fixed | relative,
+timezone?          -- nur regen: überschreibt die Region-TZ für die Takte (z. B. "UTC")
 per_period_gain?, alert_at? (Default = cap), bosses? (Liste von Boss-IDs, nur lockout),
 priority: high | medium | low, order, tags[], link? (Guide-URL), active (bool), todo (bool)
 ```
@@ -216,6 +241,39 @@ Zeitzone der Gilde (`Guild.default_timezone`).
   eingetragen (Paladin nur Allianz, Schamane nur Horde), die neue Rasse ebenfalls
   als `todo`.
 
+### 4.6 Server / Realms
+
+Beide Startspiele kennen Server (in WoW „Realm“). Der Server steckt im `scope_key`
+von `server`-Aufgaben, Schreibvarianten dürfen ihn also nicht aufspalten.
+
+- Das Pack **kann** einen Katalog `servers: [{ id, name }]` mitbringen. Dann ist der
+  Server im Editor ein Dropdown, gespeichert wird die Katalog-ID (Sync-Regeln wie
+  bei allen Katalogen, 6.5).
+- Ohne Katalog (Normalfall, solange die Serverlisten nicht feststehen) ist der
+  Server **Freitext**, wird aber normalisiert gespeichert (getrimmt, Leerraum
+  zusammengefasst, kleingeschrieben) und in der Originalschreibweise der ersten
+  Eingabe angezeigt. Der Editor schlägt die in der Gilde für dieses Spiel bereits
+  verwendeten Server vor.
+- Die Bezeichnung in der UI kommt aus `server_label` im Pack (Default „Server“,
+  für WoW Forever „Realm“).
+
+### 4.7 Pflichtfelder am Charakter
+
+Abhängig von den Capabilities des Spiels, geprüft **nur in der App-Validierung**
+(Anlegen und Bearbeiten), nicht in der DB:
+
+| Capability | Pflicht |
+|---|---|
+| `classes` | Klasse |
+| `races` | Rasse; die Fraktion wird aus der Rasse abgeleitet und automatisch gesetzt |
+| `factions` ohne `races` | Fraktion |
+| `servers` | nichts; Server bleibt optional, mit Hinweis aus 7.7 |
+
+Die Spalten bleiben nullable, weil sich die Capabilities je Spiel unterscheiden und
+ein Pack-Update eine Capability später einschalten kann. Bestehende Charaktere
+werden dadurch nicht ungültig, sondern bekommen wie in 6.5 (B) nur einen Hinweis
+(„Klasse wählen“), ohne Blockieren.
+
 ---
 
 ## 5. Reset-Engine (Herzstück, zuerst und gut getestet bauen)
@@ -259,8 +317,15 @@ Deshalb wird nicht „verbraucht seit …“ gespeichert, sondern ein **Schnapps
 
 - `projectRegen(task, tz, snapshot, now): number`
   - `regen_alignment: "fixed"` (Default): Auffüllung zu festen Takten, ausgerichtet
-    an Mitternacht in der effektiven Zeitzone (00:00, 03:00, 06:00 … bei 180 min).
-    Gezählt werden die Takte zwischen `value_at` und `now`.
+    an Mitternacht in der effektiven Zeitzone (`task.timezone ?? region.timezone`),
+    also 00:00, 03:00, 06:00 … bei 180 min.
+    - Die Takte zählen nach **lokaler Uhrzeit**, auch am Umstellungstag, nicht nach
+      verstrichener Zeit. Das deckt sich mit dem, was Spieler auf der Uhr sehen.
+    - Ein Takt in der **Lücke** findet zum ersten gültigen Zeitpunkt danach statt,
+      ein Takt in der **doppelten Stunde** zählt nur einmal (erstes Auftreten), wie in 5.2.
+    - Gezählt werden die Takte im Intervall **(`value_at`, `now`]**: Ein Takt genau bei
+      `value_at` zählt nicht, einer genau bei `now` schon.
+    - Taktet ein Spiel in UTC, setzt die Aufgabe im Pack `"timezone": "UTC"`.
   - `"relative"`: Auffüllung alle `regen_interval_minutes` ab `value_at`.
   - Ergebnis = `min(cap, value + Takte × regen_amount)`, nie negativ.
 - `projectStacking(task, rule, tz, snapshot, now): number`
@@ -294,7 +359,14 @@ als Info „Stand eintragen“.
 - `monthly` am Monatsanfang und am 28.
 - Effektive Zeitzone: Regel-TZ gesetzt vs. Region-TZ
 - Nutzer in anderer Zeitzone als die Region (Anzeige lokal, Berechnung in Regel-TZ)
-- Regen `fixed` und `relative`: Takte zählen, Deckelung am Cap, kein negativer Wert, Takte über eine Zeitumstellung
+- Regen `fixed` und `relative`: Takte zählen, Deckelung am Cap, kein negativer Wert, Takt genau bei `value_at` (zählt nicht) und genau bei `now` (zählt)
+- Regen `fixed` über die Zeitumstellung (Europe/Berlin, `regen_amount` 15, Intervall 120 min, cap 1000, Startwert 0):
+
+  | Fall | `value_at` | `now` | Takte | Erwartet |
+  |---|---|---|---|---|
+  | Normaler Tag | 26.10.2026 23:00 | 27.10.2026 05:00 | 00:00, 02:00, 04:00 | 45 |
+  | Herbst (doppelte Stunde) | 24.10.2026 23:00 | 25.10.2026 05:00 | 00:00, 02:00 (einmal), 04:00 | 45 (nach verstrichener Zeit wären es 60) |
+  | Frühling (Lücke) | 28.03.2026 23:00 | 29.03.2026 05:00 | 00:00, 02:00 → 03:00, 04:00 | 45 |
 - Stacking: mehrere Perioden übersprungen, Deckelung am Cap
 - Scope-Keys: zwei Charaktere desselben Nutzers auf demselben Server teilen eine `server`-Aufgabe, auf verschiedenen Servern nicht
 
@@ -335,6 +407,7 @@ Pflichtfelder sind markiert, alle anderen sind optional mit dem genannten Defaul
   "version": "0.1.0",                 // PFLICHT, SemVer
   "type": "mmo",                      // mmo | singleplayer | other; Default "mmo"
   "character_label": { "de": "Charakter", "en": "Character" },  // Default "Charakter"
+  "server_label": "Server",           // Default "Server"; WoW Forever: "Realm" (4.6)
   "capabilities": {                   // jeder Schalter Default false, außer characters (true)
     "characters": true, "classes": true, "races": false, "professions": true,
     "builds": true, "resets": true, "lockouts": false, "factions": true,
@@ -354,6 +427,7 @@ Pflichtfelder sind markiert, alle anderen sind optional mit dem genannten Defaul
   } ],
   "professions": [ { "id": "...", "name": "...", "kind": "primary" } ],  // primary | secondary | gathering
   "bosses": [ { "id": "...", "name": "..." } ],   // für lockout-Aufgaben
+  "servers": [ { "id": "...", "name": "..." } ],  // optional, sonst Freitext (4.6)
   "build_sources": [ { "domain": "metabot.gg", "label": "MetaBot" } ],
   "reset_rules": [ /* siehe 4.3 */ ],
   "tasks": [ /* TaskDefinition ohne DB-Felder, siehe 4.2 */ ]
@@ -380,7 +454,8 @@ dafür ein kleines Badge „ungeprüft“, und der Admin-Bereich listet alle off
 - Reset-Uhrzeit und Berufe: als `todo` anlegen und im Spiel prüfen.
 
 **WoW: Forever** (`packs/wow-forever/pack.json`)
-- `capabilities.races: true`, `factions: true`, `lockouts: true`.
+- `capabilities.races: true`, `factions: true`, `lockouts: true`, `servers: true`
+  mit `server_label: "Realm"` (Realm-Liste als Katalog, sobald bekannt; bis dahin Freitext, 4.6).
 - Annahme Vanilla-Basis: Krieger, Paladin, Jäger, Schurke, Priester,
   Schamane, Magier, Hexenmeister, Druide, dazu die Vanilla-Rassen mit
   Fraktion und erlaubten Klassen sowie die neue Forever-Rasse. Alles als `todo`,
@@ -445,8 +520,17 @@ Prüfungen in `src/lib/packs/validate.ts` (wird von CLI, Build und Sync gemeinsa
 - Zod-Schema (Pflichtfelder, Typen, erlaubte Enum-Werte)
 - Eindeutige IDs je Katalog und bei Aufgaben
 - Interne Verweise: `tasks[].reset_rule_id` → `reset_rules`, `tasks[].bosses` → `bosses`, `races[].faction` und `classes[].factions` → `factions`, `races[].allowed_classes` → `classes`; `replaces` zeigt nicht auf eine aktive ID im selben Pack
-- Capabilities-Konsistenz: z. B. `regions` vorhanden, wenn `resets: true`; keine `races`, wenn `capabilities.races` false
-- Typ-Konsistenz: `counter`/`stacking` brauchen `cap`, `regen` braucht `regen_amount` + `regen_interval_minutes`, `one_time` hat keine `reset_rule_id`
+- Capabilities-Konsistenz:
+  - Kataloge nur bei aktiver Capability: `races`, `professions`, `factions`, `servers`, `bosses` (an `lockouts` gekoppelt)
+  - `regions` ist Pflicht, sobald eine Zeitzone gebraucht wird: bei `resets: true` oder wenn es eine `regen`-Aufgabe mit `fixed` gibt
+  - `scope: server` nur bei `capabilities.servers`, `kind: lockout` nur bei `capabilities.lockouts`
+  - Pack-Aufgaben haben nie `scope: user`
+- Typ-Konsistenz:
+  - `recurring`, `lockout` und `stacking` brauchen eine `reset_rule_id` (ohne wäre es `one_time`); `one_time` hat keine
+  - `counter` braucht `cap`; `stacking` braucht `cap` und `per_period_gain`; `regen` braucht `cap`, `regen_amount` und `regen_interval_minutes`
+  - `alert_at <= cap`
+  - Typspezifische Felder nur beim passenden Typ: `bosses` nur bei `lockout`, `regen_*` und `timezone` nur bei `regen`, `per_period_gain` nur bei `stacking`
+- `replaces` bei Aufgaben: alte und neue Aufgabe haben dasselbe `kind` und denselben `scope` (sonst neue ID ohne `replaces`, siehe (B))
 - Gültige IANA-Zeitzonen und Uhrzeiten; Warnung (kein Fehler) bei Reset-Zeiten in Umstellungsstunden (5.2)
 - Ordnername = `id`
 
@@ -479,18 +563,21 @@ Verhalten des Syncs:
 | Eintrag neu | `GameCatalogEntry` mit `status: active` |
 | Name/Farbe/Rolle geändert | wird aktualisiert, Verweise bleiben |
 | `deprecated: true` | `status: deprecated`, bestehende Charaktere unverändert, im Editor nicht mehr wählbar |
-| `replaces: ["alt"]` | alle Verweise auf `alt` werden in derselben Transaktion auf die neue ID umgeschrieben, `alt` wird `removed`; Eintrag im Admin-Log |
+| `replaces: ["alt"]` | alle Verweise auf `alt` werden in derselben Transaktion auf die neue ID umgeschrieben, `alt` wird `removed`; Eintrag im `SyncLog` |
 | Eintrag fehlt einfach | `status: removed`, **Verweise bleiben bestehen**. UI zeigt den letzten bekannten Namen mit Badge „nicht mehr im Pack“; Roster-Filter fasst solche Einträge unter „Veraltet“ zusammen; der Besitzer sieht im Charakter-Editor einen Hinweis, eine neue Klasse zu wählen |
 | Aufgabe fehlt | `active: false`, Fortschritt bleibt erhalten, Aufgabe verschwindet aus Dashboard und Matrix |
+| Aufgabe mit `replaces: ["alt"]` | `TaskProgress.task_id` und `ResourceState.task_id` werden in derselben Transaktion von `alt` auf die neue ID umgeschrieben, `alt` wird `active: false`. Kollisionen (beide IDs haben einen Eintrag mit gleichem `scope_key` und `period_key`) werden **zusammengeführt**: bei `TaskProgress` `completed_at` = frühester gesetzter Wert, `value` = Maximum, `data.killed` = Vereinigung; bei `ResourceState` gewinnt der Schnappschuss mit dem neueren `value_at`. Anzahl umgeschriebener und zusammengeführter Einträge im `SyncLog` |
 | `kind` einer bestehenden Aufgaben-ID geändert | gilt als Fehler (A) für **dieses Pack**: Sync wird übersprungen, alter Stand bleibt, Fehlermeldung nennt die Aufgabe |
 | Reset-Regel geändert (z. B. Uhrzeit) | wirkt ab der nächsten berechneten Periode; dass eine laufende Periode einmalig kürzer oder länger ist, wird akzeptiert |
 
-Nach jedem Sync zeigt der Admin-Bereich eine Zusammenfassung: Pack-Version
+Nach jedem Sync zeigt der Admin-Bereich eine Zusammenfassung aus dem `SyncLog`: Pack-Version
 alt → neu, Anzahl neuer, geänderter, veralteter und entfernter Einträge sowie
 **betroffene Charaktere** (z. B. „2 Charaktere nutzen eine entfernte Klasse“).
 
 **Tests (Vitest):** Validierung je Fehlerfall aus (A); Sync-Szenarien aus der
-Tabelle (B) gegen eine In-Memory-SQLite; Transaktions-Rollback bei Fehler mitten im Sync.
+Tabelle (B) gegen eine In-Memory-SQLite, inkl. Aufgaben-`replaces` mit Kollision
+(Zusammenführen von `TaskProgress` und `ResourceState`); Transaktions-Rollback bei
+Fehler mitten im Sync.
 
 ---
 
@@ -531,14 +618,16 @@ Tabelle (B) gegen eine In-Memory-SQLite; Transaktions-Rollback bei Fehler mitten
 6. **Berufe-Verzeichnis:** „Wer kann X?“ mit Suche nach Beruf und (ab Phase 3)
    Rezeptnotizen.
 7. **Charakter-Editor:** Fraktion → Rasse → Klasse als abhängige Dropdowns (4.5),
-   Berufe aus dem Pack, Server (Pflicht-Hinweis, wenn das Spiel `server`-Aufgaben hat),
+   Pflichtfelder nach 4.7, Berufe aus dem Pack, Server als Dropdown oder Freitext mit
+   Vorschlägen (4.6; Hinweis, wenn er fehlt und das Spiel `server`-Aufgaben hat),
    Builds als Links mit automatisch erkannter Quelle, Status current/planned.
    Veraltete oder entfernte Einträge werden mit Hinweis angezeigt (6.5).
 8. **Eigene Aufgaben:** privat oder (Officer) gildenweit, alle Typen aus 4.2,
    mit Pack-Reset-Regel oder eigener Regel (4.3), optional spielübergreifend.
-9. **Admin:** siehe 7.2 und 8 (Mitglieder, Rollen, Allowlist), außerdem Spiele
-   aktivieren und Region wählen, Pack-Version und Sync-Zusammenfassung,
-   offene `todo`-Einträge je Pack, Datenbank-Backup herunterladen (11.4).
+9. **Admin:** siehe 7.2 und 8 (Mitglieder, Rollen, Allowlist), außerdem Gilde
+   umbenennen, Spiele aktivieren und Region wählen, Pack-Version und Sync-Verlauf
+   (`SyncLog`), offene `todo`-Einträge je Pack, Audit-Log der Admin-Aktionen
+   (`AuditLog`, für officer/owner lesbar), Datenbank-Backup herunterladen (11.4).
 
 ### 7.1 PWA-Anforderungen
 
@@ -687,7 +776,7 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
 - Im Build: `packs:validate` als eigener Schritt (bricht den Build bei Fehlern ab).
 - Beim Start: Migrationen ausführen, Packs synchronisieren (Fehler pro Pack nicht fatal, siehe 6.5), dann Server starten.
 - SQLite-Datei in einem **benannten Volume** (`/data/guildhub.db`), niemals im Image.
-- `HEALTHCHECK` auf `/api/health`.
+- `HEALTHCHECK` auf `/api/health` per `node -e "fetch(…)"`, da das `-slim`-Image kein `curl` enthält.
 - Kein eigener Reverse Proxy und keine eigene TLS-Konfiguration: TLS und
   Routing übernimmt das vorhandene **SWAG** (siehe 11.2). Port 3000 nur im
   Docker-Netzwerk, **kein** `ports:`-Mapping nach außen.
@@ -779,7 +868,8 @@ AUTH_DISCORD_SECRET=
 OWNER_DISCORD_ID=
 ALLOWED_DISCORD_IDS=                    # kommagetrennt
 DATABASE_PATH=/data/guildhub.db
-DEFAULT_TIMEZONE=Europe/Berlin
+GUILD_NAME=                             # nur beim ersten Start genutzt, danach im Admin-Bereich änderbar
+DEFAULT_TIMEZONE=Europe/Berlin          # Guild.default_timezone beim ersten Start
 # Phase 5:
 # VAPID_PUBLIC_KEY= / VAPID_PRIVATE_KEY= / VAPID_SUBJECT=mailto:...
 ```
@@ -836,6 +926,12 @@ docker-compose.yml
 
 - [x] Gildengröße: **bis zu 10 Personen** (aktuell 6). Matrix ohne Paginierung, auf dem Handy horizontal scrollbar mit fixierter Aufgaben-Spalte; Allowlist nicht hart auf 10 begrenzen
 - [x] Reverse Proxy: **SWAG (linuxserver.io, nginx + Let’s Encrypt)**, siehe 11.2
+- [x] Stack und Zusatzpakete (Luxon, Serwist, Drizzle-Adapter, tsx), Code-Stil nach Next.js-Standard, kein OpenSpec (§3)
+- [x] Server/Realms: optionaler Pack-Katalog, sonst normalisierter Freitext (4.6)
+- [x] Pflichtfelder am Charakter (4.7), Gilde beim ersten Start anlegen (4.1)
+- [x] Aufgaben-`replaces` mit Zusammenführen, erweiterte Validierung (6.5)
+- [x] Regen-Takte nach lokaler Uhrzeit über die Zeitumstellung (5.3)
+- [x] `SyncLog` und `AuditLog` (4.1)
 - [ ] Name des Docker-Netzwerks, in dem SWAG hängt
 - [ ] Domain/Subdomain für die App
 - [ ] Discord-App für OAuth anlegen (Client-ID/Secret), Redirect-URL: `AUTH_URL/api/auth/callback/discord`
