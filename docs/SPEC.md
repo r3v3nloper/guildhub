@@ -934,10 +934,10 @@ docker-compose.yml
 - [x] Aufgaben-`replaces` mit Zusammenführen, erweiterte Validierung (6.5)
 - [x] Regen-Takte nach lokaler Uhrzeit über die Zeitumstellung (5.3)
 - [x] `SyncLog` und `AuditLog` (4.1)
-- [ ] Name des Docker-Netzwerks, in dem SWAG hängt
-- [ ] Domain/Subdomain für die App
-- [ ] Discord-App für OAuth anlegen (Client-ID/Secret), Redirect-URL: `AUTH_URL/api/auth/callback/discord`
-- [ ] Discord-IDs der aktuell 6 Mitglieder für die Allowlist
+- [x] Name des Docker-Netzwerks, in dem SWAG hängt: **`ltr-net`**
+- [x] Domain/Subdomain für die App: **`guildhub.licktherainbow.de`**
+- [x] Discord-App für OAuth angelegt (Client-ID `1564751806851194893`; Secret nur in `.env`), Redirect-URL: `AUTH_URL/api/auth/callback/discord`
+- [ ] Discord-IDs der aktuell 6 Mitglieder für die Allowlist (Owner `418171274456727564` steht, die übrigen folgen)
 - [ ] AION 2: Reset-Uhrzeit EU, Berufe, exakte Klassennamen (EN/DE)
 - [ ] WoW Forever: Klassen-/Rassen-Kombinationen, Raid-IDs, Reset-Tage (ab 04.11.)
 - [ ] Gewünschte Akzentfarbe/Logo der Gilde (optional)

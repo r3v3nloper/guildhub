@@ -15,5 +15,5 @@ volumes:
 networks:
   proxy:
     external: true
-    # Network the SWAG container is attached to (SPEC 12: still open).
-    name: ${SWAG_NETWORK:-swag}
+    # Network the SWAG container is attached to.
+    name: ${SWAG_NETWORK:-ltr-net}
