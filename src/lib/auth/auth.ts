@@ -16,7 +16,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => ({
       verificationTokensTable: verificationTokens,
     }),
   ),
-  providers: [Discord],
+  providers: [
+    // Discord sends `iss` on the callback (RFC 9207). Without a configured issuer Auth.js
+    // compares it against its placeholder "https://authjs.dev" and rejects the sign-in.
+    Discord({ issuer: "https://discord.com" }),
+  ],
   session: { strategy: "database" },
   pages: {
     error: "/kein-zugang",

@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { auth, signIn, signOut } from "@/lib/auth/auth";
 import { de } from "@/i18n/de";
 
@@ -5,6 +6,9 @@ const buttonClass =
   "rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-white active:opacity-80";
 
 export async function UserMenu() {
+  // auth() uses crypto.getRandomValues(), which Cache Components forbids during prerendering;
+  // this marks the component as request-time so it streams in behind its Suspense boundary.
+  await connection();
   const session = await auth();
 
   if (!session?.user) {
