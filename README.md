@@ -38,18 +38,52 @@ die SQLite-Datei liegt unter `./data/`.
 
 ### Befehle
 
-| Befehl                | Zweck                                                                 |
-| --------------------- | --------------------------------------------------------------------- |
-| `npm run dev`         | Entwicklungsserver                                                    |
-| `npm test`            | Unit-Tests (Vitest)                                                   |
-| `npm run lint`        | ESLint                                                                |
-| `npm run typecheck`   | TypeScript inkl. generierter Routentypen                              |
-| `npm run format`      | Prettier über alle Dateien                                            |
-| `npm run build`       | Produktions-Build (`.next/standalone`)                                |
-| `npm run db:generate` | Migration aus `src/lib/db/schema.ts` erzeugen (nach Schemaänderungen) |
+| Befehl                   | Zweck                                                                 |
+| ------------------------ | --------------------------------------------------------------------- |
+| `npm run dev`            | Entwicklungsserver                                                    |
+| `npm test`               | Unit-Tests (Vitest)                                                   |
+| `npm run lint`           | ESLint                                                                |
+| `npm run typecheck`      | TypeScript inkl. generierter Routentypen                              |
+| `npm run format`         | Prettier über alle Dateien                                            |
+| `npm run build`          | Produktions-Build (`.next/standalone`)                                |
+| `npm run db:generate`    | Migration aus `src/lib/db/schema.ts` erzeugen (nach Schemaänderungen) |
+| `npm run packs:validate` | Alle Packs prüfen, inkl. `packs/_examples/`; Exit-Code 1 bei Fehlern  |
 
 Der Service Worker ist im Entwicklungsmodus abgeschaltet. Zum Testen der PWA
 `npm run build && npm start` verwenden.
+
+### Erste Schritte nach dem Login
+
+1. Mit der Discord-ID aus `OWNER_DISCORD_ID` anmelden; dieses Konto wird automatisch Owner.
+2. Unter **Admin → Spiele** die gewünschten Spiele aktivieren. Neue Spiele sind zunächst
+   deaktiviert.
+3. Unter **Admin → Allowlist** weitere Discord-IDs freischalten (oder in
+   `ALLOWED_DISCORD_IDS` eintragen; die werden bei jedem Start ergänzt, aber nie entfernt).
+
+## Game Packs
+
+Spiele werden über `packs/<id>/pack.json` beschrieben (Schema: `src/lib/packs/schema.ts`,
+Details: SPEC Abschnitt 6). Ordner, die mit `_` beginnen (z. B. `packs/_examples/`), werden
+nur validiert, aber nicht geladen.
+
+- `npm run packs:validate` vor jedem Commit. Der Docker-Build führt die Prüfung ebenfalls aus
+  und bricht bei Fehlern ab; der laufende Container bleibt dann unverändert.
+- Beim Start werden die Packs in die DB synchronisiert. Ein ungültiges Pack wird übersprungen,
+  der letzte gültige Stand bleibt aktiv; `/api/health` meldet dann `degraded`.
+- Einträge, die noch nicht im Spiel geprüft sind, mit `"todo": true` markieren. Der
+  Admin-Bereich listet sie.
+
+**Regeln für Pack-Autoren:**
+
+- **IDs sind stabil und werden nie wiederverwendet.** Umbenennen heißt `name` ändern, nicht `id`.
+- Statt zu löschen: `"deprecated": true`. Der Eintrag bleibt gültig, ist aber für neue
+  Charaktere nicht mehr wählbar.
+- Echte Umbenennung oder Zusammenlegung: neue ID mit `"replaces": ["alte-id"]`. Beim Sync werden
+  alle Verweise umgeschrieben.
+- Fehlt ein Eintrag einfach, wird er als „nicht mehr im Pack“ markiert; betroffene Charaktere
+  behalten ihn und bekommen einen Hinweis.
+- Semantische Änderung einer Aufgabe (z. B. anderes `kind`) = neue Aufgaben-ID.
+- `version` bei jeder Änderung erhöhen (SemVer).
 
 ## Deployment auf dem vServer
 

@@ -14,7 +14,14 @@ export type AppDatabase = BetterSQLite3Database<typeof schema> & {
 
 export function openDatabase(filePath: string): AppDatabase {
   if (filePath !== ":memory:") {
-    fs.mkdirSync(path.dirname(path.resolve(filePath)), { recursive: true });
+    // Ignored by Turbopack: otherwise it watches the DB folder and every write triggers a
+    // recompile and page reload in `next dev`.
+    fs.mkdirSync(
+      path.dirname(path.resolve(/*turbopackIgnore: true*/ filePath)),
+      {
+        recursive: true,
+      },
+    );
   }
 
   const sqlite = new Database(filePath);

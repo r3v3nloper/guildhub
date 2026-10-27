@@ -1,0 +1,137 @@
+{
+  "id": "aion2",
+  "name": "AION 2",
+  "version": "0.1.0",
+  "type": "mmo",
+  "capabilities": {
+    "characters": true,
+    "classes": true,
+    "professions": true,
+    "builds": true,
+    "resets": true,
+    "lockouts": false,
+    "factions": true,
+    "servers": true,
+    "guild_overview": true,
+    "progress_tracking": true
+  },
+  "regions": [{ "id": "eu", "name": "Europa", "timezone": "Europe/Berlin" }],
+  "factions": [
+    { "id": "elyos", "name": "Elyos" },
+    { "id": "asmodian", "name": { "de": "Asmodier", "en": "Asmodian" } }
+  ],
+  "classes": [
+    {
+      "id": "gladiator",
+      "name": { "de": "Gladiator", "en": "Gladiator" },
+      "role": "dps",
+      "color": "#c79c6e",
+      "todo": true
+    },
+    {
+      "id": "templar",
+      "name": { "de": "Templer", "en": "Templar" },
+      "role": "tank",
+      "color": "#8c9bb0",
+      "todo": true
+    },
+    {
+      "id": "assassin",
+      "name": { "de": "Assassine", "en": "Assassin" },
+      "role": "dps",
+      "color": "#9b59b6",
+      "todo": true
+    },
+    {
+      "id": "ranger",
+      "name": { "de": "Jäger", "en": "Ranger" },
+      "role": "dps",
+      "color": "#6fae4f",
+      "todo": true
+    },
+    {
+      "id": "sorcerer",
+      "name": { "de": "Zauberer", "en": "Sorcerer" },
+      "role": "dps",
+      "color": "#3fa7e0",
+      "todo": true
+    },
+    {
+      "id": "spiritmaster",
+      "name": { "de": "Beschwörer", "en": "Spiritmaster" },
+      "role": "dps",
+      "color": "#7b68ee",
+      "todo": true
+    },
+    {
+      "id": "cleric",
+      "name": { "de": "Kleriker", "en": "Cleric" },
+      "role": "heal",
+      "color": "#f0e68c",
+      "todo": true
+    },
+    {
+      "id": "chanter",
+      "name": { "de": "Kantor", "en": "Chanter" },
+      "role": "support",
+      "color": "#e08a3c",
+      "todo": true
+    }
+  ],
+  "professions": [
+    {
+      "id": "weaponsmithing",
+      "name": { "de": "Waffenschmiedekunst", "en": "Weaponsmithing" },
+      "kind": "primary",
+      "todo": true
+    },
+    {
+      "id": "armorsmithing",
+      "name": { "de": "Rüstungsschmiedekunst", "en": "Armorsmithing" },
+      "kind": "primary",
+      "todo": true
+    },
+    {
+      "id": "tailoring",
+      "name": { "de": "Schneiderei", "en": "Tailoring" },
+      "kind": "primary",
+      "todo": true
+    },
+    {
+      "id": "handicrafting",
+      "name": { "de": "Handwerk", "en": "Handicrafting" },
+      "kind": "primary",
+      "todo": true
+    },
+    {
+      "id": "alchemy",
+      "name": { "de": "Alchemie", "en": "Alchemy" },
+      "kind": "primary",
+      "todo": true
+    },
+    {
+      "id": "cooking",
+      "name": { "de": "Kochkunst", "en": "Cooking" },
+      "kind": "primary",
+      "todo": true
+    },
+    {
+      "id": "gathering",
+      "name": { "de": "Sammeln", "en": "Gathering" },
+      "kind": "gathering",
+      "todo": true
+    }
+  ],
+  "build_sources": [{ "domain": "metabot.gg", "label": "MetaBot" }],
+  "reset_rules": [
+    { "id": "daily", "type": "daily", "time": "05:00", "todo": true },
+    {
+      "id": "weekly",
+      "type": "weekly",
+      "time": "05:00",
+      "weekday": 3,
+      "todo": true
+    }
+  ],
+  "tasks": []
+}

@@ -1,0 +1,32 @@
+{
+  "id": "beispiel-rpg",
+  "name": "Beispiel-RPG",
+  "version": "0.1.0",
+  "type": "singleplayer",
+  "character_label": { "de": "Durchlauf", "en": "Playthrough" },
+  "capabilities": {
+    "characters": true,
+    "classes": true,
+    "builds": true,
+    "guild_overview": true,
+    "progress_tracking": true
+  },
+  "classes": [{ "id": "krieger", "name": "Krieger", "role": "dps" }],
+  "tasks": [
+    {
+      "id": "act1",
+      "kind": "one_time",
+      "title": "Akt 1 abgeschlossen",
+      "category": "Story",
+      "scope": "character"
+    },
+    {
+      "id": "optional-bosses",
+      "kind": "counter",
+      "cap": 12,
+      "title": "Optionale Bosse",
+      "category": "Sammeln",
+      "scope": "character"
+    }
+  ]
+}

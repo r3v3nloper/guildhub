@@ -1,0 +1,240 @@
+{
+  "id": "wow-forever",
+  "name": "WoW: Forever",
+  "version": "0.1.0",
+  "type": "mmo",
+  "server_label": "Realm",
+  "capabilities": {
+    "characters": true,
+    "classes": true,
+    "races": true,
+    "professions": true,
+    "builds": true,
+    "resets": true,
+    "lockouts": true,
+    "factions": true,
+    "servers": true,
+    "guild_overview": true,
+    "progress_tracking": true
+  },
+  "regions": [{ "id": "eu", "name": "Europa", "timezone": "Europe/Berlin" }],
+  "factions": [
+    { "id": "alliance", "name": { "de": "Allianz", "en": "Alliance" } },
+    { "id": "horde", "name": { "de": "Horde", "en": "Horde" } }
+  ],
+  "classes": [
+    {
+      "id": "warrior",
+      "name": { "de": "Krieger", "en": "Warrior" },
+      "role": "tank",
+      "color": "#c69b6d",
+      "todo": true
+    },
+    {
+      "id": "paladin",
+      "name": { "de": "Paladin", "en": "Paladin" },
+      "role": "heal",
+      "color": "#f48cba",
+      "factions": ["alliance"],
+      "todo": true
+    },
+    {
+      "id": "hunter",
+      "name": { "de": "Jäger", "en": "Hunter" },
+      "role": "dps",
+      "color": "#aad372",
+      "todo": true
+    },
+    {
+      "id": "rogue",
+      "name": { "de": "Schurke", "en": "Rogue" },
+      "role": "dps",
+      "color": "#fff468",
+      "todo": true
+    },
+    {
+      "id": "priest",
+      "name": { "de": "Priester", "en": "Priest" },
+      "role": "heal",
+      "color": "#ffffff",
+      "todo": true
+    },
+    {
+      "id": "shaman",
+      "name": { "de": "Schamane", "en": "Shaman" },
+      "role": "heal",
+      "color": "#0070dd",
+      "factions": ["horde"],
+      "todo": true
+    },
+    {
+      "id": "mage",
+      "name": { "de": "Magier", "en": "Mage" },
+      "role": "dps",
+      "color": "#3fc7eb",
+      "todo": true
+    },
+    {
+      "id": "warlock",
+      "name": { "de": "Hexenmeister", "en": "Warlock" },
+      "role": "dps",
+      "color": "#8788ee",
+      "todo": true
+    },
+    {
+      "id": "druid",
+      "name": { "de": "Druide", "en": "Druid" },
+      "role": "heal",
+      "color": "#ff7c0a",
+      "todo": true
+    }
+  ],
+  "races": [
+    {
+      "id": "human",
+      "name": { "de": "Mensch", "en": "Human" },
+      "faction": "alliance",
+      "allowed_classes": [
+        "warrior",
+        "paladin",
+        "rogue",
+        "priest",
+        "mage",
+        "warlock"
+      ],
+      "todo": true
+    },
+    {
+      "id": "dwarf",
+      "name": { "de": "Zwerg", "en": "Dwarf" },
+      "faction": "alliance",
+      "allowed_classes": ["warrior", "paladin", "hunter", "rogue", "priest"],
+      "todo": true
+    },
+    {
+      "id": "night-elf",
+      "name": { "de": "Nachtelf", "en": "Night Elf" },
+      "faction": "alliance",
+      "allowed_classes": ["warrior", "hunter", "rogue", "priest", "druid"],
+      "todo": true
+    },
+    {
+      "id": "gnome",
+      "name": { "de": "Gnom", "en": "Gnome" },
+      "faction": "alliance",
+      "allowed_classes": ["warrior", "rogue", "mage", "warlock"],
+      "todo": true
+    },
+    {
+      "id": "orc",
+      "name": { "de": "Orc", "en": "Orc" },
+      "faction": "horde",
+      "allowed_classes": ["warrior", "hunter", "rogue", "shaman", "warlock"],
+      "todo": true
+    },
+    {
+      "id": "undead",
+      "name": { "de": "Untoter", "en": "Undead" },
+      "faction": "horde",
+      "allowed_classes": ["warrior", "rogue", "priest", "mage", "warlock"],
+      "todo": true
+    },
+    {
+      "id": "tauren",
+      "name": { "de": "Tauren", "en": "Tauren" },
+      "faction": "horde",
+      "allowed_classes": ["warrior", "hunter", "shaman", "druid"],
+      "todo": true
+    },
+    {
+      "id": "troll",
+      "name": { "de": "Troll", "en": "Troll" },
+      "faction": "horde",
+      "allowed_classes": [
+        "warrior",
+        "hunter",
+        "rogue",
+        "priest",
+        "shaman",
+        "mage"
+      ],
+      "todo": true
+    }
+  ],
+  "professions": [
+    {
+      "id": "alchemy",
+      "name": { "de": "Alchemie", "en": "Alchemy" },
+      "kind": "primary",
+      "todo": true
+    },
+    {
+      "id": "blacksmithing",
+      "name": { "de": "Schmiedekunst", "en": "Blacksmithing" },
+      "kind": "primary",
+      "todo": true
+    },
+    {
+      "id": "enchanting",
+      "name": { "de": "Verzauberkunst", "en": "Enchanting" },
+      "kind": "primary",
+      "todo": true
+    },
+    {
+      "id": "engineering",
+      "name": { "de": "Ingenieurskunst", "en": "Engineering" },
+      "kind": "primary",
+      "todo": true
+    },
+    {
+      "id": "leatherworking",
+      "name": { "de": "Lederverarbeitung", "en": "Leatherworking" },
+      "kind": "primary",
+      "todo": true
+    },
+    {
+      "id": "tailoring",
+      "name": { "de": "Schneiderei", "en": "Tailoring" },
+      "kind": "primary",
+      "todo": true
+    },
+    {
+      "id": "herbalism",
+      "name": { "de": "Kräuterkunde", "en": "Herbalism" },
+      "kind": "gathering",
+      "todo": true
+    },
+    {
+      "id": "mining",
+      "name": { "de": "Bergbau", "en": "Mining" },
+      "kind": "gathering",
+      "todo": true
+    },
+    {
+      "id": "skinning",
+      "name": { "de": "Kürschnerei", "en": "Skinning" },
+      "kind": "gathering",
+      "todo": true
+    },
+    {
+      "id": "cooking",
+      "name": { "de": "Kochkunst", "en": "Cooking" },
+      "kind": "secondary",
+      "todo": true
+    },
+    {
+      "id": "first-aid",
+      "name": { "de": "Erste Hilfe", "en": "First Aid" },
+      "kind": "secondary",
+      "todo": true
+    },
+    {
+      "id": "fishing",
+      "name": { "de": "Angeln", "en": "Fishing" },
+      "kind": "secondary",
+      "todo": true
+    }
+  ],
+  "reset_rules": [],
+  "tasks": []
+}

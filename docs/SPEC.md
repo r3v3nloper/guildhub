@@ -941,3 +941,19 @@ docker-compose.yml
 - [ ] AION 2: Reset-Uhrzeit EU, Berufe, exakte Klassennamen (EN/DE)
 - [ ] WoW Forever: Klassen-/Rassen-Kombinationen, Raid-IDs, Reset-Tage (ab 04.11.)
 - [ ] Gewünschte Akzentfarbe/Logo der Gilde (optional)
+- [ ] WoW Forever: Name der neuen Rasse. Sie fehlt im Start-Pack bewusst, weil eine Platzhalter-ID später nicht stabil wäre (6.5); bei Bedarf mit `todo: true` nachtragen
+- [ ] AION 2: Die Berufe im Start-Pack sind die aus AION 1 (alle `todo`), bis die Liste von AION 2 feststeht
+
+### Umsetzungsnotizen Phase 1
+
+Entscheidungen, die beim Bauen getroffen wurden und das Modell aus 4.1 ergänzen:
+
+- `Game` speichert zusätzlich `name`, `meta` (Typ, Capabilities, Labels, Regionen, Build-Quellen) und `pack_hash`. Ein Pack mit unverändertem Inhalt wird beim Start nur als `skipped` protokolliert.
+- `GameCatalogEntry` hat einen numerischen Ersatzschlüssel; `Character`, `CharacterProfession` und `Build` verweisen per Fremdschlüssel darauf. Der Pack-Schlüssel steht in `key`.
+- `Character` speichert den Server als `server_key` (Katalog-ID bzw. normalisierter Freitext) und `server_name` (Schreibweise der ersten Eingabe im Spiel).
+- Ein Spieler hat pro Spiel höchstens einen Main; das Setzen eines neuen Mains nimmt die Markierung beim alten weg.
+- Aufgaben werden in Phase 1 validiert, aber noch nicht in die DB synchronisiert (`TaskDefinition` kommt mit Phase 2). Die Sync-Regeln für Aufgaben aus 6.5 (B) entstehen dann.
+- Wieder auf die Allowlist gesetzt heißt wieder aktiv: Ein deaktiviertes Mitglied, das erneut freigeschaltet wird, ist beim nächsten Login automatisch reaktiviert.
+- Discord-Login nur mit Scope `identify`, die E-Mail wird nicht abgefragt.
+- Der Spiel-Umschalter (Abschnitt 7, Punkt 2) merkt sich die Auswahl pro Browser in einem Cookie.
+- Klassen-, Berufs- und Fraktionsfilter im Roster gibt es nur, wenn ein einzelnes Spiel gewählt ist; der Rollenfilter gilt immer.

@@ -4,7 +4,9 @@ import Discord from "next-auth/providers/discord";
 import { getDb } from "@/lib/db/client";
 import { accounts, sessions, users, verificationTokens } from "@/lib/db/schema";
 import { serverEnv } from "@/lib/env";
+import { getGuild } from "@/lib/guild/guild";
 import { isDiscordIdAllowed } from "./allowlist";
+import { ensureMembershipOnSignIn } from "./membership";
 import { withoutOAuthTokens } from "./token-free-adapter";
 
 export const { handlers, auth, signIn, signOut } = NextAuth(() => ({
@@ -19,7 +21,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => ({
   providers: [
     // Discord sends `iss` on the callback (RFC 9207). Without a configured issuer Auth.js
     // compares it against its placeholder "https://authjs.dev" and rejects the sign-in.
-    Discord({ issuer: "https://discord.com" }),
+    // Only the identity is needed, so no e-mail scope.
+    Discord({
+      issuer: "https://discord.com",
+      authorization: { params: { scope: "identify" } },
+    }),
   ],
   session: { strategy: "database" },
   pages: {
@@ -30,7 +36,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => ({
       if (account?.provider !== "discord") {
         return false;
       }
-      return isDiscordIdAllowed(account.providerAccountId, serverEnv());
+      return isDiscordIdAllowed(getDb(), account.providerAccountId);
+    },
+    session({ session, user }) {
+      session.user.id = user.id;
+      return session;
+    },
+  },
+  events: {
+    signIn({ user, account }) {
+      if (!user.id || account?.provider !== "discord") {
+        return;
+      }
+      const db = getDb();
+      ensureMembershipOnSignIn(
+        db,
+        getGuild(db).id,
+        user.id,
+        account.providerAccountId,
+        serverEnv(),
+      );
     },
   },
 }));

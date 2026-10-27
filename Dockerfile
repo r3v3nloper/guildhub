@@ -15,6 +15,8 @@ WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Main safeguard against broken packs: the image is not built, the running container stays (SPEC 6.5).
+RUN npm run packs:validate
 RUN npm run build
 
 FROM ${NODE_IMAGE} AS runtime
@@ -32,6 +34,7 @@ COPY --from=build --chown=node:node /app/.next/standalone ./
 COPY --from=build --chown=node:node /app/.next/static ./.next/static
 COPY --from=build --chown=node:node /app/public ./public
 COPY --from=build --chown=node:node /app/drizzle ./drizzle
+COPY --from=build --chown=node:node /app/packs ./packs
 
 USER node
 EXPOSE 3000
@@ -41,5 +44,6 @@ VOLUME ["/data"]
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD ["node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
 
-# Migrations run in src/instrumentation.ts before the server accepts requests.
+# Migrations, guild bootstrap and pack sync run in src/instrumentation.ts before the
+# server accepts requests.
 CMD ["node", "server.js"]

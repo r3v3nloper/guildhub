@@ -1,7 +1,8 @@
 import { SerwistProvider } from "@serwist/turbopack/react";
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
-import { UserMenu } from "@/components/auth/UserMenu";
+import Link from "next/link";
+import { AppNav } from "@/components/nav/AppNav";
 import { OfflineBanner } from "@/components/pwa/OfflineBanner";
 import { UpdatePrompt } from "@/components/pwa/UpdatePrompt";
 import { de } from "@/i18n/de";
@@ -37,13 +38,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           <OfflineBanner />
           <UpdatePrompt />
-          <header className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-            <span className="font-semibold">{de.app.name}</span>
+          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+            <Link href="/" className="font-semibold">
+              {de.app.name}
+            </Link>
             <Suspense fallback={null}>
-              <UserMenu />
+              <AppNav />
             </Suspense>
           </header>
-          <main className="flex flex-1 flex-col px-4 py-6">{children}</main>
+          <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6">
+            {children}
+          </main>
         </SerwistProvider>
       </body>
     </html>

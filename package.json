@@ -12,7 +12,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "packs:validate": "tsx scripts/packs-validate.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.3",
