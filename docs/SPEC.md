@@ -451,15 +451,17 @@ dafür ein kleines Badge „ungeprüft“, und der Admin-Bereich listet alle off
   - Odyle-Energie: `regen`, +15 alle 180 min, `regen_alignment: fixed` (`todo`), scope `character`
   - Nightmare: `stacking`, +2/Tag, cap 14, scope `character`
   - Daily Dungeons, Ascension Trial, Weekly-Quests PvE/PvP: `recurring`
-- Reset-Uhrzeit und Berufe: als `todo` anlegen und im Spiel prüfen.
+- **Keine Berufe:** AION 2 hat keine klassischen Herstellungsberufe, daher `capabilities.professions: false` (ab Pack-Version 0.2.0).
+- Reset-Uhrzeit: als `todo` anlegen und im Spiel prüfen.
 
 **WoW: Forever** (`packs/wow-forever/pack.json`)
 - `capabilities.races: true`, `factions: true`, `lockouts: true`, `servers: true`
   mit `server_label: "Realm"` (Realm-Liste als Katalog, sobald bekannt; bis dahin Freitext, 4.6).
 - Annahme Vanilla-Basis: Krieger, Paladin, Jäger, Schurke, Priester,
   Schamane, Magier, Hexenmeister, Druide, dazu die Vanilla-Rassen mit
-  Fraktion und erlaubten Klassen sowie die neue Forever-Rasse. Alles als `todo`,
-  bis es ab Launch geprüft ist (siehe 4.5).
+  Fraktion und erlaubten Klassen sowie die neue Forever-Rasse **Himmelsgeborene**
+  (ID `himmelsgeborene`; Fraktion und erlaubte Klassen noch offen, daher vorerst ohne
+  Einschränkung). Alles als `todo`, bis es ab Launch geprüft ist (siehe 4.5).
 - Berufe (Annahme Vanilla): Alchemie, Schmiedekunst, Verzauberkunst,
   Ingenieurskunst, Kräuterkunde, Lederverarbeitung, Bergbau, Kürschnerei,
   Schneiderei; sekundär: Kochkunst, Erste Hilfe, Angeln.
@@ -938,11 +940,12 @@ docker-compose.yml
 - [x] Domain/Subdomain für die App: **`guildhub.licktherainbow.de`**
 - [x] Discord-App für OAuth angelegt (Client-ID `1564751806851194893`; Secret nur in `.env`), Redirect-URL: `AUTH_URL/api/auth/callback/discord`
 - [ ] Discord-IDs der aktuell 6 Mitglieder für die Allowlist (Owner `418171274456727564` steht, die übrigen folgen)
-- [ ] AION 2: Reset-Uhrzeit EU, Berufe, exakte Klassennamen (EN/DE)
+- [ ] AION 2: Reset-Uhrzeit EU, exakte Klassennamen (EN/DE)
+- [x] AION 2: keine Berufe, Capability `professions` aus (6.3)
 - [ ] WoW Forever: Klassen-/Rassen-Kombinationen, Raid-IDs, Reset-Tage (ab 04.11.)
 - [ ] Gewünschte Akzentfarbe/Logo der Gilde (optional)
-- [ ] WoW Forever: Name der neuen Rasse. Sie fehlt im Start-Pack bewusst, weil eine Platzhalter-ID später nicht stabil wäre (6.5); bei Bedarf mit `todo: true` nachtragen
-- [ ] AION 2: Die Berufe im Start-Pack sind die aus AION 1 (alle `todo`), bis die Liste von AION 2 feststeht
+- [x] WoW Forever: neue Rasse **Himmelsgeborene** im Pack (`todo`)
+- [ ] WoW Forever: Fraktion, erlaubte Klassen und englischer Name der Himmelsgeborenen
 
 ### Umsetzungsnotizen Phase 1
 
