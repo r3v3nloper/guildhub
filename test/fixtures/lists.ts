@@ -7,7 +7,10 @@ const raw = {
   name: "Spiel",
   version: "1.0.0",
   capabilities: { professions: true },
-  professions: [{ id: "mining", name: "Bergbau", kind: "gathering" }],
+  professions: [
+    { id: "mining", name: "Bergbau", kind: "gathering" },
+    { id: "leatherworking", name: "Lederverarbeitung", kind: "primary" },
+  ],
 };
 
 export interface ListFixture {

@@ -39,3 +39,15 @@ export function formatIsoDate(date: Date): string {
     day: "2-digit",
   }).format(date);
 }
+
+const dayFormat = new Intl.DateTimeFormat("de-DE", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  timeZone: DISPLAY_TIMEZONE,
+});
+
+/** Heading date of the dashboard, e.g. "Mittwoch, 28. Oktober". */
+export function formatDay(date: Date): string {
+  return dayFormat.format(date);
+}

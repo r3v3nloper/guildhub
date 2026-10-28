@@ -43,11 +43,14 @@ export function MemberCard({
       {member.characters.length === 0 ? (
         <p className="text-sm text-muted">{de.roster.noCharacters}</p>
       ) : (
-        <ul className="flex flex-col gap-3">
+        <ul className="flex flex-col gap-2">
           {member.characters.map((character) => (
-            <li key={character.id} className="flex flex-col gap-1 text-sm">
+            <li
+              key={character.id}
+              className="flex flex-col gap-1 rounded-2xl bg-raised px-3.5 py-3 text-sm"
+            >
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span className="font-medium">{character.name}</span>
+                <span className="font-bold text-white">{character.name}</span>
                 {character.isMain && (
                   <Badge tone="accent">{de.badges.main}</Badge>
                 )}
@@ -92,7 +95,7 @@ export function MemberCard({
                         href={character.currentBuild.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-accent underline"
+                        className="font-semibold text-accent-strong hover:text-white"
                       >
                         {character.currentBuild.title}
                       </a>

@@ -33,6 +33,10 @@ export const requests = {
   deleteConfirm: "Diesen Antrag löschen?",
   by: (name: string) => `von ${name}`,
   craftedBy: (name: string) => `Hersteller: ${name}`,
+  forYou: "Crafting-Anträge für dich",
+  forYouHint: "Passend zu den Berufen deiner Charaktere.",
+  showAll: "Alle Anträge",
+  acceptedByYou: "Von dir angenommen",
   statuses: {
     open: "Offen",
     accepted: "Angenommen",

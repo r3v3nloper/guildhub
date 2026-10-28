@@ -88,6 +88,25 @@ export function listCraftRequests(
   );
 }
 
+/**
+ * What the user can craft right now, for the "Heute" dashboard: requests they accepted
+ * and still have to finish, then open requests for a profession one of their characters
+ * holds. Their own requests are left out; nobody crafts for themselves.
+ */
+export function listCraftRequestsForCrafter(
+  db: AppDatabase,
+  actor: Actor,
+  gameIds: readonly string[],
+): CraftRequestView[] {
+  const requests = listCraftRequests(db, actor, gameIds);
+  return [
+    ...requests.filter((request) => request.canProgress),
+    ...requests.filter(
+      (request) => request.canAccept && request.requesterId !== actor.userId,
+    ),
+  ];
+}
+
 /** Requests with profession, requester and crafter names. */
 function selectRequests(db: AppDatabase) {
   const requester = alias(users, "requester");

@@ -60,7 +60,7 @@ export function MatrixTable({ matrix }: { matrix: GameMatrix }) {
 function Cell({ cell }: { cell: MatrixCell }) {
   const tone =
     cell.done === true
-      ? "text-green-600"
+      ? "text-success"
       : cell.done === false
         ? "text-muted"
         : "";

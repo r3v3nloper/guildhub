@@ -25,4 +25,14 @@ export const today = {
   full: "Läuft voll, verbrauchen!",
   guide: "Guide öffnen",
   collapseDone: "Erledigte ausblenden",
+  progressTitle: "Fortschritt heute",
+  progressLabel: "Erledigte Aufgaben",
+  openShort: (count: number) =>
+    count === 0 ? "Alles erledigt" : `${count} offen`,
+  doneOf: (done: number, total: number) => `${done} von ${total} erledigt`,
+  fullTitle: "Läuft voll",
+  nothingFull: "Nichts läuft gerade voll.",
+  nextReset: (time: string) => `Nächster Reset in ${time}`,
+  allDoneFor: (name: string) => `Alles erledigt für ${name}.`,
+  level: (level: number) => `Stufe ${level}`,
 } as const;

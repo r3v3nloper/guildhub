@@ -58,7 +58,10 @@ export function RosterFilterForm({
   }));
 
   return (
-    <form method="get" className="flex flex-col gap-3">
+    <form
+      method="get"
+      className="flex flex-col gap-3 rounded-[20px] border border-border bg-surface p-4"
+    >
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <FilterSelect
           name="rolle"

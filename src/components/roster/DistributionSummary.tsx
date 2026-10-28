@@ -2,39 +2,13 @@ import type { Distribution } from "@/lib/roster/roster";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
 
-function DistributionList({
-  title,
-  items,
-  labelOf,
-}: {
-  title: string;
-  items: Distribution[];
-  labelOf: (item: Distribution) => string;
-}) {
-  const total = items.reduce((sum, item) => sum + item.count, 0);
-  return (
-    <div className="flex-1">
-      <h3 className="mb-2 text-sm font-medium">{title}</h3>
-      <ul className="flex flex-col gap-1">
-        {items.map((item) => (
-          <li key={item.key} className="flex items-center gap-2 text-sm">
-            <span className="w-28 truncate">{labelOf(item)}</span>
-            <span className="h-2 flex-1 rounded bg-border">
-              <span
-                className="block h-2 rounded"
-                style={{
-                  width: `${(item.count / total) * 100}%`,
-                  backgroundColor: item.color ?? "var(--primary-color)",
-                }}
-              />
-            </span>
-            <span className="w-6 text-right tabular-nums">{item.count}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+/** Role colours: told apart by lightness too, not by hue alone. */
+const roleColors: Record<string, string> = {
+  tank: "#8fb4ff",
+  dps: "#ff9a8b",
+  heal: "#7be3a9",
+  support: "#ffc46b",
+};
 
 /** Class and role counts of the filtered roster, for raid planning (SPEC 7.4). */
 export function DistributionSummary({
@@ -47,18 +21,68 @@ export function DistributionSummary({
   if (classes.length === 0) {
     return null;
   }
+  const maxClass = Math.max(...classes.map((item) => item.count));
+
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-4 sm:flex-row">
-      <DistributionList
-        title={de.roster.roleDistribution}
-        items={roles}
-        labelOf={(item) => de.roles[item.key] ?? item.key}
-      />
-      <DistributionList
-        title={de.roster.classDistribution}
-        items={classes}
-        labelOf={(item) => localize(item.label)}
-      />
-    </div>
+    <section className="grid gap-4 lg:grid-cols-2">
+      <div className="flex flex-col gap-4 rounded-[22px] border border-border bg-surface p-5 md:p-6">
+        <h2 className="text-xs font-bold tracking-widest text-muted uppercase">
+          {de.roster.roleDistribution}
+        </h2>
+        <ul className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          {roles.map((item) => (
+            <li
+              key={item.key}
+              className="flex flex-col gap-1.5 rounded-2xl bg-raised px-3 py-3.5"
+            >
+              <span
+                className="font-display text-3xl leading-none font-semibold"
+                style={{ color: roleColors[item.key] ?? "var(--gh-accent)" }}
+              >
+                {item.count}
+              </span>
+              <span className="text-[13px] font-semibold text-soft">
+                {de.roles[item.key] ?? item.key}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="flex flex-col gap-3 rounded-[22px] border border-border bg-surface p-5 md:p-6">
+        <h2 className="text-xs font-bold tracking-widest text-muted uppercase">
+          {de.roster.classDistribution}
+        </h2>
+        <ul className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
+          {classes.map((item) => {
+            const color = item.color ?? "var(--gh-accent)";
+            return (
+              <li
+                key={item.key}
+                className="flex items-center gap-2.5 text-[13px]"
+              >
+                <span
+                  className="w-24 shrink-0 truncate font-semibold"
+                  style={{ color: `color-mix(in srgb, ${color} 78%, white)` }}
+                >
+                  {localize(item.label)}
+                </span>
+                <span className="h-2 flex-1 overflow-hidden rounded-full bg-chip">
+                  <span
+                    className="block h-full rounded-full"
+                    style={{
+                      width: `${(item.count / maxClass) * 100}%`,
+                      backgroundColor: color,
+                    }}
+                  />
+                </span>
+                <span className="w-5 text-right font-bold tabular-nums">
+                  {item.count}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
   );
 }

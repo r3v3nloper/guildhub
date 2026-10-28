@@ -13,10 +13,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
-    "packs:validate": "tsx scripts/packs-validate.ts"
+    "packs:validate": "tsx scripts/packs-validate.ts",
+    "theme": "node scripts/build-theme.mjs"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.3",
+    "@fontsource-variable/fredoka": "^5.3.0",
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.4",
     "luxon": "^3.7.2",

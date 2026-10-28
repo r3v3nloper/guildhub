@@ -59,6 +59,11 @@ export interface DashboardItem {
 export interface DashboardCharacter {
   id: number;
   name: string;
+  /** Class name and colour from the pack, for the character card. */
+  className: string | null;
+  classColor: string | null;
+  level: number | null;
+  isMain: boolean;
   items: DashboardItem[];
 }
 
@@ -134,6 +139,7 @@ export function buildDashboard(
     ]),
   ]);
   const bossNames = loadBossNames(db, gameIds);
+  const classes = loadClasses(db, ownCharacters);
   const item = (
     entry: { task: ResolvedTask; period: TaskPeriod },
     key: string,
@@ -170,6 +176,10 @@ export function buildDashboard(
           characters: group.characters.map((character) => ({
             id: character.id,
             name: character.name,
+            className: classOf(classes, character)?.name ?? null,
+            classColor: classOf(classes, character)?.color ?? null,
+            level: character.level,
+            isMain: character.isMain,
             items: ofScope("character").map((entry) =>
               item(
                 entry,
@@ -360,6 +370,54 @@ function loadNames(db: AppDatabase, userIds: string[]): Map<string, string> {
       .all()
       .map((user) => [user.id, user.name ?? "?"]),
   );
+}
+
+interface ClassInfo {
+  name: string;
+  color: string | null;
+}
+
+/** Name and colour of the classes the given characters play. */
+function loadClasses(
+  db: AppDatabase,
+  list: CharacterRow[],
+): Map<number, ClassInfo> {
+  const ids = [
+    ...new Set(
+      list
+        .map((character) => character.classEntryId)
+        .filter((id): id is number => id !== null),
+    ),
+  ];
+  if (ids.length === 0) {
+    return new Map();
+  }
+  return new Map(
+    db
+      .select()
+      .from(gameCatalogEntries)
+      .where(inArray(gameCatalogEntries.id, ids))
+      .all()
+      .map((entry) => {
+        const { color } = entry.data as { color?: unknown };
+        return [
+          entry.id,
+          {
+            name: localize(entry.name),
+            color: typeof color === "string" ? color : null,
+          },
+        ];
+      }),
+  );
+}
+
+function classOf(
+  classes: Map<number, ClassInfo>,
+  character: CharacterRow,
+): ClassInfo | undefined {
+  return character.classEntryId === null
+    ? undefined
+    : classes.get(character.classEntryId);
 }
 
 function loadBossNames(

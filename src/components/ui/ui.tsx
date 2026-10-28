@@ -20,14 +20,24 @@ import {
 
 export function PageHeader({
   title,
+  eyebrow,
   actions,
 }: {
   title: string;
+  /** Small line above the title, e.g. the date or the selected game. */
+  eyebrow?: ReactNode;
   actions?: ReactNode;
 }) {
   return (
-    <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-      <h1 className="text-2xl font-semibold">{title}</h1>
+    <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+      <div className="flex flex-col gap-1">
+        {eyebrow && (
+          <span className="text-sm font-semibold text-muted">{eyebrow}</span>
+        )}
+        <h1 className="font-display text-4xl leading-tight font-semibold text-white md:text-5xl">
+          {title}
+        </h1>
+      </div>
       {actions}
     </div>
   );
@@ -87,12 +97,12 @@ export function Field({
       </label>
       {control}
       {hint && (
-        <small id={hintId} className="text-orange-500">
+        <small id={hintId} className="text-warning">
           {hint}
         </small>
       )}
       {error && (
-        <small id={errorId} className="text-red-500">
+        <small id={errorId} className="text-danger">
           {error}
         </small>
       )}

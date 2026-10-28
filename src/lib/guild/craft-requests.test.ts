@@ -13,6 +13,7 @@ import {
   deleteCraftRequest,
   finishCraftRequest,
   listCraftRequests,
+  listCraftRequestsForCrafter,
   returnCraftRequest,
   type CraftRequestInput,
 } from "./craft-requests";
@@ -112,6 +113,48 @@ describe("craft requests", () => {
 
     // Assert
     expect(listAudit(fixture.db)).toEqual([]);
+  });
+
+  describe("for the crafter's dashboard", () => {
+    const itemsFor = (actor: typeof fixture.member) =>
+      listCraftRequestsForCrafter(fixture.db, actor, ["game"]).map(
+        (view) => `${view.item} (${view.status})`,
+      );
+
+    it("shows only requests for the crafter's own professions", () => {
+      // Arrange
+      createCraftRequest(fixture.db, fixture.member, {
+        ...request,
+        professionKey: "leatherworking",
+        item: "Lederrüstung",
+      });
+
+      // Act & Assert
+      expect(itemsFor(fixture.other)).toEqual(["Thoriumbarren (open)"]);
+      expect(itemsFor(fixture.officer)).toEqual([]);
+    });
+
+    it("keeps an accepted request until it is done", () => {
+      // Act
+      acceptCraftRequest(fixture.db, fixture.other, requestId);
+      const accepted = itemsFor(fixture.other);
+      finishCraftRequest(fixture.db, fixture.other, requestId);
+
+      // Assert
+      expect(accepted).toEqual(["Thoriumbarren (accepted)"]);
+      expect(itemsFor(fixture.other)).toEqual([]);
+    });
+
+    it("leaves out the user's own requests", () => {
+      // Arrange
+      saveCharacter(fixture.db, fixture.member, "game", {
+        ...miner,
+        name: "Dwalin",
+      });
+
+      // Act & Assert
+      expect(itemsFor(fixture.member)).toEqual([]);
+    });
   });
 
   it("validates item, quantity and profession", () => {

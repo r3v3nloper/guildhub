@@ -1,14 +1,11 @@
 /*
  * PrimeReact themes sit in their own cascade layer below Tailwind's utilities, so a
  * utility class (spacing, width …) still wins over a theme rule when both apply.
- * Light and dark Lara themes follow the system setting, as the app did before.
+ * The theme is Lara Dark Purple recoloured to the GuildHub palette (scripts/build-theme.mjs).
  */
 @layer theme, base, primereact, components, utilities;
 
-@import "primereact/resources/themes/lara-light-indigo/theme.css"
-  layer(primereact) (prefers-color-scheme: light);
-@import "primereact/resources/themes/lara-dark-indigo/theme.css"
-  layer(primereact) (prefers-color-scheme: dark);
+@import "./guildhub-theme.css" layer(primereact);
 @import "primeicons/primeicons.css" layer(primereact);
 @import "tailwindcss";
 
@@ -30,18 +27,123 @@
   }
 }
 
-/* Tailwind colour names mapped onto the theme's tokens, so both speak the same palette. */
+/* GuildHub palette, taken from the logo: night violet ground, lavender accent. */
+:root {
+  --gh-ground: #0d0b17;
+  --gh-sidebar: #110e1e;
+  --gh-surface: #161325;
+  --gh-raised: #1b1730;
+  --gh-chip: #241f3a;
+  --gh-border: #241f38;
+  --gh-text: #eeeaf8;
+  --gh-soft: #cfc8e6;
+  --gh-muted: #a49dbd;
+  --gh-accent: #b69cff;
+  --gh-accent-strong: #c9b8ff;
+  --gh-accent-soft: #2a2148;
+  --gh-on-accent: #140f24;
+  --gh-success: #7be3a9;
+  --gh-success-soft: #16352a;
+  --gh-warning: #ffc46b;
+  --gh-warning-soft: #3a2a12;
+  --gh-danger: #ff8a8a;
+  --gh-rainbow: linear-gradient(
+    90deg,
+    #ff5a5f,
+    #ff9f43,
+    #ffd43b,
+    #51cf66,
+    #339af0,
+    #9775fa
+  );
+  --font-family: "Plus Jakarta Sans Variable", system-ui, sans-serif;
+  --border-radius: 12px;
+  color-scheme: dark;
+}
+
+/* Tailwind colour names mapped onto the palette, so utilities and theme speak alike. */
 @theme inline {
-  --color-background: var(--surface-ground);
-  --color-foreground: var(--text-color);
-  --color-muted: var(--text-color-secondary);
-  --color-accent: var(--primary-color);
-  --color-border: var(--surface-border);
-  --color-surface: var(--surface-card);
+  --color-background: var(--gh-ground);
+  --color-sidebar: var(--gh-sidebar);
+  --color-surface: var(--gh-surface);
+  --color-raised: var(--gh-raised);
+  --color-chip: var(--gh-chip);
+  --color-border: var(--gh-border);
+  --color-foreground: var(--gh-text);
+  --color-soft: var(--gh-soft);
+  --color-muted: var(--gh-muted);
+  --color-accent: var(--gh-accent);
+  --color-accent-strong: var(--gh-accent-strong);
+  --color-accent-soft: var(--gh-accent-soft);
+  --color-on-accent: var(--gh-on-accent);
+  --color-success: var(--gh-success);
+  --color-success-soft: var(--gh-success-soft);
+  --color-warning: var(--gh-warning);
+  --color-warning-soft: var(--gh-warning-soft);
+  --color-danger: var(--gh-danger);
+  --font-sans: "Plus Jakarta Sans Variable", system-ui, sans-serif;
+  --font-display: "Fredoka Variable", system-ui, sans-serif;
 }
 
 body {
-  background: var(--surface-ground);
-  color: var(--text-color);
+  background: var(--gh-ground);
+  color: var(--gh-text);
   font-family: var(--font-family);
+}
+
+:focus-visible {
+  outline: 2px solid var(--gh-accent);
+  outline-offset: 2px;
+}
+
+/* Theme adjustments that belong to the GuildHub look rather than to single pages. */
+@layer components {
+  .p-card {
+    background: var(--gh-surface);
+    border: 1px solid var(--gh-border);
+    border-radius: 22px;
+    box-shadow: none;
+  }
+  .p-card .p-card-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.375rem;
+  }
+  .p-button {
+    font-weight: 600;
+  }
+  .p-tag {
+    border-radius: 999px;
+    font-weight: 700;
+  }
+  .p-tag.p-tag-warning {
+    background: var(--gh-warning-soft);
+    color: var(--gh-warning);
+  }
+  .p-button.p-button-secondary.p-button-outlined {
+    background: var(--gh-raised);
+    border-color: #2c2645;
+    color: var(--gh-soft);
+  }
+  .p-button.p-button-secondary.p-button-outlined:enabled:hover {
+    background: var(--gh-chip);
+    border-color: #3a3358;
+    color: var(--gh-text);
+  }
+  .p-tag:not(.p-tag-secondary):not(.p-tag-warning):not(.p-tag-danger) {
+    background: var(--gh-accent-soft);
+    color: #d9ccff;
+  }
+  .p-menu {
+    background: var(--gh-raised);
+    border: 1px solid #2c2645;
+    border-radius: 16px;
+    padding: 6px;
+  }
+  .p-menu .p-menuitem-link {
+    border-radius: 10px;
+  }
+  .gh-rainbow {
+    background: var(--gh-rainbow);
+  }
 }

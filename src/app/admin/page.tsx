@@ -51,7 +51,7 @@ async function AdminContent() {
       {failing.length > 0 && (
         <div
           role="alert"
-          className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200"
+          className="rounded-2xl border border-red-800 bg-red-950 p-3 text-sm text-red-200"
         >
           <p className="font-medium">{de.admin.packErrorBanner}</p>
           <ul className="mt-1 list-disc pl-5">

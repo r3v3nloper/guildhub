@@ -11,7 +11,7 @@ function SyncSummaryLine({ entry }: { entry: SyncLogEntry }) {
   const summary = entry.summary;
   if (entry.status === "error") {
     return (
-      <pre className="whitespace-pre-wrap text-xs text-red-600 dark:text-red-400">
+      <pre className="whitespace-pre-wrap text-xs text-danger">
         {entry.error}
       </pre>
     );
@@ -38,7 +38,7 @@ function SyncSummaryLine({ entry }: { entry: SyncLogEntry }) {
         </span>
       ))}
       {summary.affected_characters.length > 0 && (
-        <span className="text-orange-500">
+        <span className="text-warning">
           {summary.affected_characters.length} {de.admin.affectedCharacters} (
           {summary.affected_characters
             .map((a) => `${kindLabel(a.field)} ${a.old_id}`)

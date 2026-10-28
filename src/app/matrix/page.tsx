@@ -138,9 +138,7 @@ function GuildTasks({ items }: { items: DashboardItem[] }) {
           >
             <span>{item.title}</span>
             <span
-              className={
-                item.status === "done" ? "text-green-600" : "text-muted"
-              }
+              className={item.status === "done" ? "text-success" : "text-muted"}
             >
               {item.kind === "counter" && item.cap
                 ? `${item.value}/${item.cap}`

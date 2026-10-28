@@ -31,7 +31,7 @@ export function GameSwitcher({
       optionLabel="label"
       optionValue="value"
       disabled={pending}
-      className="p-inputtext-sm"
+      className="w-full"
       onChange={(event) => {
         const gameId = (event.value as string | null) ?? "";
         startTransition(() => selectGame(gameId));

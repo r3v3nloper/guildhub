@@ -4,6 +4,7 @@ import { useOptimistic } from "react";
 import type { DashboardItem } from "@/lib/tasks/dashboard";
 import { Button } from "@/components/ui/ui";
 import { de } from "@/i18n/de";
+import { ValuePill } from "./indicators";
 import { ItemShell } from "./ItemShell";
 import { ResetCountdown } from "./ResetCountdown";
 import { adjustCounterAction } from "./today-actions";
@@ -48,12 +49,10 @@ export function CounterTask({
       pressHandlers={press}
       pressLabel={`${item.title}: ${value}${item.cap ? ` / ${item.cap}` : ""}. ${de.today.longPressHint}`}
       indicator={
-        <span
-          className={`rounded-full px-2 py-0.5 text-sm font-semibold tabular-nums ${done ? "bg-green-500/20 text-green-600" : "bg-border"}`}
-        >
+        <ValuePill tone={done ? "done" : "neutral"}>
           {value}
           {item.cap !== null && `/${item.cap}`}
-        </span>
+        </ValuePill>
       }
       meta={
         done ? (

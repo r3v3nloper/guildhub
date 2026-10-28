@@ -4,6 +4,7 @@ import { Checkbox } from "primereact/checkbox";
 import { useOptimistic, useState } from "react";
 import type { BossView, DashboardItem } from "@/lib/tasks/dashboard";
 import { de } from "@/i18n/de";
+import { ValuePill } from "./indicators";
 import { ItemShell } from "./ItemShell";
 import { ResetCountdown } from "./ResetCountdown";
 import { setBossKilledAction } from "./today-actions";
@@ -40,19 +41,20 @@ export function LockoutTask({
       error={error}
       pressHandlers={{ ...press, "aria-expanded": open }}
       pressLabel={`${item.title}: ${de.today.bossesOf(killed, bosses.length)}`}
+      expanded={open}
       indicator={
-        <span className="rounded-full bg-border px-2 py-0.5 text-sm font-semibold tabular-nums">
+        <ValuePill tone={done ? "done" : "neutral"}>
           {killed}/{bosses.length}
-        </span>
+        </ValuePill>
       }
       meta={!done && <ResetCountdown item={item} now={now} />}
     >
       {open && (
-        <ul className="ml-14 flex flex-col gap-2">
+        <ul className="mb-2 grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-x-4 gap-y-0.5 pr-2 pl-[84px]">
           {bosses.map((boss) => {
             const id = `boss-${item.taskId}-${item.characterId}-${boss.key}`;
             return (
-              <li key={boss.key} className="flex items-center gap-2">
+              <li key={boss.key} className="flex min-h-9 items-center gap-2.5">
                 <Checkbox
                   inputId={id}
                   checked={boss.killed}
@@ -63,7 +65,12 @@ export function LockoutTask({
                     )
                   }
                 />
-                <label htmlFor={id}>{boss.name}</label>
+                <label
+                  htmlFor={id}
+                  className={`cursor-pointer text-sm ${boss.killed ? "text-muted line-through" : ""}`}
+                >
+                  {boss.name}
+                </label>
               </li>
             );
           })}

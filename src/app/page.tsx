@@ -1,25 +1,29 @@
+import Image from "next/image";
 import Link from "next/link";
 import { DateTime } from "luxon";
+import { signOutAction } from "@/components/auth/auth-actions";
+import { SignInButton } from "@/components/auth/SignInButton";
+import { CraftRequestsToday } from "@/components/today/CraftRequestsToday";
 import { TodayBoard } from "@/components/today/TodayBoard";
+import { TodaySummary } from "@/components/today/TodaySummary";
 import { PageSuspense } from "@/components/ui/PageSuspense";
 import { PageHeader } from "@/components/ui/ui";
-import { currentActor } from "@/lib/auth/current-actor";
+import { currentActor, currentSession } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { selectedGames } from "@/lib/game-filter";
+import { listCraftRequestsForCrafter } from "@/lib/guild/craft-requests";
 import { listCharactersOfUser } from "@/lib/roster/characters";
 import { buildDashboard } from "@/lib/tasks/dashboard";
+import { summarizeDashboard } from "@/lib/tasks/dashboard-summary";
+import { formatCountdown, formatDay } from "@/i18n/format";
 import { de } from "@/i18n/de";
 
 async function HomeContent() {
   const actor = await currentActor();
 
   if (!actor) {
-    return (
-      <section className="mx-auto flex w-full max-w-xl flex-col gap-2">
-        <h1 className="text-2xl font-semibold">{de.home.welcome}</h1>
-        <p className="text-muted">{de.home.signInHint}</p>
-      </section>
-    );
+    const session = await currentSession();
+    return <Welcome signedIn={Boolean(session?.user)} />;
   }
 
   const db = getDb();
@@ -33,7 +37,14 @@ async function HomeContent() {
     serverLabel: game.meta.serverLabel,
   }));
   const now = DateTime.now();
+  const nowIso = now.toISO()!;
   const dashboard = buildDashboard(db, actor.guildId, actor.userId, games, now);
+  const summary = summarizeDashboard(dashboard);
+  const requests = listCraftRequestsForCrafter(
+    db,
+    actor,
+    games.map((game) => game.id),
+  );
   const hasCharacters = listCharactersOfUser(db, actor.userId).length > 0;
   const isEmpty =
     dashboard.general.length === 0 &&
@@ -41,34 +52,84 @@ async function HomeContent() {
     dashboard.games.length === 0;
 
   return (
-    <section className="flex flex-col gap-2">
+    <section className="flex flex-col gap-6">
       <PageHeader
         title={de.today.title}
+        eyebrow={formatDay(now.toJSDate())}
         actions={
-          !isEmpty && (
-            <span className="text-sm text-muted">
-              {dashboard.openCount > 0
-                ? de.today.openCount(dashboard.openCount)
-                : de.today.allDone}
+          summary.nextReset && (
+            <span className="flex items-center gap-2 rounded-full border border-[#2a2541] bg-surface px-3.5 py-2 text-[13px] font-semibold text-soft">
+              <i className="pi pi-clock text-accent" aria-hidden />
+              {de.today.nextReset(formatCountdown(summary.nextReset, nowIso))}
             </span>
           )
         }
       />
       {enabledGames.length === 0 && (
-        <p className="text-orange-500">{de.home.noGames}</p>
+        <p className="text-warning">{de.home.noGames}</p>
       )}
       {isEmpty && enabledGames.length > 0 && (
         <p className="text-muted">
           {hasCharacters ? (
             de.today.noTasks
           ) : (
-            <Link href="/charaktere" className="hover:text-accent">
+            <Link href="/charaktere" className="text-accent hover:text-white">
               {de.today.noCharacters}
             </Link>
           )}
         </p>
       )}
-      <TodayBoard dashboard={dashboard} now={now.toISO()!} />
+      {!isEmpty && <TodaySummary summary={summary} />}
+      <CraftRequestsToday requests={requests} />
+      <TodayBoard dashboard={dashboard} now={nowIso} />
+    </section>
+  );
+}
+
+/** Start page for visitors: the logo and the Discord sign-in. */
+function Welcome({ signedIn }: { signedIn: boolean }) {
+  return (
+    <section className="flex flex-1 flex-col items-center justify-center gap-10 py-10 text-center">
+      <div className="flex flex-col items-center gap-4">
+        <Image
+          src="/logo.png"
+          alt=""
+          width={170}
+          height={200}
+          priority
+          unoptimized
+        />
+        <h1 className="font-display text-5xl leading-none font-semibold text-white md:text-6xl">
+          {de.app.name}
+        </h1>
+        <p className="max-w-md text-lg text-pretty text-soft">
+          {de.app.description}
+        </p>
+      </div>
+      <div className="flex w-full max-w-sm flex-col gap-3">
+        {signedIn ? (
+          <>
+            <p className="text-sm text-pretty text-muted">
+              {de.auth.noAccessText}
+            </p>
+            <form action={signOutAction}>
+              <button
+                type="submit"
+                className="min-h-12 w-full rounded-2xl border border-[#2c2645] bg-raised px-6 font-semibold text-foreground hover:bg-chip"
+              >
+                {de.auth.signOut}
+              </button>
+            </form>
+          </>
+        ) : (
+          <>
+            <SignInButton />
+            <p className="text-sm text-pretty text-muted">
+              {de.home.signInHint}
+            </p>
+          </>
+        )}
+      </div>
     </section>
   );
 }

@@ -3,6 +3,7 @@
 import { useOptimistic } from "react";
 import type { DashboardItem } from "@/lib/tasks/dashboard";
 import { de } from "@/i18n/de";
+import { CheckMark } from "./indicators";
 import { ItemShell } from "./ItemShell";
 import { ResetCountdown } from "./ResetCountdown";
 import { setTaskDoneAction } from "./today-actions";
@@ -29,12 +30,7 @@ export function CheckTask({ item, now }: { item: DashboardItem; now: string }) {
       error={error}
       pressHandlers={press}
       pressLabel={item.title}
-      indicator={
-        <i
-          className={`pi text-xl ${done ? "pi-check-circle text-green-500" : "pi-circle text-muted"}`}
-          aria-hidden
-        />
-      }
+      indicator={<CheckMark done={done} />}
       meta={
         done ? (
           item.doneBy && <span>{de.today.doneBy(item.doneBy)}</span>

@@ -1,47 +1,39 @@
 import { Avatar } from "primereact/avatar";
-import { Button } from "@/components/ui/ui";
-import { signIn } from "@/lib/auth/auth";
-import { signOutAction } from "./auth-actions";
 import { currentSession } from "@/lib/auth/current-actor";
 import { de } from "@/i18n/de";
+import { signOutAction } from "./auth-actions";
 
-export async function UserMenu() {
+/** Who is signed in, at the foot of the sidebar; on phones sign-out sits in the menu. */
+export async function UserMenu({ role }: { role?: string }) {
   const session = await currentSession();
-
   if (!session?.user) {
-    return (
-      <form
-        action={async () => {
-          "use server";
-          await signIn("discord");
-        }}
-      >
-        <Button icon="pi pi-discord" label={de.auth.signIn} />
-      </form>
-    );
+    return null;
   }
 
   const { name, image } = session.user;
   return (
-    <form className="flex shrink-0 items-center gap-2" action={signOutAction}>
+    <form
+      action={signOutAction}
+      className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-3"
+    >
       <Avatar
         image={image ?? undefined}
         label={image ? undefined : name?.charAt(0).toUpperCase()}
         shape="circle"
         aria-hidden
       />
-      <span className="hidden text-sm md:inline" title={de.home.signedInAs}>
-        {name}
+      <span className="flex min-w-0 flex-1 flex-col" title={de.home.signedInAs}>
+        <span className="truncate text-sm font-bold">{name}</span>
+        {role && <span className="text-xs text-muted">{role}</span>}
       </span>
-      {/* On phones sign-out lives in the navigation menu. */}
-      <span className="hidden md:inline-flex">
-        <Button
-          variant="secondary"
-          icon="pi pi-sign-out"
-          aria-label={de.auth.signOut}
-          title={de.auth.signOut}
-        />
-      </span>
+      <button
+        type="submit"
+        aria-label={de.auth.signOut}
+        title={de.auth.signOut}
+        className="flex h-10 w-10 items-center justify-center rounded-xl text-muted hover:bg-raised hover:text-foreground"
+      >
+        <i className="pi pi-sign-out" aria-hidden />
+      </button>
     </form>
   );
 }

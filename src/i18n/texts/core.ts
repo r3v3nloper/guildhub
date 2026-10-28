@@ -21,6 +21,7 @@ export const nav = {
   home: "Start",
   roster: "Roster",
   characters: "Meine Charaktere",
+  charactersShort: "Charaktere",
   admin: "Admin",
   today: "Heute",
   more: "Mehr",

@@ -4,39 +4,27 @@ import { useRouter } from "next/navigation";
 import { Menu } from "primereact/menu";
 import type { MenuItem } from "primereact/menuitem";
 import { useRef } from "react";
-import { Button } from "@/components/ui/ui";
-
-export interface MoreMenuLink {
-  href: string;
-  label: string;
-  icon: string;
-}
-
-/** A labelled block of links inside the menu. */
-export interface MoreMenuGroup {
-  label: string;
-  links: MoreMenuLink[];
-}
+import type { NavGroup } from "./nav-links";
 
 /**
- * Pages behind one button. On desktop it holds the secondary pages; on phones every
- * page plus sign-out, so the header stays on one line.
+ * The last tab of the phone's bottom bar: every page that has no tab of its own, plus
+ * sign-out.
  */
 export function MoreMenu({
   id,
   label,
   groups,
-  compact = false,
+  badge = 0,
   signOut,
   signOutLabel,
 }: {
   id: string;
   label: string;
-  groups: MoreMenuGroup[];
-  /** Icon-only button, `label` becomes its accessible name. */
-  compact?: boolean;
-  signOut?: () => Promise<void>;
-  signOutLabel?: string;
+  groups: NavGroup[];
+  /** Shown on the tab, e.g. requests waiting behind one of the menu's pages. */
+  badge?: number;
+  signOut: () => Promise<void>;
+  signOutLabel: string;
 }) {
   const menu = useRef<Menu>(null);
   const router = useRouter();
@@ -52,30 +40,35 @@ export function MoreMenu({
       },
     })),
   }));
-  if (signOut) {
-    items.push(
-      { separator: true },
-      {
-        label: signOutLabel,
-        icon: "pi pi-sign-out",
-        command: () => void signOut(),
-      },
-    );
-  }
+  items.push(
+    { separator: true },
+    {
+      label: signOutLabel,
+      icon: "pi pi-sign-out",
+      command: () => void signOut(),
+    },
+  );
 
   return (
     <>
       <Menu ref={menu} popup popupAlignment="right" id={id} model={items} />
-      <Button
+      <button
         type="button"
-        variant="secondary"
-        icon="pi pi-bars"
-        label={compact ? undefined : label}
-        aria-label={compact ? label : undefined}
         aria-controls={id}
         aria-haspopup
         onClick={(event) => menu.current?.toggle(event)}
-      />
+        className="flex min-h-13 flex-col items-center justify-center gap-1 rounded-2xl text-[11.5px] font-semibold text-muted"
+      >
+        <span className="relative flex h-7.5 w-14 items-center justify-center">
+          <i className="pi pi-bars text-lg" aria-hidden />
+          {badge > 0 && (
+            <span className="absolute -top-1 right-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-on-accent">
+              {badge}
+            </span>
+          )}
+        </span>
+        {label}
+      </button>
     </>
   );
 }

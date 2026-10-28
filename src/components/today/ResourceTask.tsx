@@ -6,6 +6,7 @@ import type { DashboardItem } from "@/lib/tasks/dashboard";
 import { Button } from "@/components/ui/ui";
 import { formatCountdown } from "@/i18n/format";
 import { de } from "@/i18n/de";
+import { ValuePill } from "./indicators";
 import { ItemShell } from "./ItemShell";
 import { consumeStackingAction, setResourceValueAction } from "./today-actions";
 import { useLongPress } from "./use-long-press";
@@ -72,12 +73,12 @@ export function ResourceTask({
           ? `${item.title}: ${de.today.enterValue}`
           : `${item.title}: ${value} / ${resource.cap}`
       }
+      fill={value === null ? undefined : value / resource.cap}
+      fillWarning={item.status === "open"}
       indicator={
-        <span
-          className={`rounded-full px-2 py-0.5 text-sm font-semibold tabular-nums ${item.status === "open" ? "bg-orange-500/20 text-orange-600" : "bg-border"}`}
-        >
+        <ValuePill tone={item.status === "open" ? "warning" : "neutral"}>
           {unknown ? "?" : value}/{resource.cap}
-        </span>
+        </ValuePill>
       }
       meta={<ResourceHint item={item} now={now} />}
       actions={
@@ -96,7 +97,7 @@ export function ResourceTask({
     >
       {editing && (
         <form
-          className="ml-14 flex flex-wrap items-center gap-2"
+          className="mb-2 flex flex-wrap items-center gap-2 pl-[84px]"
           onSubmit={(event) => {
             event.preventDefault();
             save();
@@ -131,7 +132,7 @@ function ResourceHint({ item, now }: { item: DashboardItem; now: string }) {
     return <span>{de.today.enterValue}</span>;
   }
   if (item.status === "open") {
-    return <span className="text-orange-600">{de.today.full}</span>;
+    return <span className="font-semibold text-warning">{de.today.full}</span>;
   }
   if (resource.fullAt) {
     return (

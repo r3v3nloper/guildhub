@@ -6,9 +6,12 @@ import { TaskItem } from "./TaskItem";
 export function TaskList({
   items,
   now,
+  allDoneLabel,
 }: {
   items: DashboardItem[];
   now: string;
+  /** Shown instead of an empty list once everything is ticked. */
+  allDoneLabel?: string;
 }) {
   if (items.length === 0) {
     return null;
@@ -18,17 +21,28 @@ export function TaskList({
 
   return (
     <div className="flex flex-col">
-      <ul className="divide-y divide-border">
-        {pending.map((item) => (
-          <TaskItem key={itemKey(item)} item={item} now={now} />
-        ))}
-      </ul>
+      {pending.length === 0 && allDoneLabel ? (
+        <p className="flex items-center gap-2.5 px-3 py-3.5 text-sm font-semibold text-success">
+          <i className="pi pi-check" aria-hidden />
+          {allDoneLabel}
+        </p>
+      ) : (
+        <ul className="flex flex-col gap-0.5">
+          {pending.map((item) => (
+            <TaskItem key={itemKey(item)} item={item} now={now} />
+          ))}
+        </ul>
+      )}
       {done.length > 0 && (
-        <details className="mt-1">
-          <summary className="cursor-pointer py-1 text-sm text-muted">
+        <details className="group mt-1 border-t border-dashed border-[#2a2541] pt-1">
+          <summary className="flex min-h-10 cursor-pointer list-none items-center gap-1.5 rounded-xl px-3 text-[13px] font-semibold text-muted hover:bg-raised hover:text-foreground [&::-webkit-details-marker]:hidden">
             {de.today.done(done.length)}
+            <i
+              className="pi pi-chevron-down text-xs transition-transform group-open:rotate-180"
+              aria-hidden
+            />
           </summary>
-          <ul className="divide-y divide-border">
+          <ul className="flex flex-col gap-0.5">
             {done.map((item) => (
               <TaskItem key={itemKey(item)} item={item} now={now} />
             ))}

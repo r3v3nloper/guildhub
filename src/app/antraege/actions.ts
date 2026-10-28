@@ -19,7 +19,8 @@ import {
 } from "@/lib/guild/craft-requests";
 import { de } from "@/i18n/de";
 
-const REQUESTS = ["/antraege"];
+// "/" shows the requests a member can craft, and the navigation counts them.
+const REQUESTS = ["/antraege", "/"];
 
 export async function createCraftRequestAction(
   _previous: ActionState,
@@ -38,7 +39,9 @@ export async function createCraftRequestAction(
       : { ok: false, errors: result.errors };
   });
   if (state.ok) {
-    revalidatePath(REQUESTS[0]);
+    for (const path of REQUESTS) {
+      revalidatePath(path);
+    }
   }
   return state;
 }

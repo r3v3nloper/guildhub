@@ -30,13 +30,13 @@ export function UpdatePrompt() {
   return (
     <div
       role="status"
-      className="flex items-center justify-center gap-3 bg-accent px-4 py-2 text-sm text-white"
+      className="flex items-center justify-center gap-3 bg-accent px-4 py-2 text-sm font-semibold text-on-accent"
     >
       <span>{de.pwa.updateAvailable}</span>
       <button
         type="button"
         onClick={activateUpdate}
-        className="rounded border border-white/70 px-2 py-0.5 font-medium"
+        className="rounded border border-on-accent/60 px-2 py-0.5 font-medium"
       >
         {de.pwa.reload}
       </button>
