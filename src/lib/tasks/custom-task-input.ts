@@ -6,6 +6,7 @@ import {
   type TaskShape,
 } from "@/lib/reset/task-consistency";
 import {
+  CUSTOM_ONLY_SCOPES,
   TASK_KINDS,
   TASK_SCOPES,
   type TaskKind,
@@ -65,17 +66,33 @@ const FIELD_OF_ISSUE: Record<string, keyof CustomTaskInput> = {
   anchor: "ruleAnchor",
 };
 
-/** Scopes a custom task may use in a game (SPEC 4.1); cross-game tasks are scope user. */
-export function allowedScopes(catalog: GameCatalog | undefined): TaskScope[] {
+/**
+ * Scopes a custom task may use (SPEC 4.1): cross-game tasks are scope user, game tasks
+ * use the game scopes. Officers may also create guild tasks, ticked once for everyone.
+ */
+export function allowedScopes(
+  catalog: GameCatalog | undefined,
+  mayCreateGuildTasks: boolean,
+): TaskScope[] {
+  const guild: TaskScope[] = mayCreateGuildTasks ? ["guild"] : [];
   if (!catalog) {
-    return ["user"];
+    return ["user", ...guild];
   }
-  return TASK_SCOPES.filter(
+  const gameScopes = TASK_SCOPES.filter(
     (scope) =>
-      scope !== "user" &&
+      !CUSTOM_ONLY_SCOPES.includes(scope) &&
       (scope !== "server" || catalog.game.meta.capabilities.servers),
   );
+  return [...gameScopes, ...guild];
 }
+
+/** A shared resource level makes no sense for a whole guild; these kinds stay personal. */
+export const GUILD_TASK_KINDS: readonly TaskKind[] = [
+  "recurring",
+  "counter",
+  "lockout",
+  "one_time",
+];
 
 export type ResolvedCustomTask =
   | {
@@ -91,6 +108,7 @@ export type ResolvedCustomTask =
 export function resolveCustomTaskInput(
   input: CustomTaskInput,
   catalog: GameCatalog | undefined,
+  mayCreateGuildTasks: boolean,
 ): ResolvedCustomTask {
   const errors: CustomTaskErrors = {};
   const title = input.title.trim();
@@ -107,8 +125,14 @@ export function resolveCustomTaskInput(
     throw new DomainError("Unbekannter Aufgabentyp.");
   }
   const kind = input.kind as TaskKind;
-  if (!allowedScopes(catalog).includes(input.scope as TaskScope)) {
+  if (
+    !allowedScopes(catalog, mayCreateGuildTasks).includes(
+      input.scope as TaskScope,
+    )
+  ) {
     errors.scope = "Dieser Geltungsbereich passt nicht zum Spiel.";
+  } else if (input.scope === "guild" && !GUILD_TASK_KINDS.includes(kind)) {
+    errors.kind = "Ressourcen gibt es nur pro Spieler, nicht für die Gilde.";
   }
 
   const numbers: Array<keyof CustomTaskInput> = [

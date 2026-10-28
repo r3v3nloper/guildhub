@@ -55,7 +55,13 @@ export function CounterTask({
           {item.cap !== null && `/${item.cap}`}
         </span>
       }
-      meta={!done && <ResetCountdown item={item} now={now} />}
+      meta={
+        done ? (
+          item.doneBy && <span>{de.today.doneBy(item.doneBy)}</span>
+        ) : (
+          <ResetCountdown item={item} now={now} />
+        )
+      }
       actions={
         <Button
           type="button"

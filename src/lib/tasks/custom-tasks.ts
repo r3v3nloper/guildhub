@@ -1,4 +1,4 @@
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, or } from "drizzle-orm";
 import { assertAllowed, permissions, type Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
 import { gameCatalogEntries, taskDefinitions } from "@/lib/db/schema";
@@ -18,22 +18,32 @@ export type TaskRow = typeof taskDefinitions.$inferSelect;
 export type CustomTaskResult =
   { ok: true; taskId: number } | { ok: false; errors: CustomTaskErrors };
 
-export function listOwnTasks(db: AppDatabase, userId: string): TaskRow[] {
+/** The actor's private tasks and all guild tasks; private tasks of others never. */
+export function listCustomTasks(db: AppDatabase, actor: Actor): TaskRow[] {
   return db
     .select()
     .from(taskDefinitions)
     .where(
-      and(
-        eq(taskDefinitions.source, "private"),
-        eq(taskDefinitions.ownerId, userId),
+      or(
+        and(
+          eq(taskDefinitions.source, "private"),
+          eq(taskDefinitions.ownerId, actor.userId),
+        ),
+        eq(taskDefinitions.source, "guild"),
       ),
     )
     .orderBy(asc(taskDefinitions.gameId), asc(taskDefinitions.id))
     .all();
 }
 
-/** A private task of the actor, for editing. */
-export function getOwnTask(
+export function canEditCustomTask(actor: Actor, task: TaskRow): boolean {
+  return task.source === "guild"
+    ? permissions.manageGuildTasks(actor).allowed
+    : permissions.editOwnData(actor, task.ownerId ?? "").allowed;
+}
+
+/** A private task of the actor, or a guild task for officers, for editing. */
+export function getEditableTask(
   db: AppDatabase,
   actor: Actor,
   taskId: number,
@@ -43,15 +53,23 @@ export function getOwnTask(
     .from(taskDefinitions)
     .where(eq(taskDefinitions.id, taskId))
     .get();
-  if (!task || task.source !== "private" || task.ownerId !== actor.userId) {
+  const visible =
+    task?.source === "guild" ||
+    (task?.source === "private" && task.ownerId === actor.userId);
+  if (!task || !visible) {
     throw new NotFoundError("Aufgabe");
   }
-  assertAllowed(permissions.editOwnData(actor, task.ownerId));
+  assertAllowed(
+    task.source === "guild"
+      ? permissions.manageGuildTasks(actor)
+      : permissions.editOwnData(actor, actor.userId),
+  );
   return task;
 }
 
 /**
- * Creates a private task (SPEC 4.3, 7 item 8), or updates it when `taskId` is given.
+ * Creates a private or (officers) guild task (SPEC 4.3, 7 item 8), or updates it when
+ * `taskId` is given.
  * Game, kind and scope are fixed after creation: changing them would reinterpret the
  * progress already stored, the same reason packs need a new ID for that (SPEC 6.5 B).
  */
@@ -63,7 +81,8 @@ export function saveCustomTask(
 ): CustomTaskResult {
   assertAllowed(permissions.editOwnData(actor, actor.userId));
   const existing =
-    taskId === undefined ? undefined : getOwnTask(db, actor, taskId);
+    taskId === undefined ? undefined : getEditableTask(db, actor, taskId);
+  const mayCreateGuildTasks = permissions.manageGuildTasks(actor).allowed;
   const fixed = existing
     ? {
         ...input,
@@ -81,7 +100,7 @@ export function saveCustomTask(
     throw new NotFoundError("Spiel");
   }
 
-  const resolved = resolveCustomTaskInput(fixed, catalog);
+  const resolved = resolveCustomTaskInput(fixed, catalog, mayCreateGuildTasks);
   if (!resolved.ok) {
     return resolved;
   }
@@ -96,8 +115,10 @@ export function saveCustomTask(
     .insert(taskDefinitions)
     .values({
       ...resolved.values,
-      source: "private",
-      ownerId: actor.userId,
+      // Guild tasks belong to the guild, so they outlive the officer who wrote them.
+      ...(fixed.scope === "guild"
+        ? { source: "guild" as const, ownerId: null }
+        : { source: "private" as const, ownerId: actor.userId }),
       gameId: fixed.gameId || null,
       kind: fixed.kind as TaskKind,
       scope: fixed.scope as TaskScope,
@@ -127,7 +148,7 @@ export function deleteCustomTask(
   actor: Actor,
   taskId: number,
 ): void {
-  const task = getOwnTask(db, actor, taskId);
+  const task = getEditableTask(db, actor, taskId);
   // Progress and snapshots go with it (foreign keys cascade).
   db.delete(taskDefinitions).where(eq(taskDefinitions.id, task.id)).run();
 }

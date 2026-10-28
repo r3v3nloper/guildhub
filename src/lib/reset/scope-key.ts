@@ -6,6 +6,8 @@ export interface ScopeOwner {
   characterId?: number;
   /** Normalised server key of the character, if any. */
   server?: string | null;
+  /** Needed for guild-wide tasks, which everyone ticks together. */
+  guildId?: number;
 }
 
 /**
@@ -24,6 +26,11 @@ export function scopeKey(scope: TaskScope, owner: ScopeOwner): string {
       return `a:${owner.userId}:${owner.gameId}`;
     case "user":
       return `u:${owner.userId}`;
+    case "guild":
+      if (owner.guildId === undefined) {
+        throw new Error("Gilden-Scope ohne Gilde");
+      }
+      return `g:${owner.guildId}`;
   }
 }
 

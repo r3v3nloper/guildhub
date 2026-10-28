@@ -46,6 +46,9 @@ export const characters = {
   skillLevel: "Fertigkeit",
   specialization: "Spezialisierung",
   professionNotes: "Notiz",
+  recipes: "Rezepte",
+  recipesHint:
+    "Eins pro Zeile, optional mit Notiz: „Name – Notiz“. Erscheint im Berufe-Verzeichnis.",
   editBuild: "Bearbeiten",
   saveBuild: "Build speichern",
   deleteConfirm: "Diesen Charakter mit allen Builds wirklich löschen?",

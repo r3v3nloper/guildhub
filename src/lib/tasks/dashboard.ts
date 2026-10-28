@@ -6,21 +6,23 @@ import {
   gameCatalogEntries,
   resourceStates,
   taskProgress,
+  users,
 } from "@/lib/db/schema";
 import type { LocalizedString } from "@/lib/packs/schema";
 import { isCompleted } from "@/lib/reset/completion";
-import {
-  projectRegen,
-  projectStacking,
-  regenFullAt,
-} from "@/lib/reset/resources";
 import { scopeKey } from "@/lib/reset/scope-key";
 import type { TaskKind } from "@/lib/reset/task-kinds";
 import { localize } from "@/i18n/localize";
 import { loadVisibleTasks, type ResolvedTask } from "./task-context";
+import {
+  resourceStatus,
+  resourceView,
+  type ItemStatus,
+  type ResourceView,
+} from "./resource-view";
 import { taskPeriod, type TaskPeriod } from "./task-period";
 
-export type ItemStatus = "open" | "done" | "info";
+export type { ItemStatus } from "./resource-view";
 
 export interface BossView {
   key: string;
@@ -28,13 +30,7 @@ export interface BossView {
   killed: boolean;
 }
 
-export interface ResourceView {
-  /** Projected value, or null while no snapshot exists. */
-  value: number | null;
-  cap: number;
-  /** ISO time the resource will be full; regen only. */
-  fullAt: string | null;
-}
+export type { ResourceView } from "./resource-view";
 
 /** One task as it appears in the "Heute" dashboard (SPEC 7, item 3). */
 export interface DashboardItem {
@@ -52,6 +48,8 @@ export interface DashboardItem {
   resource: ResourceView | null;
   /** ISO time of the next reset; null for tasks without a rule. */
   nextReset: string | null;
+  /** Guild tasks are ticked together; this is who ticked it last. */
+  doneBy: string | null;
 }
 
 export interface DashboardCharacter {
@@ -77,6 +75,8 @@ export interface DashboardGame {
 
 export interface Dashboard {
   general: DashboardItem[];
+  /** Guild-wide tasks, ticked once for everyone. */
+  guild: DashboardItem[];
   games: DashboardGame[];
   openCount: number;
 }
@@ -124,7 +124,7 @@ export function buildDashboard(
           .orderBy(asc(characters.name))
           .all();
 
-  const state = loadState(db, tasks, ownCharacters, userId);
+  const state = loadState(db, tasks, ownCharacters, userId, guildId);
   const bossNames = loadBossNames(db, gameIds);
   const item = (
     entry: { task: ResolvedTask; period: TaskPeriod },
@@ -136,6 +136,11 @@ export function buildDashboard(
     .filter((entry) => entry.task.scope === "user")
     .map((entry) =>
       item(entry, scopeKey("user", { userId, gameId: null }), null),
+    );
+  const guild = tasks
+    .filter((entry) => entry.task.scope === "guild")
+    .map((entry) =>
+      item(entry, scopeKey("guild", { userId, gameId: null, guildId }), null),
     );
 
   const dashboardGames = games.flatMap((game): DashboardGame[] => {
@@ -188,6 +193,7 @@ export function buildDashboard(
 
   const allItems = [
     ...general,
+    ...guild,
     ...dashboardGames.flatMap((game) => [
       ...game.items,
       ...game.servers.flatMap((server) => [
@@ -198,6 +204,7 @@ export function buildDashboard(
   ];
   return {
     general,
+    guild,
     games: dashboardGames,
     openCount: allItems.filter((entry) => entry.status === "open").length,
   };
@@ -249,6 +256,8 @@ function groupByServer(list: CharacterRow[]) {
 interface LoadedState {
   progress: Map<string, ProgressRow>;
   resources: Map<string, ResourceRow>;
+  /** Names of whoever last changed a loaded progress entry. */
+  names: Map<string, string>;
 }
 
 const stateKey = (taskId: number, key: string) => `${taskId}|${key}`;
@@ -258,13 +267,15 @@ function loadState(
   tasks: Array<{ task: ResolvedTask; period: TaskPeriod }>,
   ownCharacters: CharacterRow[],
   userId: string,
+  guildId: number,
 ): LoadedState {
   const taskIds = tasks.map((entry) => entry.task.id);
   if (taskIds.length === 0) {
-    return { progress: new Map(), resources: new Map() };
+    return { progress: new Map(), resources: new Map(), names: new Map() };
   }
   const scopeKeys = [
     scopeKey("user", { userId, gameId: null }),
+    scopeKey("guild", { userId, gameId: null, guildId }),
     ...ownCharacters.flatMap((character) => [
       scopeKey("character", ownerOf(character)),
       scopeKey("server", ownerOf(character)),
@@ -299,16 +310,37 @@ function loadState(
   const currentKey = new Map(
     tasks.map((entry) => [entry.task.id, entry.period.key]),
   );
+  const current = progress.filter(
+    (row) => currentKey.get(row.taskId) === row.periodKey,
+  );
   return {
     progress: new Map(
-      progress
-        .filter((row) => currentKey.get(row.taskId) === row.periodKey)
-        .map((row) => [stateKey(row.taskId, row.scopeKey), row]),
+      current.map((row) => [stateKey(row.taskId, row.scopeKey), row]),
+    ),
+    names: loadNames(
+      db,
+      current
+        .map((row) => row.updatedBy)
+        .filter((id): id is string => id !== null),
     ),
     resources: new Map(
       resources.map((row) => [stateKey(row.taskId, row.scopeKey), row]),
     ),
   };
+}
+
+function loadNames(db: AppDatabase, userIds: string[]): Map<string, string> {
+  if (userIds.length === 0) {
+    return new Map();
+  }
+  return new Map(
+    db
+      .select({ id: users.id, name: users.name })
+      .from(users)
+      .where(inArray(users.id, [...new Set(userIds)]))
+      .all()
+      .map((user) => [user.id, user.name ?? "?"]),
+  );
 }
 
 function loadBossNames(
@@ -370,58 +402,9 @@ function toItem(
     })),
     resource,
     nextReset: period.next?.toISO() ?? null,
+    doneBy:
+      task.scope === "guild" && progress?.updatedBy
+        ? (state.names.get(progress.updatedBy) ?? null)
+        : null,
   };
-}
-
-function resourceView(
-  task: ResolvedTask,
-  snapshot: ResourceRow | undefined,
-  now: DateTime,
-): ResourceView | null {
-  if (task.kind !== "regen" && task.kind !== "stacking") {
-    return null;
-  }
-  const cap = task.cap ?? 0;
-  if (!snapshot) {
-    return { value: null, cap, fullAt: null };
-  }
-  const reported = {
-    value: snapshot.value,
-    valueAt: DateTime.fromJSDate(snapshot.valueAt),
-  };
-  if (task.kind === "stacking") {
-    const value = task.rule
-      ? projectStacking(
-          { cap, perPeriodGain: task.perPeriodGain ?? 0 },
-          task.rule,
-          task.ruleZone,
-          reported,
-          now,
-        )
-      : reported.value;
-    return { value, cap, fullAt: null };
-  }
-  const settings = {
-    cap,
-    regenAmount: task.regenAmount ?? 0,
-    regenIntervalMinutes: task.regenIntervalMinutes ?? 60,
-    regenAlignment: task.regenAlignment ?? "fixed",
-  };
-  return {
-    value: projectRegen(settings, task.regenZone, reported, now),
-    cap,
-    fullAt:
-      regenFullAt(settings, task.regenZone, reported, now)?.toISO() ?? null,
-  };
-}
-
-/** Resources are never done; they only count as open once they reach alert_at (SPEC 5.3). */
-function resourceStatus(
-  task: ResolvedTask,
-  resource: ResourceView,
-): ItemStatus {
-  if (resource.value === null) {
-    return "info";
-  }
-  return resource.value >= (task.alertAt ?? resource.cap) ? "open" : "info";
 }

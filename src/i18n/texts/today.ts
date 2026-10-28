@@ -4,6 +4,8 @@ export const today = {
     count === 1 ? "1 offene Aufgabe" : `${count} offene Aufgaben`,
   allDone: "Alles erledigt.",
   general: "Allgemein",
+  guild: "Gilde",
+  doneBy: (name: string) => `erledigt von ${name}`,
   account: "Für alle Charaktere",
   noServer: "ohne Server",
   done: (count: number) => `Erledigt (${count})`,

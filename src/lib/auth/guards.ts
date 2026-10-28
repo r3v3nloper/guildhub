@@ -67,6 +67,13 @@ export const permissions = {
       : deny("Nur der Ersteller oder ein Officer darf das ändern.");
   },
 
+  /** Stat rankings per class are guild knowledge officers keep in the app (SPEC 10). */
+  manageStatPriorities(actor: Actor): Permission {
+    return atLeast(actor, "officer")
+      ? allow
+      : deny("Nur für Officer und Owner.");
+  },
+
   manageGuildTasks(actor: Actor): Permission {
     return atLeast(actor, "officer")
       ? allow

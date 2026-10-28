@@ -6,8 +6,8 @@ import { Badge, ButtonLink, Card, PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { listGuildGames } from "@/lib/roster/game-catalog";
-import { listOwnTasks } from "@/lib/tasks/custom-tasks";
-import { resolveTasks } from "@/lib/tasks/task-context";
+import { canEditCustomTask, listCustomTasks } from "@/lib/tasks/custom-tasks";
+import { resolveTasks, type ResolvedTask } from "@/lib/tasks/task-context";
 import { describeResetRule } from "@/i18n/reset-rule";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
@@ -24,7 +24,17 @@ async function TasksContent() {
       localize(game.name),
     ]),
   );
-  const tasks = resolveTasks(db, actor.guildId, listOwnTasks(db, actor.userId));
+  const tasks = resolveTasks(db, actor.guildId, listCustomTasks(db, actor));
+  const sections = [
+    {
+      title: de.tasks.guildTasks,
+      tasks: tasks.filter((task) => task.source === "guild"),
+    },
+    {
+      title: de.tasks.ownTasks,
+      tasks: tasks.filter((task) => task.source === "private"),
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-4">
@@ -33,45 +43,74 @@ async function TasksContent() {
         actions={<ButtonLink href="/aufgaben/neu">+ {de.tasks.new}</ButtonLink>}
       />
       <p className="text-sm text-muted">{de.tasks.hint}</p>
-      <Card>
-        {tasks.length === 0 ? (
-          <p className="text-sm text-muted">{de.tasks.empty}</p>
-        ) : (
-          <ul className="divide-y divide-border">
-            {tasks.map((task) => (
-              <li
-                key={task.id}
-                className="flex flex-wrap items-center justify-between gap-2 py-2"
-              >
-                <Link
-                  href={`/aufgaben/${task.id}`}
-                  className="flex flex-col hover:text-accent"
-                >
-                  <span className="font-medium">{localize(task.title)}</span>
-                  <span className="flex flex-wrap gap-x-2 text-xs text-muted">
-                    <span>
-                      {task.gameId
-                        ? gameNames.get(task.gameId)
-                        : de.tasks.crossGame}
-                    </span>
-                    <span>{de.tasks.kinds[task.kind]}</span>
-                    <span>{de.tasks.scopes[task.scope]}</span>
-                    {task.rule && <span>{describeResetRule(task.rule)}</span>}
-                  </span>
-                </Link>
-                <span className="flex items-center gap-2">
-                  {task.category && <Badge>{task.category}</Badge>}
-                  <DeleteForm
-                    action={deleteCustomTaskAction.bind(null, task.id)}
-                    question={de.tasks.deleteConfirm}
-                  />
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
+      {sections.map((section) => (
+        <Card key={section.title} title={section.title}>
+          {section.tasks.length === 0 ? (
+            <p className="text-sm text-muted">{de.tasks.empty}</p>
+          ) : (
+            <ul className="divide-y divide-border">
+              {section.tasks.map((task) => (
+                <TaskRow
+                  key={task.id}
+                  task={task}
+                  gameName={
+                    task.gameId
+                      ? (gameNames.get(task.gameId) ?? task.gameId)
+                      : de.tasks.crossGame
+                  }
+                  canEdit={canEditCustomTask(actor, task)}
+                />
+              ))}
+            </ul>
+          )}
+        </Card>
+      ))}
     </div>
+  );
+}
+
+function TaskRow({
+  task,
+  gameName,
+  canEdit,
+}: {
+  task: ResolvedTask;
+  gameName: string;
+  canEdit: boolean;
+}) {
+  const details = (
+    <>
+      <span className="font-medium">{localize(task.title)}</span>
+      <span className="flex flex-wrap gap-x-2 text-xs text-muted">
+        <span>{gameName}</span>
+        <span>{de.tasks.kinds[task.kind]}</span>
+        <span>{de.tasks.scopes[task.scope]}</span>
+        {task.rule && <span>{describeResetRule(task.rule)}</span>}
+      </span>
+    </>
+  );
+  return (
+    <li className="flex flex-wrap items-center justify-between gap-2 py-2">
+      {canEdit ? (
+        <Link
+          href={`/aufgaben/${task.id}`}
+          className="flex flex-col hover:text-accent"
+        >
+          {details}
+        </Link>
+      ) : (
+        <span className="flex flex-col">{details}</span>
+      )}
+      <span className="flex items-center gap-2">
+        {task.category && <Badge>{task.category}</Badge>}
+        {canEdit && (
+          <DeleteForm
+            action={deleteCustomTaskAction.bind(null, task.id)}
+            question={de.tasks.deleteConfirm}
+          />
+        )}
+      </span>
+    </li>
   );
 }
 

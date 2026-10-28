@@ -480,6 +480,90 @@ export const farmSpots = sqliteTable(
   (spot) => [index("farm_spot_game").on(spot.gameId)],
 );
 
+// --- Guild features (SPEC 7, Phase 3) ---
+
+/** What a character can craft within one of its professions (SPEC 4.1 RecipeEntry). */
+export const recipeEntries = sqliteTable(
+  "recipe_entry",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    characterId: integer("character_id")
+      .notNull()
+      .references(() => characters.id, { onDelete: "cascade" }),
+    professionEntryId: integer("profession_entry_id")
+      .notNull()
+      .references(() => gameCatalogEntries.id),
+    name: text("name").notNull(),
+    notes: text("notes"),
+  },
+  (recipe) => [
+    index("recipe_entry_character").on(
+      recipe.characterId,
+      recipe.professionEntryId,
+    ),
+  ],
+);
+
+export const CRAFT_REQUEST_STATUSES = ["open", "accepted", "done"] as const;
+export type CraftRequestStatus = (typeof CRAFT_REQUEST_STATUSES)[number];
+
+/** A member asks for an item; only someone with the profession may accept it. */
+export const craftRequests = sqliteTable(
+  "craft_request",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    gameId: text("game_id")
+      .notNull()
+      .references(() => games.id),
+    professionEntryId: integer("profession_entry_id")
+      .notNull()
+      .references(() => gameCatalogEntries.id),
+    item: text("item").notNull(),
+    quantity: integer("quantity").notNull().default(1),
+    notes: text("notes"),
+    requesterId: text("requester_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    status: text("status", { enum: CRAFT_REQUEST_STATUSES })
+      .notNull()
+      .default("open"),
+    crafterId: text("crafter_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    acceptedAt: integer("accepted_at", { mode: "timestamp_ms" }),
+    doneAt: integer("done_at", { mode: "timestamp_ms" }),
+    createdAt: createdAt(),
+  },
+  (request) => [index("craft_request_game").on(request.gameId)],
+);
+
+/** Officers' stat ranking for a class; several variants, e.g. "PvE Tank" and "PvP". */
+export const statPriorities = sqliteTable(
+  "stat_priority",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    gameId: text("game_id")
+      .notNull()
+      .references(() => games.id),
+    classEntryId: integer("class_entry_id")
+      .notNull()
+      .references(() => gameCatalogEntries.id),
+    title: text("title").notNull(),
+    /** Most important first. */
+    stats: text("stats", { mode: "json" }).$type<string[]>().notNull(),
+    notes: text("notes"),
+    source: text("source"),
+    updatedBy: text("updated_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+      .notNull()
+      .$defaultFn(() => new Date())
+      .$onUpdateFn(() => new Date()),
+  },
+  (priority) => [index("stat_priority_class").on(priority.classEntryId)],
+);
+
 // --- Logs (SPEC 4.1) ---
 
 export interface SyncSummary {

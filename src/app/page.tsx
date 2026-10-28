@@ -36,7 +36,9 @@ async function HomeContent() {
   const dashboard = buildDashboard(db, actor.guildId, actor.userId, games, now);
   const hasCharacters = listCharactersOfUser(db, actor.userId).length > 0;
   const isEmpty =
-    dashboard.general.length === 0 && dashboard.games.length === 0;
+    dashboard.general.length === 0 &&
+    dashboard.guild.length === 0 &&
+    dashboard.games.length === 0;
 
   return (
     <section className="flex flex-col gap-2">

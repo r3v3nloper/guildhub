@@ -29,6 +29,13 @@
       "when": 1793194464889,
       "tag": "0003_guild_todo_lists",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1793196053068,
+      "tag": "0004_phase3_guild",
+      "breakpoints": true
     }
   ]
 }

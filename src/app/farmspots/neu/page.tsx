@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { readGameFilter } from "@/lib/game-filter";
-import { farmSpotGames } from "@/lib/lists/farm-spot-form-options";
+import { professionGameOptions } from "@/lib/roster/profession-options";
 import { de } from "@/i18n/de";
 import { saveFarmSpotAction } from "../actions";
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: de.farmSpots.new };
 
 async function NewFarmSpotContent() {
   const actor = await requireActor();
-  const games = farmSpotGames(getDb(), actor.guildId, true);
+  const games = professionGameOptions(getDb(), actor.guildId, true);
   const selected = await readGameFilter(games.map((game) => game.value));
 
   return (

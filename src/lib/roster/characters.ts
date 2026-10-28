@@ -12,6 +12,13 @@ import { deleteCharacterProgress } from "@/lib/tasks/progress";
 import { isHttpUrl } from "@/lib/url";
 import { detectBuildSource } from "./build-source";
 import {
+  deleteRecipes,
+  formatRecipeLines,
+  listRecipes,
+  parseRecipeLines,
+  replaceRecipes,
+} from "./recipes";
+import {
   resolveCharacter,
   type CharacterInput,
   type FieldErrors,
@@ -27,7 +34,13 @@ import {
 export type CharacterRow = typeof characters.$inferSelect;
 export type BuildRow = typeof builds.$inferSelect;
 
-export type ProfessionRow = typeof characterProfessions.$inferSelect;
+export interface ProfessionRow extends Omit<
+  typeof characterProfessions.$inferSelect,
+  "characterId"
+> {
+  /** Recipes as edited: one per line, "Name – Notiz". */
+  recipes: string;
+}
 
 export interface CharacterDetails extends CharacterRow {
   professionEntryIds: number[];
@@ -50,11 +63,20 @@ export function getCharacter(
   if (!character) {
     return undefined;
   }
+  const recipes = listRecipes(db, characterId);
   const professions = db
     .select()
     .from(characterProfessions)
     .where(eq(characterProfessions.characterId, characterId))
-    .all();
+    .all()
+    .map((profession) => ({
+      ...profession,
+      recipes: formatRecipeLines(
+        recipes.filter(
+          (recipe) => recipe.professionEntryId === profession.professionEntryId,
+        ),
+      ),
+    }));
   return {
     ...character,
     professionEntryIds: professions.map((row) => row.professionEntryId),
@@ -188,6 +210,7 @@ export function saveCharacter(
       (entryId) => !professionEntryIds.includes(entryId),
     );
     if (removed.length > 0) {
+      deleteRecipes(tx, id, removed);
       tx.delete(characterProfessions)
         .where(
           and(
@@ -344,6 +367,7 @@ export interface ProfessionDetailsInput {
   skillLevel: number | null;
   specialization: string;
   notes: string;
+  recipes: string;
 }
 
 export type ProfessionDetailsErrors = Partial<
@@ -384,22 +408,29 @@ export function saveProfessionDetails(
   if (notes.length > PROFESSION_TEXT_MAX_LENGTH) {
     errors.notes = `Höchstens ${PROFESSION_TEXT_MAX_LENGTH} Zeichen.`;
   }
-  if (Object.keys(errors).length > 0) {
+  const recipes = parseRecipeLines(input.recipes);
+  if (!recipes.ok) {
+    errors.recipes = recipes.error;
+  }
+  if (!recipes.ok || Object.keys(errors).length > 0) {
     return { ok: false, errors };
   }
 
-  db.update(characterProfessions)
-    .set({
-      skillLevel,
-      specialization: specialization || null,
-      notes: notes || null,
-    })
-    .where(
-      and(
-        eq(characterProfessions.characterId, characterId),
-        eq(characterProfessions.professionEntryId, professionEntryId),
-      ),
-    )
-    .run();
+  db.transaction((tx) => {
+    replaceRecipes(tx, characterId, professionEntryId, recipes.recipes);
+    tx.update(characterProfessions)
+      .set({
+        skillLevel,
+        specialization: specialization || null,
+        notes: notes || null,
+      })
+      .where(
+        and(
+          eq(characterProfessions.characterId, characterId),
+          eq(characterProfessions.professionEntryId, professionEntryId),
+        ),
+      )
+      .run();
+  });
   return { ok: true };
 }

@@ -760,7 +760,7 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
   annehmen kann ihn nur, wer den Beruf hat. Status: offen → angenommen → erledigt
 - Je Klasse anzeigen, welche Stats in welcher Rangfolge wichtig sind. Officers pflegen
   sie in der App, nicht im Game Pack
-- ✅ Officer legt eine gildenweite Aufgabe an, alle Mitglieder sehen sie in Dashboard + Matrix
+- ✅ Officer legt eine gildenweite Aufgabe an, alle Mitglieder sehen sie in Dashboard + Matrix (gemeinsam abgehakt, siehe Umsetzungsnotizen Phase 3)
 
 ### Phase 4: Erweiterbarkeit beweisen
 - Beispiel-Singleplayer-Pack aus 6.4 unter `packs/_examples/` und als Kopie in `test/fixtures/packs/`
@@ -986,3 +986,13 @@ Entscheidungen, die beim Bauen getroffen wurden und das Modell aus 4.1 ergänzen
 - **AION-2-Startaufgaben** aus 6.3 stehen im Pack (0.3.0), alle als `todo`. Das Maximum der Odyle-Energie (200) ist eine Annahme.
 - **Header auf dem Handy:** Unter 768 px stehen alle Seiten und „Abmelden“ im Menü-Button; im Header bleiben Logo, Menü, Spiel-Umschalter und Avatar.
 - **Bewusst offen gelassen:** Uhrzeiten werden für alle in Europe/Berlin angezeigt; `User.timezone` bleibt ungenutzt, bis jemand außerhalb dieser Zone mitspielt (dann mit Einstellung im Nutzermenü). Der Abhak-Verlauf (`TaskProgress` aller Perioden) wird nicht aufgeräumt, er bleibt für spätere Auswertungen erhalten.
+
+### Umsetzungsnotizen Phase 3
+
+- **Gildenaufgaben werden gemeinsam abgehakt** (Entscheidung beim Start von Phase 3, abweichend von 7.5/7.8): Officers legen sie mit dem Geltungsbereich „Gilde“ an (`scope: guild`, `scope_key g:<guild_id>`). Einmal abgehakt gilt für alle; Dashboard und Matrix zeigen, wer abgehakt hat. Sie erscheinen in „Heute“ im Block „Gilde“ und in der Matrix als eigener Block, da sie keine Spalten pro Mitglied haben. Typen: abhaken, Zähler, Raid-ID, einmalig; Ressourcen bleiben persönlich. Gildenaufgaben gehören der Gilde und bleiben erhalten, wenn das Officer-Konto gelöscht wird. Bearbeiten und Löschen: Officer und Owner. Packs dürfen die Scopes `user` und `guild` nicht verwenden.
+- **Gilden-Matrix** (`/matrix`): Zeilen = Pack-Aufgaben des Spiels, Spalten = aktive Mitglieder (Standard) oder deren Charaktere; Kategorie-Filter über die URL. Pro Mitglied werden Charakter-Aufgaben und Server-Aufgaben über mehrere Server als „x/y“ mit Namen im Tooltip gezeigt; im Charakter-Modus markiert ein Link-Symbol gemeinsame Server-/Account-Werte. Lockouts: „frei“, „k/n“, „voll“. Ressourcen nur mit bekanntem Stand.
+- **Rezepte** werden im Charakter-Editor je Beruf als Text gepflegt: eins pro Zeile, optional „Name – Notiz“. Wer einen Beruf abwählt, verliert dessen Rezepte.
+- **Berufe-Verzeichnis** (`/berufe`): Suche über Berufsnamen in allen Sprachen, Rezepte, Spezialisierung und Notizen; Berufsfilter bei gewähltem Spiel. Trifft die Suche Rezepte, werden nur diese gezeigt.
+- **Crafting-Anträge** (`/antraege`): Was, Beruf, Anzahl (1–1000), Notiz. Annehmen kann, wer den Beruf auf einem eigenen Charakter hat. Der Annehmende meldet „erledigt“ oder gibt den Antrag zurück (wieder offen). Löschen: Antragsteller jederzeit, Officer zum Aufräumen. Erledigte Anträge: die letzten 20 werden angezeigt.
+- **Stat-Prioritäten** (`/stat-prio`): je Klasse beliebig viele Varianten (z. B. „PvE“, „PvP“) mit geordneter Stat-Liste, Notiz und Quelle; nur Officer und Owner bearbeiten. Die Charakterseite zeigt die Varianten der eigenen Klasse.
+- Das Menü „Mehr“ ist in die Gruppen „Gilde“, „Planer“ und „Verwaltung“ gegliedert.

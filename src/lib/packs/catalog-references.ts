@@ -3,7 +3,10 @@ import {
   builds,
   characterProfessions,
   characters,
+  craftRequests,
   farmSpots,
+  recipeEntries,
+  statPriorities,
   taskDefinitions,
 } from "@/lib/db/schema";
 import type { CatalogKind } from "./catalog";
@@ -42,6 +45,11 @@ export const CATALOG_REFERENCES: Record<CatalogKind, CatalogReference[]> = {
       column: builds.targetClassEntryId,
       storedAs: "entryId",
     },
+    {
+      table: statPriorities,
+      column: statPriorities.classEntryId,
+      storedAs: "entryId",
+    },
   ],
   race: [
     {
@@ -70,6 +78,16 @@ export const CATALOG_REFERENCES: Record<CatalogKind, CatalogReference[]> = {
     {
       table: farmSpots,
       column: farmSpots.professionEntryId,
+      storedAs: "entryId",
+    },
+    {
+      table: recipeEntries,
+      column: recipeEntries.professionEntryId,
+      storedAs: "entryId",
+    },
+    {
+      table: craftRequests,
+      column: craftRequests.professionEntryId,
       storedAs: "entryId",
     },
   ],

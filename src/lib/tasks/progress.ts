@@ -60,6 +60,14 @@ function scopeKeyFor(
   task: ResolvedTask,
   characterId: number | null,
 ): string {
+  if (task.scope === "guild") {
+    // Shared state: every active member ticks it for the whole guild.
+    return scopeKey("guild", {
+      userId: actor.userId,
+      gameId: task.gameId,
+      guildId: actor.guildId,
+    });
+  }
   if (task.scope === "user" || task.scope === "account") {
     return scopeKey(task.scope, { userId: actor.userId, gameId: task.gameId });
   }

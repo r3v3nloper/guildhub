@@ -1,4 +1,4 @@
-import { and, eq, inArray, or } from "drizzle-orm";
+import { and, eq, inArray, isNull, or } from "drizzle-orm";
 import type { AppDatabase } from "@/lib/db/client";
 import {
   gameCatalogEntries,
@@ -58,13 +58,20 @@ export function loadVisibleTasks(
   userId: string,
   gameIds: readonly string[],
 ): ResolvedTask[] {
-  const sharedFilter =
+  const inGames =
     gameIds.length > 0
-      ? and(
-          inArray(taskDefinitions.source, ["pack", "guild"]),
-          inArray(taskDefinitions.gameId, [...gameIds]),
-        )
+      ? inArray(taskDefinitions.gameId, [...gameIds])
       : undefined;
+  const packFilter = inGames
+    ? and(eq(taskDefinitions.source, "pack"), inGames)
+    : undefined;
+  // Guild tasks without a game concern everyone, whatever the game filter says.
+  const guildFilter = and(
+    eq(taskDefinitions.source, "guild"),
+    inGames
+      ? or(isNull(taskDefinitions.gameId), inGames)
+      : isNull(taskDefinitions.gameId),
+  );
   const ownFilter = and(
     eq(taskDefinitions.source, "private"),
     eq(taskDefinitions.ownerId, userId),
@@ -75,7 +82,7 @@ export function loadVisibleTasks(
     .where(
       and(
         eq(taskDefinitions.active, true),
-        sharedFilter ? or(sharedFilter, ownFilter) : ownFilter,
+        or(...[packFilter, guildFilter, ownFilter].filter(Boolean)),
       ),
     )
     .all();

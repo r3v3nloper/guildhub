@@ -4,7 +4,7 @@ import { PageSuspense } from "@/components/ui/PageSuspense";
 import { PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
-import { farmSpotGames } from "@/lib/lists/farm-spot-form-options";
+import { professionGameOptions } from "@/lib/roster/profession-options";
 import { getEditableFarmSpot } from "@/lib/lists/farm-spots";
 import { idParam, orNotFound } from "@/lib/not-found";
 import { de } from "@/i18n/de";
@@ -23,7 +23,7 @@ async function EditFarmSpotContent({ params }: PageProps<"/farmspots/[id]">) {
       <PageHeader title={de.farmSpots.editTitle} />
       <FarmSpotForm
         action={saveFarmSpotAction.bind(null, spot.id)}
-        games={farmSpotGames(db, actor.guildId, false)}
+        games={professionGameOptions(db, actor.guildId, false)}
         values={{
           game: spot.gameId,
           profession: spot.professionKey,

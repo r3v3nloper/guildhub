@@ -385,9 +385,13 @@ describe("characters and roster with the shipped packs", () => {
       skillLevel: 300,
       specialization: " Mondstoff ",
       notes: "",
+      recipes: "Runenstoffbeutel\nMondstoff – nur alle 4 Tage",
     });
 
     expect(result).toEqual({ ok: true });
+    expect(getCharacter(db, character.id)!.professions[0].recipes).toBe(
+      "Runenstoffbeutel\nMondstoff – nur alle 4 Tage",
+    );
     const roster = filterRoster(loadRosterMembers(db, guildId), {});
     expect(roster.members[0].characters[0].professions).toEqual([
       expect.objectContaining({
@@ -411,7 +415,12 @@ describe("characters and roster with the shipped packs", () => {
       }),
     );
     const character = getCharacter(db, saved.ok ? saved.characterId : -1)!;
-    const details = { skillLevel: -1, specialization: "", notes: "" };
+    const details = {
+      skillLevel: -1,
+      specialization: "",
+      notes: "",
+      recipes: "",
+    };
 
     expect(
       saveProfessionDetails(

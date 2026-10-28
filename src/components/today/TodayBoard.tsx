@@ -13,6 +13,11 @@ export function TodayBoard({
 }) {
   return (
     <div className="flex flex-col gap-4">
+      {dashboard.guild.length > 0 && (
+        <Card title={de.today.guild}>
+          <TaskList items={dashboard.guild} now={now} />
+        </Card>
+      )}
       {dashboard.general.length > 0 && (
         <Card title={de.today.general}>
           <TaskList items={dashboard.general} now={now} />

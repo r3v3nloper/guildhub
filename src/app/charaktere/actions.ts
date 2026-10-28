@@ -156,6 +156,7 @@ export async function saveProfessionDetailsAction(
         skillLevel: formNumber(formData, "skillLevel"),
         specialization: formText(formData, "specialization"),
         notes: formText(formData, "notes"),
+        recipes: formText(formData, "recipes"),
       },
     );
     return result.ok

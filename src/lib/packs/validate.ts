@@ -1,5 +1,6 @@
 import { DateTime, IANAZone } from "luxon";
 import type { z } from "zod";
+import { CUSTOM_ONLY_SCOPES } from "@/lib/reset/task-kinds";
 import {
   resetRuleIssues,
   taskConsistencyIssues,
@@ -260,8 +261,8 @@ function checkTasks(pack: Pack, error: Report) {
   pack.tasks.forEach((task, index) => {
     const path = `tasks[${index}]`;
 
-    if (task.scope === "user") {
-      error(`${path}.scope`, "Pack-Aufgaben haben nie scope 'user'");
+    if (CUSTOM_ONLY_SCOPES.includes(task.scope)) {
+      error(`${path}.scope`, `Pack-Aufgaben haben nie scope '${task.scope}'`);
     }
     if (task.scope === "server" && !pack.capabilities.servers) {
       error(`${path}.scope`, "scope 'server' nur bei capabilities.servers");

@@ -1,7 +1,9 @@
 export const tasks = {
-  title: "Eigene Aufgaben",
-  hint: "Nur du siehst deine eigenen Aufgaben. Sie erscheinen in „Heute“ neben den Aufgaben aus dem Spiel.",
-  empty: "Du hast noch keine eigenen Aufgaben.",
+  title: "Aufgaben",
+  hint: "Eigene Aufgaben siehst nur du. Gildenaufgaben legen Officers an; sie gelten für alle und sind erledigt, sobald jemand sie abhakt. Beide erscheinen in „Heute“.",
+  empty: "Keine Aufgaben.",
+  guildTasks: "Gildenaufgaben",
+  ownTasks: "Meine Aufgaben",
   new: "Neue Aufgabe",
   editTitle: "Aufgabe bearbeiten",
   deleteConfirm: "Diese Aufgabe mit ihrem Fortschritt wirklich löschen?",
@@ -44,6 +46,7 @@ export const tasks = {
     server: "Alle Charaktere auf einem Server",
     account: "Alle Charaktere im Spiel",
     user: "Mich (spielübergreifend)",
+    guild: "Die ganze Gilde (gemeinsam abhaken)",
   } as Record<string, string>,
   ruleTypes: {
     daily: "Täglich",

@@ -12,6 +12,12 @@ export interface MoreMenuLink {
   icon: string;
 }
 
+/** A labelled block of links inside the menu. */
+export interface MoreMenuGroup {
+  label: string;
+  links: MoreMenuLink[];
+}
+
 /**
  * Pages behind one button. On desktop it holds the secondary pages; on phones every
  * page plus sign-out, so the header stays on one line.
@@ -19,14 +25,14 @@ export interface MoreMenuLink {
 export function MoreMenu({
   id,
   label,
-  links,
+  groups,
   compact = false,
   signOut,
   signOutLabel,
 }: {
   id: string;
   label: string;
-  links: MoreMenuLink[];
+  groups: MoreMenuGroup[];
   /** Icon-only button, `label` becomes its accessible name. */
   compact?: boolean;
   signOut?: () => Promise<void>;
@@ -34,14 +40,17 @@ export function MoreMenu({
 }) {
   const menu = useRef<Menu>(null);
   const router = useRouter();
-  const items: MenuItem[] = links.map((link) => ({
-    label: link.label,
-    icon: `pi ${link.icon}`,
-    url: link.href,
-    command: (event) => {
-      event.originalEvent.preventDefault();
-      router.push(link.href);
-    },
+  const items: MenuItem[] = groups.map((group) => ({
+    label: group.label,
+    items: group.links.map((link) => ({
+      label: link.label,
+      icon: `pi ${link.icon}`,
+      url: link.href,
+      command: (event) => {
+        event.originalEvent.preventDefault();
+        router.push(link.href);
+      },
+    })),
   }));
   if (signOut) {
     items.push(

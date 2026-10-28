@@ -1,9 +1,9 @@
 import { DateTime } from "luxon";
 import { beforeEach, describe, expect, it } from "vitest";
-import { NotFoundError } from "@/lib/errors";
+import { ForbiddenError, NotFoundError } from "@/lib/errors";
 import {
   deleteCustomTask,
-  listOwnTasks,
+  listCustomTasks,
   saveCustomTask,
   type CustomTaskInput,
 } from "./custom-tasks";
@@ -138,7 +138,7 @@ describe("custom tasks", () => {
     save({ title: "Neu", kind: "counter", cap: 3, scope: "account" }, taskId);
 
     // Assert
-    expect(listOwnTasks(fixture.db, fixture.actor.userId)).toEqual([
+    expect(listCustomTasks(fixture.db, fixture.actor)).toEqual([
       expect.objectContaining({
         title: "Neu",
         kind: "recurring",
@@ -159,6 +159,100 @@ describe("custom tasks", () => {
       NotFoundError,
     );
     deleteCustomTask(fixture.db, fixture.actor, taskId);
-    expect(listOwnTasks(fixture.db, fixture.actor.userId)).toEqual([]);
+    expect(listCustomTasks(fixture.db, fixture.actor)).toEqual([]);
+  });
+
+  describe("guild tasks", () => {
+    const guildTask: Partial<CustomTaskInput> = {
+      title: "Gildenbank auffüllen",
+      gameId: "",
+      scope: "guild",
+      rule: CUSTOM_RULE,
+      ruleType: "daily",
+      ruleTime: "05:00",
+    };
+    const dashboardOf = (actor: TaskFixture["actor"]) =>
+      buildDashboard(fixture.db, actor.guildId, actor.userId, [], now);
+
+    it("is ticked once for the whole guild and shows who did it", () => {
+      // Arrange
+      const created = saveCustomTask(fixture.db, fixture.officer, {
+        ...base,
+        ...guildTask,
+      });
+      const taskId = created.ok ? created.taskId : -1;
+
+      // Act
+      setTaskDone(
+        fixture.db,
+        fixture.actor,
+        { taskId, characterId: null },
+        true,
+        now,
+      );
+
+      // Assert
+      expect(dashboardOf(fixture.other).guild).toEqual([
+        expect.objectContaining({
+          title: "Gildenbank auffüllen",
+          status: "done",
+          doneBy: "Erik",
+        }),
+      ]);
+    });
+
+    it("can only be created and edited by officers", () => {
+      // Arrange
+      const created = saveCustomTask(fixture.db, fixture.officer, {
+        ...base,
+        ...guildTask,
+      });
+      const taskId = created.ok ? created.taskId : -1;
+
+      // Act
+      const byMember = save(guildTask);
+
+      // Assert
+      expect(byMember).toMatchObject({
+        ok: false,
+        errors: { scope: expect.any(String) },
+      });
+      expect(() =>
+        saveCustomTask(
+          fixture.db,
+          fixture.actor,
+          { ...base, ...guildTask },
+          taskId,
+        ),
+      ).toThrow(ForbiddenError);
+    });
+
+    it("keeps resources personal", () => {
+      // Act
+      const result = saveCustomTask(fixture.db, fixture.officer, {
+        ...base,
+        ...guildTask,
+        kind: "regen",
+        cap: 100,
+        regenAmount: 10,
+        regenIntervalMinutes: 60,
+      });
+
+      // Assert
+      expect(result).toMatchObject({
+        ok: false,
+        errors: { kind: expect.any(String) },
+      });
+    });
+
+    it("survives the officer who wrote it", () => {
+      // Act
+      saveCustomTask(fixture.db, fixture.officer, { ...base, ...guildTask });
+
+      // Assert
+      expect(listCustomTasks(fixture.db, fixture.actor)).toEqual([
+        expect.objectContaining({ source: "guild", ownerId: null }),
+      ]);
+    });
   });
 });

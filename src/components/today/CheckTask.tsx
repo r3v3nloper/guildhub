@@ -2,6 +2,7 @@
 
 import { useOptimistic } from "react";
 import type { DashboardItem } from "@/lib/tasks/dashboard";
+import { de } from "@/i18n/de";
 import { ItemShell } from "./ItemShell";
 import { ResetCountdown } from "./ResetCountdown";
 import { setTaskDoneAction } from "./today-actions";
@@ -34,7 +35,13 @@ export function CheckTask({ item, now }: { item: DashboardItem; now: string }) {
           aria-hidden
         />
       }
-      meta={!done && <ResetCountdown item={item} now={now} />}
+      meta={
+        done ? (
+          item.doneBy && <span>{de.today.doneBy(item.doneBy)}</span>
+        ) : (
+          <ResetCountdown item={item} now={now} />
+        )
+      }
     />
   );
 }

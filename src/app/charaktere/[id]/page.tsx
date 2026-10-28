@@ -7,12 +7,14 @@ import { BuildForm } from "@/components/characters/BuildForm";
 import { BuildItem } from "@/components/characters/BuildItem";
 import { CharacterForm } from "@/components/characters/CharacterForm";
 import { ProfessionDetailsForm } from "@/components/characters/ProfessionDetailsForm";
+import { StatList } from "@/components/guild/StatList";
 import { ActionForm } from "@/components/ui/ActionForm";
 import { ConfirmButton } from "@/components/ui/ConfirmButton";
 import { Card, PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { permissions } from "@/lib/auth/guards";
 import { getDb } from "@/lib/db/client";
+import { statPrioritiesOfClass } from "@/lib/guild/stat-priorities";
 import { characterHints } from "@/lib/roster/character-rules";
 import {
   getCharacter,
@@ -49,6 +51,10 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
   if (!catalog) {
     notFound();
   }
+  const statPriorities =
+    character.classEntryId === null
+      ? []
+      : statPrioritiesOfClass(db, character.classEntryId);
 
   const selection = selectionOf(character);
   const selectedIds = [
@@ -161,6 +167,16 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
             action={saveBuildAction.bind(null, character.id, undefined)}
             classes={targetClasses}
           />
+        </Card>
+      )}
+
+      {statPriorities.length > 0 && (
+        <Card title={de.statPriorities.ofClass}>
+          <div className="flex flex-col gap-3">
+            {statPriorities.map((priority) => (
+              <StatList key={priority.id} priority={priority} />
+            ))}
+          </div>
         </Card>
       )}
 

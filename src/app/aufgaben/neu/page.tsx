@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: de.tasks.new };
 
 async function NewTaskContent() {
   const actor = await requireActor();
-  const games = taskFormGames(getDb(), actor.guildId, de.tasks.crossGame);
+  const games = taskFormGames(getDb(), actor, de.tasks.crossGame);
 
   return (
     <div className="flex flex-col gap-4">

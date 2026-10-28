@@ -69,6 +69,7 @@ export interface TaskFixture {
   db: AppDatabase;
   actor: Actor;
   other: Actor;
+  officer: Actor;
   gameInfo: { id: string; name: string; serverLabel: string };
   taskId: (key: string) => number;
   createCharacter: (userId: string, name: string, server?: string) => number;
@@ -91,12 +92,14 @@ export function createTaskFixture(): TaskFixture {
 
   const userId = createDiscordUser(db, "111111111111111111", "Erik");
   const otherId = createDiscordUser(db, "222222222222222222", "Lena");
+  const officerId = createDiscordUser(db, "333333333333333333", "Mara");
   addMember(db, guild.id, userId);
   addMember(db, guild.id, otherId);
-  const actorOf = (id: string): Actor => ({
+  addMember(db, guild.id, officerId, "officer");
+  const actorOf = (id: string, role: Actor["role"] = "member"): Actor => ({
     userId: id,
     guildId: guild.id,
-    role: "member",
+    role,
     status: "active",
   });
 
@@ -104,6 +107,7 @@ export function createTaskFixture(): TaskFixture {
     db,
     actor: actorOf(userId),
     other: actorOf(otherId),
+    officer: actorOf(officerId, "officer"),
     gameInfo: { id: "game", name: "Spiel", serverLabel: "Realm" },
     taskId: (key) =>
       db

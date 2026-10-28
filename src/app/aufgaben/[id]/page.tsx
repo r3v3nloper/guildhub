@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { idParam, orNotFound } from "@/lib/not-found";
-import { getOwnTask, packRuleKeyOf } from "@/lib/tasks/custom-tasks";
+import { getEditableTask, packRuleKeyOf } from "@/lib/tasks/custom-tasks";
 import { taskFormGames, taskFormValues } from "@/lib/tasks/task-form-options";
 import { de } from "@/i18n/de";
 import { saveCustomTaskAction } from "../actions";
@@ -16,8 +16,8 @@ async function EditTaskContent({ params }: PageProps<"/aufgaben/[id]">) {
   const actor = await requireActor();
   const taskId = await idParam(params);
   const db = getDb();
-  const task = orNotFound(() => getOwnTask(db, actor, taskId));
-  const games = taskFormGames(db, actor.guildId, de.tasks.crossGame);
+  const task = orNotFound(() => getEditableTask(db, actor, taskId));
+  const games = taskFormGames(db, actor, de.tasks.crossGame);
 
   return (
     <div className="flex flex-col gap-4">

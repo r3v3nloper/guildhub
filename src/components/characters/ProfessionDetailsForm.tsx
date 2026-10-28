@@ -1,6 +1,12 @@
 "use client";
 
-import { Button, Field, FormMessage, TextInput } from "@/components/ui/ui";
+import {
+  Button,
+  Field,
+  FormMessage,
+  TextArea,
+  TextInput,
+} from "@/components/ui/ui";
 import { useFormAction } from "@/components/ui/use-form-action";
 import type { ActionState } from "@/lib/actions/action-state";
 import { de } from "@/i18n/de";
@@ -9,9 +15,10 @@ export interface ProfessionDetailsValues {
   skillLevel: number | null;
   specialization: string | null;
   notes: string | null;
+  recipes: string;
 }
 
-/** Skill, specialisation and a note for one profession the character has. */
+/** Skill, specialisation, a note and the recipes for one profession the character has. */
 export function ProfessionDetailsForm({
   label,
   values,
@@ -54,6 +61,13 @@ export function ProfessionDetailsForm({
           />
         </Field>
       </div>
+      <Field
+        label={de.characters.recipes}
+        error={errors.recipes}
+        hint={de.characters.recipesHint}
+      >
+        <TextArea name="recipes" defaultValue={values.recipes} rows={2} />
+      </Field>
       <div className="flex items-center gap-3">
         <Button variant="secondary" disabled={pending}>
           {de.common.save}

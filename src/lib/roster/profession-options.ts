@@ -6,18 +6,18 @@ import {
 } from "@/lib/roster/game-catalog";
 import { localize } from "@/i18n/localize";
 
-export interface FarmSpotGameOption {
+export interface ProfessionGameOption {
   value: string;
   label: string;
   professions: Array<{ value: string; label: string }>;
 }
 
-/** Games with their selectable professions; `onlyEnabled` for new spots. */
-export function farmSpotGames(
+/** Games with their selectable professions, for farm spots and crafting requests. */
+export function professionGameOptions(
   db: AppDatabase,
   guildId: number,
   onlyEnabled: boolean,
-): FarmSpotGameOption[] {
+): ProfessionGameOption[] {
   return listGuildGames(db, guildId)
     .filter((game) => game.enabled || !onlyEnabled)
     .map((game) => {

@@ -11,6 +11,7 @@ import {
   roster,
 } from "./texts/roster";
 import { admin, auditActions, catalogKinds } from "./texts/admin";
+import { directory, matrix, requests, statPriorities } from "./texts/guild";
 
 /** All UI texts. Each feature keeps its own file under texts/; callers use `de.<group>`. */
 export const de = {
@@ -36,4 +37,8 @@ export const de = {
   auditActions,
   errors,
   pwa,
+  matrix,
+  directory,
+  requests,
+  statPriorities,
 } as const;

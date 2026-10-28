@@ -1,3 +1,4 @@
+import { permissions, type Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
 import type { ResetRule } from "@/lib/reset/types";
 import type { TaskScope } from "@/lib/reset/task-kinds";
@@ -23,10 +24,11 @@ export interface TaskFormGame {
 /** Everything the custom-task form offers per game, including the cross-game choice. */
 export function taskFormGames(
   db: AppDatabase,
-  guildId: number,
+  actor: Actor,
   crossGameLabel: string,
 ): TaskFormGame[] {
-  const games = listEnabledGames(db, guildId).flatMap((game) => {
+  const mayCreateGuildTasks = permissions.manageGuildTasks(actor).allowed;
+  const games = listEnabledGames(db, actor.guildId).flatMap((game) => {
     const catalog = loadGameCatalog(db, game.id);
     if (!catalog) {
       return [];
@@ -35,7 +37,7 @@ export function taskFormGames(
       {
         id: game.id,
         name: localize(game.name),
-        scopes: allowedScopes(catalog),
+        scopes: allowedScopes(catalog, mayCreateGuildTasks),
         rules: catalogOfKind(catalog, "reset_rule")
           .filter((entry) => entry.status === "active")
           .map((entry) => ({
@@ -49,7 +51,7 @@ export function taskFormGames(
     {
       id: "",
       name: crossGameLabel,
-      scopes: allowedScopes(undefined),
+      scopes: allowedScopes(undefined, mayCreateGuildTasks),
       rules: [],
     },
     ...games,

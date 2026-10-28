@@ -23,13 +23,36 @@ export async function AppNav() {
     { href: "/roster", label: de.nav.roster, icon: "pi-users" },
     { href: "/charaktere", label: de.nav.characters, icon: "pi-id-card" },
   ];
-  const moreLinks = [
-    { href: "/aufgaben", label: de.nav.tasks, icon: "pi-list-check" },
-    { href: "/listen", label: de.nav.todos, icon: "pi-list" },
-    { href: "/dungeons", label: de.nav.checklists, icon: "pi-flag" },
-    { href: "/farmspots", label: de.nav.farmSpots, icon: "pi-map-marker" },
+  const moreGroups = [
+    {
+      label: de.nav.guildGroup,
+      links: [
+        { href: "/matrix", label: de.nav.matrix, icon: "pi-table" },
+        { href: "/berufe", label: de.nav.directory, icon: "pi-wrench" },
+        { href: "/antraege", label: de.nav.requests, icon: "pi-inbox" },
+        {
+          href: "/stat-prio",
+          label: de.nav.statPriorities,
+          icon: "pi-sort-amount-down",
+        },
+      ],
+    },
+    {
+      label: de.nav.plannerGroup,
+      links: [
+        { href: "/aufgaben", label: de.nav.tasks, icon: "pi-list-check" },
+        { href: "/listen", label: de.nav.todos, icon: "pi-list" },
+        { href: "/dungeons", label: de.nav.checklists, icon: "pi-flag" },
+        { href: "/farmspots", label: de.nav.farmSpots, icon: "pi-map-marker" },
+      ],
+    },
     ...(canViewAdmin(actor)
-      ? [{ href: "/admin", label: de.nav.admin, icon: "pi-cog" }]
+      ? [
+          {
+            label: de.nav.adminGroup,
+            links: [{ href: "/admin", label: de.nav.admin, icon: "pi-cog" }],
+          },
+        ]
       : []),
   ];
 
@@ -48,13 +71,13 @@ export async function AppNav() {
         ))}
       </nav>
       <div className="hidden shrink-0 md:block">
-        <MoreMenu id="more-menu" label={de.nav.more} links={moreLinks} />
+        <MoreMenu id="more-menu" label={de.nav.more} groups={moreGroups} />
       </div>
       <div className="shrink-0 md:hidden">
         <MoreMenu
           id="nav-menu"
           label={de.nav.menu}
-          links={[...links, ...moreLinks]}
+          groups={[{ label: de.nav.mainGroup, links }, ...moreGroups]}
           compact
           signOut={signOutAction}
           signOutLabel={de.auth.signOut}
