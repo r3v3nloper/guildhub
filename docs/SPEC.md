@@ -764,7 +764,7 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
 
 ### Phase 4: Erweiterbarkeit beweisen
 - Beispiel-Singleplayer-Pack aus 6.4 unter `packs/_examples/` und als Kopie in `test/fixtures/packs/`
-- ✅ Akzeptanztest aus 6.4 grün, ohne Codeänderungen außerhalb von `packs/` bzw. Fixtures (sonst: Code generalisieren, bis das gilt)
+- ✅ Akzeptanztest aus 6.4 grün, ohne Codeänderungen außerhalb von `packs/` bzw. Fixtures (sonst: Code generalisieren, bis das gilt) (erfüllt, siehe Umsetzungsnotizen Phase 4)
 
 ### Phase 5: Optional / später
 - Web-Push-Benachrichtigungen: Reset-Erinnerungen, „Raid heute Abend“ (pro Nutzer abschaltbar)
@@ -996,3 +996,9 @@ Entscheidungen, die beim Bauen getroffen wurden und das Modell aus 4.1 ergänzen
 - **Crafting-Anträge** (`/antraege`): Was, Beruf, Anzahl (1–1000), Notiz. Annehmen kann, wer den Beruf auf einem eigenen Charakter hat. Der Annehmende meldet „erledigt“ oder gibt den Antrag zurück (wieder offen). Löschen: Antragsteller jederzeit, Officer zum Aufräumen. Erledigte Anträge: die letzten 20 werden angezeigt.
 - **Stat-Prioritäten** (`/stat-prio`): je Klasse beliebig viele Varianten (z. B. „PvE“, „PvP“) mit geordneter Stat-Liste, Notiz und Quelle; nur Officer und Owner bearbeiten. Die Charakterseite zeigt die Varianten der eigenen Klasse.
 - Das Menü „Mehr“ ist in die Gruppen „Gilde“, „Planer“ und „Verwaltung“ gegliedert.
+
+### Umsetzungsnotizen Phase 4
+
+- Das Beispiel-Pack liegt unter `packs/_examples/beispiel-rpg/` (wird nur validiert, nie geladen) und als Kopie unter `test/fixtures/packs/beispiel-rpg/`. Ein Test stellt sicher, dass beide Dateien inhaltlich gleich bleiben.
+- Der Akzeptanztest (`src/lib/packs/extensibility.test.ts`) läuft über denselben Startweg wie die Produktion (`runStartup` mit `PACKS_DIR` auf den Fixtures): Das Spiel kommt deaktiviert an, ein Owner aktiviert es, ein Mitglied legt einen „Durchlauf“ an, hakt „Akt 1“ ab und zählt optionale Bosse. Der Fortschritt bleibt auch Wochen später bestehen (kein Reset), und die Gilden-Matrix zeigt „✓“ und „7/12“.
+- Für Phase 4 war keine Codeänderung außerhalb von `packs/` und den Fixtures nötig.
