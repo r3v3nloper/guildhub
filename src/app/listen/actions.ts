@@ -17,6 +17,7 @@ import {
   createTodoList,
   deleteTodoItem,
   deleteTodoList,
+  renameTodoList,
   setTodoItemDone,
 } from "@/lib/lists/todo-lists";
 
@@ -36,7 +37,22 @@ export async function createTodoListAction(
   formData: FormData,
 ): Promise<ActionState> {
   return todoAction((db, actor) =>
-    createTodoList(db, actor, formText(formData, "name")),
+    createTodoList(
+      db,
+      actor,
+      formText(formData, "name"),
+      formText(formData, "visibility"),
+    ),
+  );
+}
+
+export async function renameTodoListAction(
+  listId: number,
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  return todoAction((db, actor) =>
+    renameTodoList(db, actor, listId, formText(formData, "name")),
   );
 }
 

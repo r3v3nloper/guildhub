@@ -124,7 +124,11 @@ export const de = {
   },
   todos: {
     title: "To-do-Listen",
-    hint: "Einmalige Aufgaben ohne Reset, in eigenen Listen. Nur du siehst sie.",
+    hint: "Einmalige Aufgaben ohne Reset. Private Listen siehst nur du; Gilden-Listen sehen und bearbeiten alle, ein abgehakter Eintrag ist für alle erledigt.",
+    guildLists: "Gilde",
+    ownLists: "Meine Listen",
+    rename: "Umbenennen",
+    doneBy: (name: string) => `✓ ${name}`,
     empty: "Noch keine Listen.",
     newList: "Neue Liste",
     listName: "Name der Liste",

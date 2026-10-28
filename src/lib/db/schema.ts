@@ -387,6 +387,10 @@ export const todoLists = sqliteTable("todo_list", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
+  // Guild lists are shared state: an entry ticked by one member is done for everyone.
+  visibility: text("visibility", { enum: VISIBILITIES })
+    .notNull()
+    .default("private"),
   createdAt: createdAt(),
 });
 
@@ -398,7 +402,13 @@ export const todoItems = sqliteTable(
       .notNull()
       .references(() => todoLists.id, { onDelete: "cascade" }),
     text: text("text").notNull(),
+    createdBy: text("created_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
     doneAt: integer("done_at", { mode: "timestamp_ms" }),
+    doneBy: text("done_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
     createdAt: createdAt(),
   },
   (item) => [index("todo_item_list").on(item.listId)],

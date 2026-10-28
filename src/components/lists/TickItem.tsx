@@ -14,6 +14,7 @@ export function TickItem({
   checked,
   onToggle,
   onDelete,
+  meta,
 }: {
   id: string;
   label: string;
@@ -21,6 +22,8 @@ export function TickItem({
   /** Bound server action receiving the new state. */
   onToggle: (checked: boolean) => Promise<ActionState>;
   onDelete?: () => Promise<ActionState>;
+  /** Small note after the label, e.g. who ticked a shared entry. */
+  meta?: string;
 }) {
   const [ticked, setTicked] = useOptimistic(checked);
   const { error, run } = useProgressAction();
@@ -44,6 +47,7 @@ export function TickItem({
         >
           {label}
         </label>
+        {meta && <span className="text-xs text-muted">{meta}</span>}
         {onDelete && (
           <Button
             type="button"

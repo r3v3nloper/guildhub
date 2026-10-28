@@ -751,12 +751,11 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
 - Checklisten für Dungeon-Runs
 - Farmspots für Berufe, mit Karte, wenn möglich. Mitglieder pflegen sie in der App,
   nicht im Game Pack
-- Eigene To-do-Listen: einmalige Aufgaben ohne Reset
+- To-do-Listen: einmalige Aufgaben ohne Reset, privat oder für die Gilde
 - ✅ Alle Reset-Tests grün; Abhaken ist mobil mit einem Tap möglich; nach einem simulierten Reset ist die Aufgabe wieder offen
 
 ### Phase 3: Gildenfunktionen
 - Gilden-Matrix, Berufe-Verzeichnis mit Rezeptnotizen, gildenweite Custom-Aufgaben
-- Gilden-To-do-Listen: einmalige gildenweite Aufgaben ohne Reset
 - Anträge für Berufs- und Crafting-Items: Jedes Mitglied kann einen Antrag stellen,
   annehmen kann ihn nur, wer den Beruf hat. Status: offen → angenommen → erledigt
 - Je Klasse anzeigen, welche Stats in welcher Rangfolge wichtig sind. Officers pflegen
@@ -981,7 +980,7 @@ Entscheidungen, die beim Bauen getroffen wurden und das Modell aus 4.1 ergänzen
 - **Fortschritt** ist über Scope-Keys an Charakter, Server, Account oder Nutzer gebunden, nicht per Fremdschlüssel. Beim Löschen eines Charakters bzw. beim endgültigen Löschen eines Mitglieds wird er deshalb ausdrücklich mitgelöscht. Den Scope-Key bildet immer der Server, nie der Client.
 - **„Heute“ ist die Startseite** für angemeldete Mitglieder. Abhaken ist optimistisch; langes Drücken (−1 beim Zähler, exakter Wert bei Stacking) hat jeweils eine sichtbare Alternative (Minus- bzw. Stift-Button).
 - **Eigene Aufgaben** sind in Phase 2 nur privat. Spiel, Typ und Geltungsbereich sind nach dem Anlegen fest, weil eine Änderung den gespeicherten Fortschritt umdeuten würde (wie die neue ID bei Packs). Eigene Regeln laufen in der Zeitzone der Region bzw. bei spielübergreifenden Aufgaben in der Zeitzone der Gilde. Eine eigene Raid-ID (`lockout`) hat keine Boss-Liste und verhält sich wie `recurring`.
-- **To-do-Listen:** benannte, private Listen mit einmaligen Einträgen ohne Reset; erledigte Einträge lassen sich gesammelt entfernen.
+- **To-do-Listen:** benannte Listen mit einmaligen Einträgen ohne Reset, privat oder für die Gilde (aus Phase 3 vorgezogen). Gilden-Listen sind gemeinsamer Stand: Alle Mitglieder legen Listen an, fügen Einträge hinzu und haken ab; ein abgehakter Eintrag ist für alle erledigt und zeigt, wer ihn abgehakt hat. Umbenennen, Löschen der Liste, Entfernen erledigter und fremder Einträge: Ersteller der Liste und Officer. Eigene Einträge darf jeder löschen.
 - **Dungeon-Checklisten:** eine Vorlage pro Dungeon und Spiel, privat oder für die Gilde sichtbar. Jedes Mitglied hakt für seinen eigenen Run ab, „Neuer Run“ setzt nur die eigenen Haken zurück. Beim Bearbeiten der Punkte werden alle Haken dieser Liste zurückgesetzt. Bearbeiten und Löschen: Ersteller, bei Gilden-Listen auch Officer.
 - **Farmspots:** Was, Zone, Koordinaten als Text, optional Beruf (aus dem Pack), Link zu einer externen Karte und Notiz; privat oder für die Gilde sichtbar. Keine eigene Karte (siehe 9). Bearbeiten wie bei den Checklisten.
 - **AION-2-Startaufgaben** aus 6.3 stehen im Pack (0.3.0), alle als `todo`. Das Maximum der Odyle-Energie (200) ist eine Annahme.
