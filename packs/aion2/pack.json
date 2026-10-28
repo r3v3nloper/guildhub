@@ -1,7 +1,7 @@
 {
   "id": "aion2",
   "name": "AION 2",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "mmo",
   "capabilities": {
     "characters": true,
@@ -138,5 +138,97 @@
       "todo": true
     }
   ],
-  "tasks": []
+  "tasks": [
+    {
+      "id": "duty-missions",
+      "kind": "counter",
+      "title": {
+        "de": "Duty-Missionen",
+        "en": "Duty Missions"
+      },
+      "category": "PvE",
+      "scope": "server",
+      "reset_rule_id": "daily",
+      "cap": 5,
+      "priority": "high",
+      "todo": true
+    },
+    {
+      "id": "daily-dungeons",
+      "kind": "recurring",
+      "title": {
+        "de": "Tägliche Dungeons",
+        "en": "Daily Dungeons"
+      },
+      "category": "PvE",
+      "scope": "character",
+      "reset_rule_id": "daily",
+      "todo": true
+    },
+    {
+      "id": "odyle-energy",
+      "kind": "regen",
+      "title": {
+        "de": "Odyle-Energie",
+        "en": "Odyle Energy"
+      },
+      "category": "Ressourcen",
+      "scope": "character",
+      "cap": 200,
+      "regen_amount": 15,
+      "regen_interval_minutes": 180,
+      "regen_alignment": "fixed",
+      "todo": true
+    },
+    {
+      "id": "nightmare",
+      "kind": "stacking",
+      "title": {
+        "de": "Albtraum-Einträge",
+        "en": "Nightmare Entries"
+      },
+      "category": "PvE",
+      "scope": "character",
+      "reset_rule_id": "daily",
+      "cap": 14,
+      "per_period_gain": 2,
+      "todo": true
+    },
+    {
+      "id": "ascension-trial",
+      "kind": "recurring",
+      "title": {
+        "de": "Aufstiegsprüfung",
+        "en": "Ascension Trial"
+      },
+      "category": "PvE",
+      "scope": "character",
+      "reset_rule_id": "weekly",
+      "todo": true
+    },
+    {
+      "id": "weekly-quests-pve",
+      "kind": "recurring",
+      "title": {
+        "de": "Wochenquests PvE",
+        "en": "Weekly Quests PvE"
+      },
+      "category": "PvE",
+      "scope": "character",
+      "reset_rule_id": "weekly",
+      "todo": true
+    },
+    {
+      "id": "weekly-quests-pvp",
+      "kind": "recurring",
+      "title": {
+        "de": "Wochenquests PvP",
+        "en": "Weekly Quests PvP"
+      },
+      "category": "PvP",
+      "scope": "character",
+      "reset_rule_id": "weekly",
+      "todo": true
+    }
+  ]
 }

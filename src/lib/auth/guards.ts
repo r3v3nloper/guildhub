@@ -48,6 +48,25 @@ export const permissions = {
       : deny("Nur der Besitzer darf diese Daten ändern.");
   },
 
+  /**
+   * Entries members share with the guild (dungeon checklists, farm spots): the author, and
+   * officers for moderation. Private entries stay with their author alone.
+   */
+  editSharedEntry(
+    actor: Actor,
+    entry: { ownerId: string; visibility: "private" | "guild" },
+  ): Permission {
+    if (!isActive(actor)) {
+      return deny("Kein aktives Gildenmitglied.");
+    }
+    if (actor.userId === entry.ownerId) {
+      return allow;
+    }
+    return entry.visibility === "guild" && atLeast(actor, "officer")
+      ? allow
+      : deny("Nur der Ersteller oder ein Officer darf das ändern.");
+  },
+
   manageGuildTasks(actor: Actor): Permission {
     return atLeast(actor, "officer")
       ? allow

@@ -1,5 +1,9 @@
 import { DateTime, IANAZone } from "luxon";
 import type { z } from "zod";
+import {
+  resetRuleIssues,
+  taskConsistencyIssues,
+} from "@/lib/reset/task-consistency";
 import { CATALOG_DEFINITIONS, CATALOG_KINDS } from "./catalog";
 import { packSchema, type Pack, type PackResetRule } from "./schema";
 
@@ -209,23 +213,12 @@ function checkResetRules(pack: Pack, error: Report, warnings: PackIssue[]) {
 
   pack.reset_rules.forEach((rule, index) => {
     const path = `reset_rules[${index}]`;
-    if (rule.timezone !== null && !IANAZone.isValidZone(rule.timezone)) {
-      error(`${path}.timezone`, `unbekannte Zeitzone '${rule.timezone}'`);
+    const issues = resetRuleIssues(rule);
+    for (const issue of issues) {
+      error(`${path}.${issue.field}`, issue.message);
+    }
+    if (issues.some((issue) => issue.field === "timezone")) {
       return;
-    }
-    if (rule.type === "weekly" && rule.weekday === null) {
-      error(`${path}.weekday`, "Pflicht bei type weekly");
-    }
-    if (rule.type === "monthly" && rule.day_of_month === null) {
-      error(`${path}.day_of_month`, "Pflicht bei type monthly");
-    }
-    if (rule.type === "every_n_days") {
-      if (rule.n_days === null) {
-        error(`${path}.n_days`, "Pflicht bei type every_n_days");
-      }
-      if (rule.anchor === null) {
-        error(`${path}.anchor`, "Pflicht bei type every_n_days");
-      }
     }
 
     const zones = rule.timezone !== null ? [rule.timezone] : regionZones;
@@ -266,7 +259,6 @@ function fallsIntoDstTransition(rule: PackResetRule, zone: string): boolean {
 function checkTasks(pack: Pack, error: Report) {
   pack.tasks.forEach((task, index) => {
     const path = `tasks[${index}]`;
-    const has = (value: unknown) => value !== undefined;
 
     if (task.scope === "user") {
       error(`${path}.scope`, "Pack-Aufgaben haben nie scope 'user'");
@@ -278,44 +270,11 @@ function checkTasks(pack: Pack, error: Report) {
       error(`${path}.kind`, "lockout nur bei capabilities.lockouts");
     }
 
-    const needsRule = ["recurring", "lockout", "stacking"].includes(task.kind);
-    if (needsRule && !has(task.reset_rule_id)) {
-      error(`${path}.reset_rule_id`, `Pflicht bei kind ${task.kind}`);
-    }
-    if (task.kind === "one_time" && has(task.reset_rule_id)) {
-      error(`${path}.reset_rule_id`, "one_time hat keine Reset-Regel");
-    }
-
-    const required: Record<string, Array<keyof typeof task>> = {
-      counter: ["cap"],
-      stacking: ["cap", "per_period_gain"],
-      regen: ["cap", "regen_amount", "regen_interval_minutes"],
-    };
-    for (const field of required[task.kind] ?? []) {
-      if (!has(task[field])) {
-        error(`${path}.${field}`, `Pflicht bei kind ${task.kind}`);
-      }
-    }
-
-    const onlyFor: Array<[keyof typeof task, string]> = [
-      ["bosses", "lockout"],
-      ["regen_amount", "regen"],
-      ["regen_interval_minutes", "regen"],
-      ["regen_alignment", "regen"],
-      ["timezone", "regen"],
-      ["per_period_gain", "stacking"],
-    ];
-    for (const [field, kind] of onlyFor) {
-      if (has(task[field]) && task.kind !== kind) {
-        error(`${path}.${field}`, `nur bei kind ${kind} erlaubt`);
-      }
-    }
-
-    if (has(task.alert_at) && has(task.cap) && task.alert_at! > task.cap!) {
-      error(`${path}.alert_at`, "darf nicht größer als cap sein");
-    }
-    if (task.timezone && !IANAZone.isValidZone(task.timezone)) {
-      error(`${path}.timezone`, `unbekannte Zeitzone '${task.timezone}'`);
+    for (const issue of taskConsistencyIssues({
+      ...task,
+      hasResetRule: task.reset_rule_id !== undefined,
+    })) {
+      error(`${path}.${issue.field}`, issue.message);
     }
   });
 }

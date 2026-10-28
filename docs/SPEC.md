@@ -951,6 +951,7 @@ docker-compose.yml
 - [x] Discord-App für OAuth angelegt (Client-ID `1564751806851194893`; Secret nur in `.env`), Redirect-URL: `AUTH_URL/api/auth/callback/discord`
 - [ ] Discord-IDs der aktuell 6 Mitglieder für die Allowlist (Owner `418171274456727564` steht, die übrigen folgen)
 - [ ] AION 2: Reset-Uhrzeit EU, exakte Klassennamen (EN/DE)
+- [ ] AION 2: Werte der Startaufgaben prüfen (Odyle-Energie: Maximum und Takt, Albtraum-Einträge, Rhythmus der Aufstiegsprüfung)
 - [x] AION 2: keine Berufe, Capability `professions` aus (6.3)
 - [ ] WoW Forever: Klassen-/Rassen-Kombinationen, Raid-IDs, Reset-Tage (ab 04.11.)
 - [ ] Gewünschte Akzentfarbe/Logo der Gilde (optional)
@@ -972,3 +973,15 @@ Entscheidungen, die beim Bauen getroffen wurden und das Modell aus 4.1 ergänzen
 - Klassen-, Berufs- und Fraktionsfilter im Roster gibt es nur, wenn ein einzelnes Spiel gewählt ist; der Rollenfilter gilt immer.
 - Backups: Das Datum im Dateinamen richtet sich nach `DEFAULT_TIMEZONE`. Das Script schreibt erst in eine temporäre Datei und benennt sie danach um, damit ein abgebrochener Lauf kein halbes Backup hinterlässt. Der Admin-Download liegt unter `/admin/backup`; Nicht-Owner bekommen dort 404. Der Service Worker cacht ihn nie.
 - Berufe: Fertigkeit (0 bis 10000), Spezialisierung und Notiz werden je Beruf im Charakter-Editor gepflegt und im Roster als „Alchemie 300 (Tränke)“ angezeigt.
+
+### Umsetzungsnotizen Phase 2
+
+- **Reset-Engine** in `src/lib/reset/`: reine Funktionen ohne DB, alle Pflicht-Testfälle aus 5.4 als Vitest. Lokale Uhrzeiten werden über die Offsets der Zone aufgelöst (Lücke → erster gültiger Zeitpunkt danach, doppelte Stunde → erstes Auftreten), Perioden-Keys sind das lokale Datum des Periodenbeginns.
+- **Aufgaben-Sync:** `TaskDefinition` wird pro Pack in derselben Transaktion wie die Kataloge synchronisiert; `TaskProgress`/`ResourceState` werden bei `replaces` umgeschrieben bzw. zusammengeführt (6.5 B). Eine geänderte `kind` lässt den Sync des Packs scheitern. Ein internes Sync-Format im Hash sorgt dafür, dass nach einem App-Update auch unveränderte Packs einmal neu synchronisiert werden.
+- **Fortschritt** ist über Scope-Keys an Charakter, Server, Account oder Nutzer gebunden, nicht per Fremdschlüssel. Beim Löschen eines Charakters bzw. beim endgültigen Löschen eines Mitglieds wird er deshalb ausdrücklich mitgelöscht. Den Scope-Key bildet immer der Server, nie der Client.
+- **„Heute“ ist die Startseite** für angemeldete Mitglieder. Abhaken ist optimistisch; langes Drücken (−1 beim Zähler, exakter Wert bei Stacking) hat jeweils eine sichtbare Alternative (Minus- bzw. Stift-Button).
+- **Eigene Aufgaben** sind in Phase 2 nur privat. Spiel, Typ und Geltungsbereich sind nach dem Anlegen fest, weil eine Änderung den gespeicherten Fortschritt umdeuten würde (wie die neue ID bei Packs). Eigene Regeln laufen in der Zeitzone der Region bzw. bei spielübergreifenden Aufgaben in der Zeitzone der Gilde. Eine eigene Raid-ID (`lockout`) hat keine Boss-Liste und verhält sich wie `recurring`.
+- **To-do-Listen:** benannte, private Listen mit einmaligen Einträgen ohne Reset; erledigte Einträge lassen sich gesammelt entfernen.
+- **Dungeon-Checklisten:** eine Vorlage pro Dungeon und Spiel, privat oder für die Gilde sichtbar. Jedes Mitglied hakt für seinen eigenen Run ab, „Neuer Run“ setzt nur die eigenen Haken zurück. Beim Bearbeiten der Punkte werden alle Haken dieser Liste zurückgesetzt. Bearbeiten und Löschen: Ersteller, bei Gilden-Listen auch Officer.
+- **Farmspots:** Was, Zone, Koordinaten als Text, optional Beruf (aus dem Pack), Link zu einer externen Karte und Notiz; privat oder für die Gilde sichtbar. Keine eigene Karte (siehe 9). Bearbeiten wie bei den Checklisten.
+- **AION-2-Startaufgaben** aus 6.3 stehen im Pack (0.3.0), alle als `todo`. Das Maximum der Odyle-Energie (200) ist eine Annahme.

@@ -27,6 +27,7 @@ interface SelectFieldProps {
   emptyLabel?: string;
   id?: string;
   invalid?: boolean;
+  disabled?: boolean;
   "aria-label"?: string;
   "aria-describedby"?: string;
   className?: string;
@@ -42,6 +43,7 @@ export function SelectField({
   emptyLabel,
   id,
   invalid,
+  disabled,
   className = "w-full",
   ...aria
 }: SelectFieldProps) {
@@ -62,6 +64,7 @@ export function SelectField({
         optionValue="value"
         placeholder={placeholder}
         invalid={invalid}
+        disabled={disabled}
         filter={choices.length > 10}
         aria-label={aria["aria-label"]}
         aria-describedby={aria["aria-describedby"]}

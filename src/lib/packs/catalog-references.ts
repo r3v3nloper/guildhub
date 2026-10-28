@@ -1,5 +1,11 @@
 import type { SQLiteColumn, SQLiteTable } from "drizzle-orm/sqlite-core";
-import { builds, characterProfessions, characters } from "@/lib/db/schema";
+import {
+  builds,
+  characterProfessions,
+  characters,
+  farmSpots,
+  taskDefinitions,
+} from "@/lib/db/schema";
 import type { CatalogKind } from "./catalog";
 
 /** One column that points at a catalog entry, and how the sync treats it (SPEC 6.5 B). */
@@ -20,8 +26,8 @@ export interface CatalogReference {
 }
 
 /**
- * Every place that references a catalog entry. A new reference (e.g. tasks pointing at
- * bosses or reset rules in Phase 2) is added here, and replaces/removal handle it.
+ * Every place that references a catalog entry. A new reference is added here, and
+ * replaces/removal handle it.
  */
 export const CATALOG_REFERENCES: Record<CatalogKind, CatalogReference[]> = {
   class: [
@@ -61,6 +67,11 @@ export const CATALOG_REFERENCES: Record<CatalogKind, CatalogReference[]> = {
       characterColumn: characterProfessions.characterId,
       uniqueWith: characterProfessions.characterId,
     },
+    {
+      table: farmSpots,
+      column: farmSpots.professionEntryId,
+      storedAs: "entryId",
+    },
   ],
   server: [
     {
@@ -70,6 +81,13 @@ export const CATALOG_REFERENCES: Record<CatalogKind, CatalogReference[]> = {
       gameColumn: characters.gameId,
     },
   ],
+  // Lockout progress stores boss keys in a JSON list, which a column rewrite cannot reach.
   boss: [],
-  reset_rule: [],
+  reset_rule: [
+    {
+      table: taskDefinitions,
+      column: taskDefinitions.resetRuleEntryId,
+      storedAs: "entryId",
+    },
+  ],
 };

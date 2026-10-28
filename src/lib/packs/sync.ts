@@ -21,6 +21,7 @@ import {
 } from "./catalog-references";
 import { formatIssue, type LoadedPack } from "./loader";
 import type { Pack } from "./schema";
+import { syncTasks } from "./task-sync";
 
 type CatalogRow = typeof gameCatalogEntries.$inferSelect;
 
@@ -33,8 +34,17 @@ export interface PackSyncResult {
   error?: string;
 }
 
+/**
+ * Raised whenever the sync starts storing more of a pack (Phase 2: tasks), so that packs
+ * whose file did not change are still synced once more after the upgrade.
+ */
+const SYNC_FORMAT = 2;
+
 export function hashPackContent(content: string): string {
-  return crypto.createHash("sha256").update(content).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(`${SYNC_FORMAT}\n${content}`)
+    .digest("hex");
 }
 
 /**
@@ -80,6 +90,7 @@ export function syncPack(
       for (const kind of CATALOG_KINDS) {
         syncCatalog(tx, pack, kind, result);
       }
+      syncTasks(tx, pack, result);
       tx.insert(syncLogs)
         .values({
           gameId,

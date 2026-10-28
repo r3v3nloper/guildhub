@@ -3,6 +3,7 @@ import { recordAudit } from "@/lib/audit/audit";
 import type { AppDatabase } from "@/lib/db/client";
 import {
   accounts,
+  characters,
   guildMembers,
   sessions,
   users,
@@ -10,6 +11,10 @@ import {
 } from "@/lib/db/schema";
 import { isDiscordId, type ServerEnv } from "@/lib/env";
 import { DomainError, NotFoundError } from "@/lib/errors";
+import {
+  deleteCharacterProgress,
+  deleteUserProgress,
+} from "@/lib/tasks/progress";
 import {
   addToAllowlist,
   isDiscordIdAllowed,
@@ -332,7 +337,18 @@ export function purgeMember(
   assertAllowed(permissions.purgeMemberData(actor, target));
 
   const discordId = discordIdOfUser(db, targetUserId);
-  db.delete(users).where(eq(users.id, targetUserId)).run();
+  db.transaction((tx) => {
+    // Progress is keyed by scope strings, not foreign keys, so it does not cascade.
+    const characterIds = tx
+      .select({ id: characters.id })
+      .from(characters)
+      .where(eq(characters.userId, targetUserId))
+      .all()
+      .map((character) => character.id);
+    deleteCharacterProgress(tx, characterIds);
+    deleteUserProgress(tx, targetUserId);
+    tx.delete(users).where(eq(users.id, targetUserId)).run();
+  });
   if (discordId) {
     removeFromAllowlist(db, discordId);
   }

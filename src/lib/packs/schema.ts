@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { TASK_KINDS, TASK_SCOPES } from "@/lib/reset/task-kinds";
+import { RESET_RULE_TYPES } from "@/lib/reset/types";
 
 // Shapes only. Cross-references, capability and per-kind rules live in validate.ts,
 // so every finding there can name the exact JSON path.
@@ -38,21 +40,6 @@ const catalogEntry = {
 
 export const ROLES = ["tank", "dps", "heal", "support"] as const;
 export const PROFESSION_KINDS = ["primary", "secondary", "gathering"] as const;
-export const TASK_KINDS = [
-  "recurring",
-  "counter",
-  "lockout",
-  "regen",
-  "stacking",
-  "one_time",
-] as const;
-export const TASK_SCOPES = ["character", "server", "account", "user"] as const;
-export const RESET_RULE_TYPES = [
-  "daily",
-  "weekly",
-  "every_n_days",
-  "monthly",
-] as const;
 
 export const factionSchema = z.strictObject(catalogEntry);
 

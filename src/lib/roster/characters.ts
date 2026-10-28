@@ -8,6 +8,7 @@ import {
   characters,
   type BuildStatus,
 } from "@/lib/db/schema";
+import { deleteCharacterProgress } from "@/lib/tasks/progress";
 import { detectBuildSource, isHttpUrl } from "./build-source";
 import {
   resolveCharacter,
@@ -240,7 +241,10 @@ export function deleteCharacter(
   characterId: number,
 ): void {
   ownedCharacter(db, actor, characterId);
-  db.delete(characters).where(eq(characters.id, characterId)).run();
+  db.transaction((tx) => {
+    deleteCharacterProgress(tx, [characterId]);
+    tx.delete(characters).where(eq(characters.id, characterId)).run();
+  });
 }
 
 export interface BuildInput {

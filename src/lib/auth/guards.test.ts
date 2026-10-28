@@ -30,6 +30,26 @@ describe("permissions", () => {
     expect(permissions.manageGames(disabled).allowed).toBe(false);
   });
 
+  it("lets the author and officers edit shared entries, only the author private ones", () => {
+    // Arrange
+    const shared = { ownerId: "member-2", visibility: "guild" as const };
+    const own = { ownerId: "member-2", visibility: "private" as const };
+
+    // Act & Assert
+    expect(permissions.editSharedEntry(actor("member"), shared).allowed).toBe(
+      false,
+    );
+    expect(permissions.editSharedEntry(actor("officer"), shared).allowed).toBe(
+      true,
+    );
+    expect(permissions.editSharedEntry(actor("owner"), own).allowed).toBe(
+      false,
+    );
+    expect(
+      permissions.editSharedEntry(actor("member", "member-2"), own).allowed,
+    ).toBe(true);
+  });
+
   it("reserves guild-wide tasks and games for officers and owners", () => {
     expect(permissions.manageGuildTasks(actor("member")).allowed).toBe(false);
     expect(permissions.manageGuildTasks(actor("officer")).allowed).toBe(true);

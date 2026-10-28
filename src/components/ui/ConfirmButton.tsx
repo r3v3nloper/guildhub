@@ -9,10 +9,15 @@ export function ConfirmButton({
   question,
   children,
   variant = "danger",
+  icon,
+  label,
 }: {
   question: string;
-  children: ReactNode;
+  children?: ReactNode;
   variant?: "danger" | "secondary";
+  /** PrimeIcons class for an icon-only button; `label` then names it. */
+  icon?: string;
+  label?: string;
 }) {
   return (
     <>
@@ -20,6 +25,9 @@ export function ConfirmButton({
       <Button
         type="button"
         variant={variant}
+        icon={icon}
+        aria-label={label}
+        title={label}
         onClick={(event) => {
           const form = event.currentTarget.form;
           confirmPopup({

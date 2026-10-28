@@ -10,6 +10,9 @@ import {
 import type { AdapterAccountType } from "next-auth/adapters";
 import type { CatalogKind } from "@/lib/packs/catalog";
 import type { Capabilities, LocalizedString, Pack } from "@/lib/packs/schema";
+import { TASK_KINDS, TASK_SCOPES } from "@/lib/reset/task-kinds";
+import type { ResetRule } from "@/lib/reset/types";
+import { VISIBILITIES, type Visibility } from "@/lib/lists/visibility";
 
 const createdAt = (name = "created_at") =>
   integer(name, { mode: "timestamp_ms" })
@@ -266,6 +269,205 @@ export const builds = sqliteTable(
     createdAt: createdAt(),
   },
   (build) => [index("build_character").on(build.characterId)],
+);
+
+// --- Tasks & progress (SPEC 4.1, 4.2, 5) ---
+
+export const TASK_SOURCES = ["pack", "guild", "private"] as const;
+export type TaskSource = (typeof TASK_SOURCES)[number];
+export const TASK_PRIORITIES = ["high", "medium", "low"] as const;
+export const REGEN_ALIGNMENTS = ["fixed", "relative"] as const;
+
+export const taskDefinitions = sqliteTable(
+  "task_definition",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    // Empty only for cross-game custom tasks (scope user).
+    gameId: text("game_id").references(() => games.id),
+    source: text("source", { enum: TASK_SOURCES }).notNull(),
+    // The pack's task ID; empty for custom tasks. NULLs never collide in the unique index.
+    key: text("key"),
+    ownerId: text("owner_id").references(() => users.id, {
+      onDelete: "cascade",
+    }),
+    title: text("title", { mode: "json" }).$type<LocalizedString>().notNull(),
+    description: text("description", {
+      mode: "json",
+    }).$type<LocalizedString>(),
+    kind: text("kind", { enum: TASK_KINDS }).notNull(),
+    category: text("category"),
+    scope: text("scope", { enum: TASK_SCOPES }).notNull(),
+    // A pack rule of the game, or a rule of the task's own (SPEC 4.3) – never both.
+    resetRuleEntryId: catalogReference("reset_rule_entry_id"),
+    customResetRule: text("custom_reset_rule", {
+      mode: "json",
+    }).$type<ResetRule>(),
+    cap: integer("cap"),
+    regenAmount: integer("regen_amount"),
+    regenIntervalMinutes: integer("regen_interval_minutes"),
+    regenAlignment: text("regen_alignment", { enum: REGEN_ALIGNMENTS }),
+    timezone: text("timezone"),
+    perPeriodGain: integer("per_period_gain"),
+    alertAt: integer("alert_at"),
+    bosses: text("bosses", { mode: "json" }).$type<string[]>(),
+    priority: text("priority", { enum: TASK_PRIORITIES })
+      .notNull()
+      .default("medium"),
+    sortOrder: integer("sort_order"),
+    tags: text("tags", { mode: "json" }).$type<string[]>().notNull(),
+    link: text("link"),
+    active: integer("active", { mode: "boolean" }).notNull().default(true),
+    todo: integer("todo", { mode: "boolean" }).notNull().default(false),
+    createdAt: createdAt(),
+  },
+  (task) => [
+    uniqueIndex("task_definition_game_key").on(task.gameId, task.key),
+    index("task_definition_owner").on(task.ownerId),
+  ],
+);
+
+export interface ProgressData {
+  killed?: string[];
+  note?: string;
+}
+
+export const taskProgress = sqliteTable(
+  "task_progress",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    taskId: integer("task_id")
+      .notNull()
+      .references(() => taskDefinitions.id, { onDelete: "cascade" }),
+    scopeKey: text("scope_key").notNull(),
+    periodKey: text("period_key").notNull(),
+    value: integer("value").notNull().default(0),
+    data: text("data", { mode: "json" }).$type<ProgressData>(),
+    completedAt: integer("completed_at", { mode: "timestamp_ms" }),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+    updatedBy: text("updated_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
+  },
+  (progress) => [
+    uniqueIndex("task_progress_task_scope_period").on(
+      progress.taskId,
+      progress.scopeKey,
+      progress.periodKey,
+    ),
+    index("task_progress_scope").on(progress.scopeKey),
+  ],
+);
+
+export const resourceStates = sqliteTable(
+  "resource_state",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    taskId: integer("task_id")
+      .notNull()
+      .references(() => taskDefinitions.id, { onDelete: "cascade" }),
+    scopeKey: text("scope_key").notNull(),
+    value: integer("value").notNull(),
+    valueAt: integer("value_at", { mode: "timestamp_ms" }).notNull(),
+    updatedBy: text("updated_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
+  },
+  (state) => [
+    uniqueIndex("resource_state_task_scope").on(state.taskId, state.scopeKey),
+  ],
+);
+
+// --- Personal and shared lists (SPEC 10, Phase 2) ---
+
+export { VISIBILITIES, type Visibility };
+
+export const todoLists = sqliteTable("todo_list", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  ownerId: text("owner_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  createdAt: createdAt(),
+});
+
+export const todoItems = sqliteTable(
+  "todo_item",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    listId: integer("list_id")
+      .notNull()
+      .references(() => todoLists.id, { onDelete: "cascade" }),
+    text: text("text").notNull(),
+    doneAt: integer("done_at", { mode: "timestamp_ms" }),
+    createdAt: createdAt(),
+  },
+  (item) => [index("todo_item_list").on(item.listId)],
+);
+
+/** A dungeon checklist template (SPEC 10, Phase 2); every user ticks it for their own run. */
+export const checklists = sqliteTable("checklist", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  ownerId: text("owner_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  gameId: text("game_id")
+    .notNull()
+    .references(() => games.id),
+  name: text("name").notNull(),
+  visibility: text("visibility", { enum: VISIBILITIES })
+    .notNull()
+    .default("private"),
+  createdAt: createdAt(),
+});
+
+export const checklistItems = sqliteTable(
+  "checklist_item",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    checklistId: integer("checklist_id")
+      .notNull()
+      .references(() => checklists.id, { onDelete: "cascade" }),
+    label: text("label").notNull(),
+    sortOrder: integer("sort_order").notNull(),
+  },
+  (item) => [index("checklist_item_checklist").on(item.checklistId)],
+);
+
+export const checklistTicks = sqliteTable(
+  "checklist_tick",
+  {
+    itemId: integer("item_id")
+      .notNull()
+      .references(() => checklistItems.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+  },
+  (tick) => [primaryKey({ columns: [tick.itemId, tick.userId] })],
+);
+
+export const farmSpots = sqliteTable(
+  "farm_spot",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    gameId: text("game_id")
+      .notNull()
+      .references(() => games.id),
+    professionEntryId: catalogReference("profession_entry_id"),
+    resource: text("resource").notNull(),
+    zone: text("zone").notNull(),
+    coordinates: text("coordinates"),
+    link: text("link"),
+    notes: text("notes"),
+    visibility: text("visibility", { enum: VISIBILITIES })
+      .notNull()
+      .default("guild"),
+    createdAt: createdAt(),
+  },
+  (spot) => [index("farm_spot_game").on(spot.gameId)],
 );
 
 // --- Logs (SPEC 4.1) ---
