@@ -540,7 +540,7 @@ Wo geprüft wird und was passiert:
 |---|---|
 | `npm run packs:validate` (lokal / vor Commit) | Fehlerliste mit Datei, JSON-Pfad, Grund; Exit-Code 1 |
 | `docker compose build` (eigener Schritt im Dockerfile) | **Build schlägt fehl.** Das neue Image entsteht nicht, der laufende Container bleibt unverändert online. Das ist die Hauptsicherung. |
-| Sync beim Containerstart | **Nur dieses Pack überspringen.** Der zuletzt erfolgreich synchronisierte Stand in der DB bleibt aktiv (keine Teiländerungen, Sync läuft pro Pack in **einer** Transaktion). Fehler ins Log, Banner im Admin-Bereich, `/api/health` meldet `{"status":"degraded","packs":{"aion2":"error: …"}}` mit **HTTP 200**, damit Docker den Container nicht in eine Neustart-Schleife schickt. Die App startet auch dann, wenn alle Packs fehlschlagen. |
+| Sync beim Containerstart | **Nur dieses Pack überspringen.** Der zuletzt erfolgreich synchronisierte Stand in der DB bleibt aktiv (keine Teiländerungen, Sync läuft pro Pack in **einer** Transaktion). Fehler ins Log, Banner im Admin-Bereich, `/api/health` meldet `{"status":"degraded","packs":{"aion2":"error"}}` mit **HTTP 200** (nur der Pack-Name; die Fehlerdetails stehen im Log und im Admin-Bereich, da der Endpunkt öffentlich ist), damit Docker den Container nicht in eine Neustart-Schleife schickt. Die App startet auch dann, wenn alle Packs fehlschlagen. |
 
 Ein Pack, das noch nie erfolgreich synchronisiert wurde und ungültig ist,
 erscheint einfach nicht als Spiel (Hinweis im Admin-Banner).

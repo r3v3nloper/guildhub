@@ -1,4 +1,5 @@
 import { Suspense, type ReactNode } from "react";
+import { de } from "@/i18n/de";
 
 /**
  * Every page reads the session and the DB at request time. With Cache Components that
@@ -7,7 +8,9 @@ import { Suspense, type ReactNode } from "react";
  */
 export function PageSuspense({ children }: { children: ReactNode }) {
   return (
-    <Suspense fallback={<p className="text-sm text-zinc-500">Lädt …</p>}>
+    <Suspense
+      fallback={<p className="text-sm text-zinc-500">{de.common.loading}</p>}
+    >
       {children}
     </Suspense>
   );

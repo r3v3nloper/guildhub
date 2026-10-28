@@ -11,7 +11,6 @@ import {
   admitToAllowlist,
   changeMemberRole,
   disableMember,
-  getActor,
   listMembers,
   purgeMember,
   reactivateMember,
@@ -27,8 +26,6 @@ import {
   setGameRegion,
 } from "@/lib/guild/games-admin";
 import { de } from "@/i18n/de";
-
-const DISCORD_ID = /^\d{17,20}$/;
 
 /** Every admin action: resolve the actor, run, refresh the affected pages. */
 async function adminAction(
@@ -79,11 +76,7 @@ export async function admitAction(
   formData: FormData,
 ): Promise<ActionState> {
   return adminAction((actor) => {
-    const discordId = formText(formData, "discordId").trim();
-    if (!DISCORD_ID.test(discordId)) {
-      throw new DomainError("Eine Discord-ID besteht aus 17 bis 20 Ziffern.");
-    }
-    admitToAllowlist(getDb(), actor, discordId);
+    admitToAllowlist(getDb(), actor, formText(formData, "discordId"));
   });
 }
 
@@ -137,7 +130,7 @@ export async function purgeMemberAction(
     const member = listMembers(db, actor.guildId).find(
       (m) => m.userId === userId,
     );
-    if (!member || !getActor(db, actor.guildId, userId)) {
+    if (!member) {
       throw new DomainError("Mitglied nicht gefunden.");
     }
     if (formText(formData, "confirm").trim() !== (member.name ?? "")) {

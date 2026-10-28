@@ -1,4 +1,4 @@
-import { inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { localize } from "@/i18n/localize";
 import { listMembers, type MemberView } from "@/lib/auth/membership";
 import type { AppDatabase } from "@/lib/db/client";
@@ -71,13 +71,19 @@ export interface Roster {
   roles: Distribution[];
 }
 
-/** Every guild member with all characters in enabled games; filtering happens in memory. */
+/**
+ * Every guild member with all characters in enabled games; filtering happens in memory.
+ * `onlyUserId` limits both members and the character query to one person.
+ */
 export function loadRosterMembers(
   db: AppDatabase,
   guildId: number,
+  onlyUserId?: string,
 ): RosterMember[] {
   const enabledGameIds = listEnabledGames(db, guildId).map((game) => game.id);
-  const members = listMembers(db, guildId);
+  const members = listMembers(db, guildId).filter(
+    (member) => !onlyUserId || member.userId === onlyUserId,
+  );
   if (members.length === 0 || enabledGameIds.length === 0) {
     return members.map((member) => ({
       ...memberFields(member),
@@ -88,7 +94,12 @@ export function loadRosterMembers(
   const characterRows = db
     .select()
     .from(characters)
-    .where(inArray(characters.gameId, enabledGameIds))
+    .where(
+      and(
+        inArray(characters.gameId, enabledGameIds),
+        onlyUserId ? eq(characters.userId, onlyUserId) : undefined,
+      ),
+    )
     .all();
   const characterIds = characterRows.map((row) => row.id);
   const entries = new Map(

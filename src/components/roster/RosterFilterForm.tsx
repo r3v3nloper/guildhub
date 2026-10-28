@@ -58,7 +58,7 @@ export function RosterFilterForm({
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <FilterSelect
           name="rolle"
-          label="Rolle"
+          label={de.roster.roleFilter}
           value={filters.role}
           options={roles}
           withOutdated={false}
@@ -75,7 +75,7 @@ export function RosterFilterForm({
             {choices.professions.length > 0 && (
               <FilterSelect
                 name="beruf"
-                label="Beruf"
+                label={de.roster.professionFilter}
                 value={filters.professionKey}
                 options={choices.professions}
                 withOutdated

@@ -1,5 +1,5 @@
 import { and, eq, isNull } from "drizzle-orm";
-import type { AppDatabase } from "@/lib/db/client";
+import type { AppDatabase, DbExecutor } from "@/lib/db/client";
 import { accounts, allowlistEntries } from "@/lib/db/schema";
 import type { ServerEnv } from "@/lib/env";
 
@@ -49,7 +49,7 @@ export function addToAllowlist(
     .run();
 }
 
-export function removeFromAllowlist(db: AppDatabase, discordId: string): void {
+export function removeFromAllowlist(db: DbExecutor, discordId: string): void {
   db.delete(allowlistEntries)
     .where(eq(allowlistEntries.discordId, discordId))
     .run();

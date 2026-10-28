@@ -59,6 +59,7 @@ export const de = {
     former: "ehemalig",
   },
   common: {
+    loading: "Lädt …",
     save: "Speichern",
     cancel: "Abbrechen",
     delete: "Löschen",
@@ -110,6 +111,9 @@ export const de = {
     plannedClass: "Geplant",
     pickGameForFilters:
       "Für Klassen-, Berufs- und Fraktionsfilter oben ein Spiel wählen.",
+    roleFilter: "Rolle",
+    professionFilter: "Beruf",
+    levelShort: "Lvl",
   },
   admin: {
     title: "Admin",
@@ -148,6 +152,49 @@ export const de = {
     audit: "Protokoll",
     noAudit: "Noch keine Einträge.",
     affectedCharacters: "betroffene Charaktere",
+    packErrorBadge: "Pack-Fehler",
+    syncUnchanged: "unverändert",
+    syncNew: "neu",
+    syncSummary: (counts: {
+      added: number;
+      changed: number;
+      deprecated: number;
+      removed: number;
+    }) =>
+      `${counts.added} neu, ${counts.changed} geändert, ${counts.deprecated} veraltet, ${counts.removed} entfernt`,
+    syncMigration: (rewritten: number, merged: number) =>
+      `${rewritten} umgeschrieben, ${merged} zusammengeführt`,
+    unknownActor: "?",
+  },
+  catalogKinds: {
+    class: "Klasse",
+    race: "Rasse",
+    faction: "Fraktion",
+    profession: "Beruf",
+    boss: "Boss",
+    server: "Server",
+    reset_rule: "Reset-Regel",
+  } as Record<string, string>,
+  auditActions: {
+    "allowlist.add": "hat freigeschaltet",
+    "allowlist.remove": "hat Freischaltung entfernt",
+    "member.disable": "hat deaktiviert",
+    "member.reactivate": "hat reaktiviert",
+    "member.role": "hat Rolle geändert",
+    "member.purge": "hat Daten gelöscht",
+    "guild.rename": "hat Gilde umbenannt",
+    "game.enable": "hat Spiel aktiviert",
+    "game.disable": "hat Spiel deaktiviert",
+    "game.region": "hat Region gewählt",
+    "backup.download": "hat Backup geladen",
+  } as Record<string, string>,
+  errors: {
+    title: "Da ist etwas schiefgelaufen",
+    text: "Die Seite konnte nicht geladen werden. Versuch es bitte noch einmal.",
+    retry: "Erneut versuchen",
+    notFoundTitle: "Seite nicht gefunden",
+    notFoundText:
+      "Diese Seite gibt es nicht, oder du hast keinen Zugriff darauf.",
   },
   pwa: {
     offline: "Offline: Du siehst den zuletzt geladenen Stand.",

@@ -48,7 +48,9 @@ export function MemberCard({
                   </span>
                 )}
                 {character.level !== null && (
-                  <span className="text-zinc-500">Lvl {character.level}</span>
+                  <span className="text-zinc-500">
+                    {de.roster.levelShort} {character.level}
+                  </span>
                 )}
                 {gameNames && (
                   <span className="text-zinc-500">

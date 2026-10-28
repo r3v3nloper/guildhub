@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { parseDiscordIdList, parseServerEnv } from "./env";
+import {
+  DEFAULT_DATABASE_PATH,
+  parseDiscordIdList,
+  parseServerEnv,
+} from "./env";
 
 const ownerId = "123456789012345678";
 const memberId = "234567890123456789";
@@ -26,7 +30,7 @@ describe("parseServerEnv", () => {
     const env = parseServerEnv({});
 
     expect(env).toEqual({
-      databasePath: "./data/guildhub.db",
+      databasePath: DEFAULT_DATABASE_PATH,
       ownerDiscordId: undefined,
       allowedDiscordIds: [],
       guildName: undefined,

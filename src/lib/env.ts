@@ -1,6 +1,12 @@
+import os from "node:os";
+import path from "node:path";
 import { z } from "zod";
 
 const discordIdPattern = /^\d{17,20}$/;
+
+export function isDiscordId(value: string): boolean {
+  return discordIdPattern.test(value);
+}
 
 /** Parses a comma-separated list of Discord user IDs; blanks are ignored, duplicates removed. */
 export function parseDiscordIdList(value: string | undefined): string[] {
@@ -9,7 +15,7 @@ export function parseDiscordIdList(value: string | undefined): string[] {
     .map((id) => id.trim())
     .filter((id) => id.length > 0);
 
-  const invalid = ids.filter((id) => !discordIdPattern.test(id));
+  const invalid = ids.filter((id) => !isDiscordId(id));
   if (invalid.length > 0) {
     throw new Error(`Ungültige Discord-ID(s): ${invalid.join(", ")}`);
   }
@@ -17,8 +23,19 @@ export function parseDiscordIdList(value: string | undefined): string[] {
   return [...new Set(ids)];
 }
 
+/**
+ * Local default lies outside the project on purpose: the Next.js dev server watches the
+ * project folder, and SQLite touches its files on every read, which would reload pages
+ * endlessly. The container sets DATABASE_PATH=/data/guildhub.db.
+ */
+export const DEFAULT_DATABASE_PATH = path.join(
+  os.homedir(),
+  ".guildhub",
+  "guildhub.db",
+);
+
 const serverEnvSchema = z.object({
-  DATABASE_PATH: z.string().min(1).default("./data/guildhub.db"),
+  DATABASE_PATH: z.string().min(1).default(DEFAULT_DATABASE_PATH),
   OWNER_DISCORD_ID: z
     .string()
     .regex(discordIdPattern, "OWNER_DISCORD_ID ist keine Discord-ID")

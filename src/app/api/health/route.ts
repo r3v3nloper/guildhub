@@ -3,16 +3,16 @@ import { getDb } from "@/lib/db/client";
 import { checkDatabase } from "@/lib/db/health";
 import { failingPacks } from "@/lib/packs/status";
 
+// Public endpoint: it names what is broken, never why. Details (paths, SQL) go to the log
+// and to the admin area.
 export async function GET() {
   await connection();
 
   const db = getDb();
   const database = checkDatabase(db);
   if (!database.ok) {
-    return Response.json(
-      { status: "error", db: database.error },
-      { status: 503 },
-    );
+    console.error(`[health] Datenbank: ${database.error}`);
+    return Response.json({ status: "error", db: "error" }, { status: 503 });
   }
 
   // A broken pack degrades the app but must not send Docker into a restart loop,
@@ -23,7 +23,7 @@ export async function GET() {
       status: "degraded",
       db: "ok",
       packs: Object.fromEntries(
-        failing.map((entry) => [entry.gameId, `error: ${entry.error}`]),
+        failing.map((entry) => [entry.gameId, "error"]),
       ),
     });
   }

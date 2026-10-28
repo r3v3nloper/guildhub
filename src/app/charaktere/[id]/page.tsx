@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BuildForm } from "@/components/characters/BuildForm";
 import { CharacterForm } from "@/components/characters/CharacterForm";
+import { ActionForm } from "@/components/ui/ActionForm";
 import { ConfirmButton } from "@/components/ui/ConfirmButton";
 import { Badge, Button, Card, PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
@@ -134,16 +135,17 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
                   {build.notes && (
                     <span className="text-zinc-500">{build.notes}</span>
                   )}
-                  <form
-                    action={deleteBuildAction.bind(
-                      null,
-                      character.id,
-                      build.id,
-                    )}
-                    className="ml-auto"
-                  >
-                    <Button variant="secondary">{de.common.delete}</Button>
-                  </form>
+                  <div className="ml-auto">
+                    <ActionForm
+                      action={deleteBuildAction.bind(
+                        null,
+                        character.id,
+                        build.id,
+                      )}
+                    >
+                      <Button variant="secondary">{de.common.delete}</Button>
+                    </ActionForm>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -155,11 +157,11 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
         </Card>
       )}
 
-      <form action={deleteCharacterAction.bind(null, character.id)}>
+      <ActionForm action={deleteCharacterAction.bind(null, character.id)}>
         <ConfirmButton question={de.characters.deleteConfirm}>
           {de.common.delete}
         </ConfirmButton>
-      </form>
+      </ActionForm>
     </div>
   );
 }

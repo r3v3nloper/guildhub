@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useState } from "react";
 import {
   Badge,
   Button,
@@ -10,8 +10,10 @@ import {
   TextArea,
   TextInput,
 } from "@/components/ui/ui";
+import { useFormAction } from "@/components/ui/use-form-action";
 import type { ActionState } from "@/lib/actions/action-state";
 import type { CharacterHint } from "@/lib/roster/character-rules";
+import { allowedClasses } from "@/lib/roster/class-restrictions";
 import type {
   CatalogOption,
   CharacterFormOptions,
@@ -49,23 +51,14 @@ function optionLabel(option: CatalogOption): string {
   return option.todo ? `${option.label} (${de.badges.todo})` : option.label;
 }
 
-/** Classes the chosen race/faction may play (SPEC 4.5); the server checks the same rules. */
-function allowedClasses(
+/** Classes the chosen race/faction may play; the same rule the server enforces. */
+function classesFor(
   options: CharacterFormOptions,
   factionKey: string,
   raceKey: string,
 ): CatalogOption[] {
   const race = options.races.find((option) => option.key === raceKey);
-  const faction = options.capabilities.races ? race?.faction : factionKey;
-  return options.classes.filter(
-    (option) =>
-      (!race ||
-        race.allowedClasses.length === 0 ||
-        race.allowedClasses.includes(option.key)) &&
-      (!faction ||
-        option.factions.length === 0 ||
-        option.factions.includes(faction)),
-  );
+  return allowedClasses(options.classes, race, factionKey || undefined);
 }
 
 export function CharacterForm({
@@ -75,7 +68,7 @@ export function CharacterForm({
   hints,
   knownServers,
 }: CharacterFormProps) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const { state, pending, onSubmit } = useFormAction(action);
   const [faction, setFaction] = useState(values.faction);
   const [race, setRace] = useState(values.race);
   const [characterClass, setCharacterClass] = useState(values.characterClass);
@@ -84,10 +77,10 @@ export function CharacterForm({
   const hintFor = (field: CharacterHint["field"]) =>
     hints.find((hint) => hint.field === field)?.message;
 
-  const classes = allowedClasses(options, faction, race);
+  const classes = classesFor(options, faction, race);
   const keepClassIfAllowed = (nextFaction: string, nextRace: string) => {
     if (
-      !allowedClasses(options, nextFaction, nextRace).some(
+      !classesFor(options, nextFaction, nextRace).some(
         (o) => o.key === characterClass,
       )
     ) {
@@ -96,7 +89,7 @@ export function CharacterForm({
   };
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
+    <form onSubmit={onSubmit} className="flex flex-col gap-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={de.characters.name} error={errors.name}>
           <TextInput

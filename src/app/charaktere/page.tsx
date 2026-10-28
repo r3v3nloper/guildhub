@@ -24,7 +24,7 @@ async function CharactersContent() {
     (game) => !selectedGame || game.id === selectedGame,
   );
   const own =
-    loadRosterMembers(db, actor.guildId).find(
+    loadRosterMembers(db, actor.guildId, actor.userId).find(
       (member) => member.userId === actor.userId,
     )?.characters ?? [];
 

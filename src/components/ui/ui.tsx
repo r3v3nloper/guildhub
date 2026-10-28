@@ -1,9 +1,12 @@
-import type {
-  ButtonHTMLAttributes,
-  InputHTMLAttributes,
-  ReactNode,
-  SelectHTMLAttributes,
-  TextareaHTMLAttributes,
+import {
+  cloneElement,
+  isValidElement,
+  type ButtonHTMLAttributes,
+  type InputHTMLAttributes,
+  type ReactElement,
+  type ReactNode,
+  type SelectHTMLAttributes,
+  type TextareaHTMLAttributes,
 } from "react";
 
 // Small shared building blocks, so pages stay readable and look alike.
@@ -56,17 +59,35 @@ export function Field({
   hint?: string;
   children: ReactNode;
 }) {
+  // Screen readers announce hint and error with the control; IDs derive from its name.
+  const name =
+    isValidElement<{ name?: string }>(children) && children.props.name;
+  const hintId = name && hint ? `${name}-hint` : undefined;
+  const errorId = name && error ? `${name}-error` : undefined;
+  const describedBy = [hintId, errorId].filter(Boolean).join(" ") || undefined;
+  const control = name
+    ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+        "aria-invalid": error ? true : undefined,
+        "aria-describedby": describedBy,
+      })
+    : children;
+
   return (
     <label className="flex flex-col gap-1 text-sm">
       <span className="font-medium">{label}</span>
-      {children}
+      {control}
       {hint && (
-        <span className="text-xs text-amber-600 dark:text-amber-400">
+        <span
+          id={hintId}
+          className="text-xs text-amber-600 dark:text-amber-400"
+        >
           {hint}
         </span>
       )}
       {error && (
-        <span className="text-xs text-red-600 dark:text-red-400">{error}</span>
+        <span id={errorId} className="text-xs text-red-600 dark:text-red-400">
+          {error}
+        </span>
       )}
     </label>
   );

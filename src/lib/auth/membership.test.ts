@@ -135,6 +135,17 @@ describe("allowlist and membership", () => {
     );
   });
 
+  it("admits a trimmed Discord ID and rejects anything else", () => {
+    const ownerId = signIn(OWNER);
+
+    admitToAllowlist(db, actorOf(ownerId), `  ${STRANGER} `);
+
+    expect(isDiscordIdAllowed(db, STRANGER)).toBe(true);
+    expect(() => admitToAllowlist(db, actorOf(ownerId), "reven102")).toThrow(
+      /17 bis 20 Ziffern/,
+    );
+  });
+
   it("does not let an officer disable another officer", () => {
     const ownerId = signIn(OWNER);
     const officerA = createDiscordUser(db, OFFICER);

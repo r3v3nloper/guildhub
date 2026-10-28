@@ -5,6 +5,7 @@ import {
   type CatalogEntry,
   type GameCatalog,
 } from "./game-catalog";
+import { classFitsFaction, classFitsRace } from "./class-restrictions";
 import { cleanServerName, normalizeServerKey } from "./server-name";
 
 export interface CharacterInput {
@@ -144,19 +145,18 @@ export function resolveCharacter(
     (race?.id ?? null) !== previous.raceEntryId ||
     (characterClass?.id ?? null) !== previous.classEntryId;
   if (combinationChanged && characterClass) {
-    const allowedFactions = stringList(characterClass.data.factions);
-    if (
-      faction &&
-      allowedFactions.length > 0 &&
-      !allowedFactions.includes(faction.key)
-    ) {
+    const restrictedClass = {
+      key: characterClass.key,
+      factions: stringList(characterClass.data.factions),
+    };
+    if (faction && !classFitsFaction(restrictedClass, faction.key)) {
       errors.classKey = `${localize(characterClass.name)} gibt es nicht bei ${localize(faction.name)}.`;
     }
-    const allowedClasses = stringList(race?.data.allowed_classes);
     if (
       race &&
-      allowedClasses.length > 0 &&
-      !allowedClasses.includes(characterClass.key)
+      !classFitsRace(restrictedClass, {
+        allowedClasses: stringList(race.data.allowed_classes),
+      })
     ) {
       errors.classKey = `${localize(race.name)} kann nicht ${localize(characterClass.name)} sein.`;
     }

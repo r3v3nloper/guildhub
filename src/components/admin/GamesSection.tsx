@@ -22,7 +22,9 @@ export function GamesSection({ games }: { games: GuildGameInfo[] }) {
               <Badge tone={game.enabled ? "accent" : "neutral"}>
                 {game.enabled ? de.admin.enabled : de.admin.disabled}
               </Badge>
-              {game.lastSyncError && <Badge tone="danger">Pack-Fehler</Badge>}
+              {game.lastSyncError && (
+                <Badge tone="danger">{de.admin.packErrorBadge}</Badge>
+              )}
             </div>
             <div className="flex flex-wrap items-start gap-3">
               {game.meta.regions.length > 1 && (

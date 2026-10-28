@@ -212,6 +212,43 @@ describe("syncPack", () => {
     expect(result.summary?.affected_characters).toEqual([]);
   });
 
+  it("migrates server keys via replaces, only within the same game", () => {
+    const withServers = (servers: unknown[], version: string) =>
+      packFile({
+        version,
+        capabilities: { classes: true, professions: true, servers: true },
+        servers,
+      });
+    syncPack(db, withServers([{ id: "old-realm", name: "Alt" }], "1.0.0"));
+    const character = createCharacter(db, "warrior");
+    db.update(characters)
+      .set({ serverKey: "old-realm" })
+      .where(eq(characters.id, character.id))
+      .run();
+
+    const result = syncPack(
+      db,
+      withServers(
+        [{ id: "new-realm", name: "Neu", replaces: ["old-realm"] }],
+        "2.0.0",
+      ),
+    );
+
+    expect(
+      db.select().from(characters).where(eq(characters.id, character.id)).get()
+        ?.serverKey,
+    ).toBe("new-realm");
+    expect(result.summary?.migrations).toEqual([
+      {
+        kind: "server",
+        from: "old-realm",
+        to: "new-realm",
+        rows_rewritten: 1,
+        rows_merged: 0,
+      },
+    ]);
+  });
+
   it("merges professions when a character already has the replacement", () => {
     syncPack(db, packFile());
     const character = createCharacter(db, "warrior");

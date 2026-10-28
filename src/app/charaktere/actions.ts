@@ -72,11 +72,16 @@ export async function saveCharacterAction(
 
 export async function deleteCharacterAction(
   characterId: number,
-): Promise<void> {
-  const actor = await actorForAction();
-  deleteCharacter(getDb(), actor, characterId);
-  revalidatePath("/roster");
-  redirect("/charaktere");
+): Promise<ActionState> {
+  const state = await guarded(async () => {
+    deleteCharacter(getDb(), await actorForAction(), characterId);
+    return { ok: true };
+  });
+  if (state.ok) {
+    revalidatePath("/roster");
+    redirect("/charaktere");
+  }
+  return state;
 }
 
 function buildStatusOf(formData: FormData): BuildStatus {
@@ -114,9 +119,14 @@ export async function saveBuildAction(
 export async function deleteBuildAction(
   characterId: number,
   buildId: number,
-): Promise<void> {
-  const actor = await actorForAction();
-  deleteBuild(getDb(), actor, characterId, buildId);
-  revalidatePath(`/charaktere/${characterId}`);
-  revalidatePath("/roster");
+): Promise<ActionState> {
+  const state = await guarded(async () => {
+    deleteBuild(getDb(), await actorForAction(), characterId, buildId);
+    return { ok: true };
+  });
+  if (state.ok) {
+    revalidatePath(`/charaktere/${characterId}`);
+    revalidatePath("/roster");
+  }
+  return state;
 }

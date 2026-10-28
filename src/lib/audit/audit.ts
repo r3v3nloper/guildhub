@@ -1,5 +1,5 @@
 import { desc, eq } from "drizzle-orm";
-import type { AppDatabase } from "@/lib/db/client";
+import type { AppDatabase, DbExecutor } from "@/lib/db/client";
 import { auditLogs, users } from "@/lib/db/schema";
 
 export const AUDIT_ACTIONS = [
@@ -20,7 +20,7 @@ export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 export type AuditEntry = typeof auditLogs.$inferSelect;
 
 export function recordAudit(
-  db: AppDatabase,
+  db: DbExecutor,
   actorUserId: string,
   action: AuditAction,
   target: string,

@@ -23,8 +23,12 @@ AUTH_TRUST_HOST=true
 AUTH_DISCORD_ID=<Client-ID der Discord-App>
 AUTH_DISCORD_SECRET=<Client-Secret der Discord-App>
 OWNER_DISCORD_ID=<deine Discord-User-ID>
-DATABASE_PATH=./data/guildhub.db
 ```
+
+Die Zeile `DATABASE_PATH` aus `.env.local` entfernen. Lokal liegt die Datenbank dann
+unter `~/.guildhub/guildhub.db`. Sie darf **nicht** im Projektordner liegen: Der
+Dev-Server beobachtet das Projekt, und SQLite verändert seine Dateien auch beim Lesen.
+Die Folge wäre eine endlose Neulade-Schleife.
 
 In der Discord-App muss zusätzlich die Redirect-URL
 `http://localhost:3000/api/auth/callback/discord` eingetragen sein.
@@ -33,8 +37,7 @@ In der Discord-App muss zusätzlich die Redirect-URL
 npm run dev
 ```
 
-Die App läuft dann auf http://localhost:3000. Migrationen laufen beim Start automatisch,
-die SQLite-Datei liegt unter `./data/`.
+Die App läuft dann auf http://localhost:3000. Migrationen laufen beim Start automatisch.
 
 ### Befehle
 

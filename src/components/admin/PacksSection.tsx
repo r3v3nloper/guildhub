@@ -1,24 +1,11 @@
 import { Badge, Card } from "@/components/ui/ui";
 import type { SyncLogEntry } from "@/lib/packs/status";
 import type { CatalogEntry } from "@/lib/guild/games-admin";
+import { formatDateTime } from "@/i18n/format";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
 
-const dateFormat = new Intl.DateTimeFormat("de-DE", {
-  dateStyle: "short",
-  timeStyle: "short",
-  timeZone: "Europe/Berlin",
-});
-
-const KIND_LABELS: Record<string, string> = {
-  class: "Klasse",
-  race: "Rasse",
-  faction: "Fraktion",
-  profession: "Beruf",
-  boss: "Boss",
-  server: "Server",
-  reset_rule: "Reset-Regel",
-};
+const kindLabel = (kind: string) => de.catalogKinds[kind] ?? kind;
 
 function SyncSummaryLine({ entry }: { entry: SyncLogEntry }) {
   const summary = entry.summary;
@@ -30,30 +17,31 @@ function SyncSummaryLine({ entry }: { entry: SyncLogEntry }) {
     );
   }
   if (!summary) {
-    return <span className="text-zinc-500">unverändert</span>;
+    return <span className="text-zinc-500">{de.admin.syncUnchanged}</span>;
   }
   return (
     <span className="flex flex-col gap-1">
       <span>
-        {entry.fromVersion ?? "neu"} → {entry.toVersion}: {summary.added} neu,{" "}
-        {summary.changed} geändert, {summary.deprecated} veraltet,{" "}
-        {summary.removed} entfernt
+        {entry.fromVersion ?? de.admin.syncNew} → {entry.toVersion}:{" "}
+        {de.admin.syncSummary(summary)}
       </span>
       {summary.migrations.map((migration) => (
         <span
           key={`${migration.kind}:${migration.from}`}
           className="text-zinc-500"
         >
-          {KIND_LABELS[migration.kind] ?? migration.kind} {migration.from} →{" "}
-          {migration.to}: {migration.rows_rewritten} umgeschrieben,{" "}
-          {migration.rows_merged} zusammengeführt
+          {kindLabel(migration.kind)} {migration.from} → {migration.to}:{" "}
+          {de.admin.syncMigration(
+            migration.rows_rewritten,
+            migration.rows_merged,
+          )}
         </span>
       ))}
       {summary.affected_characters.length > 0 && (
         <span className="text-amber-700 dark:text-amber-400">
           {summary.affected_characters.length} {de.admin.affectedCharacters} (
           {summary.affected_characters
-            .map((a) => `${KIND_LABELS[a.field] ?? a.field} ${a.old_id}`)
+            .map((a) => `${kindLabel(a.field)} ${a.old_id}`)
             .join(", ")}
           )
         </span>
@@ -84,7 +72,7 @@ export function PacksSection({
                 {entry.status}
               </Badge>
               <span className="text-xs text-zinc-500">
-                {dateFormat.format(entry.startedAt)}
+                {formatDateTime(entry.startedAt)}
               </span>
             </span>
             <SyncSummaryLine entry={entry} />
@@ -106,7 +94,7 @@ export function PacksSection({
                 {entries
                   .map(
                     (entry) =>
-                      `${KIND_LABELS[entry.kind] ?? entry.kind}: ${localize(entry.name)}`,
+                      `${kindLabel(entry.kind)}: ${localize(entry.name)}`,
                   )
                   .join(" · ")}
               </p>
@@ -123,7 +111,7 @@ export function PacksSection({
           {history.map((entry) => (
             <li key={entry.id} className="flex flex-col">
               <span className="text-xs text-zinc-500">
-                {dateFormat.format(entry.startedAt)} · {entry.gameId} ·{" "}
+                {formatDateTime(entry.startedAt)} · {entry.gameId} ·{" "}
                 {entry.status}
               </span>
               <SyncSummaryLine entry={entry} />

@@ -8,7 +8,7 @@ import {
   users,
   type MemberRole,
 } from "@/lib/db/schema";
-import type { ServerEnv } from "@/lib/env";
+import { isDiscordId, type ServerEnv } from "@/lib/env";
 import { DomainError, NotFoundError } from "@/lib/errors";
 import {
   addToAllowlist,
@@ -191,8 +191,12 @@ export function admitToAllowlist(
   discordId: string,
 ): void {
   assertAllowed(permissions.addToAllowlist(actor));
-  addToAllowlist(db, discordId, actor.userId);
-  recordAudit(db, actor.userId, "allowlist.add", discordId);
+  const id = discordId.trim();
+  if (!isDiscordId(id)) {
+    throw new DomainError("Eine Discord-ID besteht aus 17 bis 20 Ziffern.");
+  }
+  addToAllowlist(db, id, actor.userId);
+  recordAudit(db, actor.userId, "allowlist.add", id);
 }
 
 /** Removes a pending entry, i.e. someone who was admitted but never signed in. */
@@ -247,11 +251,13 @@ export function disableMember(
       )
       .run();
     tx.delete(sessions).where(eq(sessions.userId, targetUserId)).run();
+    if (discordId) {
+      removeFromAllowlist(tx, discordId);
+    }
+    recordAudit(tx, actor.userId, "member.disable", targetUserId, {
+      discordId,
+    });
   });
-  if (discordId) {
-    removeFromAllowlist(db, discordId);
-  }
-  recordAudit(db, actor.userId, "member.disable", targetUserId, { discordId });
 
   return {
     readmittedOnRestart:

@@ -1,10 +1,10 @@
 import crypto from "node:crypto";
-import { and, eq, inArray, isNotNull } from "drizzle-orm";
-import type { AppDatabase } from "@/lib/db/client";
+import { and, eq, inArray, sql } from "drizzle-orm";
+import type {
+  AppDatabase,
+  DbTransaction as Transaction,
+} from "@/lib/db/client";
 import {
-  builds,
-  characterProfessions,
-  characters,
   gameCatalogEntries,
   games,
   guildGames,
@@ -15,10 +15,13 @@ import {
   type SyncSummary,
 } from "@/lib/db/schema";
 import { CATALOG_KINDS, catalogEntriesOf, type CatalogKind } from "./catalog";
+import {
+  CATALOG_REFERENCES,
+  type CatalogReference,
+} from "./catalog-references";
 import { formatIssue, type LoadedPack } from "./loader";
 import type { Pack } from "./schema";
 
-type Transaction = Parameters<Parameters<AppDatabase["transaction"]>[0]>[0];
 type CatalogRow = typeof gameCatalogEntries.$inferSelect;
 
 export type SyncStatus = "success" | "skipped" | "error";
@@ -272,7 +275,9 @@ function syncCatalog(
     }
     summary.removed++;
     markRemoved(tx, row);
-    summary.affected_characters.push(...charactersReferencing(tx, kind, row));
+    summary.affected_characters.push(
+      ...charactersReferencing(tx, pack.id, kind, row),
+    );
   }
 }
 
@@ -283,6 +288,7 @@ function markRemoved(tx: Transaction, row: CatalogRow) {
     .run();
 }
 
+/** Moves every reference from oldRow to newRow, merging where a unique key would clash. */
 function rewriteReferences(
   tx: Transaction,
   gameId: string,
@@ -290,132 +296,76 @@ function rewriteReferences(
   oldRow: CatalogRow,
   newRow: CatalogRow,
 ): { rewritten: number; merged: number } {
-  const changes = (result: { changes: number }) => result.changes;
+  let rewritten = 0;
+  let merged = 0;
+  for (const reference of CATALOG_REFERENCES[kind]) {
+    const oldValue = storedValue(reference, oldRow);
+    const newValue = storedValue(reference, newRow);
 
-  switch (kind) {
-    case "class":
-      return {
-        rewritten:
-          changes(
-            tx
-              .update(characters)
-              .set({ classEntryId: newRow.id })
-              .where(eq(characters.classEntryId, oldRow.id))
-              .run(),
-          ) +
-          changes(
-            tx
-              .update(builds)
-              .set({ targetClassEntryId: newRow.id })
-              .where(eq(builds.targetClassEntryId, oldRow.id))
-              .run(),
-          ),
-        merged: 0,
-      };
-    case "race":
-      return {
-        rewritten: changes(
-          tx
-            .update(characters)
-            .set({ raceEntryId: newRow.id })
-            .where(eq(characters.raceEntryId, oldRow.id))
-            .run(),
-        ),
-        merged: 0,
-      };
-    case "faction":
-      return {
-        rewritten: changes(
-          tx
-            .update(characters)
-            .set({ factionEntryId: newRow.id })
-            .where(eq(characters.factionEntryId, oldRow.id))
-            .run(),
-        ),
-        merged: 0,
-      };
-    case "profession": {
-      // A character holding both professions keeps the new entry; the old one is merged away.
+    if (reference.uniqueWith) {
       const holdersOfNew = tx
-        .select({ characterId: characterProfessions.characterId })
-        .from(characterProfessions)
-        .where(eq(characterProfessions.professionEntryId, newRow.id))
+        .select({ owner: reference.uniqueWith })
+        .from(reference.table)
+        .where(eq(reference.column, newValue))
         .all()
-        .map((row) => row.characterId);
-      const merged =
-        holdersOfNew.length === 0
-          ? 0
-          : changes(
-              tx
-                .delete(characterProfessions)
-                .where(
-                  and(
-                    eq(characterProfessions.professionEntryId, oldRow.id),
-                    inArray(characterProfessions.characterId, holdersOfNew),
-                  ),
-                )
-                .run(),
-            );
-      const rewritten = changes(
-        tx
-          .update(characterProfessions)
-          .set({ professionEntryId: newRow.id })
-          .where(eq(characterProfessions.professionEntryId, oldRow.id))
-          .run(),
-      );
-      return { rewritten, merged };
+        .map((row) => row.owner);
+      if (holdersOfNew.length > 0) {
+        merged += tx
+          .delete(reference.table)
+          .where(
+            and(
+              referencesValue(reference, gameId, oldValue),
+              inArray(reference.uniqueWith, holdersOfNew),
+            ),
+          )
+          .run().changes;
+      }
     }
-    case "server":
-      return {
-        rewritten: changes(
-          tx
-            .update(characters)
-            .set({ serverKey: newRow.key })
-            .where(
-              and(
-                eq(characters.gameId, gameId),
-                eq(characters.serverKey, oldRow.key),
-              ),
-            )
-            .run(),
-        ),
-        merged: 0,
-      };
-    case "boss":
-    case "reset_rule":
-      // Referenced by tasks, which arrive in Phase 2.
-      return { rewritten: 0, merged: 0 };
+
+    // SET needs the bare column name; WHERE may use the table-qualified column.
+    rewritten += tx.run(
+      sql`UPDATE ${reference.table} SET ${sql.identifier(reference.column.name)} = ${newValue} WHERE ${referencesValue(reference, gameId, oldValue)}`,
+    ).changes;
   }
+  return { rewritten, merged };
+}
+
+function storedValue(reference: CatalogReference, row: CatalogRow) {
+  return reference.storedAs === "key" ? row.key : row.id;
+}
+
+function referencesValue(
+  reference: CatalogReference,
+  gameId: string,
+  value: string | number,
+) {
+  return reference.gameColumn
+    ? and(eq(reference.column, value), eq(reference.gameColumn, gameId))
+    : eq(reference.column, value);
 }
 
 function charactersReferencing(
   tx: Transaction,
+  gameId: string,
   kind: CatalogKind,
   row: CatalogRow,
 ): SyncSummary["affected_characters"] {
-  const columns = {
-    class: characters.classEntryId,
-    race: characters.raceEntryId,
-    faction: characters.factionEntryId,
-  } as const;
-
-  let ids: number[] = [];
-  if (kind === "class" || kind === "race" || kind === "faction") {
-    ids = tx
-      .select({ id: characters.id })
-      .from(characters)
-      .where(and(isNotNull(columns[kind]), eq(columns[kind], row.id)))
+  const ids = new Set<number>();
+  for (const reference of CATALOG_REFERENCES[kind]) {
+    if (!reference.characterColumn) {
+      continue;
+    }
+    tx.select({ id: reference.characterColumn })
+      .from(reference.table)
+      .where(referencesValue(reference, gameId, storedValue(reference, row)))
       .all()
-      .map((character) => character.id);
-  } else if (kind === "profession") {
-    ids = tx
-      .select({ id: characterProfessions.characterId })
-      .from(characterProfessions)
-      .where(eq(characterProfessions.professionEntryId, row.id))
-      .all()
-      .map((profession) => profession.id);
+      .forEach((match) => ids.add(match.id as number));
   }
-  return ids.map((id) => ({ character_id: id, field: kind, old_id: row.key }));
+  return [...ids].map((id) => ({
+    character_id: id,
+    field: kind,
+    old_id: row.key,
+  }));
 }
 
 export function syncPacks(
