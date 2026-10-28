@@ -5,9 +5,8 @@ import { PageSuspense } from "@/components/ui/PageSuspense";
 import { Badge, ButtonLink, Card, PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
-import { readGameFilter } from "@/lib/game-filter";
+import { selectedGames } from "@/lib/game-filter";
 import { listFarmSpots, type FarmSpotView } from "@/lib/lists/farm-spots";
-import { listEnabledGames } from "@/lib/roster/game-catalog";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
 import { deleteFarmSpotAction } from "./actions";
@@ -17,11 +16,7 @@ export const metadata: Metadata = { title: de.farmSpots.title };
 async function FarmSpotsContent() {
   const actor = await requireActor();
   const db = getDb();
-  const enabledGames = listEnabledGames(db, actor.guildId);
-  const selected = await readGameFilter(enabledGames.map((game) => game.id));
-  const games = enabledGames.filter(
-    (game) => !selected || game.id === selected,
-  );
+  const { games } = await selectedGames(db, actor.guildId);
   const spots = listFarmSpots(
     db,
     actor,

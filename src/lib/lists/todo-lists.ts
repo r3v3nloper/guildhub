@@ -1,8 +1,9 @@
-import { and, asc, eq, inArray, isNotNull, or } from "drizzle-orm";
+import { and, asc, eq, inArray, isNotNull } from "drizzle-orm";
 import { assertAllowed, permissions, type Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
 import { todoItems, todoLists, users } from "@/lib/db/schema";
 import { DomainError, NotFoundError } from "@/lib/errors";
+import { isVisibleTo, visibleToFilter } from "./visible-entries";
 import { VISIBILITIES, type Visibility } from "./visibility";
 
 export type TodoListRow = typeof todoLists.$inferSelect;
@@ -33,12 +34,7 @@ export function listTodoLists(db: AppDatabase, actor: Actor): TodoListView[] {
     .select({ list: todoLists, ownerName: users.name })
     .from(todoLists)
     .innerJoin(users, eq(users.id, todoLists.ownerId))
-    .where(
-      or(
-        eq(todoLists.ownerId, actor.userId),
-        eq(todoLists.visibility, "guild"),
-      ),
-    )
+    .where(visibleToFilter(todoLists, actor.userId))
     .orderBy(asc(todoLists.id))
     .all();
   if (lists.length === 0) {
@@ -103,10 +99,7 @@ function visibleList(
     .from(todoLists)
     .where(eq(todoLists.id, listId))
     .get();
-  if (
-    !list ||
-    (list.visibility === "private" && list.ownerId !== actor.userId)
-  ) {
+  if (!list || !isVisibleTo(list, actor.userId)) {
     throw new NotFoundError("Liste");
   }
   // Adding and ticking: every active member on guild lists, the author on private ones.

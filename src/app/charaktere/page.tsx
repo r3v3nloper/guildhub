@@ -5,8 +5,7 @@ import { ClassName } from "@/components/characters/ClassName";
 import { Badge, ButtonLink, Card, PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
-import { readGameFilter } from "@/lib/game-filter";
-import { listEnabledGames } from "@/lib/roster/game-catalog";
+import { selectedGames } from "@/lib/game-filter";
 import { loadRosterMembers } from "@/lib/roster/roster";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
@@ -16,13 +15,7 @@ export const metadata: Metadata = { title: de.characters.title };
 async function CharactersContent() {
   const actor = await requireActor();
   const db = getDb();
-  const enabledGames = listEnabledGames(db, actor.guildId);
-  const selectedGame = await readGameFilter(
-    enabledGames.map((game) => game.id),
-  );
-  const games = enabledGames.filter(
-    (game) => !selectedGame || game.id === selectedGame,
-  );
+  const { games } = await selectedGames(db, actor.guildId);
   const own =
     loadRosterMembers(db, actor.guildId, actor.userId).find(
       (member) => member.userId === actor.userId,

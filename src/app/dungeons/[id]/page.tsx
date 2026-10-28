@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { ChecklistForm } from "@/components/lists/ChecklistForm";
 import { ActionForm } from "@/components/ui/ActionForm";
 import { ConfirmButton } from "@/components/ui/ConfirmButton";
@@ -9,7 +8,7 @@ import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { getEditableChecklist } from "@/lib/lists/checklists";
 import { listGuildGames } from "@/lib/roster/game-catalog";
-import { orNotFound } from "@/lib/not-found";
+import { idParam, orNotFound } from "@/lib/not-found";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
 import { deleteChecklistAction, saveChecklistAction } from "../actions";
@@ -18,11 +17,8 @@ export const metadata: Metadata = { title: de.checklists.editTitle };
 
 async function EditChecklistContent({ params }: PageProps<"/dungeons/[id]">) {
   const actor = await requireActor();
-  const checklistId = Number((await params).id);
+  const checklistId = await idParam(params);
   const db = getDb();
-  if (!Number.isInteger(checklistId)) {
-    notFound();
-  }
   const checklist = orNotFound(() =>
     getEditableChecklist(db, actor, checklistId),
   );

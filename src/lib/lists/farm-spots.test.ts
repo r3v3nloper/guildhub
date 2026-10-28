@@ -6,7 +6,10 @@ import {
   saveFarmSpot,
   type FarmSpotInput,
 } from "./farm-spots";
-import { createListFixture, type ListFixture } from "./test-setup";
+import {
+  createListFixture,
+  type ListFixture,
+} from "../../../test/fixtures/lists";
 
 const input: FarmSpotInput = {
   gameId: "game",

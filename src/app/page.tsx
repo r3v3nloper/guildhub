@@ -5,9 +5,8 @@ import { PageSuspense } from "@/components/ui/PageSuspense";
 import { PageHeader } from "@/components/ui/ui";
 import { currentActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
-import { readGameFilter } from "@/lib/game-filter";
+import { selectedGames } from "@/lib/game-filter";
 import { listCharactersOfUser } from "@/lib/roster/characters";
-import { listEnabledGames } from "@/lib/roster/game-catalog";
 import { buildDashboard } from "@/lib/tasks/dashboard";
 import { de } from "@/i18n/de";
 
@@ -24,15 +23,15 @@ async function HomeContent() {
   }
 
   const db = getDb();
-  const enabledGames = listEnabledGames(db, actor.guildId);
-  const selected = await readGameFilter(enabledGames.map((game) => game.id));
-  const games = enabledGames
-    .filter((game) => !selected || game.id === selected)
-    .map((game) => ({
-      id: game.id,
-      name: game.name,
-      serverLabel: game.meta.serverLabel,
-    }));
+  const { enabled: enabledGames, games: shownGames } = await selectedGames(
+    db,
+    actor.guildId,
+  );
+  const games = shownGames.map((game) => ({
+    id: game.id,
+    name: game.name,
+    serverLabel: game.meta.serverLabel,
+  }));
   const now = DateTime.now();
   const dashboard = buildDashboard(db, actor.guildId, actor.userId, games, now);
   const hasCharacters = listCharactersOfUser(db, actor.userId).length > 0;

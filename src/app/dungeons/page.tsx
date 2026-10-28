@@ -12,9 +12,8 @@ import {
 } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
-import { readGameFilter } from "@/lib/game-filter";
+import { selectedGames } from "@/lib/game-filter";
 import { listChecklists, type ChecklistView } from "@/lib/lists/checklists";
-import { listEnabledGames } from "@/lib/roster/game-catalog";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
 import {
@@ -27,11 +26,7 @@ export const metadata: Metadata = { title: de.checklists.title };
 async function ChecklistsContent() {
   const actor = await requireActor();
   const db = getDb();
-  const enabledGames = listEnabledGames(db, actor.guildId);
-  const selected = await readGameFilter(enabledGames.map((game) => game.id));
-  const games = enabledGames.filter(
-    (game) => !selected || game.id === selected,
-  );
+  const { games } = await selectedGames(db, actor.guildId);
   const checklists = listChecklists(
     db,
     actor,

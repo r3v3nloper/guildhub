@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { TASK_KINDS, TASK_SCOPES } from "@/lib/reset/task-kinds";
+import { isHttpUrl } from "@/lib/url";
 import { RESET_RULE_TYPES } from "@/lib/reset/types";
 
 // Shapes only. Cross-references, capability and per-kind rules live in validate.ts,
@@ -99,7 +100,7 @@ export const taskSchema = z.strictObject({
   priority: z.enum(["high", "medium", "low"]).default("medium"),
   order: z.number().int().optional(),
   tags: z.array(z.string().min(1)).default([]),
-  link: z.url().optional(),
+  link: z.url().refine(isHttpUrl, "nur http(s)-Links").optional(),
 });
 
 export const capabilitiesSchema = z.strictObject({

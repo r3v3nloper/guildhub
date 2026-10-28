@@ -8,7 +8,7 @@ import { ItemShell } from "./ItemShell";
 import { ResetCountdown } from "./ResetCountdown";
 import { adjustCounterAction } from "./today-actions";
 import { useLongPress } from "./use-long-press";
-import { useProgressAction } from "./use-progress-action";
+import { useOptimisticAction } from "@/components/ui/use-optimistic-action";
 
 /** counter: tap = +1, long press or the minus button = −1. */
 export function CounterTask({
@@ -20,7 +20,7 @@ export function CounterTask({
 }) {
   const cap = item.cap ?? Number.POSITIVE_INFINITY;
   const [value, setValue] = useOptimistic(item.value);
-  const { pending, error, run } = useProgressAction();
+  const { pending, error, run } = useOptimisticAction();
   const target = { taskId: item.taskId, characterId: item.characterId };
   const done = value >= cap;
 

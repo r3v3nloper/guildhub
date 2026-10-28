@@ -9,7 +9,7 @@ import { de } from "@/i18n/de";
 import { ItemShell } from "./ItemShell";
 import { consumeStackingAction, setResourceValueAction } from "./today-actions";
 import { useLongPress } from "./use-long-press";
-import { useProgressAction } from "./use-progress-action";
+import { useOptimisticAction } from "@/components/ui/use-optimistic-action";
 
 /**
  * regen and stacking (SPEC 5.3). Stacking: tap = one used, long press or pencil = exact
@@ -26,7 +26,7 @@ export function ResourceTask({
   const [value, setValue] = useOptimistic(resource.value);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<number | null>(value);
-  const { pending, error, run } = useProgressAction();
+  const { pending, error, run } = useOptimisticAction();
   const target = { taskId: item.taskId, characterId: item.characterId };
   const unknown = value === null;
 

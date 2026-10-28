@@ -2,15 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 import {
   formText,
   guarded,
   type ActionState,
 } from "@/lib/actions/action-state";
+import { flagArg, idArg, parseArg } from "@/lib/actions/action-args";
+import { runMutation } from "@/lib/actions/mutation";
 import { actorForAction } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
-import { DomainError } from "@/lib/errors";
 import {
   deleteChecklist,
   resetChecklistRun,
@@ -61,31 +61,21 @@ export async function deleteChecklistAction(
 export async function resetChecklistRunAction(
   checklistId: number,
 ): Promise<ActionState> {
-  const state = await guarded(async () => {
-    resetChecklistRun(getDb(), await actorForAction(), checklistId);
-    return { ok: true };
-  });
-  revalidatePath("/dungeons");
-  return state;
+  return runMutation(["/dungeons"], (db, actor) =>
+    resetChecklistRun(db, actor, checklistId),
+  );
 }
 
-/** Called directly from a client component, so the arguments are checked here. */
 export async function setChecklistItemTickedAction(
   itemId: number,
   ticked: boolean,
 ): Promise<ActionState> {
-  const state = await guarded(async () => {
-    if (!z.number().int().positive().safeParse(itemId).success) {
-      throw new DomainError("Ungültige Eingabe.");
-    }
+  return runMutation(["/dungeons"], (db, actor) =>
     setChecklistItemTicked(
-      getDb(),
-      await actorForAction(),
-      itemId,
-      ticked === true,
-    );
-    return { ok: true };
-  });
-  revalidatePath("/dungeons");
-  return state;
+      db,
+      actor,
+      parseArg(idArg, itemId),
+      parseArg(flagArg, ticked),
+    ),
+  );
 }

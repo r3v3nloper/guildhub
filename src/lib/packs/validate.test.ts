@@ -106,6 +106,29 @@ describe("validatePack", () => {
     ]);
   });
 
+  it("accepts only http(s) guide links on tasks", () => {
+    // Arrange
+    const task = {
+      id: "quest",
+      kind: "one_time",
+      title: "Quest",
+      scope: "character",
+    };
+
+    // Act
+    const errors = errorsOf(
+      basePack({ tasks: [{ ...task, link: "javascript:alert(1)" }] }),
+    );
+
+    // Assert
+    expect(errors).toEqual([
+      { path: "tasks[0].link", message: "nur http(s)-Links" },
+    ]);
+    expect(
+      errorsOf(basePack({ tasks: [{ ...task, link: "https://example.org" }] })),
+    ).toEqual([]);
+  });
+
   it("requires the folder name to match the pack id", () => {
     const errors = validatePack(basePack(), "other-folder").errors;
 

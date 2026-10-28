@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { detectBuildSource, isHttpUrl } from "./build-source";
+import { detectBuildSource } from "./build-source";
 
 const sources = [
   { domain: "metabot.gg", label: "MetaBot" },
@@ -30,13 +30,5 @@ describe("detectBuildSource", () => {
 
   it("returns undefined for something that is not a URL", () => {
     expect(detectBuildSource("kein link", sources)).toBeUndefined();
-  });
-});
-
-describe("isHttpUrl", () => {
-  it("accepts only http and https", () => {
-    expect(isHttpUrl("https://example.com")).toBe(true);
-    expect(isHttpUrl("javascript:alert(1)")).toBe(false);
-    expect(isHttpUrl("example.com")).toBe(false);
   });
 });

@@ -1,6 +1,7 @@
 "use client";
 
 import { addLocale, PrimeReactProvider } from "primereact/api";
+import { ConfirmPopup } from "primereact/confirmpopup";
 import type { ReactNode } from "react";
 
 // Only the texts the app's components show; PrimeReact falls back to English otherwise.
@@ -26,6 +27,7 @@ export function PrimeProvider({ children }: { children: ReactNode }) {
   return (
     <PrimeReactProvider value={{ ripple: true, locale: "de" }}>
       {children}
+      <ConfirmPopup />
     </PrimeReactProvider>
   );
 }

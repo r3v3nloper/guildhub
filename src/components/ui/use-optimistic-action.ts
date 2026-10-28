@@ -4,11 +4,11 @@ import { useState, useTransition } from "react";
 import type { ActionState } from "@/lib/actions/action-state";
 
 /**
- * Runs a progress action optimistically (SPEC 7.1): the optimistic update is applied
+ * Runs a server action optimistically (SPEC 7.1): the optimistic update is applied
  * inside the transition, React rolls it back when the action fails, and the message
  * explains why.
  */
-export function useProgressAction() {
+export function useOptimisticAction() {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string>();
 

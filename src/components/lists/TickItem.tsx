@@ -2,7 +2,7 @@
 
 import { Checkbox } from "primereact/checkbox";
 import { useOptimistic } from "react";
-import { useProgressAction } from "@/components/today/use-progress-action";
+import { useOptimisticAction } from "@/components/ui/use-optimistic-action";
 import { Button } from "@/components/ui/ui";
 import type { ActionState } from "@/lib/actions/action-state";
 import { de } from "@/i18n/de";
@@ -26,7 +26,7 @@ export function TickItem({
   meta?: string;
 }) {
   const [ticked, setTicked] = useOptimistic(checked);
-  const { error, run } = useProgressAction();
+  const { error, run } = useOptimisticAction();
 
   return (
     <li className="flex flex-col gap-1 py-1.5">

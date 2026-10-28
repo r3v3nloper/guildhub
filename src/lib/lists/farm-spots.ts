@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray, or } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 import { assertAllowed, permissions, type Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
 import {
@@ -9,8 +9,9 @@ import {
   type Visibility,
 } from "@/lib/db/schema";
 import { NotFoundError } from "@/lib/errors";
+import { isVisibleTo, visibleToFilter } from "./visible-entries";
 import type { LocalizedString } from "@/lib/packs/schema";
-import { isHttpUrl } from "@/lib/roster/build-source";
+import { isHttpUrl } from "@/lib/url";
 import {
   catalogOfKind,
   isGameEnabled,
@@ -71,10 +72,7 @@ export function listFarmSpots(
     .where(
       and(
         inArray(farmSpots.gameId, [...gameIds]),
-        or(
-          eq(farmSpots.ownerId, actor.userId),
-          eq(farmSpots.visibility, "guild"),
-        ),
+        visibleToFilter(farmSpots, actor.userId),
       ),
     )
     .orderBy(asc(farmSpots.gameId), asc(farmSpots.resource))
@@ -98,10 +96,7 @@ function visibleSpot(
     .from(farmSpots)
     .where(eq(farmSpots.id, spotId))
     .get();
-  if (
-    !spot ||
-    (spot.visibility === "private" && spot.ownerId !== actor.userId)
-  ) {
+  if (!spot || !isVisibleTo(spot, actor.userId)) {
     throw new NotFoundError("Farmspot");
   }
   return spot;

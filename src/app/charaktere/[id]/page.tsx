@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageSuspense } from "@/components/ui/PageSuspense";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { idParam } from "@/lib/not-found";
 import { BuildForm } from "@/components/characters/BuildForm";
 import { BuildItem } from "@/components/characters/BuildItem";
 import { CharacterForm } from "@/components/characters/CharacterForm";
@@ -38,11 +39,9 @@ export const metadata: Metadata = { title: de.characters.title };
 
 async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
   const actor = await requireActor();
-  const characterId = Number((await params).id);
+  const characterId = await idParam(params);
   const db = getDb();
-  const character = Number.isInteger(characterId)
-    ? getCharacter(db, characterId)
-    : undefined;
+  const character = getCharacter(db, characterId);
   if (!character || !permissions.editOwnData(actor, character.userId).allowed) {
     notFound();
   }

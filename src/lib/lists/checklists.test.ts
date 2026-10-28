@@ -8,7 +8,10 @@ import {
   setChecklistItemTicked,
   type ChecklistInput,
 } from "./checklists";
-import { createListFixture, type ListFixture } from "./test-setup";
+import {
+  createListFixture,
+  type ListFixture,
+} from "../../../test/fixtures/lists";
 
 const input: ChecklistInput = {
   name: "Feuerschlund",

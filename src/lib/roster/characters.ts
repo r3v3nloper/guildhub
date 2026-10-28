@@ -9,7 +9,8 @@ import {
   type BuildStatus,
 } from "@/lib/db/schema";
 import { deleteCharacterProgress } from "@/lib/tasks/progress";
-import { detectBuildSource, isHttpUrl } from "./build-source";
+import { isHttpUrl } from "@/lib/url";
+import { detectBuildSource } from "./build-source";
 import {
   resolveCharacter,
   type CharacterInput,

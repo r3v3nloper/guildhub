@@ -1,12 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { guarded, type ActionState } from "@/lib/actions/action-state";
-import type { Actor } from "@/lib/auth/guards";
-import { actorForAction } from "@/lib/auth/current-actor";
-import { getDb, type AppDatabase } from "@/lib/db/client";
-import { DomainError } from "@/lib/errors";
+import { flagArg, idArg, parseArg } from "@/lib/actions/action-args";
+import type { ActionState } from "@/lib/actions/action-state";
+import { runMutation } from "@/lib/actions/mutation";
 import {
   adjustCounter,
   consumeStacking,
@@ -16,41 +13,23 @@ import {
   type ProgressTarget,
 } from "@/lib/tasks/progress";
 
-// Server action arguments arrive from the client unchecked, whatever TypeScript says.
-const targetSchema = z.strictObject({
-  taskId: z.number().int().positive(),
-  characterId: z.number().int().positive().nullable(),
+const targetArg = z.strictObject({
+  taskId: idArg,
+  characterId: idArg.nullable(),
 });
 
-function parse<T>(schema: z.ZodType<T>, value: unknown): T {
-  const result = schema.safeParse(value);
-  if (!result.success) {
-    throw new DomainError("Ungültige Eingabe.");
-  }
-  return result.data;
-}
-
-async function progressAction(
-  change: (db: AppDatabase, actor: Actor) => void,
-): Promise<ActionState> {
-  const state = await guarded(async () => {
-    change(getDb(), await actorForAction());
-    return { ok: true };
-  });
-  revalidatePath("/");
-  return state;
-}
+const DASHBOARD = ["/"];
 
 export async function setTaskDoneAction(
   target: ProgressTarget,
   done: boolean,
 ): Promise<ActionState> {
-  return progressAction((db, actor) =>
+  return runMutation(DASHBOARD, (db, actor) =>
     setTaskDone(
       db,
       actor,
-      parse(targetSchema, target),
-      parse(z.boolean(), done),
+      parseArg(targetArg, target),
+      parseArg(flagArg, done),
     ),
   );
 }
@@ -59,12 +38,12 @@ export async function adjustCounterAction(
   target: ProgressTarget,
   delta: number,
 ): Promise<ActionState> {
-  return progressAction((db, actor) =>
+  return runMutation(DASHBOARD, (db, actor) =>
     adjustCounter(
       db,
       actor,
-      parse(targetSchema, target),
-      parse(z.union([z.literal(1), z.literal(-1)]), delta),
+      parseArg(targetArg, target),
+      parseArg(z.union([z.literal(1), z.literal(-1)]), delta),
     ),
   );
 }
@@ -74,13 +53,13 @@ export async function setBossKilledAction(
   bossKey: string,
   killed: boolean,
 ): Promise<ActionState> {
-  return progressAction((db, actor) =>
+  return runMutation(DASHBOARD, (db, actor) =>
     setBossKilled(
       db,
       actor,
-      parse(targetSchema, target),
-      parse(z.string().min(1), bossKey),
-      parse(z.boolean(), killed),
+      parseArg(targetArg, target),
+      parseArg(z.string().min(1), bossKey),
+      parseArg(flagArg, killed),
     ),
   );
 }
@@ -89,12 +68,12 @@ export async function setResourceValueAction(
   target: ProgressTarget,
   value: number,
 ): Promise<ActionState> {
-  return progressAction((db, actor) =>
+  return runMutation(DASHBOARD, (db, actor) =>
     setResourceValue(
       db,
       actor,
-      parse(targetSchema, target),
-      parse(z.number(), value),
+      parseArg(targetArg, target),
+      parseArg(z.number(), value),
     ),
   );
 }
@@ -102,7 +81,7 @@ export async function setResourceValueAction(
 export async function consumeStackingAction(
   target: ProgressTarget,
 ): Promise<ActionState> {
-  return progressAction((db, actor) =>
-    consumeStacking(db, actor, parse(targetSchema, target)),
+  return runMutation(DASHBOARD, (db, actor) =>
+    consumeStacking(db, actor, parseArg(targetArg, target)),
   );
 }

@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { DomainError, ForbiddenError, NotFoundError } from "@/lib/errors";
-import { createListFixture, type ListFixture } from "./test-setup";
+import {
+  createListFixture,
+  type ListFixture,
+} from "../../../test/fixtures/lists";
 import {
   addTodoItem,
   clearDoneItems,

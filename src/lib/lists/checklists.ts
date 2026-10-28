@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray, or } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 import { assertAllowed, permissions, type Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
 import {
@@ -10,6 +10,7 @@ import {
   type Visibility,
 } from "@/lib/db/schema";
 import { NotFoundError } from "@/lib/errors";
+import { isVisibleTo, visibleToFilter } from "./visible-entries";
 import { isGameEnabled } from "@/lib/roster/game-catalog";
 
 export type ChecklistRow = typeof checklists.$inferSelect;
@@ -54,10 +55,7 @@ export function listChecklists(
     .where(
       and(
         inArray(checklists.gameId, [...gameIds]),
-        or(
-          eq(checklists.ownerId, actor.userId),
-          eq(checklists.visibility, "guild"),
-        ),
+        visibleToFilter(checklists, actor.userId),
       ),
     )
     .orderBy(asc(checklists.gameId), asc(checklists.name))
@@ -109,10 +107,7 @@ function visibleChecklist(
     .from(checklists)
     .where(eq(checklists.id, checklistId))
     .get();
-  if (
-    !checklist ||
-    (checklist.visibility === "private" && checklist.ownerId !== actor.userId)
-  ) {
+  if (!checklist || !isVisibleTo(checklist, actor.userId)) {
     throw new NotFoundError("Checkliste");
   }
   assertAllowed(permissions.viewGuild(actor));

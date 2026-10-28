@@ -3,7 +3,10 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { taskDefinitions } from "@/lib/db/schema";
 import { buildDashboard } from "./dashboard";
 import { setResourceValue } from "./progress";
-import { createTaskFixture, type TaskFixture } from "./test-setup";
+import {
+  createTaskFixture,
+  type TaskFixture,
+} from "../../../test/fixtures/tasks";
 
 const now = DateTime.fromISO("2026-10-27T12:00:00", { zone: "Europe/Berlin" });
 

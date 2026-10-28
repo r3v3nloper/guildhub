@@ -15,3 +15,14 @@ export function orNotFound<T>(load: () => T): T {
     throw error;
   }
 }
+
+/** The numeric `[id]` of a route; anything else is a 404, like an unknown ID. */
+export async function idParam(
+  params: Promise<{ id: string }>,
+): Promise<number> {
+  const id = Number((await params).id);
+  if (!Number.isInteger(id) || id < 1) {
+    notFound();
+  }
+  return id;
+}

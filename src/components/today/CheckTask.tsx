@@ -6,12 +6,12 @@ import { ItemShell } from "./ItemShell";
 import { ResetCountdown } from "./ResetCountdown";
 import { setTaskDoneAction } from "./today-actions";
 import { useLongPress } from "./use-long-press";
-import { useProgressAction } from "./use-progress-action";
+import { useOptimisticAction } from "@/components/ui/use-optimistic-action";
 
 /** recurring, one_time and lockouts without bosses: one tap toggles done. */
 export function CheckTask({ item, now }: { item: DashboardItem; now: string }) {
   const [done, setDone] = useOptimistic(item.status === "done");
-  const { pending, error, run } = useProgressAction();
+  const { pending, error, run } = useOptimisticAction();
   const target = { taskId: item.taskId, characterId: item.characterId };
   const press = useLongPress(() =>
     run(

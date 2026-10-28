@@ -21,7 +21,7 @@ import {
   loadGameCatalog,
   type GameCatalog,
 } from "@/lib/roster/game-catalog";
-import { isHttpUrl } from "@/lib/roster/build-source";
+import { isHttpUrl } from "@/lib/url";
 import { CUSTOM_RULE, NO_RULE } from "./rule-choices";
 
 export type TaskRow = typeof taskDefinitions.$inferSelect;

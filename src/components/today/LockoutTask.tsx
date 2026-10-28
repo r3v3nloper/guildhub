@@ -8,7 +8,7 @@ import { ItemShell } from "./ItemShell";
 import { ResetCountdown } from "./ResetCountdown";
 import { setBossKilledAction } from "./today-actions";
 import { useLongPress } from "./use-long-press";
-import { useProgressAction } from "./use-progress-action";
+import { useOptimisticAction } from "@/components/ui/use-optimistic-action";
 
 /** lockout with a boss list: tap opens the list, each boss is ticked on its own. */
 export function LockoutTask({
@@ -26,7 +26,7 @@ export function LockoutTask({
         boss.key === key ? { ...boss, killed: !boss.killed } : boss,
       ),
   );
-  const { pending, error, run } = useProgressAction();
+  const { pending, error, run } = useOptimisticAction();
   const target = { taskId: item.taskId, characterId: item.characterId };
   const killed = bosses.filter((boss) => boss.killed).length;
   const done = item.status === "done" || killed === bosses.length;
