@@ -748,10 +748,19 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
 - `src/lib/reset/` mit allen Pflicht-Testfällen aus Abschnitt 5
 - Alle Aufgabentypen aus 4.2 inkl. Ressourcen-Hochrechnung (5.3) und Scope-Keys (4.1)
 - Dashboard „Heute“, eigene Aufgaben mit eigenen Reset-Regeln und spielübergreifend
+- Checklisten für Dungeon-Runs
+- Farmspots für Berufe, mit Karte, wenn möglich. Mitglieder pflegen sie in der App,
+  nicht im Game Pack
+- Eigene To-do-Listen: einmalige Aufgaben ohne Reset
 - ✅ Alle Reset-Tests grün; Abhaken ist mobil mit einem Tap möglich; nach einem simulierten Reset ist die Aufgabe wieder offen
 
 ### Phase 3: Gildenfunktionen
 - Gilden-Matrix, Berufe-Verzeichnis mit Rezeptnotizen, gildenweite Custom-Aufgaben
+- Gilden-To-do-Listen: einmalige gildenweite Aufgaben ohne Reset
+- Anträge für Berufs- und Crafting-Items: Jedes Mitglied kann einen Antrag stellen,
+  annehmen kann ihn nur, wer den Beruf hat. Status: offen → angenommen → erledigt
+- Je Klasse anzeigen, welche Stats in welcher Rangfolge wichtig sind. Officers pflegen
+  sie in der App, nicht im Game Pack
 - ✅ Officer legt eine gildenweite Aufgabe an, alle Mitglieder sehen sie in Dashboard + Matrix
 
 ### Phase 4: Erweiterbarkeit beweisen
