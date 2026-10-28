@@ -87,6 +87,14 @@ export const de = {
     isMain: "Main-Charakter",
     notes: "Notizen",
     professions: "Berufe",
+    professionDetails: "Berufe im Detail",
+    professionDetailsHint:
+      "Fertigkeit, Spezialisierung und eine Notiz, z. B. was du herstellen kannst.",
+    skillLevel: "Fertigkeit",
+    specialization: "Spezialisierung",
+    professionNotes: "Notiz",
+    editBuild: "Bearbeiten",
+    saveBuild: "Build speichern",
     deleteConfirm: "Diesen Charakter mit allen Builds wirklich löschen?",
     builds: "Builds",
     noBuilds: "Noch keine Builds.",
@@ -150,6 +158,10 @@ export const de = {
     allowlistHint:
       "Discord: Einstellungen → Erweitert → Entwicklermodus, dann Rechtsklick auf die Person → Benutzer-ID kopieren.",
     audit: "Protokoll",
+    backup: "Backup",
+    backupDownload: "Datenbank herunterladen",
+    backupHint:
+      "Vollständige Kopie der Datenbank ohne Sessions und Tokens. Nach einem Restore daraus müssen sich alle neu anmelden.",
     noAudit: "Noch keine Einträge.",
     affectedCharacters: "betroffene Charaktere",
     packErrorBadge: "Pack-Fehler",

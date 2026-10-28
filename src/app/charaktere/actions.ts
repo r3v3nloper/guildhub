@@ -17,6 +17,7 @@ import {
   deleteCharacter,
   saveBuild,
   saveCharacter,
+  saveProfessionDetails,
 } from "@/lib/roster/characters";
 import { de } from "@/i18n/de";
 
@@ -91,20 +92,28 @@ function buildStatusOf(formData: FormData): BuildStatus {
     : "current";
 }
 
+/** Adds a build, or updates it when `buildId` is given. */
 export async function saveBuildAction(
   characterId: number,
+  buildId: number | undefined,
   _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const state = await guarded(async () => {
     const actor = await actorForAction();
-    const result = saveBuild(getDb(), actor, characterId, {
-      title: formText(formData, "title"),
-      url: formText(formData, "url"),
-      status: buildStatusOf(formData),
-      targetClassKey: formText(formData, "targetClass"),
-      notes: formText(formData, "notes"),
-    });
+    const result = saveBuild(
+      getDb(),
+      actor,
+      characterId,
+      {
+        title: formText(formData, "title"),
+        url: formText(formData, "url"),
+        status: buildStatusOf(formData),
+        targetClassKey: formText(formData, "targetClass"),
+        notes: formText(formData, "notes"),
+      },
+      buildId,
+    );
     return result.ok
       ? { ok: true, message: de.common.saved }
       : { ok: false, errors: result.errors };
@@ -123,6 +132,35 @@ export async function deleteBuildAction(
   const state = await guarded(async () => {
     deleteBuild(getDb(), await actorForAction(), characterId, buildId);
     return { ok: true };
+  });
+  if (state.ok) {
+    revalidatePath(`/charaktere/${characterId}`);
+    revalidatePath("/roster");
+  }
+  return state;
+}
+
+export async function saveProfessionDetailsAction(
+  characterId: number,
+  professionEntryId: number,
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const state = await guarded(async () => {
+    const result = saveProfessionDetails(
+      getDb(),
+      await actorForAction(),
+      characterId,
+      professionEntryId,
+      {
+        skillLevel: formNumber(formData, "skillLevel"),
+        specialization: formText(formData, "specialization"),
+        notes: formText(formData, "notes"),
+      },
+    );
+    return result.ok
+      ? { ok: true, message: de.common.saved }
+      : { ok: false, errors: result.errors };
   });
   if (state.ok) {
     revalidatePath(`/charaktere/${characterId}`);

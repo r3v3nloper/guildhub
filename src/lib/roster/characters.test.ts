@@ -17,6 +17,7 @@ import {
   getCharacter,
   saveBuild,
   saveCharacter,
+  saveProfessionDetails,
 } from "./characters";
 import { filterRoster, loadRosterMembers, OUTDATED_FILTER_KEY } from "./roster";
 
@@ -328,5 +329,104 @@ describe("characters and roster with the shipped packs", () => {
       ok: false,
       errors: { url: expect.any(String) },
     });
+  });
+  it("updates an existing build instead of adding a new one", () => {
+    const anna = member(OWNER, "Anna");
+    const saved = saveCharacter(
+      db,
+      anna,
+      "aion2",
+      input({ factionKey: "elyos", classKey: "cleric" }),
+    );
+    const characterId = saved.ok ? saved.characterId : -1;
+    const build = {
+      title: "Heiler",
+      url: "",
+      status: "current" as const,
+      targetClassKey: "",
+      notes: "",
+    };
+    saveBuild(db, anna, characterId, build);
+    const buildId = getCharacter(db, characterId)!.builds[0].id;
+
+    saveBuild(
+      db,
+      anna,
+      characterId,
+      { ...build, title: "PvP-Heiler", url: "https://metabot.gg/x" },
+      buildId,
+    );
+
+    expect(getCharacter(db, characterId)!.builds).toEqual([
+      expect.objectContaining({
+        id: buildId,
+        title: "PvP-Heiler",
+        source: "MetaBot",
+      }),
+    ]);
+  });
+
+  it("stores profession details and shows them in the roster", () => {
+    const anna = member(OWNER, "Anna");
+    const saved = saveCharacter(
+      db,
+      anna,
+      "wow-forever",
+      input({
+        raceKey: "human",
+        classKey: "mage",
+        professionKeys: ["tailoring"],
+      }),
+    );
+    const character = getCharacter(db, saved.ok ? saved.characterId : -1)!;
+    const tailoring = character.professionEntryIds[0];
+
+    const result = saveProfessionDetails(db, anna, character.id, tailoring, {
+      skillLevel: 300,
+      specialization: " Mondstoff ",
+      notes: "",
+    });
+
+    expect(result).toEqual({ ok: true });
+    const roster = filterRoster(loadRosterMembers(db, guildId), {});
+    expect(roster.members[0].characters[0].professions).toEqual([
+      expect.objectContaining({
+        key: "tailoring",
+        skillLevel: 300,
+        specialization: "Mondstoff",
+      }),
+    ]);
+  });
+
+  it("validates profession details and only for held professions", () => {
+    const anna = member(OWNER, "Anna");
+    const saved = saveCharacter(
+      db,
+      anna,
+      "wow-forever",
+      input({
+        raceKey: "human",
+        classKey: "mage",
+        professionKeys: ["tailoring"],
+      }),
+    );
+    const character = getCharacter(db, saved.ok ? saved.characterId : -1)!;
+    const details = { skillLevel: -1, specialization: "", notes: "" };
+
+    expect(
+      saveProfessionDetails(
+        db,
+        anna,
+        character.id,
+        character.professionEntryIds[0],
+        details,
+      ),
+    ).toMatchObject({ ok: false, errors: { skillLevel: expect.any(String) } });
+    expect(() =>
+      saveProfessionDetails(db, anna, character.id, 999999, {
+        ...details,
+        skillLevel: 1,
+      }),
+    ).toThrow(NotFoundError);
   });
 });

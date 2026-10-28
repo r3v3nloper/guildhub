@@ -25,8 +25,11 @@ import {
 export type CharacterRow = typeof characters.$inferSelect;
 export type BuildRow = typeof builds.$inferSelect;
 
+export type ProfessionRow = typeof characterProfessions.$inferSelect;
+
 export interface CharacterDetails extends CharacterRow {
   professionEntryIds: number[];
+  professions: ProfessionRow[];
   builds: BuildRow[];
 }
 
@@ -45,14 +48,15 @@ export function getCharacter(
   if (!character) {
     return undefined;
   }
+  const professions = db
+    .select()
+    .from(characterProfessions)
+    .where(eq(characterProfessions.characterId, characterId))
+    .all();
   return {
     ...character,
-    professionEntryIds: db
-      .select({ id: characterProfessions.professionEntryId })
-      .from(characterProfessions)
-      .where(eq(characterProfessions.characterId, characterId))
-      .all()
-      .map((row) => row.id),
+    professionEntryIds: professions.map((row) => row.professionEntryId),
+    professions,
     builds: db
       .select()
       .from(builds)
@@ -329,4 +333,68 @@ export function deleteBuild(
     throw new NotFoundError("Build");
   }
   db.delete(builds).where(eq(builds.id, buildId)).run();
+}
+
+export interface ProfessionDetailsInput {
+  skillLevel: number | null;
+  specialization: string;
+  notes: string;
+}
+
+export type ProfessionDetailsErrors = Partial<
+  Record<keyof ProfessionDetailsInput, string>
+>;
+
+const SKILL_LEVEL_MAX = 10000;
+const PROFESSION_TEXT_MAX_LENGTH = 200;
+
+/** Skill, specialisation and notes of a profession the character already has. */
+export function saveProfessionDetails(
+  db: AppDatabase,
+  actor: Actor,
+  characterId: number,
+  professionEntryId: number,
+  input: ProfessionDetailsInput,
+): { ok: true } | { ok: false; errors: ProfessionDetailsErrors } {
+  const character = ownedCharacter(db, actor, characterId);
+  if (!character.professionEntryIds.includes(professionEntryId)) {
+    throw new NotFoundError("Beruf");
+  }
+
+  const errors: ProfessionDetailsErrors = {};
+  const { skillLevel } = input;
+  if (
+    skillLevel !== null &&
+    (!Number.isInteger(skillLevel) ||
+      skillLevel < 0 ||
+      skillLevel > SKILL_LEVEL_MAX)
+  ) {
+    errors.skillLevel = `Wert zwischen 0 und ${SKILL_LEVEL_MAX}.`;
+  }
+  const specialization = input.specialization.trim();
+  const notes = input.notes.trim();
+  if (specialization.length > PROFESSION_TEXT_MAX_LENGTH) {
+    errors.specialization = `Höchstens ${PROFESSION_TEXT_MAX_LENGTH} Zeichen.`;
+  }
+  if (notes.length > PROFESSION_TEXT_MAX_LENGTH) {
+    errors.notes = `Höchstens ${PROFESSION_TEXT_MAX_LENGTH} Zeichen.`;
+  }
+  if (Object.keys(errors).length > 0) {
+    return { ok: false, errors };
+  }
+
+  db.update(characterProfessions)
+    .set({
+      skillLevel,
+      specialization: specialization || null,
+      notes: notes || null,
+    })
+    .where(
+      and(
+        eq(characterProfessions.characterId, characterId),
+        eq(characterProfessions.professionEntryId, professionEntryId),
+      ),
+    )
+    .run();
+  return { ok: true };
 }

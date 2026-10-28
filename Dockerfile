@@ -35,6 +35,7 @@ COPY --from=build --chown=node:node /app/.next/static ./.next/static
 COPY --from=build --chown=node:node /app/public ./public
 COPY --from=build --chown=node:node /app/drizzle ./drizzle
 COPY --from=build --chown=node:node /app/packs ./packs
+COPY --from=build --chown=node:node /app/scripts/backup.mjs ./scripts/backup.mjs
 
 USER node
 EXPOSE 3000

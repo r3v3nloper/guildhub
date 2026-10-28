@@ -957,3 +957,5 @@ Entscheidungen, die beim Bauen getroffen wurden und das Modell aus 4.1 ergänzen
 - Discord-Login nur mit Scope `identify`, die E-Mail wird nicht abgefragt.
 - Der Spiel-Umschalter (Abschnitt 7, Punkt 2) merkt sich die Auswahl pro Browser in einem Cookie.
 - Klassen-, Berufs- und Fraktionsfilter im Roster gibt es nur, wenn ein einzelnes Spiel gewählt ist; der Rollenfilter gilt immer.
+- Backups: Das Datum im Dateinamen richtet sich nach `DEFAULT_TIMEZONE`. Das Script schreibt erst in eine temporäre Datei und benennt sie danach um, damit ein abgebrochener Lauf kein halbes Backup hinterlässt. Der Admin-Download liegt unter `/admin/backup`; Nicht-Owner bekommen dort 404. Der Service Worker cacht ihn nie.
+- Berufe: Fertigkeit (0 bis 10000), Spezialisierung und Notiz werden je Beruf im Charakter-Editor gepflegt und im Roster als „Alchemie 300 (Tränke)“ angezeigt.

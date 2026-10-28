@@ -153,6 +153,28 @@ git pull && docker compose up -d --build
 Migrationen laufen beim Containerstart automatisch. Die Datenbank liegt im benannten
 Volume `guildhub-data` und bleibt bei Updates und Neustarts erhalten.
 
+### Backups
+
+Das Script `scripts/backup.mjs` erstellt eine konsistente Kopie per SQLite-Online-Backup,
+auch während die App schreibt. Ziel ist `./backups/guildhub-YYYY-MM-DD.db`; die letzten 14
+Backups bleiben erhalten. Täglich per Host-Cron (`crontab -e`):
+
+```
+30 4 * * * cd /pfad/zu/guildhub && docker compose exec -T guildhub node scripts/backup.mjs >> backups/backup.log 2>&1
+```
+
+Von Hand ausführen und prüfen:
+
+```bash
+docker compose exec -T guildhub node scripts/backup.mjs
+```
+
+Schlägt das Script mit „nicht beschreibbar“ fehl, fehlen die Rechte am Ordner `backups`
+(siehe Einrichtung, Schritt 5).
+
+Zusätzlich kann ein Owner unter **Admin → Backup** eine Kopie herunterladen. Darin fehlen
+Sessions und Tokens; nach einem Restore aus diesem Download müssen sich alle neu anmelden.
+
 ### Restore
 
 1. `docker compose stop guildhub`
@@ -164,5 +186,3 @@ Volume `guildhub-data` und bleibt bei Updates und Neustarts erhalten.
    ```
 
 3. `docker compose start guildhub`
-
-Das Backup-Script (`scripts/backup.mjs`, SPEC 11.4) folgt in einer späteren Phase.

@@ -7,10 +7,17 @@ import { GamesSection } from "@/components/admin/GamesSection";
 import { MembersSection } from "@/components/admin/MembersSection";
 import { PacksSection } from "@/components/admin/PacksSection";
 import { ActionForm } from "@/components/ui/ActionForm";
-import { Button, Card, PageHeader, TextInput } from "@/components/ui/ui";
+import {
+  Button,
+  ButtonLink,
+  Card,
+  PageHeader,
+  TextInput,
+} from "@/components/ui/ui";
 import { listPendingAllowlist } from "@/lib/auth/allowlist";
 import { listAudit } from "@/lib/audit/audit";
 import { canViewAdmin, requireActor } from "@/lib/auth/current-actor";
+import { permissions } from "@/lib/auth/guards";
 import { listMembers } from "@/lib/auth/membership";
 import { getDb } from "@/lib/db/client";
 import { listTodoEntries } from "@/lib/guild/games-admin";
@@ -78,6 +85,16 @@ async function AdminContent() {
         history={listSyncLog(db)}
         todoEntries={listTodoEntries(db)}
       />
+      {permissions.downloadBackup(actor).allowed && (
+        <Card title={de.admin.backup}>
+          <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">
+            {de.admin.backupHint}
+          </p>
+          <ButtonLink href="/admin/backup" variant="secondary">
+            {de.admin.backupDownload}
+          </ButtonLink>
+        </Card>
+      )}
       <AuditSection
         entries={listAudit(db)}
         memberNames={

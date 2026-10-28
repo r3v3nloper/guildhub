@@ -1,8 +1,18 @@
 import { ClassName } from "@/components/characters/ClassName";
 import { Badge, Card } from "@/components/ui/ui";
-import type { RosterMember } from "@/lib/roster/roster";
+import type { RosterMember, RosterProfession } from "@/lib/roster/roster";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
+
+/** "Alchemie 300 (Tränke)": name, skill and specialisation where known. */
+function professionLabel(profession: RosterProfession): string {
+  const skill =
+    profession.skillLevel !== null ? ` ${profession.skillLevel}` : "";
+  const specialization = profession.specialization
+    ? ` (${profession.specialization})`
+    : "";
+  return `${localize(profession.name)}${skill}${specialization}`;
+}
 
 export function MemberCard({
   member,
@@ -71,9 +81,7 @@ export function MemberCard({
                 {character.spec && <span>{character.spec}</span>}
                 {character.professions.length > 0 && (
                   <span>
-                    {character.professions
-                      .map((p) => localize(p.name))
-                      .join(", ")}
+                    {character.professions.map(professionLabel).join(", ")}
                   </span>
                 )}
                 {character.currentBuild && (

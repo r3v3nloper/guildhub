@@ -3,10 +3,12 @@ import { PageSuspense } from "@/components/ui/PageSuspense";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BuildForm } from "@/components/characters/BuildForm";
+import { BuildItem } from "@/components/characters/BuildItem";
 import { CharacterForm } from "@/components/characters/CharacterForm";
+import { ProfessionDetailsForm } from "@/components/characters/ProfessionDetailsForm";
 import { ActionForm } from "@/components/ui/ActionForm";
 import { ConfirmButton } from "@/components/ui/ConfirmButton";
-import { Badge, Button, Card, PageHeader } from "@/components/ui/ui";
+import { Card, PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { permissions } from "@/lib/auth/guards";
 import { getDb } from "@/lib/db/client";
@@ -29,6 +31,7 @@ import {
   deleteCharacterAction,
   saveBuildAction,
   saveCharacterAction,
+  saveProfessionDetailsAction,
 } from "../actions";
 
 export const metadata: Metadata = { title: de.characters.title };
@@ -57,7 +60,7 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
   ].filter((id): id is number => id !== null);
   const options = characterFormOptions(catalog, selectedIds);
   const targetClasses = optionsOfKind(catalog, "class");
-  const className = (entryId: number | null) =>
+  const entryName = (entryId: number | null) =>
     localize(catalog.entries.find((entry) => entry.id === entryId)?.name);
 
   return (
@@ -95,6 +98,29 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
         }}
       />
 
+      {catalog.game.meta.capabilities.professions &&
+        character.professions.length > 0 && (
+          <Card title={de.characters.professionDetails}>
+            <p className="text-sm text-zinc-500">
+              {de.characters.professionDetailsHint}
+            </p>
+            <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
+              {character.professions.map((profession) => (
+                <ProfessionDetailsForm
+                  key={profession.professionEntryId}
+                  label={entryName(profession.professionEntryId)}
+                  values={profession}
+                  action={saveProfessionDetailsAction.bind(
+                    null,
+                    character.id,
+                    profession.professionEntryId,
+                  )}
+                />
+              ))}
+            </div>
+          </Card>
+        )}
+
       {catalog.game.meta.capabilities.builds && (
         <Card title={de.characters.builds}>
           {character.builds.length === 0 ? (
@@ -104,54 +130,40 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
           ) : (
             <ul className="mb-4 divide-y divide-zinc-200 dark:divide-zinc-800">
               {character.builds.map((build) => (
-                <li
+                <BuildItem
                   key={build.id}
-                  className="flex flex-wrap items-center gap-2 py-2 text-sm"
-                >
-                  <Badge
-                    tone={build.status === "current" ? "accent" : "neutral"}
-                  >
-                    {build.status === "current"
-                      ? de.characters.buildCurrent
-                      : de.characters.buildPlanned}
-                  </Badge>
-                  {build.url ? (
-                    <a
-                      href={build.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-accent underline"
-                    >
-                      {build.title}
-                    </a>
-                  ) : (
-                    <span>{build.title}</span>
+                  values={{
+                    title: build.title,
+                    url: build.url ?? "",
+                    status: build.status,
+                    targetClassKey: keyOfEntry(
+                      catalog,
+                      build.targetClassEntryId,
+                    ),
+                    notes: build.notes ?? "",
+                  }}
+                  targetClassName={
+                    build.targetClassEntryId === null
+                      ? undefined
+                      : entryName(build.targetClassEntryId)
+                  }
+                  classes={targetClasses}
+                  saveAction={saveBuildAction.bind(
+                    null,
+                    character.id,
+                    build.id,
                   )}
-                  {build.targetClassEntryId !== null && (
-                    <span className="text-zinc-500">
-                      → {className(build.targetClassEntryId)}
-                    </span>
+                  deleteAction={deleteBuildAction.bind(
+                    null,
+                    character.id,
+                    build.id,
                   )}
-                  {build.notes && (
-                    <span className="text-zinc-500">{build.notes}</span>
-                  )}
-                  <div className="ml-auto">
-                    <ActionForm
-                      action={deleteBuildAction.bind(
-                        null,
-                        character.id,
-                        build.id,
-                      )}
-                    >
-                      <Button variant="secondary">{de.common.delete}</Button>
-                    </ActionForm>
-                  </div>
-                </li>
+                />
               ))}
             </ul>
           )}
           <BuildForm
-            action={saveBuildAction.bind(null, character.id)}
+            action={saveBuildAction.bind(null, character.id, undefined)}
             classes={targetClasses}
           />
         </Card>

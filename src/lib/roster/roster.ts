@@ -20,6 +20,11 @@ export interface RosterEntryRef {
   role?: string;
 }
 
+export interface RosterProfession extends RosterEntryRef {
+  skillLevel: number | null;
+  specialization: string | null;
+}
+
 export interface RosterCharacter {
   id: number;
   gameId: string;
@@ -31,7 +36,7 @@ export interface RosterCharacter {
   faction: RosterEntryRef | null;
   race: RosterEntryRef | null;
   characterClass: RosterEntryRef | null;
-  professions: RosterEntryRef[];
+  professions: RosterProfession[];
   currentBuild: {
     title: string;
     url: string | null;
@@ -166,10 +171,18 @@ export function loadRosterMembers(
       characterClass: ref(row.classEntryId),
       professions: professionRows
         .filter((profession) => profession.characterId === row.id)
-        .map((profession) => ref(profession.professionEntryId))
-        .filter(
-          (profession): profession is RosterEntryRef => profession !== null,
-        ),
+        .flatMap((profession) => {
+          const entry = ref(profession.professionEntryId);
+          return entry
+            ? [
+                {
+                  ...entry,
+                  skillLevel: profession.skillLevel,
+                  specialization: profession.specialization,
+                },
+              ]
+            : [];
+        }),
       currentBuild: current
         ? { title: current.title, url: current.url, source: current.source }
         : null,

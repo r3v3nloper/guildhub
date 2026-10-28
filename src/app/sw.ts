@@ -2,7 +2,7 @@
 /// <reference lib="webworker" />
 import { defaultCache } from "@serwist/turbopack/worker";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
-import { Serwist } from "serwist";
+import { NetworkOnly, Serwist } from "serwist";
 
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
@@ -18,8 +18,16 @@ const serwist = new Serwist({
   skipWaiting: false,
   clientsClaim: true,
   navigationPreload: true,
-  // Serwist's default strategies: network-first for pages and API data, cache-first for static assets.
-  runtimeCaching: defaultCache,
+  runtimeCaching: [
+    // The DB download must never land in a browser cache; Serwist's catch-all would store it.
+    {
+      matcher: ({ url, sameOrigin }) =>
+        sameOrigin && url.pathname.startsWith("/admin/backup"),
+      handler: new NetworkOnly(),
+    },
+    // Serwist's default strategies: network-first for pages and API data, cache-first for static assets.
+    ...defaultCache,
+  ],
   fallbacks: {
     entries: [
       {
