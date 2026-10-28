@@ -40,8 +40,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           >
             <OfflineBanner />
             <UpdatePrompt />
-            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface px-4 py-3">
-              <Link href="/" className="flex items-center gap-2 font-semibold">
+            <header className="flex items-center justify-between gap-3 border-b border-border bg-surface px-4 py-3">
+              <Link
+                href="/"
+                className="flex shrink-0 items-center gap-2 font-semibold"
+              >
                 <i className="pi pi-shield text-accent" aria-hidden />
                 {de.app.name}
               </Link>

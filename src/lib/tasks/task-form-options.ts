@@ -8,7 +8,8 @@ import {
 } from "@/lib/roster/game-catalog";
 import { describeResetRule } from "@/i18n/reset-rule";
 import { localize } from "@/i18n/localize";
-import { allowedScopes, type TaskRow } from "./custom-tasks";
+import { allowedScopes } from "./custom-task-input";
+import type { TaskRow } from "./custom-tasks";
 import { CUSTOM_RULE, NO_RULE } from "./rule-choices";
 
 export interface TaskFormGame {

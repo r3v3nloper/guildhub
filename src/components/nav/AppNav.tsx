@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { signOutAction } from "@/components/auth/auth-actions";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { canViewAdmin, currentActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
@@ -33,8 +34,8 @@ export async function AppNav() {
   ];
 
   return (
-    <div className="flex flex-1 flex-wrap items-center justify-end gap-x-4 gap-y-2">
-      <nav className="flex gap-3 text-sm">
+    <div className="flex flex-1 items-center justify-end gap-x-3 md:gap-x-4">
+      <nav className="hidden gap-3 text-sm md:flex">
         {links.map((link) => (
           <Link
             key={link.href}
@@ -46,7 +47,19 @@ export async function AppNav() {
           </Link>
         ))}
       </nav>
-      <MoreMenu label={de.nav.more} links={moreLinks} />
+      <div className="hidden shrink-0 md:block">
+        <MoreMenu id="more-menu" label={de.nav.more} links={moreLinks} />
+      </div>
+      <div className="shrink-0 md:hidden">
+        <MoreMenu
+          id="nav-menu"
+          label={de.nav.menu}
+          links={[...links, ...moreLinks]}
+          compact
+          signOut={signOutAction}
+          signOutLabel={de.auth.signOut}
+        />
+      </div>
       {games.length > 0 && (
         <GameSwitcher
           games={games.map((game) => ({
