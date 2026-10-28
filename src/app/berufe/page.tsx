@@ -11,6 +11,7 @@ import {
 } from "@/lib/roster/profession-directory";
 import { loadGameCatalog, selectableOfKind } from "@/lib/roster/game-catalog";
 import { localize } from "@/i18n/localize";
+import { textParam } from "@/lib/search-params";
 import { de } from "@/i18n/de";
 
 export const metadata: Metadata = { title: de.directory.title };
@@ -18,8 +19,8 @@ export const metadata: Metadata = { title: de.directory.title };
 async function DirectoryContent({ searchParams }: PageProps<"/berufe">) {
   const actor = await requireActor();
   const params = await searchParams;
-  const query = typeof params.suche === "string" ? params.suche : "";
-  const professionKey = typeof params.beruf === "string" ? params.beruf : "";
+  const query = textParam(params.suche) ?? "";
+  const professionKey = textParam(params.beruf) ?? "";
   const db = getDb();
   const { games, selectedId } = await selectedGames(db, actor.guildId);
   const withProfessions = games.filter(

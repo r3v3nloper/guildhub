@@ -17,7 +17,14 @@ import type { ActionState } from "@/lib/actions/action-state";
  */
 export function useFormAction(
   action: (state: ActionState, formData: FormData) => Promise<ActionState>,
-  { resetOnSuccess = false }: { resetOnSuccess?: boolean } = {},
+  {
+    resetOnSuccess = false,
+    onSuccess,
+  }: {
+    resetOnSuccess?: boolean;
+    /** Clears state the native reset cannot reach, e.g. controlled selects. */
+    onSuccess?: () => void;
+  } = {},
 ) {
   const [state, formAction, pending] = useActionState(action, {});
   const formRef = useRef<HTMLFormElement>(null);
@@ -25,7 +32,10 @@ export function useFormAction(
   useEffect(() => {
     if (resetOnSuccess && state.ok) {
       formRef.current?.reset();
+      onSuccess?.();
     }
+    // onSuccess is a fresh closure per render; only a new result should trigger it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, resetOnSuccess]);
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {

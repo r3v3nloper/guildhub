@@ -8,8 +8,9 @@ import { getDb } from "@/lib/db/client";
 import { getClassForPriority } from "@/lib/guild/stat-priorities";
 import { orNotFound } from "@/lib/not-found";
 import { localize } from "@/i18n/localize";
+import { idSearchParam } from "@/lib/search-params";
 import { de } from "@/i18n/de";
-import { saveStatPriorityAction } from "../actions";
+import { createStatPriorityAction } from "../actions";
 
 export const metadata: Metadata = { title: de.statPriorities.add };
 
@@ -17,8 +18,8 @@ async function NewStatPriorityContent({
   searchParams,
 }: PageProps<"/stat-prio/neu">) {
   const actor = await requireActor();
-  const classEntryId = Number((await searchParams).klasse);
-  if (!Number.isInteger(classEntryId)) {
+  const classEntryId = idSearchParam((await searchParams).klasse);
+  if (classEntryId === undefined) {
     notFound();
   }
   const entry = orNotFound(() =>
@@ -29,7 +30,7 @@ async function NewStatPriorityContent({
     <div className="flex flex-col gap-4">
       <PageHeader title={`${de.statPriorities.add}: ${localize(entry.name)}`} />
       <StatPriorityForm
-        action={saveStatPriorityAction.bind(null, { classEntryId: entry.id })}
+        action={createStatPriorityAction.bind(null, entry.id)}
         values={{ title: "", stats: "", notes: "", source: "" }}
       />
     </div>

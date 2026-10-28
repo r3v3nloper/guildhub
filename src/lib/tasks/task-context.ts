@@ -49,8 +49,9 @@ export function regionZones(
 }
 
 /**
- * Active tasks the user sees: pack tasks of the given games (and guild tasks), plus the
- * user's own private tasks. Private tasks of other users never appear (SPEC 8).
+ * Active personal tasks of the user: pack tasks of the given games plus the user's own
+ * private tasks. Private tasks of other users never appear (SPEC 8). Guild tasks are
+ * shared state and come from loadGuildTasks.
  */
 export function loadVisibleTasks(
   db: AppDatabase,
@@ -65,13 +66,6 @@ export function loadVisibleTasks(
   const packFilter = inGames
     ? and(eq(taskDefinitions.source, "pack"), inGames)
     : undefined;
-  // Guild tasks without a game concern everyone, whatever the game filter says.
-  const guildFilter = and(
-    eq(taskDefinitions.source, "guild"),
-    inGames
-      ? or(isNull(taskDefinitions.gameId), inGames)
-      : isNull(taskDefinitions.gameId),
-  );
   const ownFilter = and(
     eq(taskDefinitions.source, "private"),
     eq(taskDefinitions.ownerId, userId),
@@ -82,7 +76,32 @@ export function loadVisibleTasks(
     .where(
       and(
         eq(taskDefinitions.active, true),
-        or(...[packFilter, guildFilter, ownFilter].filter(Boolean)),
+        packFilter ? or(packFilter, ownFilter) : ownFilter,
+      ),
+    )
+    .all();
+  return resolveTasks(db, guildId, rows);
+}
+
+/** Active guild tasks of the given games; those without a game concern everyone. */
+export function loadGuildTasks(
+  db: AppDatabase,
+  guildId: number,
+  gameIds: readonly string[],
+): ResolvedTask[] {
+  const rows = db
+    .select()
+    .from(taskDefinitions)
+    .where(
+      and(
+        eq(taskDefinitions.active, true),
+        eq(taskDefinitions.source, "guild"),
+        gameIds.length > 0
+          ? or(
+              isNull(taskDefinitions.gameId),
+              inArray(taskDefinitions.gameId, [...gameIds]),
+            )
+          : isNull(taskDefinitions.gameId),
       ),
     )
     .all();

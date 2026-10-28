@@ -1,10 +1,12 @@
 import { and, asc, eq, or } from "drizzle-orm";
+import { recordAudit } from "@/lib/audit/audit";
 import { assertAllowed, permissions, type Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
 import { gameCatalogEntries, taskDefinitions } from "@/lib/db/schema";
 import { NotFoundError } from "@/lib/errors";
 import type { TaskKind, TaskScope } from "@/lib/reset/task-kinds";
 import { isGameEnabled, loadGameCatalog } from "@/lib/roster/game-catalog";
+import { localize } from "@/i18n/localize";
 import {
   resolveCustomTaskInput,
   type CustomTaskErrors,
@@ -109,6 +111,7 @@ export function saveCustomTask(
       .set(resolved.values)
       .where(eq(taskDefinitions.id, existing.id))
       .run();
+    auditGuildTask(db, actor, existing, "guildTask.update");
     return { ok: true, taskId: existing.id };
   }
   const created = db
@@ -125,7 +128,22 @@ export function saveCustomTask(
     })
     .returning()
     .get();
+  auditGuildTask(db, actor, created, "guildTask.create");
   return { ok: true, taskId: created.id };
+}
+
+/** Officers' changes to guild tasks go to the audit log; private tasks are nobody's business. */
+function auditGuildTask(
+  db: AppDatabase,
+  actor: Actor,
+  task: TaskRow,
+  action: "guildTask.create" | "guildTask.update" | "guildTask.delete",
+): void {
+  if (task.source === "guild") {
+    recordAudit(db, actor.userId, action, localize(task.title), {
+      taskId: task.id,
+    });
+  }
 }
 
 /** Key of the pack rule a task uses, to preselect it in the form. */
@@ -151,4 +169,5 @@ export function deleteCustomTask(
   const task = getEditableTask(db, actor, taskId);
   // Progress and snapshots go with it (foreign keys cascade).
   db.delete(taskDefinitions).where(eq(taskDefinitions.id, task.id)).run();
+  auditGuildTask(db, actor, task, "guildTask.delete");
 }

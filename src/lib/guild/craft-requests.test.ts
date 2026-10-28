@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import { listAudit } from "@/lib/audit/audit";
 import { DomainError, ForbiddenError } from "@/lib/errors";
 import { saveCharacter } from "@/lib/roster/characters";
 import type { CharacterInput } from "@/lib/roster/character-rules";
@@ -97,6 +98,20 @@ describe("craft requests", () => {
     ).toThrow(ForbiddenError);
     deleteCraftRequest(fixture.db, fixture.officer, requestId);
     expect(listCraftRequests(fixture.db, fixture.member, ["game"])).toEqual([]);
+    expect(listAudit(fixture.db)).toEqual([
+      expect.objectContaining({
+        action: "craftRequest.delete",
+        target: "Thoriumbarren",
+      }),
+    ]);
+  });
+
+  it("logs nothing when requesters delete their own request", () => {
+    // Act
+    deleteCraftRequest(fixture.db, fixture.member, requestId);
+
+    // Assert
+    expect(listAudit(fixture.db)).toEqual([]);
   });
 
   it("validates item, quantity and profession", () => {

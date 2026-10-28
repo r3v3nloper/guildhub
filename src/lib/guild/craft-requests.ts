@@ -1,5 +1,6 @@
-import { and, desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray, ne } from "drizzle-orm";
 import { alias } from "drizzle-orm/sqlite-core";
+import { recordAudit } from "@/lib/audit/audit";
 import { assertAllowed, permissions, type Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
 import {
@@ -58,9 +59,40 @@ export function listCraftRequests(
   if (gameIds.length === 0) {
     return [];
   }
+  const inGames = inArray(craftRequests.gameId, [...gameIds]);
+  const pending = selectRequests(db)
+    .where(and(inGames, ne(craftRequests.status, "done")))
+    .orderBy(desc(craftRequests.createdAt))
+    .all();
+  // Finished requests pile up over time; only the latest ones are worth a look.
+  const done = selectRequests(db)
+    .where(and(inGames, eq(craftRequests.status, "done")))
+    .orderBy(desc(craftRequests.doneAt))
+    .limit(DONE_SHOWN)
+    .all();
+  const ownProfessions = professionsOf(db, actor.userId);
+
+  return [...pending, ...done].map(
+    ({ request, professionName, requesterName, crafterName }) => ({
+      ...request,
+      professionName,
+      requesterName,
+      crafterName,
+      canAccept:
+        request.status === "open" &&
+        ownProfessions.has(request.professionEntryId),
+      canProgress:
+        request.status === "accepted" && request.crafterId === actor.userId,
+      canDelete: permissions.editSharedEntry(actor, ownership(request)).allowed,
+    }),
+  );
+}
+
+/** Requests with profession, requester and crafter names. */
+function selectRequests(db: AppDatabase) {
   const requester = alias(users, "requester");
   const crafter = alias(users, "crafter");
-  const rows = db
+  return db
     .select({
       request: craftRequests,
       professionName: gameCatalogEntries.name,
@@ -74,27 +106,7 @@ export function listCraftRequests(
     )
     .innerJoin(requester, eq(requester.id, craftRequests.requesterId))
     .leftJoin(crafter, eq(crafter.id, craftRequests.crafterId))
-    .where(inArray(craftRequests.gameId, [...gameIds]))
-    .orderBy(desc(craftRequests.createdAt))
-    .all();
-  const ownProfessions = professionsOf(db, actor.userId);
-
-  const done = rows.filter((row) => row.request.status === "done");
-  return [
-    ...rows.filter((row) => row.request.status !== "done"),
-    ...done.slice(0, DONE_SHOWN),
-  ].map(({ request, professionName, requesterName, crafterName }) => ({
-    ...request,
-    professionName,
-    requesterName,
-    crafterName,
-    canAccept:
-      request.status === "open" &&
-      ownProfessions.has(request.professionEntryId),
-    canProgress:
-      request.status === "accepted" && request.crafterId === actor.userId,
-    canDelete: permissions.editSharedEntry(actor, ownership(request)).allowed,
-  }));
+    .$dynamic();
 }
 
 /** Profession entries the user holds on any of their characters. */
@@ -256,4 +268,10 @@ export function deleteCraftRequest(
   const request = loadRequest(db, actor, requestId);
   assertAllowed(permissions.editSharedEntry(actor, ownership(request)));
   db.delete(craftRequests).where(eq(craftRequests.id, request.id)).run();
+  // Requesters tidy up their own requests; only an officer removing someone else's is logged.
+  if (request.requesterId !== actor.userId) {
+    recordAudit(db, actor.userId, "craftRequest.delete", request.item, {
+      requesterId: request.requesterId,
+    });
+  }
 }

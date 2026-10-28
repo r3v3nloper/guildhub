@@ -1,11 +1,8 @@
 import { eq } from "drizzle-orm";
 import type { Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
-import { characters, guildGames, taskDefinitions } from "@/lib/db/schema";
-import { addMember, createDiscordUser, createTestDb } from "@/lib/db/test-db";
-import { ensureGuild } from "@/lib/guild/guild";
-import { syncPack } from "@/lib/packs/sync";
-import { validatePack } from "@/lib/packs/validate";
+import { characters, taskDefinitions } from "@/lib/db/schema";
+import { createGuildFixture } from "./guild";
 
 /** A small pack covering every task kind, for task and dashboard tests. */
 const raw = {
@@ -76,38 +73,20 @@ export interface TaskFixture {
 }
 
 export function createTaskFixture(): TaskFixture {
-  const db = createTestDb();
-  const guild = ensureGuild(db, {
-    guildName: "Testgilde",
-    defaultTimezone: "Europe/Berlin",
-  });
-  const content = JSON.stringify(raw);
-  syncPack(db, {
-    folderName: "game",
-    file: "packs/game/pack.json",
-    content,
-    ...validatePack(raw, "game"),
-  });
-  db.update(guildGames).set({ enabled: true }).run();
-
-  const userId = createDiscordUser(db, "111111111111111111", "Erik");
-  const otherId = createDiscordUser(db, "222222222222222222", "Lena");
-  const officerId = createDiscordUser(db, "333333333333333333", "Mara");
-  addMember(db, guild.id, userId);
-  addMember(db, guild.id, otherId);
-  addMember(db, guild.id, officerId, "officer");
-  const actorOf = (id: string, role: Actor["role"] = "member"): Actor => ({
-    userId: id,
-    guildId: guild.id,
-    role,
-    status: "active",
-  });
+  const {
+    db,
+    actors: [actor, other, officer],
+  } = createGuildFixture(raw, [
+    { discordId: "111111111111111111", name: "Erik" },
+    { discordId: "222222222222222222", name: "Lena" },
+    { discordId: "333333333333333333", name: "Mara", role: "officer" },
+  ]);
 
   return {
     db,
-    actor: actorOf(userId),
-    other: actorOf(otherId),
-    officer: actorOf(officerId, "officer"),
+    actor,
+    other,
+    officer,
     gameInfo: { id: "game", name: "Spiel", serverLabel: "Realm" },
     taskId: (key) =>
       db

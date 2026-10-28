@@ -13,7 +13,11 @@ import { isCompleted } from "@/lib/reset/completion";
 import { scopeKey } from "@/lib/reset/scope-key";
 import type { TaskKind } from "@/lib/reset/task-kinds";
 import { localize } from "@/i18n/localize";
-import { loadVisibleTasks, type ResolvedTask } from "./task-context";
+import {
+  loadGuildTasks,
+  loadVisibleTasks,
+  type ResolvedTask,
+} from "./task-context";
 import {
   resourceStatus,
   resourceView,
@@ -102,13 +106,10 @@ export function buildDashboard(
   now: DateTime = DateTime.now(),
 ): Dashboard {
   const gameIds = games.map((game) => game.id);
-  const tasks = loadVisibleTasks(db, guildId, userId, gameIds)
-    .map((task) => ({ task, period: taskPeriod(task, now) }))
-    .filter(
-      (entry): entry is { task: ResolvedTask; period: TaskPeriod } =>
-        entry.period !== undefined,
-    )
-    .sort((a, b) => compareTasks(a.task, b.task));
+  const tasks = withPeriods(
+    loadVisibleTasks(db, guildId, userId, gameIds),
+    now,
+  );
   const ownCharacters =
     gameIds.length === 0
       ? []
@@ -124,7 +125,14 @@ export function buildDashboard(
           .orderBy(asc(characters.name))
           .all();
 
-  const state = loadState(db, tasks, ownCharacters, userId, guildId);
+  const state = loadState(db, tasks, [
+    scopeKey("user", { userId, gameId: null }),
+    ...ownCharacters.flatMap((character) => [
+      scopeKey("character", ownerOf(character)),
+      scopeKey("server", ownerOf(character)),
+      scopeKey("account", ownerOf(character)),
+    ]),
+  ]);
   const bossNames = loadBossNames(db, gameIds);
   const item = (
     entry: { task: ResolvedTask; period: TaskPeriod },
@@ -137,11 +145,7 @@ export function buildDashboard(
     .map((entry) =>
       item(entry, scopeKey("user", { userId, gameId: null }), null),
     );
-  const guild = tasks
-    .filter((entry) => entry.task.scope === "guild")
-    .map((entry) =>
-      item(entry, scopeKey("guild", { userId, gameId: null, guildId }), null),
-    );
+  const guild = loadGuildTaskItems(db, guildId, gameIds, now);
 
   const dashboardGames = games.flatMap((game): DashboardGame[] => {
     const gameCharacters = ownCharacters.filter(
@@ -262,26 +266,41 @@ interface LoadedState {
 
 const stateKey = (taskId: number, key: string) => `${taskId}|${key}`;
 
+/**
+ * Guild-wide tasks with their shared state (SPEC 10, Phase 3): one entry per task for
+ * the whole guild, with who ticked it. Used by the dashboard and the matrix.
+ */
+export function loadGuildTaskItems(
+  db: AppDatabase,
+  guildId: number,
+  gameIds: readonly string[],
+  now: DateTime = DateTime.now(),
+): DashboardItem[] {
+  const tasks = withPeriods(loadGuildTasks(db, guildId, gameIds), now);
+  const key = scopeKey("guild", { userId: "", gameId: null, guildId });
+  const state = loadState(db, tasks, [key]);
+  return tasks.map((entry) => toItem(entry, key, null, state, new Map(), now));
+}
+
+type DatedTask = { task: ResolvedTask; period: TaskPeriod };
+
+/** Tasks that are due now, with their current period, in display order. */
+function withPeriods(tasks: ResolvedTask[], now: DateTime): DatedTask[] {
+  return tasks
+    .map((task) => ({ task, period: taskPeriod(task, now) }))
+    .filter((entry): entry is DatedTask => entry.period !== undefined)
+    .sort((a, b) => compareTasks(a.task, b.task));
+}
+
 function loadState(
   db: AppDatabase,
-  tasks: Array<{ task: ResolvedTask; period: TaskPeriod }>,
-  ownCharacters: CharacterRow[],
-  userId: string,
-  guildId: number,
+  tasks: DatedTask[],
+  scopeKeys: string[],
 ): LoadedState {
   const taskIds = tasks.map((entry) => entry.task.id);
   if (taskIds.length === 0) {
     return { progress: new Map(), resources: new Map(), names: new Map() };
   }
-  const scopeKeys = [
-    scopeKey("user", { userId, gameId: null }),
-    scopeKey("guild", { userId, gameId: null, guildId }),
-    ...ownCharacters.flatMap((character) => [
-      scopeKey("character", ownerOf(character)),
-      scopeKey("server", ownerOf(character)),
-      scopeKey("account", ownerOf(character)),
-    ]),
-  ];
   const periodKeys = [...new Set(tasks.map((entry) => entry.period.key))];
 
   const progress = db

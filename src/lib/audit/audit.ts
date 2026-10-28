@@ -14,6 +14,13 @@ export const AUDIT_ACTIONS = [
   "game.disable",
   "game.region",
   "backup.download",
+  "guildTask.create",
+  "guildTask.update",
+  "guildTask.delete",
+  "craftRequest.delete",
+  "statPriority.create",
+  "statPriority.update",
+  "statPriority.delete",
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 

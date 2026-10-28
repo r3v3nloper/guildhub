@@ -70,6 +70,8 @@ function Cell({ cell }: { cell: MatrixCell }) {
       title={cell.detail}
     >
       {cell.text}
+      {/* The tooltip is mouse-only; screen readers get the breakdown as text. */}
+      {cell.detail && <span className="sr-only">: {cell.detail}</span>}
       {cell.shared && (
         <i
           className="pi pi-link ml-1 text-xs text-muted"

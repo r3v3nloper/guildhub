@@ -7,31 +7,31 @@ import {
   guarded,
   type ActionState,
 } from "@/lib/actions/action-state";
+import type { Actor } from "@/lib/auth/guards";
 import { actorForAction } from "@/lib/auth/current-actor";
-import { getDb } from "@/lib/db/client";
+import { getDb, type AppDatabase } from "@/lib/db/client";
 import {
+  createStatPriority,
   deleteStatPriority,
-  saveStatPriority,
+  updateStatPriority,
+  type StatPriorityInput,
+  type StatPriorityResult,
 } from "@/lib/guild/stat-priorities";
 
-/** `target` is bound on the server: the class for a new ranking, or the ranking to edit. */
-export async function saveStatPriorityAction(
-  target: { classEntryId: number } | { priorityId: number },
-  _previous: ActionState,
-  formData: FormData,
+function inputOf(formData: FormData): StatPriorityInput {
+  return {
+    title: formText(formData, "title"),
+    stats: formText(formData, "stats"),
+    notes: formText(formData, "notes"),
+    source: formText(formData, "source"),
+  };
+}
+
+async function saveAction(
+  save: (db: AppDatabase, actor: Actor) => StatPriorityResult,
 ): Promise<ActionState> {
   const state = await guarded(async () => {
-    const result = saveStatPriority(
-      getDb(),
-      await actorForAction(),
-      {
-        title: formText(formData, "title"),
-        stats: formText(formData, "stats"),
-        notes: formText(formData, "notes"),
-        source: formText(formData, "source"),
-      },
-      target,
-    );
+    const result = save(getDb(), await actorForAction());
     return result.ok ? { ok: true } : { ok: false, errors: result.errors };
   });
   if (state.ok) {
@@ -39,6 +39,26 @@ export async function saveStatPriorityAction(
     redirect("/stat-prio");
   }
   return state;
+}
+
+export async function createStatPriorityAction(
+  classEntryId: number,
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  return saveAction((db, actor) =>
+    createStatPriority(db, actor, classEntryId, inputOf(formData)),
+  );
+}
+
+export async function updateStatPriorityAction(
+  priorityId: number,
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  return saveAction((db, actor) =>
+    updateStatPriority(db, actor, priorityId, inputOf(formData)),
+  );
 }
 
 export async function deleteStatPriorityAction(

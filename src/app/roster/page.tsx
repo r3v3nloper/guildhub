@@ -15,13 +15,10 @@ import {
   type RosterFilters,
 } from "@/lib/roster/roster";
 import { localize } from "@/i18n/localize";
+import { textParam } from "@/lib/search-params";
 import { de } from "@/i18n/de";
 
 export const metadata: Metadata = { title: de.roster.title };
-
-function param(value: string | string[] | undefined): string | undefined {
-  return typeof value === "string" && value ? value : undefined;
-}
 
 async function RosterContent({ searchParams }: PageProps<"/roster">) {
   const actor = await requireActor();
@@ -32,10 +29,10 @@ async function RosterContent({ searchParams }: PageProps<"/roster">) {
 
   const filters: RosterFilters = {
     gameId,
-    classKey: gameId ? param(query.klasse) : undefined,
-    professionKey: gameId ? param(query.beruf) : undefined,
-    factionKey: gameId ? param(query.fraktion) : undefined,
-    role: param(query.rolle),
+    classKey: gameId ? textParam(query.klasse) : undefined,
+    professionKey: gameId ? textParam(query.beruf) : undefined,
+    factionKey: gameId ? textParam(query.fraktion) : undefined,
+    role: textParam(query.rolle),
     showFormer: query.ehemalige === "1",
   };
   const roster = filterRoster(loadRosterMembers(db, actor.guildId), filters);

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import { listAudit } from "@/lib/audit/audit";
 import { ForbiddenError, NotFoundError } from "@/lib/errors";
 import {
   createTaskFixture,
@@ -9,7 +10,8 @@ import { validatePack } from "@/lib/packs/validate";
 import {
   deleteStatPriority,
   listStatPriorities,
-  saveStatPriority,
+  createStatPriority,
+  updateStatPriority,
   type StatPriorityInput,
 } from "./stat-priorities";
 
@@ -45,12 +47,18 @@ describe("stat priorities", () => {
 
   it("lets officers keep ordered stats per class", () => {
     // Act
-    const result = saveStatPriority(fixture.db, fixture.officer, input, {
+    const result = createStatPriority(
+      fixture.db,
+      fixture.officer,
       classEntryId,
-    });
+      input,
+    );
 
     // Assert
     expect(result).toEqual({ ok: true });
+    expect(listAudit(fixture.db)).toEqual([
+      expect.objectContaining({ action: "statPriority.create", target: "PvE" }),
+    ]);
     expect(listStatPriorities(fixture.db, ["game"])).toEqual([
       expect.objectContaining({
         className: "Krieger",
@@ -68,17 +76,17 @@ describe("stat priorities", () => {
   it("keeps members from editing", () => {
     // Act & Assert
     expect(() =>
-      saveStatPriority(fixture.db, fixture.actor, input, { classEntryId }),
+      createStatPriority(fixture.db, fixture.actor, classEntryId, input),
     ).toThrow(ForbiddenError);
   });
 
   it("validates title, stats and source", () => {
     // Act
-    const result = saveStatPriority(
+    const result = createStatPriority(
       fixture.db,
       fixture.officer,
+      classEntryId,
       { title: "", stats: " ", notes: "", source: "javascript:alert(1)" },
-      { classEntryId },
     );
 
     // Assert
@@ -94,16 +102,14 @@ describe("stat priorities", () => {
 
   it("updates and deletes a ranking", () => {
     // Arrange
-    saveStatPriority(fixture.db, fixture.officer, input, { classEntryId });
+    createStatPriority(fixture.db, fixture.officer, classEntryId, input);
     const [priority] = listStatPriorities(fixture.db, ["game"])[0].priorities;
 
     // Act
-    saveStatPriority(
-      fixture.db,
-      fixture.officer,
-      { ...input, title: "PvP" },
-      { priorityId: priority.id },
-    );
+    updateStatPriority(fixture.db, fixture.officer, priority.id, {
+      ...input,
+      title: "PvP",
+    });
     const renamed = listStatPriorities(fixture.db, ["game"])[0].priorities[0];
     deleteStatPriority(fixture.db, fixture.officer, priority.id);
 

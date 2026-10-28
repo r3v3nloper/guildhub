@@ -76,4 +76,11 @@ export const auditActions = {
   "game.disable": "hat Spiel deaktiviert",
   "game.region": "hat Region gewählt",
   "backup.download": "hat Backup geladen",
+  "guildTask.create": "hat Gildenaufgabe angelegt",
+  "guildTask.update": "hat Gildenaufgabe geändert",
+  "guildTask.delete": "hat Gildenaufgabe gelöscht",
+  "craftRequest.delete": "hat fremden Antrag gelöscht",
+  "statPriority.create": "hat Stat-Priorität angelegt",
+  "statPriority.update": "hat Stat-Priorität geändert",
+  "statPriority.delete": "hat Stat-Priorität gelöscht",
 } as Record<string, string>;

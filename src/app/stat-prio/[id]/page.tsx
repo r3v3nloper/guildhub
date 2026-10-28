@@ -9,7 +9,7 @@ import { getDb } from "@/lib/db/client";
 import { getStatPriority } from "@/lib/guild/stat-priorities";
 import { idParam, orNotFound } from "@/lib/not-found";
 import { de } from "@/i18n/de";
-import { deleteStatPriorityAction, saveStatPriorityAction } from "../actions";
+import { deleteStatPriorityAction, updateStatPriorityAction } from "../actions";
 
 export const metadata: Metadata = { title: de.statPriorities.edit };
 
@@ -26,7 +26,7 @@ async function EditStatPriorityContent({
     <div className="flex flex-col gap-4">
       <PageHeader title={de.statPriorities.edit} />
       <StatPriorityForm
-        action={saveStatPriorityAction.bind(null, { priorityId: priority.id })}
+        action={updateStatPriorityAction.bind(null, priority.id)}
         values={{
           title: priority.title,
           stats: priority.stats.join("\n"),

@@ -21,11 +21,12 @@ export function CraftRequestForm({
   games: CraftRequestGame[];
   defaultGame: string;
 }) {
-  const { state, pending, formRef, onSubmit } = useFormAction(action, {
-    resetOnSuccess: true,
-  });
   const [gameId, setGameId] = useState(defaultGame);
   const [profession, setProfession] = useState("");
+  const { state, pending, formRef, onSubmit } = useFormAction(action, {
+    resetOnSuccess: true,
+    onSuccess: () => setProfession(""),
+  });
   const errors = state.errors ?? {};
   const professions =
     games.find((game) => game.value === gameId)?.professions ?? [];

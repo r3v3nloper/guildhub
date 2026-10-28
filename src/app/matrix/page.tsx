@@ -9,8 +9,9 @@ import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { selectedGames } from "@/lib/game-filter";
 import { buildGameMatrix, type MatrixMode } from "@/lib/guild/matrix";
-import { buildDashboard, type DashboardItem } from "@/lib/tasks/dashboard";
+import { loadGuildTaskItems, type DashboardItem } from "@/lib/tasks/dashboard";
 import { localize } from "@/i18n/localize";
+import { textParam } from "@/lib/search-params";
 import { de } from "@/i18n/de";
 
 export const metadata: Metadata = { title: de.matrix.title };
@@ -22,22 +23,16 @@ async function MatrixContent({ searchParams }: PageProps<"/matrix">) {
   const params = await searchParams;
   const mode: MatrixMode =
     params.ansicht === CHARACTER_MODE ? "character" : "member";
-  const category =
-    typeof params.kategorie === "string" ? params.kategorie : undefined;
+  const category = textParam(params.kategorie);
   const db = getDb();
   const { games } = await selectedGames(db, actor.guildId);
   const now = DateTime.now();
-  const guildTasks = buildDashboard(
+  const guildTasks = loadGuildTaskItems(
     db,
     actor.guildId,
-    actor.userId,
-    games.map((game) => ({
-      id: game.id,
-      name: game.name,
-      serverLabel: game.meta.serverLabel,
-    })),
+    games.map((game) => game.id),
     now,
-  ).guild;
+  );
   const href = (next: { mode?: MatrixMode; category?: string | null }) => {
     const query = new URLSearchParams();
     if ((next.mode ?? mode) === "character") {

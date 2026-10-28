@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import { beforeEach, describe, expect, it } from "vitest";
+import { listAudit } from "@/lib/audit/audit";
 import { ForbiddenError, NotFoundError } from "@/lib/errors";
 import {
   deleteCustomTask,
@@ -243,6 +244,30 @@ describe("custom tasks", () => {
         ok: false,
         errors: { kind: expect.any(String) },
       });
+    });
+
+    it("logs officers' changes, but not private tasks", () => {
+      // Arrange
+      save({});
+
+      // Act
+      const created = saveCustomTask(fixture.db, fixture.officer, {
+        ...base,
+        ...guildTask,
+      });
+      deleteCustomTask(
+        fixture.db,
+        fixture.officer,
+        created.ok ? created.taskId : -1,
+      );
+
+      // Assert
+      expect(
+        listAudit(fixture.db).map((entry) => [entry.action, entry.target]),
+      ).toEqual([
+        ["guildTask.delete", "Gildenbank auffüllen"],
+        ["guildTask.create", "Gildenbank auffüllen"],
+      ]);
     });
 
     it("survives the officer who wrote it", () => {

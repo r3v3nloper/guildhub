@@ -9,6 +9,7 @@ import { listKnownServers } from "@/lib/roster/characters";
 import { characterFormOptions } from "@/lib/roster/form-options";
 import { isGameEnabled, loadGameCatalog } from "@/lib/roster/game-catalog";
 import { localize } from "@/i18n/localize";
+import { textParam } from "@/lib/search-params";
 import { de } from "@/i18n/de";
 import { saveCharacterAction } from "../actions";
 
@@ -19,7 +20,7 @@ async function NewCharacterContent({
 }: PageProps<"/charaktere/neu">) {
   const actor = await requireActor();
   const { spiel } = await searchParams;
-  const gameId = typeof spiel === "string" ? spiel : "";
+  const gameId = textParam(spiel) ?? "";
   const db = getDb();
   const catalog = loadGameCatalog(db, gameId);
   if (!catalog || !isGameEnabled(db, actor.guildId, gameId)) {

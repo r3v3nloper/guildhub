@@ -1,4 +1,5 @@
 import { and, asc, eq, inArray } from "drizzle-orm";
+import { recordAudit } from "@/lib/audit/audit";
 import { assertAllowed, permissions, type Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
 import { gameCatalogEntries, statPriorities } from "@/lib/db/schema";
@@ -137,25 +138,66 @@ export function getClassForPriority(
   return entry;
 }
 
-/** Creates a ranking for `classEntryId`, or updates `priorityId`. */
-export function saveStatPriority(
+export function createStatPriority(
   db: AppDatabase,
   actor: Actor,
+  classEntryId: number,
   input: StatPriorityInput,
-  target: { classEntryId: number } | { priorityId: number },
 ): StatPriorityResult {
-  const existing =
-    "priorityId" in target
-      ? getStatPriority(db, actor, target.priorityId)
-      : undefined;
-  const classEntry = existing
-    ? undefined
-    : getClassForPriority(
-        db,
-        actor,
-        (target as { classEntryId: number }).classEntryId,
-      );
+  const classEntry = getClassForPriority(db, actor, classEntryId);
+  const parsed = parseStatPriority(input);
+  if (!parsed.ok) {
+    return parsed;
+  }
+  db.insert(statPriorities)
+    .values({
+      ...parsed.values,
+      updatedBy: actor.userId,
+      gameId: classEntry.gameId,
+      classEntryId: classEntry.id,
+    })
+    .run();
+  auditPriority(
+    db,
+    actor,
+    "statPriority.create",
+    parsed.values.title,
+    classEntry.id,
+  );
+  return { ok: true };
+}
 
+export function updateStatPriority(
+  db: AppDatabase,
+  actor: Actor,
+  priorityId: number,
+  input: StatPriorityInput,
+): StatPriorityResult {
+  const existing = getStatPriority(db, actor, priorityId);
+  const parsed = parseStatPriority(input);
+  if (!parsed.ok) {
+    return parsed;
+  }
+  db.update(statPriorities)
+    .set({ ...parsed.values, updatedBy: actor.userId })
+    .where(eq(statPriorities.id, existing.id))
+    .run();
+  auditPriority(
+    db,
+    actor,
+    "statPriority.update",
+    parsed.values.title,
+    existing.classEntryId,
+  );
+  return { ok: true };
+}
+
+function parseStatPriority(input: StatPriorityInput):
+  | {
+      ok: true;
+      values: Pick<StatPriorityRow, "title" | "stats" | "notes" | "source">;
+    }
+  | { ok: false; errors: StatPriorityErrors } {
   const errors: StatPriorityErrors = {};
   const title = input.title.trim();
   if (!title) {
@@ -185,29 +227,10 @@ export function saveStatPriority(
   if (Object.keys(errors).length > 0) {
     return { ok: false, errors };
   }
-
-  const values = {
-    title,
-    stats,
-    notes: notes || null,
-    source: source || null,
-    updatedBy: actor.userId,
+  return {
+    ok: true,
+    values: { title, stats, notes: notes || null, source: source || null },
   };
-  if (existing) {
-    db.update(statPriorities)
-      .set(values)
-      .where(eq(statPriorities.id, existing.id))
-      .run();
-  } else {
-    db.insert(statPriorities)
-      .values({
-        ...values,
-        gameId: classEntry!.gameId,
-        classEntryId: classEntry!.id,
-      })
-      .run();
-  }
-  return { ok: true };
 }
 
 export function deleteStatPriority(
@@ -217,4 +240,21 @@ export function deleteStatPriority(
 ): void {
   const priority = getStatPriority(db, actor, priorityId);
   db.delete(statPriorities).where(eq(statPriorities.id, priority.id)).run();
+  auditPriority(
+    db,
+    actor,
+    "statPriority.delete",
+    priority.title,
+    priority.classEntryId,
+  );
+}
+
+function auditPriority(
+  db: AppDatabase,
+  actor: Actor,
+  action: "statPriority.create" | "statPriority.update" | "statPriority.delete",
+  title: string,
+  classEntryId: number,
+): void {
+  recordAudit(db, actor.userId, action, title, { classEntryId });
 }
