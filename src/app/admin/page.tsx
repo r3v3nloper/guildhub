@@ -87,9 +87,7 @@ async function AdminContent() {
       />
       {permissions.downloadBackup(actor).allowed && (
         <Card title={de.admin.backup}>
-          <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">
-            {de.admin.backupHint}
-          </p>
+          <p className="mb-3 text-sm text-muted">{de.admin.backupHint}</p>
           <ButtonLink href="/admin/backup" variant="secondary">
             {de.admin.backupDownload}
           </ButtonLink>

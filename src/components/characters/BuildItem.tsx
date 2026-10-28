@@ -66,9 +66,9 @@ export function BuildItem({
         <span>{values.title}</span>
       )}
       {targetClassName && (
-        <span className="text-zinc-500">→ {targetClassName}</span>
+        <span className="text-muted">→ {targetClassName}</span>
       )}
-      {values.notes && <span className="text-zinc-500">{values.notes}</span>}
+      {values.notes && <span className="text-muted">{values.notes}</span>}
       <div className="ml-auto flex gap-2">
         <Button
           type="button"

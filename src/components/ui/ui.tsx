@@ -1,18 +1,22 @@
+import { Button as PrimeButton, type ButtonProps } from "primereact/button";
+import { Card as PrimeCard } from "primereact/card";
+import { InputText, type InputTextProps } from "primereact/inputtext";
+import {
+  InputTextarea,
+  type InputTextareaProps,
+} from "primereact/inputtextarea";
+import { Message } from "primereact/message";
+import { Tag } from "primereact/tag";
 import {
   cloneElement,
   isValidElement,
-  type ButtonHTMLAttributes,
-  type InputHTMLAttributes,
   type ReactElement,
   type ReactNode,
-  type SelectHTMLAttributes,
-  type TextareaHTMLAttributes,
 } from "react";
 
-// Small shared building blocks, so pages stay readable and look alike.
-
-const fieldClass =
-  "w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900";
+// Shared building blocks on top of PrimeReact, so pages stay readable and look alike.
+// The PrimeReact modules are client components; these wrappers pass only serialisable
+// props, so server pages can use them directly.
 
 export function PageHeader({
   title,
@@ -39,15 +43,16 @@ export function Card({
   className?: string;
 }) {
   return (
-    <section
-      className={`rounded-lg border border-zinc-200 p-4 dark:border-zinc-800 ${className}`}
-    >
-      {title && <h2 className="mb-3 font-semibold">{title}</h2>}
+    <PrimeCard title={title} className={className}>
       {children}
-    </section>
+    </PrimeCard>
   );
 }
 
+/**
+ * Label, hint and error around one control. IDs derive from the control's `name`, so
+ * screen readers announce hint and error together with the field.
+ */
 export function Field({
   label,
   error,
@@ -59,84 +64,90 @@ export function Field({
   hint?: string;
   children: ReactNode;
 }) {
-  // Screen readers announce hint and error with the control; IDs derive from its name.
   const name =
-    isValidElement<{ name?: string }>(children) && children.props.name;
+    isValidElement<{ name?: string; id?: string }>(children) &&
+    children.props.name;
+  const controlId = name ? `field-${name}` : undefined;
   const hintId = name && hint ? `${name}-hint` : undefined;
   const errorId = name && error ? `${name}-error` : undefined;
   const describedBy = [hintId, errorId].filter(Boolean).join(" ") || undefined;
   const control = name
     ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+        id: controlId,
         "aria-invalid": error ? true : undefined,
         "aria-describedby": describedBy,
+        invalid: Boolean(error),
       })
     : children;
 
   return (
-    <label className="flex flex-col gap-1 text-sm">
-      <span className="font-medium">{label}</span>
+    <div className="flex flex-col gap-1 text-sm">
+      <label htmlFor={controlId} className="font-medium">
+        {label}
+      </label>
       {control}
       {hint && (
-        <span
-          id={hintId}
-          className="text-xs text-amber-600 dark:text-amber-400"
-        >
+        <small id={hintId} className="text-orange-500">
           {hint}
-        </span>
+        </small>
       )}
       {error && (
-        <span id={errorId} className="text-xs text-red-600 dark:text-red-400">
+        <small id={errorId} className="text-red-500">
           {error}
-        </span>
+        </small>
       )}
-    </label>
+    </div>
   );
 }
 
-export function TextInput(props: InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <input {...props} className={`${fieldClass} ${props.className ?? ""}`} />
-  );
+export function TextInput({ className = "", ...props }: InputTextProps) {
+  return <InputText {...props} className={`w-full ${className}`} />;
 }
 
-export function TextArea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+export function TextArea({ className = "", ...props }: InputTextareaProps) {
   return (
-    <textarea
+    <InputTextarea
       rows={3}
+      autoResize
       {...props}
-      className={`${fieldClass} ${props.className ?? ""}`}
+      className={`w-full ${className}`}
     />
-  );
-}
-
-export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) {
-  return (
-    <select {...props} className={`${fieldClass} ${props.className ?? ""}`} />
   );
 }
 
 type ButtonVariant = "primary" | "secondary" | "danger";
 
-const buttonVariants: Record<ButtonVariant, string> = {
-  primary: "bg-accent text-white",
-  secondary: "border border-zinc-300 bg-transparent dark:border-zinc-700",
-  danger: "bg-red-600 text-white",
+const buttonVariants: Record<ButtonVariant, Partial<ButtonProps>> = {
+  primary: {},
+  secondary: { severity: "secondary", outlined: true },
+  danger: { severity: "danger" },
 };
 
 export function Button({
   variant = "primary",
-  className = "",
+  children,
+  type = "submit",
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: ButtonVariant }) {
+}: Omit<ButtonProps, "severity" | "outlined"> & { variant?: ButtonVariant }) {
   return (
-    <button
-      type="submit"
+    <PrimeButton
+      type={type}
+      size="small"
+      {...buttonVariants[variant]}
       {...props}
-      className={`rounded-md px-3 py-1.5 text-sm font-medium active:opacity-80 disabled:opacity-50 ${buttonVariants[variant]} ${className}`}
-    />
+    >
+      {children}
+    </PrimeButton>
   );
 }
 
+const buttonLinkVariants: Record<ButtonVariant, string> = {
+  primary: "",
+  secondary: "p-button-secondary p-button-outlined",
+  danger: "p-button-danger",
+};
+
+/** A link that looks like a button; a plain anchor, so it also works for downloads. */
 export function ButtonLink({
   href,
   children,
@@ -149,7 +160,7 @@ export function ButtonLink({
   return (
     <a
       href={href}
-      className={`inline-block rounded-md px-3 py-1.5 text-sm font-medium active:opacity-80 ${buttonVariants[variant]}`}
+      className={`p-button p-component p-button-sm no-underline ${buttonLinkVariants[variant]}`}
     >
       {children}
     </a>
@@ -158,14 +169,12 @@ export function ButtonLink({
 
 type BadgeTone = "neutral" | "warning" | "danger" | "accent";
 
-const badgeTones: Record<BadgeTone, string> = {
-  neutral: "bg-zinc-200 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200",
-  warning:
-    "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200",
-  danger: "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200",
-  accent:
-    "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-200",
-};
+const badgeSeverities = {
+  neutral: "secondary",
+  warning: "warning",
+  danger: "danger",
+  accent: undefined,
+} as const;
 
 export function Badge({
   children,
@@ -174,13 +183,7 @@ export function Badge({
   children: ReactNode;
   tone?: BadgeTone;
 }) {
-  return (
-    <span
-      className={`rounded px-1.5 py-0.5 text-xs font-medium ${badgeTones[tone]}`}
-    >
-      {children}
-    </span>
-  );
+  return <Tag severity={badgeSeverities[tone]} value={children} />;
 }
 
 export function FormMessage({
@@ -192,11 +195,10 @@ export function FormMessage({
     return null;
   }
   return (
-    <p
+    <Message
       role="status"
-      className={`text-sm ${state.ok ? "text-green-700 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
-    >
-      {state.message}
-    </p>
+      severity={state.ok ? "success" : "error"}
+      text={state.message}
+    />
   );
 }

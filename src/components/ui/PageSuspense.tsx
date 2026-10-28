@@ -9,7 +9,7 @@ import { de } from "@/i18n/de";
 export function PageSuspense({ children }: { children: ReactNode }) {
   return (
     <Suspense
-      fallback={<p className="text-sm text-zinc-500">{de.common.loading}</p>}
+      fallback={<p className="text-sm text-muted">{de.common.loading}</p>}
     >
       {children}
     </Suspense>

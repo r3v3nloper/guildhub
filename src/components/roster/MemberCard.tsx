@@ -41,7 +41,7 @@ export function MemberCard({
       }
     >
       {member.characters.length === 0 ? (
-        <p className="text-sm text-zinc-500">{de.roster.noCharacters}</p>
+        <p className="text-sm text-muted">{de.roster.noCharacters}</p>
       ) : (
         <ul className="flex flex-col gap-3">
           {member.characters.map((character) => (
@@ -53,22 +53,22 @@ export function MemberCard({
                 )}
                 <ClassName entry={character.characterClass} />
                 {character.characterClass?.role && (
-                  <span className="text-zinc-500">
+                  <span className="text-muted">
                     {de.roles[character.characterClass.role]}
                   </span>
                 )}
                 {character.level !== null && (
-                  <span className="text-zinc-500">
+                  <span className="text-muted">
                     {de.roster.levelShort} {character.level}
                   </span>
                 )}
                 {gameNames && (
-                  <span className="text-zinc-500">
+                  <span className="text-muted">
                     {gameNames.get(character.gameId)}
                   </span>
                 )}
               </div>
-              <div className="flex flex-wrap gap-x-3 gap-y-1 text-zinc-600 dark:text-zinc-400">
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-muted">
                 {(character.race || character.faction) && (
                   <span>
                     {[character.race, character.faction]

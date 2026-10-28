@@ -19,12 +19,12 @@ function DistributionList({
         {items.map((item) => (
           <li key={item.key} className="flex items-center gap-2 text-sm">
             <span className="w-28 truncate">{labelOf(item)}</span>
-            <span className="h-2 flex-1 rounded bg-zinc-200 dark:bg-zinc-800">
+            <span className="h-2 flex-1 rounded bg-border">
               <span
                 className="block h-2 rounded"
                 style={{
                   width: `${(item.count / total) * 100}%`,
-                  backgroundColor: item.color ?? "var(--accent)",
+                  backgroundColor: item.color ?? "var(--primary-color)",
                 }}
               />
             </span>
@@ -48,7 +48,7 @@ export function DistributionSummary({
     return null;
   }
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-zinc-200 p-4 sm:flex-row dark:border-zinc-800">
+    <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-4 sm:flex-row">
       <DistributionList
         title={de.roster.roleDistribution}
         items={roles}

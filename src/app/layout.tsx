@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import { AppNav } from "@/components/nav/AppNav";
+import { PrimeProvider } from "@/components/ui/PrimeProvider";
 import { OfflineBanner } from "@/components/pwa/OfflineBanner";
 import { UpdatePrompt } from "@/components/pwa/UpdatePrompt";
 import { de } from "@/i18n/de";
@@ -32,24 +33,27 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="de" className="h-full antialiased">
       <body className="flex min-h-full flex-col">
-        <SerwistProvider
-          swUrl="/serwist/sw.js"
-          disable={process.env.NODE_ENV === "development"}
-        >
-          <OfflineBanner />
-          <UpdatePrompt />
-          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-            <Link href="/" className="font-semibold">
-              {de.app.name}
-            </Link>
-            <Suspense fallback={null}>
-              <AppNav />
-            </Suspense>
-          </header>
-          <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6">
-            {children}
-          </main>
-        </SerwistProvider>
+        <PrimeProvider>
+          <SerwistProvider
+            swUrl="/serwist/sw.js"
+            disable={process.env.NODE_ENV === "development"}
+          >
+            <OfflineBanner />
+            <UpdatePrompt />
+            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface px-4 py-3">
+              <Link href="/" className="flex items-center gap-2 font-semibold">
+                <i className="pi pi-shield text-accent" aria-hidden />
+                {de.app.name}
+              </Link>
+              <Suspense fallback={null}>
+                <AppNav />
+              </Suspense>
+            </header>
+            <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6">
+              {children}
+            </main>
+          </SerwistProvider>
+        </PrimeProvider>
       </body>
     </html>
   );

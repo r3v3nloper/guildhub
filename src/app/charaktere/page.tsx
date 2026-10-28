@@ -31,7 +31,7 @@ async function CharactersContent() {
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={de.characters.title} />
-      {games.length === 0 && <p className="text-zinc-500">{de.home.noGames}</p>}
+      {games.length === 0 && <p className="text-muted">{de.home.noGames}</p>}
       {games.map((game) => {
         const characters = own.filter(
           (character) => character.gameId === game.id,
@@ -52,9 +52,9 @@ async function CharactersContent() {
             }
           >
             {characters.length === 0 ? (
-              <p className="text-sm text-zinc-500">{de.characters.empty}</p>
+              <p className="text-sm text-muted">{de.characters.empty}</p>
             ) : (
-              <ul className="divide-y divide-zinc-200 dark:divide-zinc-800">
+              <ul className="divide-y divide-border">
                 {characters.map((character) => (
                   <li key={character.id}>
                     <Link
@@ -67,12 +67,12 @@ async function CharactersContent() {
                       )}
                       <ClassName entry={character.characterClass} />
                       {character.level !== null && (
-                        <span className="text-sm text-zinc-500">
+                        <span className="text-sm text-muted">
                           {de.characters.level} {character.level}
                         </span>
                       )}
                       {character.server && (
-                        <span className="text-sm text-zinc-500">
+                        <span className="text-sm text-muted">
                           {character.server}
                         </span>
                       )}

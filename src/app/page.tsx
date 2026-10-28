@@ -13,7 +13,7 @@ async function HomeContent() {
     return (
       <section className="mx-auto flex w-full max-w-xl flex-col gap-2">
         <h1 className="text-2xl font-semibold">{de.home.welcome}</h1>
-        <p className="text-zinc-600 dark:text-zinc-400">{de.home.signInHint}</p>
+        <p className="text-muted">{de.home.signInHint}</p>
       </section>
     );
   }
@@ -31,16 +31,15 @@ async function HomeContent() {
   return (
     <section className="flex flex-col gap-4">
       <h1 className="text-2xl font-semibold">{de.home.welcome}</h1>
-      {!hasGames && (
-        <p className="text-amber-700 dark:text-amber-400">{de.home.noGames}</p>
-      )}
+      {!hasGames && <p className="text-orange-500">{de.home.noGames}</p>}
       <div className="grid gap-3 sm:grid-cols-2">
         {cards.map((card) => (
           <Link key={card.href} href={card.href}>
-            <Card title={card.title} className="h-full hover:border-accent">
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                {card.text}
-              </p>
+            <Card
+              title={card.title}
+              className="h-full transition-shadow hover:shadow-lg"
+            >
+              <p className="text-sm text-muted">{card.text}</p>
             </Card>
           </Link>
         ))}

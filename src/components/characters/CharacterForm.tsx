@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import {
-  Badge,
+  CheckboxField,
+  MultiSelectField,
+  SelectField,
+  type SelectOption,
+} from "@/components/ui/SelectField";
+import {
   Button,
   Field,
   FormMessage,
-  Select,
   TextArea,
   TextInput,
 } from "@/components/ui/ui";
@@ -39,6 +43,10 @@ interface CharacterFormProps {
   values: CharacterFormValues;
   hints: CharacterHint[];
   knownServers: string[];
+}
+
+function toSelectOption(option: CatalogOption): SelectOption {
+  return { value: option.key, label: optionLabel(option) };
 }
 
 function optionLabel(option: CatalogOption): string {
@@ -103,14 +111,12 @@ export function CharacterForm({
         {capabilities.servers && (
           <Field label={options.serverLabel} error={errors.server}>
             {options.servers.length > 0 ? (
-              <Select name="server" defaultValue={values.server}>
-                <option value="">{de.common.none}</option>
-                {options.servers.map((option) => (
-                  <option key={option.key} value={option.key}>
-                    {optionLabel(option)}
-                  </option>
-                ))}
-              </Select>
+              <SelectField
+                name="server"
+                defaultValue={values.server}
+                emptyLabel={de.common.none}
+                options={options.servers.map(toSelectOption)}
+              />
             ) : (
               <>
                 <TextInput
@@ -134,21 +140,16 @@ export function CharacterForm({
             error={errors.factionKey}
             hint={hintFor("factionKey")}
           >
-            <Select
+            <SelectField
               name="faction"
               value={faction}
-              onChange={(event) => {
-                setFaction(event.target.value);
-                keepClassIfAllowed(event.target.value, race);
+              placeholder={de.common.choose}
+              options={options.factions.map(toSelectOption)}
+              onChange={(next) => {
+                setFaction(next);
+                keepClassIfAllowed(next, race);
               }}
-            >
-              <option value="">{de.common.choose}</option>
-              {options.factions.map((option) => (
-                <option key={option.key} value={option.key}>
-                  {optionLabel(option)}
-                </option>
-              ))}
-            </Select>
+            />
           </Field>
         )}
 
@@ -158,27 +159,26 @@ export function CharacterForm({
             error={errors.raceKey}
             hint={hintFor("raceKey")}
           >
-            <Select
+            <SelectField
               name="race"
               value={race}
-              onChange={(event) => {
-                setRace(event.target.value);
-                keepClassIfAllowed(faction, event.target.value);
-              }}
-            >
-              <option value="">{de.common.choose}</option>
-              {options.races.map((option) => {
+              placeholder={de.common.choose}
+              options={options.races.map((option) => {
                 const factionName = options.factions.find(
                   (f) => f.key === option.faction,
                 )?.label;
-                return (
-                  <option key={option.key} value={option.key}>
-                    {optionLabel(option)}
-                    {factionName ? ` – ${factionName}` : ""}
-                  </option>
-                );
+                return {
+                  value: option.key,
+                  label: factionName
+                    ? `${optionLabel(option)} – ${factionName}`
+                    : optionLabel(option),
+                };
               })}
-            </Select>
+              onChange={(next) => {
+                setRace(next);
+                keepClassIfAllowed(faction, next);
+              }}
+            />
           </Field>
         )}
 
@@ -188,21 +188,18 @@ export function CharacterForm({
             error={errors.classKey}
             hint={hintFor("classKey")}
           >
-            <Select
+            <SelectField
               name="class"
               value={characterClass}
-              onChange={(event) => setCharacterClass(event.target.value)}
-            >
-              <option value="">{de.common.choose}</option>
-              {classes.map((option) => (
-                <option key={option.key} value={option.key}>
-                  {optionLabel(option)}
-                  {option.role
-                    ? ` – ${de.roles[option.role] ?? option.role}`
-                    : ""}
-                </option>
-              ))}
-            </Select>
+              placeholder={de.common.choose}
+              options={classes.map((option) => ({
+                value: option.key,
+                label: option.role
+                  ? `${optionLabel(option)} – ${de.roles[option.role] ?? option.role}`
+                  : optionLabel(option),
+              }))}
+              onChange={setCharacterClass}
+            />
           </Field>
         )}
 
@@ -221,46 +218,25 @@ export function CharacterForm({
         </Field>
       </div>
 
-      <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="isMain" defaultChecked={values.isMain} />
-        {de.characters.isMain}
-      </label>
+      <CheckboxField
+        name="isMain"
+        label={de.characters.isMain}
+        defaultChecked={values.isMain}
+      />
 
       {capabilities.professions && options.professions.length > 0 && (
-        <fieldset className="flex flex-col gap-2">
-          <legend className="mb-1 text-sm font-medium">
-            {de.characters.professions}
-          </legend>
-          {hintFor("professionKeys") && (
-            <span className="text-xs text-amber-600 dark:text-amber-400">
-              {hintFor("professionKeys")}
-            </span>
-          )}
-          <div className="grid grid-cols-1 gap-1 sm:grid-cols-3">
-            {options.professions.map((option) => (
-              <label
-                key={option.key}
-                className="flex items-center gap-2 text-sm"
-              >
-                <input
-                  type="checkbox"
-                  name="professions"
-                  value={option.key}
-                  defaultChecked={values.professions.includes(option.key)}
-                />
-                {option.label}
-                {option.status !== "active" && (
-                  <Badge tone="warning">{de.badges[option.status]}</Badge>
-                )}
-              </label>
-            ))}
-          </div>
-          {errors.professionKeys && (
-            <span className="text-xs text-red-600 dark:text-red-400">
-              {errors.professionKeys}
-            </span>
-          )}
-        </fieldset>
+        <Field
+          label={de.characters.professions}
+          error={errors.professionKeys}
+          hint={hintFor("professionKeys")}
+        >
+          <MultiSelectField
+            name="professions"
+            defaultValue={values.professions}
+            placeholder={de.common.choose}
+            options={options.professions.map(toSelectOption)}
+          />
+        </Field>
       )}
 
       <Field label={de.characters.notes} error={errors.notes}>

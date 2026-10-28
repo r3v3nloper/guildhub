@@ -1,9 +1,8 @@
+import { Avatar } from "primereact/avatar";
+import { Button } from "@/components/ui/ui";
 import { signIn, signOut } from "@/lib/auth/auth";
 import { currentSession } from "@/lib/auth/current-actor";
 import { de } from "@/i18n/de";
-
-const buttonClass =
-  "rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-white active:opacity-80";
 
 export async function UserMenu() {
   const session = await currentSession();
@@ -16,27 +15,35 @@ export async function UserMenu() {
           await signIn("discord");
         }}
       >
-        <button type="submit" className={buttonClass}>
-          {de.auth.signIn}
-        </button>
+        <Button icon="pi pi-discord" label={de.auth.signIn} />
       </form>
     );
   }
 
+  const { name, image } = session.user;
   return (
     <form
-      className="flex items-center gap-3"
+      className="flex items-center gap-2"
       action={async () => {
         "use server";
         await signOut();
       }}
     >
+      <Avatar
+        image={image ?? undefined}
+        label={image ? undefined : name?.charAt(0).toUpperCase()}
+        shape="circle"
+        aria-hidden
+      />
       <span className="text-sm" title={de.home.signedInAs}>
-        {session.user.name}
+        {name}
       </span>
-      <button type="submit" className={buttonClass}>
-        {de.auth.signOut}
-      </button>
+      <Button
+        variant="secondary"
+        icon="pi pi-sign-out"
+        aria-label={de.auth.signOut}
+        title={de.auth.signOut}
+      />
     </form>
   );
 }

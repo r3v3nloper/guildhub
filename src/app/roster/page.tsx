@@ -62,7 +62,7 @@ async function RosterContent({ searchParams }: PageProps<"/roster">) {
       <RosterFilterForm filters={filters} choices={choices} />
       <DistributionSummary classes={roster.classes} roles={roster.roles} />
       {roster.members.length === 0 ? (
-        <p className="text-zinc-500">{de.roster.empty}</p>
+        <p className="text-muted">{de.roster.empty}</p>
       ) : (
         <div className="grid gap-3 md:grid-cols-2">
           {roster.members.map((member) => (

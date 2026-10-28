@@ -5,7 +5,8 @@ import {
   reactivateMemberAction,
 } from "@/app/admin/actions";
 import { ActionForm } from "@/components/ui/ActionForm";
-import { Badge, Button, Card, Select, TextInput } from "@/components/ui/ui";
+import { SelectField } from "@/components/ui/SelectField";
+import { Badge, Button, Card, TextInput } from "@/components/ui/ui";
 import { permissions, type Actor } from "@/lib/auth/guards";
 import type { MemberView } from "@/lib/auth/membership";
 import { MEMBER_ROLES } from "@/lib/db/schema";
@@ -25,7 +26,7 @@ export function MembersSection({
 
   return (
     <Card title={de.admin.members}>
-      <ul className="flex flex-col divide-y divide-zinc-200 dark:divide-zinc-800">
+      <ul className="flex flex-col divide-y divide-border">
         {members.map((member) => {
           // Demoting is the restrictive case; if that is denied, only "owner" would remain.
           const canChangeRole = permissions.changeRole(
@@ -52,27 +53,23 @@ export function MembersSection({
                 {member.status === "disabled" && (
                   <Badge tone="danger">{de.badges.former}</Badge>
                 )}
-                <span className="text-xs text-zinc-500">
-                  {member.discordId}
-                </span>
+                <span className="text-xs text-muted">{member.discordId}</span>
               </div>
               <div className="flex flex-wrap items-start gap-3">
                 {canChangeRole && (
                   <ActionForm
                     action={changeRoleAction.bind(null, member.userId)}
                   >
-                    <Select
+                    <SelectField
                       name="role"
                       defaultValue={member.role}
                       aria-label={de.admin.role}
-                      className="w-auto"
-                    >
-                      {MEMBER_ROLES.map((role) => (
-                        <option key={role} value={role}>
-                          {de.memberRoles[role]}
-                        </option>
-                      ))}
-                    </Select>
+                      className="w-40"
+                      options={MEMBER_ROLES.map((role) => ({
+                        value: role,
+                        label: de.memberRoles[role],
+                      }))}
+                    />
                     <Button variant="secondary">{de.common.save}</Button>
                   </ActionForm>
                 )}

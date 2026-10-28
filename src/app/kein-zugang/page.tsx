@@ -19,7 +19,7 @@ async function AuthErrorMessage({
       <h1 className="text-2xl font-semibold">
         {accessDenied ? de.auth.noAccessTitle : de.auth.errorTitle}
       </h1>
-      <p className="text-zinc-600 dark:text-zinc-400">
+      <p className="text-muted">
         {accessDenied ? de.auth.noAccessText : de.auth.errorText}
       </p>
     </>

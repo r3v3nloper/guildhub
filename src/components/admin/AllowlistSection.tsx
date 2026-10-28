@@ -20,7 +20,7 @@ export function AllowlistSection({ pending }: { pending: AllowlistEntry[] }) {
         </label>
         <Button>{de.common.add}</Button>
       </ActionForm>
-      <p className="mt-2 text-xs text-zinc-500">{de.admin.allowlistHint}</p>
+      <p className="mt-2 text-xs text-muted">{de.admin.allowlistHint}</p>
 
       {pending.length > 0 && (
         <div className="mt-4">

@@ -1,5 +1,6 @@
 "use client";
 
+import { Dropdown } from "primereact/dropdown";
 import { useTransition } from "react";
 import { de } from "@/i18n/de";
 import { selectGame } from "./nav-actions";
@@ -17,24 +18,24 @@ export function GameSwitcher({
   selected: string | undefined;
 }) {
   const [pending, startTransition] = useTransition();
+  const options = [
+    { value: "", label: de.nav.allGames },
+    ...games.map((game) => ({ value: game.id, label: game.name })),
+  ];
 
   return (
-    <select
+    <Dropdown
       aria-label={de.nav.gameSwitcher}
       value={selected ?? ""}
+      options={options}
+      optionLabel="label"
+      optionValue="value"
       disabled={pending}
+      className="p-inputtext-sm"
       onChange={(event) => {
-        const gameId = event.target.value;
+        const gameId = (event.value as string | null) ?? "";
         startTransition(() => selectGame(gameId));
       }}
-      className="rounded-md border border-zinc-300 bg-transparent px-2 py-1 text-sm dark:border-zinc-700"
-    >
-      <option value="">{de.nav.allGames}</option>
-      {games.map((game) => (
-        <option key={game.id} value={game.id}>
-          {game.name}
-        </option>
-      ))}
-    </select>
+    />
   );
 }

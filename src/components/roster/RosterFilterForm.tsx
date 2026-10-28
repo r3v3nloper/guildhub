@@ -1,4 +1,5 @@
-import { Button, ButtonLink, Field, Select } from "@/components/ui/ui";
+import { CheckboxField, SelectField } from "@/components/ui/SelectField";
+import { Button, ButtonLink, Field } from "@/components/ui/ui";
 import type { CatalogOption } from "@/lib/roster/form-options";
 import { OUTDATED_FILTER_KEY, type RosterFilters } from "@/lib/roster/roster";
 import { de } from "@/i18n/de";
@@ -24,17 +25,20 @@ function FilterSelect({
 }) {
   return (
     <Field label={label}>
-      <Select name={name} defaultValue={value ?? ""}>
-        <option value="">{de.common.all}</option>
-        {options.map((option) => (
-          <option key={option.key} value={option.key}>
-            {option.label}
-          </option>
-        ))}
-        {withOutdated && (
-          <option value={OUTDATED_FILTER_KEY}>{de.roster.outdated}</option>
-        )}
-      </Select>
+      <SelectField
+        name={name}
+        defaultValue={value ?? ""}
+        emptyLabel={de.common.all}
+        options={[
+          ...options.map((option) => ({
+            value: option.key,
+            label: option.label,
+          })),
+          ...(withOutdated
+            ? [{ value: OUTDATED_FILTER_KEY, label: de.roster.outdated }]
+            : []),
+        ]}
+      />
     </Field>
   );
 }
@@ -94,18 +98,15 @@ export function RosterFilterForm({
         )}
       </div>
       {!choices && (
-        <p className="text-xs text-zinc-500">{de.roster.pickGameForFilters}</p>
+        <p className="text-xs text-muted">{de.roster.pickGameForFilters}</p>
       )}
       <div className="flex flex-wrap items-center gap-3">
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name="ehemalige"
-            value="1"
-            defaultChecked={filters.showFormer}
-          />
-          {de.roster.showFormer}
-        </label>
+        <CheckboxField
+          name="ehemalige"
+          value="1"
+          label={de.roster.showFormer}
+          defaultChecked={filters.showFormer}
+        />
         <Button>{de.common.filter}</Button>
         <ButtonLink href="/roster" variant="secondary">
           {de.common.reset}

@@ -17,7 +17,7 @@ function SyncSummaryLine({ entry }: { entry: SyncLogEntry }) {
     );
   }
   if (!summary) {
-    return <span className="text-zinc-500">{de.admin.syncUnchanged}</span>;
+    return <span className="text-muted">{de.admin.syncUnchanged}</span>;
   }
   return (
     <span className="flex flex-col gap-1">
@@ -28,7 +28,7 @@ function SyncSummaryLine({ entry }: { entry: SyncLogEntry }) {
       {summary.migrations.map((migration) => (
         <span
           key={`${migration.kind}:${migration.from}`}
-          className="text-zinc-500"
+          className="text-muted"
         >
           {kindLabel(migration.kind)} {migration.from} → {migration.to}:{" "}
           {de.admin.syncMigration(
@@ -38,7 +38,7 @@ function SyncSummaryLine({ entry }: { entry: SyncLogEntry }) {
         </span>
       ))}
       {summary.affected_characters.length > 0 && (
-        <span className="text-amber-700 dark:text-amber-400">
+        <span className="text-orange-500">
           {summary.affected_characters.length} {de.admin.affectedCharacters} (
           {summary.affected_characters
             .map((a) => `${kindLabel(a.field)} ${a.old_id}`)
@@ -71,7 +71,7 @@ export function PacksSection({
               <Badge tone={entry.status === "error" ? "danger" : "neutral"}>
                 {entry.status}
               </Badge>
-              <span className="text-xs text-zinc-500">
+              <span className="text-xs text-muted">
                 {formatDateTime(entry.startedAt)}
               </span>
             </span>
@@ -85,12 +85,12 @@ export function PacksSection({
           {de.admin.todoEntries} ({todoEntries.length})
         </summary>
         {todoEntries.length === 0 ? (
-          <p className="mt-2 text-sm text-zinc-500">{de.admin.noTodo}</p>
+          <p className="mt-2 text-sm text-muted">{de.admin.noTodo}</p>
         ) : (
           [...todoByGame].map(([gameId, entries]) => (
             <div key={gameId} className="mt-2 text-sm">
               <span className="font-medium">{gameId}</span>
-              <p className="text-zinc-600 dark:text-zinc-400">
+              <p className="text-muted">
                 {entries
                   .map(
                     (entry) =>
@@ -110,7 +110,7 @@ export function PacksSection({
         <ul className="mt-2 flex flex-col gap-2 text-sm">
           {history.map((entry) => (
             <li key={entry.id} className="flex flex-col">
-              <span className="text-xs text-zinc-500">
+              <span className="text-xs text-muted">
                 {formatDateTime(entry.startedAt)} · {entry.gameId} ·{" "}
                 {entry.status}
               </span>

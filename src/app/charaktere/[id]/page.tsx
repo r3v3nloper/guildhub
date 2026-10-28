@@ -73,9 +73,7 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
           </Link>
         }
       />
-      <p className="-mt-4 text-sm text-zinc-500">
-        {localize(catalog.game.name)}
-      </p>
+      <p className="-mt-4 text-sm text-muted">{localize(catalog.game.name)}</p>
 
       <CharacterForm
         action={saveCharacterAction.bind(null, character.gameId, character.id)}
@@ -101,10 +99,10 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
       {catalog.game.meta.capabilities.professions &&
         character.professions.length > 0 && (
           <Card title={de.characters.professionDetails}>
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-muted">
               {de.characters.professionDetailsHint}
             </p>
-            <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            <div className="divide-y divide-border">
               {character.professions.map((profession) => (
                 <ProfessionDetailsForm
                   key={profession.professionEntryId}
@@ -124,11 +122,9 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
       {catalog.game.meta.capabilities.builds && (
         <Card title={de.characters.builds}>
           {character.builds.length === 0 ? (
-            <p className="mb-4 text-sm text-zinc-500">
-              {de.characters.noBuilds}
-            </p>
+            <p className="mb-4 text-sm text-muted">{de.characters.noBuilds}</p>
           ) : (
-            <ul className="mb-4 divide-y divide-zinc-200 dark:divide-zinc-800">
+            <ul className="mb-4 divide-y divide-border">
               {character.builds.map((build) => (
                 <BuildItem
                   key={build.id}

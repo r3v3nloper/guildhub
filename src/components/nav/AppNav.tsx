@@ -17,16 +17,23 @@ export async function AppNav() {
   const games = listEnabledGames(getDb(), actor.guildId);
   const selected = await readGameFilter(games.map((game) => game.id));
   const links = [
-    { href: "/roster", label: de.nav.roster },
-    { href: "/charaktere", label: de.nav.characters },
-    ...(canViewAdmin(actor) ? [{ href: "/admin", label: de.nav.admin }] : []),
+    { href: "/roster", label: de.nav.roster, icon: "pi-users" },
+    { href: "/charaktere", label: de.nav.characters, icon: "pi-id-card" },
+    ...(canViewAdmin(actor)
+      ? [{ href: "/admin", label: de.nav.admin, icon: "pi-cog" }]
+      : []),
   ];
 
   return (
     <div className="flex flex-1 flex-wrap items-center justify-end gap-x-4 gap-y-2">
       <nav className="flex gap-3 text-sm">
         {links.map((link) => (
-          <Link key={link.href} href={link.href} className="hover:text-accent">
+          <Link
+            key={link.href}
+            href={link.href}
+            className="flex items-center gap-1.5 hover:text-accent"
+          >
+            <i className={`pi ${link.icon}`} aria-hidden />
             {link.label}
           </Link>
         ))}

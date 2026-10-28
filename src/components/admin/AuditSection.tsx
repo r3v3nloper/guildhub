@@ -14,12 +14,12 @@ export function AuditSection({
   return (
     <Card title={de.admin.audit}>
       {entries.length === 0 ? (
-        <p className="text-sm text-zinc-500">{de.admin.noAudit}</p>
+        <p className="text-sm text-muted">{de.admin.noAudit}</p>
       ) : (
         <ul className="flex flex-col gap-1 text-sm">
           {entries.map((entry) => (
             <li key={entry.id}>
-              <span className="text-xs text-zinc-500">
+              <span className="text-xs text-muted">
                 {formatDateTime(entry.at)}
               </span>{" "}
               <span className="font-medium">

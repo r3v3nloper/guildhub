@@ -1,13 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Field,
-  FormMessage,
-  Select,
-  TextInput,
-} from "@/components/ui/ui";
+import { Button, Field, FormMessage, TextInput } from "@/components/ui/ui";
+import { SelectField } from "@/components/ui/SelectField";
 import { useFormAction } from "@/components/ui/use-form-action";
 import type { ActionState } from "@/lib/actions/action-state";
 import type { BuildStatus } from "@/lib/db/schema";
@@ -78,28 +73,30 @@ export function BuildForm({
         <TextInput name="title" defaultValue={initial.title} />
       </Field>
       <Field label={de.characters.buildStatus}>
-        <Select
+        <SelectField
           name="status"
           value={status}
-          onChange={(event) => setStatus(event.target.value)}
-        >
-          <option value="current">{de.characters.buildCurrent}</option>
-          <option value="planned">{de.characters.buildPlanned}</option>
-        </Select>
+          onChange={setStatus}
+          options={[
+            { value: "current", label: de.characters.buildCurrent },
+            { value: "planned", label: de.characters.buildPlanned },
+          ]}
+        />
       </Field>
       {status === "planned" && classes.length > 0 && (
         <Field
           label={de.characters.buildTargetClass}
           error={errors.targetClassKey}
         >
-          <Select name="targetClass" defaultValue={initial.targetClassKey}>
-            <option value="">{de.common.none}</option>
-            {classes.map((option) => (
-              <option key={option.key} value={option.key}>
-                {option.label}
-              </option>
-            ))}
-          </Select>
+          <SelectField
+            name="targetClass"
+            defaultValue={initial.targetClassKey}
+            emptyLabel={de.common.none}
+            options={classes.map((option) => ({
+              value: option.key,
+              label: option.label,
+            }))}
+          />
         </Field>
       )}
       <Field label={de.characters.buildNotes}>

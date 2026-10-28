@@ -64,7 +64,8 @@ kein Vercel). Die App wird als **installierbare PWA** ausgeliefert.
 | Bereich | Wahl | Begründung |
 |---|---|---|
 | Framework | Next.js (App Router, `output: "standalone"`) + TypeScript (strict) | Ein Repo/Container für UI + API |
-| Styling | Tailwind CSS | schnell, mobile-first |
+| Styling | Tailwind CSS (Layout, Abstände) | schnell, mobile-first |
+| UI-Komponenten | **PrimeReact 10** + PrimeIcons 7, Lara-Theme (Indigo) hell/dunkel nach Systemeinstellung, als CSS-Layer unter Tailwind | vertraute Komponenten wie bei PrimeNG; Version 10 und PrimeIcons 7 sind die letzten MIT-lizenzierten Versionen (ab PrimeReact 11 bzw. PrimeIcons 8 eigene PrimeUI-Lizenz mit Registrierung) |
 | Datenbank | **SQLite** (WAL-Modus) über **Drizzle ORM** + `better-sqlite3` | max. 10 Nutzer, eine Datei, triviales Backup |
 | Migrationen | drizzle-kit erzeugt sie (Dev); beim Serverstart wendet der programmatische Migrator von `drizzle-orm` sie in `src/instrumentation.ts` an, bevor Requests angenommen werden | kein manueller Schritt beim Update; drizzle-kit ist im Standalone-Build nicht enthalten |
 | Login | **Auth.js (NextAuth v5)** mit Discord-Provider, DB-Sessions in SQLite über `@auth/drizzle-adapter` | Gilde ist ohnehin auf Discord |
