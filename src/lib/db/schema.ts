@@ -129,6 +129,8 @@ export interface GameMeta {
   serverLabel: LocalizedString;
   regions: Pack["regions"];
   buildSources: Pack["build_sources"];
+  /** Optional: games synced before credits existed lack it until their next sync. */
+  credits?: Pack["credits"];
 }
 
 export const games = sqliteTable("game", {
@@ -543,6 +545,8 @@ export const recipeEntries = sqliteTable(
     professionEntryId: integer("profession_entry_id")
       .notNull()
       .references(() => gameCatalogEntries.id),
+    // Set when the line matches a recipe of the pack; free-text recipes keep it null.
+    recipeEntryId: catalogReference("recipe_entry_id"),
     name: text("name").notNull(),
     notes: text("notes"),
   },

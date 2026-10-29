@@ -45,7 +45,7 @@ describe("loadProfessionDirectory", () => {
         skillLevel: 250,
         specialization: "",
         notes: "",
-        recipes: "Thoriumbarren\nArkanitbarren – nur mit eigenem Kristall",
+        recipes: "smelt thorium\nArkanitbarren – nur mit eigenem Kristall",
       },
     );
   });
@@ -69,11 +69,19 @@ describe("loadProfessionDirectory", () => {
             characterName: "Gimli",
             skillLevel: 250,
             recipes: [
-              {
+              expect.objectContaining({
                 name: "Arkanitbarren",
                 notes: "nur mit eigenem Kristall",
-              },
-              { name: "Thoriumbarren", notes: null },
+                skill: null,
+                link: null,
+              }),
+              expect.objectContaining({
+                name: "Thoriumbarren",
+                notes: null,
+                skill: 250,
+                reagents: "1× Thoriumerz",
+                link: "https://example.org/thorium",
+              }),
             ],
           }),
         ],
@@ -86,8 +94,18 @@ describe("loadProfessionDirectory", () => {
     const directory = search("arkanit");
 
     // Assert
-    expect(directory[0].crafters[0].recipes).toEqual([
-      { name: "Arkanitbarren", notes: "nur mit eigenem Kristall" },
+    expect(directory[0].crafters[0].recipes.map((r) => r.name)).toEqual([
+      "Arkanitbarren",
+    ]);
+  });
+
+  it("links pack recipes typed in any language and finds them by either name", () => {
+    // Act
+    const byEnglishName = search("smelt thorium");
+
+    // Assert
+    expect(byEnglishName[0].crafters[0].recipes.map((r) => r.name)).toEqual([
+      "Thoriumbarren",
     ]);
   });
 

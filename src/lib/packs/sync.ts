@@ -156,6 +156,7 @@ function gameMetaOf(pack: Pack): GameMeta {
     serverLabel: pack.server_label,
     regions: pack.regions,
     buildSources: pack.build_sources,
+    credits: pack.credits,
   };
 }
 

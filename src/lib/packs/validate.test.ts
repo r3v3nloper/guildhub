@@ -201,6 +201,23 @@ describe("validatePack", () => {
     expect(errors.map((e) => e.path)).toEqual(["specs[1].class"]);
   });
 
+  it("checks that a recipe belongs to a known profession", () => {
+    // Act
+    const errors = errorsOf(
+      basePack({
+        capabilities: { classes: true, resets: true, professions: true },
+        professions: [{ id: "mining", name: "Bergbau" }],
+        recipes: [
+          { id: "r1", name: "Thoriumbarren", profession: "mining" },
+          { id: "r2", name: "Mondstoff", profession: "tailoring" },
+        ],
+      }),
+    );
+
+    // Assert
+    expect(errors.map((e) => e.path)).toEqual(["recipes[1].profession"]);
+  });
+
   it("rejects replaces pointing at an ID that is still active", () => {
     const errors = errorsOf(
       basePack({

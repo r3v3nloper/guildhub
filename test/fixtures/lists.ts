@@ -11,6 +11,16 @@ const raw = {
     { id: "mining", name: "Bergbau", kind: "gathering" },
     { id: "leatherworking", name: "Lederverarbeitung", kind: "primary" },
   ],
+  recipes: [
+    {
+      id: "mining-thorium",
+      name: { de: "Thoriumbarren", en: "Smelt Thorium" },
+      profession: "mining",
+      skill: 250,
+      reagents: [{ name: { de: "Thoriumerz", en: "Thorium Ore" }, count: 1 }],
+      link: "https://example.org/thorium",
+    },
+  ],
 };
 
 export interface ListFixture {

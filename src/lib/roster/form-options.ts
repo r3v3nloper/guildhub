@@ -99,3 +99,35 @@ export function keyOfEntry(
   }
   return catalog.entries.find((entry) => entry.id === entryId)?.key ?? "";
 }
+
+export interface RecipeOption {
+  /** The line the picker adds to the recipe text. */
+  value: string;
+  label: string;
+}
+
+/** Active pack recipes of one profession for the picker, easiest first. */
+export function recipeOptionsOf(
+  catalog: GameCatalog,
+  professionKey: string,
+  fromSkillLabel: string,
+): RecipeOption[] {
+  return catalogOfKind(catalog, "recipe")
+    .filter(
+      (entry) =>
+        entry.status === "active" && entry.data.profession === professionKey,
+    )
+    .map((entry) => ({
+      name: localize(entry.name),
+      skill: typeof entry.data.skill === "number" ? entry.data.skill : null,
+    }))
+    .sort(
+      (a, b) =>
+        (a.skill ?? Infinity) - (b.skill ?? Infinity) ||
+        a.name.localeCompare(b.name),
+    )
+    .map(({ name, skill }) => ({
+      value: name,
+      label: skill === null ? name : `${name} (${fromSkillLabel} ${skill})`,
+    }));
+}

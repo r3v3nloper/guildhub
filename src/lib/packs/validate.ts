@@ -164,6 +164,16 @@ function checkReferences(pack: Pack, error: Report) {
     }
   });
 
+  const professionIds = ids(pack.professions);
+  pack.recipes.forEach((entry, index) => {
+    if (!professionIds.has(entry.profession)) {
+      error(
+        `recipes[${index}].profession`,
+        `unbekannter Beruf '${entry.profession}'`,
+      );
+    }
+  });
+
   pack.tasks.forEach((task, index) => {
     if (task.reset_rule_id && !ruleIds.has(task.reset_rule_id)) {
       error(

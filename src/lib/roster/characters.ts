@@ -14,6 +14,8 @@ import { detectBuildSource } from "./build-source";
 import {
   deleteRecipes,
   formatRecipeLines,
+  knownRecipesOf,
+  linkedRecipeIds,
   listRecipes,
   parseRecipeLines,
   replaceRecipes,
@@ -30,6 +32,7 @@ import {
   loadGameCatalog,
   type GameCatalog,
 } from "./game-catalog";
+import { keyOfEntry } from "./form-options";
 
 export type CharacterRow = typeof characters.$inferSelect;
 export type BuildRow = typeof builds.$inferSelect;
@@ -410,7 +413,15 @@ export function saveProfessionDetails(
   if (notes.length > PROFESSION_TEXT_MAX_LENGTH) {
     errors.notes = `Höchstens ${PROFESSION_TEXT_MAX_LENGTH} Zeichen.`;
   }
-  const recipes = parseRecipeLines(input.recipes);
+  const catalog = requireCatalog(db, character.gameId);
+  const recipes = parseRecipeLines(
+    input.recipes,
+    knownRecipesOf(
+      catalog,
+      keyOfEntry(catalog, professionEntryId),
+      linkedRecipeIds(db, characterId),
+    ),
+  );
   if (!recipes.ok) {
     errors.recipes = recipes.error;
   }

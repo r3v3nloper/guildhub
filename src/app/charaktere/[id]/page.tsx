@@ -25,7 +25,9 @@ import {
   characterFormOptions,
   keyOfEntry,
   optionsOfKind,
+  recipeOptionsOf,
 } from "@/lib/roster/form-options";
+import { PackCredits } from "@/components/packs/PackCredits";
 import { loadGameCatalog } from "@/lib/roster/game-catalog";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
@@ -117,6 +119,11 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
                   key={profession.professionEntryId}
                   label={entryName(profession.professionEntryId)}
                   values={profession}
+                  recipeOptions={recipeOptionsOf(
+                    catalog,
+                    keyOfEntry(catalog, profession.professionEntryId),
+                    de.characters.recipeFromSkill,
+                  )}
                   action={saveProfessionDetailsAction.bind(
                     null,
                     character.id,
@@ -125,6 +132,10 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
                 />
               ))}
             </div>
+            <PackCredits
+              meta={catalog.game.meta}
+              label={de.directory.credits}
+            />
           </Card>
         )}
 

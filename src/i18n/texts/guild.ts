@@ -10,6 +10,8 @@ export const matrix = {
 
 export const directory = {
   title: "Berufe",
+  reagents: "Reagenzien",
+  credits: "Rezeptdaten",
   search: "Suchen",
   searchPlaceholder: "Wer kann … (Rezept, Beruf)",
   allProfessions: "Alle Berufe",

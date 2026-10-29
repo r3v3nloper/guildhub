@@ -81,6 +81,31 @@ export const professionSchema = z.strictObject({
   kind: z.enum(PROFESSION_KINDS).default("primary"),
 });
 
+const httpLink = z.url().refine(isHttpUrl, "nur http(s)-Links");
+
+/** A recipe a profession can learn; characters pick them instead of typing names. */
+export const recipeSchema = z.strictObject({
+  ...catalogEntry,
+  profession: slug,
+  /** Skill at which the recipe can be learned. */
+  skill: z.number().int().min(0).optional(),
+  reagents: z
+    .array(
+      z.strictObject({
+        name: localizedStringSchema,
+        count: z.number().int().positive(),
+      }),
+    )
+    .default([]),
+  link: httpLink.optional(),
+});
+
+/** Where pack data comes from; shown wherever the app displays that data. */
+export const creditSchema = z.strictObject({
+  label: z.string().min(1),
+  url: httpLink,
+});
+
 export const bossSchema = z.strictObject(catalogEntry);
 export const serverSchema = z.strictObject(catalogEntry);
 
@@ -116,7 +141,7 @@ export const taskSchema = z.strictObject({
   priority: z.enum(["high", "medium", "low"]).default("medium"),
   order: z.number().int().optional(),
   tags: z.array(z.string().min(1)).default([]),
-  link: z.url().refine(isHttpUrl, "nur http(s)-Links").optional(),
+  link: httpLink.optional(),
 });
 
 export const capabilitiesSchema = z.strictObject({
@@ -166,9 +191,11 @@ export const packSchema = z.strictObject({
   classes: z.array(classSchema).default([]),
   specs: z.array(specSchema).default([]),
   professions: z.array(professionSchema).default([]),
+  recipes: z.array(recipeSchema).default([]),
   bosses: z.array(bossSchema).default([]),
   servers: z.array(serverSchema).default([]),
   build_sources: z.array(buildSourceSchema).default([]),
+  credits: z.array(creditSchema).default([]),
   reset_rules: z.array(resetRuleSchema).default([]),
   tasks: z.array(taskSchema).default([]),
 });
@@ -176,6 +203,7 @@ export const packSchema = z.strictObject({
 export type Pack = z.infer<typeof packSchema>;
 export type PackClass = z.infer<typeof classSchema>;
 export type PackSpec = z.infer<typeof specSchema>;
+export type PackRecipe = z.infer<typeof recipeSchema>;
 export type PackRace = z.infer<typeof raceSchema>;
 export type PackTask = z.infer<typeof taskSchema>;
 export type PackResetRule = z.infer<typeof resetRuleSchema>;

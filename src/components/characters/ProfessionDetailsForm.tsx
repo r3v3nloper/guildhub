@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { SelectField } from "@/components/ui/SelectField";
 import {
   Button,
   Field,
@@ -9,6 +11,7 @@ import {
 } from "@/components/ui/ui";
 import { useFormAction } from "@/components/ui/use-form-action";
 import type { ActionState } from "@/lib/actions/action-state";
+import type { RecipeOption } from "@/lib/roster/form-options";
 import { de } from "@/i18n/de";
 
 export interface ProfessionDetailsValues {
@@ -22,14 +25,27 @@ export interface ProfessionDetailsValues {
 export function ProfessionDetailsForm({
   label,
   values,
+  recipeOptions,
   action,
 }: {
   label: string;
   values: ProfessionDetailsValues;
+  /** Pack recipes of this profession; empty when the pack lists none. */
+  recipeOptions: RecipeOption[];
   action: (state: ActionState, formData: FormData) => Promise<ActionState>;
 }) {
   const { state, pending, onSubmit } = useFormAction(action);
   const errors = state.errors ?? {};
+  const [recipes, setRecipes] = useState(values.recipes);
+
+  const addRecipe = (name: string) => {
+    if (!name) {
+      return;
+    }
+    setRecipes((current) =>
+      current.trim() ? `${current.trimEnd()}\n${name}` : name,
+    );
+  };
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-2 py-3">
@@ -61,12 +77,27 @@ export function ProfessionDetailsForm({
           />
         </Field>
       </div>
+      {recipeOptions.length > 0 && (
+        <SelectField
+          name="recipePicker"
+          value=""
+          placeholder={de.characters.addRecipe}
+          aria-label={de.characters.addRecipe}
+          options={recipeOptions}
+          onChange={addRecipe}
+        />
+      )}
       <Field
         label={de.characters.recipes}
         error={errors.recipes}
         hint={de.characters.recipesHint}
       >
-        <TextArea name="recipes" defaultValue={values.recipes} rows={2} />
+        <TextArea
+          name="recipes"
+          value={recipes}
+          onChange={(event) => setRecipes(event.target.value)}
+          rows={2}
+        />
       </Field>
       <div className="flex items-center gap-3">
         <Button variant="secondary" disabled={pending}>

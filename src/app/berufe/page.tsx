@@ -8,7 +8,9 @@ import { selectedGames } from "@/lib/game-filter";
 import {
   loadProfessionDirectory,
   type DirectoryProfession,
+  type DirectoryRecipe,
 } from "@/lib/roster/profession-directory";
+import { PackCredits } from "@/components/packs/PackCredits";
 import { loadGameCatalog, selectableOfKind } from "@/lib/roster/game-catalog";
 import { localize } from "@/i18n/localize";
 import { textParam } from "@/lib/search-params";
@@ -88,6 +90,7 @@ async function DirectoryContent({ searchParams }: PageProps<"/berufe">) {
                 <ProfessionCard key={profession.key} profession={profession} />
               ))}
             </div>
+            <PackCredits meta={game.meta} label={de.directory.credits} />
           </section>
         );
       })}
@@ -128,12 +131,7 @@ function ProfessionCard({ profession }: { profession: DirectoryProfession }) {
             {crafter.recipes.length > 0 && (
               <ul className="ml-4 list-disc text-sm">
                 {crafter.recipes.map((recipe) => (
-                  <li key={recipe.name}>
-                    {recipe.name}
-                    {recipe.notes && (
-                      <span className="text-muted"> – {recipe.notes}</span>
-                    )}
-                  </li>
+                  <RecipeItem key={recipe.name} recipe={recipe} />
                 ))}
               </ul>
             )}
@@ -141,6 +139,37 @@ function ProfessionCard({ profession }: { profession: DirectoryProfession }) {
         ))}
       </ul>
     </Card>
+  );
+}
+
+function RecipeItem({ recipe }: { recipe: DirectoryRecipe }) {
+  return (
+    <li>
+      {recipe.link ? (
+        <a
+          href={recipe.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-accent-strong hover:text-white"
+        >
+          {recipe.name}
+        </a>
+      ) : (
+        recipe.name
+      )}
+      {recipe.skill !== null && (
+        <span className="text-muted tabular-nums">
+          {" "}
+          ({de.characters.recipeFromSkill} {recipe.skill})
+        </span>
+      )}
+      {recipe.notes && <span className="text-muted"> – {recipe.notes}</span>}
+      {recipe.reagents && (
+        <span className="block text-xs text-muted">
+          {de.directory.reagents}: {recipe.reagents}
+        </span>
+      )}
+    </li>
   );
 }
 

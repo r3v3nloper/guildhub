@@ -1,0 +1,1 @@
+ALTER TABLE `recipe_entry` ADD `recipe_entry_id` integer REFERENCES game_catalog_entry(id);

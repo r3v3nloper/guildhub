@@ -57,6 +57,13 @@
       "when": 1793268785166,
       "tag": "0007_character_specs",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1793274122913,
+      "tag": "0008_recipe_catalog",
+      "breakpoints": true
     }
   ]
 }

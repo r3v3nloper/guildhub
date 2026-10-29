@@ -9,8 +9,23 @@ import {
   users,
 } from "@/lib/db/schema";
 import type { LocalizedString } from "@/lib/packs/schema";
-import { allTranslations } from "@/i18n/localize";
+import { allTranslations, localize } from "@/i18n/localize";
 import type { Recipe } from "./recipes";
+
+/** A recipe as the directory shows it; pack recipes add skill, reagents and a link. */
+export interface DirectoryRecipe extends Recipe {
+  skill: number | null;
+  reagents: string | null;
+  link: string | null;
+  /** Names in every language, so the search finds "Elixir" as well as "Elixier". */
+  searchNames: string[];
+}
+
+interface PackRecipeData {
+  skill?: number;
+  reagents?: Array<{ name: LocalizedString; count: number }>;
+  link?: string;
+}
 
 export interface Crafter {
   characterId: number;
@@ -19,7 +34,7 @@ export interface Crafter {
   skillLevel: number | null;
   specialization: string | null;
   notes: string | null;
-  recipes: Recipe[];
+  recipes: DirectoryRecipe[];
 }
 
 export interface DirectoryProfession {
@@ -87,6 +102,39 @@ export function loadProfessionDirectory(
           )
           .orderBy(asc(recipeEntries.name))
           .all();
+  const packRecipeIds = recipes
+    .map((recipe) => recipe.recipeEntryId)
+    .filter((id): id is number => id !== null);
+  const packRecipes = new Map(
+    packRecipeIds.length === 0
+      ? []
+      : db
+          .select()
+          .from(gameCatalogEntries)
+          .where(inArray(gameCatalogEntries.id, packRecipeIds))
+          .all()
+          .map((entry) => [entry.id, entry]),
+  );
+  const toDirectoryRecipe = (
+    recipe: (typeof recipes)[number],
+  ): DirectoryRecipe => {
+    const entry =
+      recipe.recipeEntryId === null
+        ? undefined
+        : packRecipes.get(recipe.recipeEntryId);
+    const data = (entry?.data ?? {}) as PackRecipeData;
+    return {
+      name: entry ? localize(entry.name) : recipe.name,
+      notes: recipe.notes,
+      skill: data.skill ?? null,
+      reagents:
+        data.reagents
+          ?.map((reagent) => `${reagent.count}× ${localize(reagent.name)}`)
+          .join(", ") ?? null,
+      link: data.link ?? null,
+      searchNames: entry ? allTranslations(entry.name) : [recipe.name],
+    };
+  };
 
   const query = search.query?.trim().toLowerCase() ?? "";
   const professions = new Map<number, DirectoryProfession>();
@@ -100,12 +148,15 @@ export function loadProfessionDirectory(
           recipe.characterId === character.id &&
           recipe.professionEntryId === profession.id,
       )
-      .map(({ name, notes }) => ({ name, notes }));
+      .map(toDirectoryRecipe);
     const haystack = [
       ...allTranslations(profession.name),
       details.specialization,
       details.notes,
-      ...crafterRecipes.flatMap((recipe) => [recipe.name, recipe.notes]),
+      ...crafterRecipes.flatMap((recipe) => [
+        ...recipe.searchNames,
+        recipe.notes,
+      ]),
     ];
     if (
       query &&
@@ -135,13 +186,16 @@ export function loadProfessionDirectory(
 }
 
 /** When the search hit recipes, show just those; otherwise the full list. */
-function matchingFirst(recipes: Recipe[], query: string): Recipe[] {
+function matchingFirst(
+  recipes: DirectoryRecipe[],
+  query: string,
+): DirectoryRecipe[] {
   if (!query) {
     return recipes;
   }
   const matching = recipes.filter(
     (recipe) =>
-      recipe.name.toLowerCase().includes(query) ||
+      recipe.searchNames.some((name) => name.toLowerCase().includes(query)) ||
       recipe.notes?.toLowerCase().includes(query),
   );
   return matching.length > 0 ? matching : recipes;
