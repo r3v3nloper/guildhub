@@ -1,0 +1,2 @@
+ALTER TABLE `character` ADD `spec_entry_id` integer REFERENCES game_catalog_entry(id);--> statement-breakpoint
+ALTER TABLE `character` ADD `off_spec_entry_id` integer REFERENCES game_catalog_entry(id);

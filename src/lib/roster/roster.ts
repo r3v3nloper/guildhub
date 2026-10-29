@@ -36,6 +36,10 @@ export interface RosterCharacter {
   faction: RosterEntryRef | null;
   race: RosterEntryRef | null;
   characterClass: RosterEntryRef | null;
+  mainSpec: RosterEntryRef | null;
+  offSpec: RosterEntryRef | null;
+  /** From the main spec where the game has specs, otherwise from the class. */
+  role: string | null;
   professions: RosterProfession[];
   currentBuild: {
     title: string;
@@ -44,6 +48,9 @@ export interface RosterCharacter {
   } | null;
   plannedClass: RosterEntryRef | null;
 }
+
+/** A character of a game with specs that has not picked one yet. */
+export const UNKNOWN_ROLE = "unknown";
 
 export interface RosterMember {
   userId: string;
@@ -130,6 +137,12 @@ export function loadRosterMembers(
         .all()
     : [];
 
+  const gamesWithSpecs = new Set(
+    [...entries.values()]
+      .filter((entry) => entry.kind === "spec")
+      .map((entry) => entry.gameId),
+  );
+
   const ref = (entryId: number | null): RosterEntryRef | null => {
     const entry = entryId === null ? undefined : entries.get(entryId);
     if (!entry) {
@@ -156,6 +169,8 @@ export function loadRosterMembers(
       (build) =>
         build.status === "planned" && build.targetClassEntryId !== null,
     );
+    const characterClass = ref(row.classEntryId);
+    const mainSpec = ref(row.specEntryId);
     return {
       id: row.id,
       gameId: row.gameId,
@@ -168,7 +183,12 @@ export function loadRosterMembers(
         serverNameFromCatalog(entries, row.gameId, row.serverKey),
       faction: ref(row.factionEntryId),
       race: ref(row.raceEntryId),
-      characterClass: ref(row.classEntryId),
+      characterClass,
+      mainSpec,
+      offSpec: ref(row.offSpecEntryId),
+      role: gamesWithSpecs.has(row.gameId)
+        ? (mainSpec?.role ?? UNKNOWN_ROLE)
+        : (characterClass?.role ?? null),
       professions: professionRows
         .filter((profession) => profession.characterId === row.id)
         .flatMap((profession) => {
@@ -268,7 +288,7 @@ export function filterRoster(
           (!filters.gameId || character.gameId === filters.gameId) &&
           matchesRef(character.characterClass, filters.classKey) &&
           matchesRef(character.faction, filters.factionKey) &&
-          (!filters.role || character.characterClass?.role === filters.role) &&
+          (!filters.role || character.role === filters.role) &&
           (!filters.professionKey ||
             character.professions.some((profession) =>
               matchesRef(profession, filters.professionKey),
@@ -290,11 +310,8 @@ export function filterRoster(
         : undefined,
     ),
     roles: countBy(allCharacters, (character) =>
-      character.characterClass?.role
-        ? {
-            key: character.characterClass.role,
-            label: character.characterClass.role,
-          }
+      character.role
+        ? { key: character.role, label: character.role }
         : undefined,
     ),
   };

@@ -28,6 +28,8 @@ function characterInputOf(formData: FormData): CharacterInput {
     factionKey: formText(formData, "faction"),
     raceKey: formText(formData, "race"),
     classKey: formText(formData, "class"),
+    specKey: formText(formData, "specKey"),
+    offSpecKey: formText(formData, "offSpecKey"),
     spec: formText(formData, "spec"),
     level: formNumber(formData, "level"),
     isMain: formData.get("isMain") === "on",

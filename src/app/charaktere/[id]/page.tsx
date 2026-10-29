@@ -61,6 +61,8 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
     selection.factionEntryId,
     selection.raceEntryId,
     selection.classEntryId,
+    selection.specEntryId,
+    selection.offSpecEntryId,
     ...selection.professionEntryIds,
   ].filter((id): id is number => id !== null);
   const options = characterFormOptions(catalog, selectedIds);
@@ -91,6 +93,8 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
           faction: keyOfEntry(catalog, character.factionEntryId),
           race: keyOfEntry(catalog, character.raceEntryId),
           characterClass: keyOfEntry(catalog, character.classEntryId),
+          specKey: keyOfEntry(catalog, character.specEntryId),
+          offSpecKey: keyOfEntry(catalog, character.offSpecEntryId),
           spec: character.spec ?? "",
           level: character.level?.toString() ?? "",
           isMain: character.isMain,

@@ -104,6 +104,8 @@ function input(overrides: Partial<CharacterInput> = {}): CharacterInput {
     factionKey: "",
     raceKey: "human",
     classKey: "paladin",
+    specKey: "",
+    offSpecKey: "",
     spec: "",
     level: null,
     isMain: false,
@@ -123,6 +125,8 @@ describe("resolveCharacter", () => {
         raceEntryId: human.id,
         factionEntryId: alliance.id,
         classEntryId: paladin.id,
+        specEntryId: null,
+        offSpecEntryId: null,
       },
     });
   });
@@ -199,6 +203,8 @@ describe("resolveCharacter", () => {
       input({ raceKey: "", classKey: "old" }),
       {
         classEntryId: oldClass.id,
+        specEntryId: null,
+        offSpecEntryId: null,
         factionEntryId: null,
         raceEntryId: null,
         serverKey: null,
@@ -217,6 +223,8 @@ describe("resolveCharacter", () => {
         raceEntryId: orc.id,
         factionEntryId: horde.id,
         classEntryId: paladin.id,
+        specEntryId: null,
+        offSpecEntryId: null,
         serverKey: null,
         professionEntryIds: [],
       },
@@ -263,6 +271,8 @@ describe("characterHints", () => {
   it("asks for a class when it is required but missing", () => {
     const hints = characterHints(catalog({ classes: true }), {
       classEntryId: null,
+      specEntryId: null,
+      offSpecEntryId: null,
       raceEntryId: null,
       factionEntryId: null,
       serverKey: null,
@@ -276,6 +286,8 @@ describe("characterHints", () => {
     const removed = entry("class", "gone", {}, "removed");
     const hints = characterHints(catalog({ classes: true }, [removed]), {
       classEntryId: removed.id,
+      specEntryId: null,
+      offSpecEntryId: null,
       raceEntryId: null,
       factionEntryId: null,
       serverKey: null,
@@ -283,5 +295,130 @@ describe("characterHints", () => {
     });
 
     expect(hints[0].message).toMatch(/nicht mehr im Pack/);
+  });
+});
+
+describe("specializations", () => {
+  const holy = entry("spec", "paladin-holy", {
+    class: "paladin",
+    role: "heal",
+  });
+  const protection = entry("spec", "paladin-protection", {
+    class: "paladin",
+    role: "tank",
+  });
+  const arms = entry("spec", "warrior-arms", {
+    class: "warrior",
+    role: "melee",
+  });
+  const withSpecs = catalog({ classes: true }, [
+    paladin,
+    warrior,
+    holy,
+    protection,
+    arms,
+  ]);
+  const specInput = (overrides: Partial<CharacterInput>) =>
+    input({ raceKey: "", classKey: "paladin", ...overrides });
+
+  it("stores main and off-spec and drops the free-text spec", () => {
+    // Act
+    const result = resolveCharacter(
+      withSpecs,
+      specInput({
+        specKey: "paladin-holy",
+        offSpecKey: "paladin-protection",
+        spec: "Heilig",
+      }),
+    );
+
+    // Assert
+    expect(result).toMatchObject({
+      ok: true,
+      value: {
+        specEntryId: holy.id,
+        offSpecEntryId: protection.id,
+        spec: null,
+      },
+    });
+  });
+
+  it("allows a character without spec", () => {
+    // Act
+    const result = resolveCharacter(withSpecs, specInput({}));
+
+    // Assert
+    expect(result).toMatchObject({
+      ok: true,
+      value: { specEntryId: null, offSpecEntryId: null },
+    });
+  });
+
+  it("rejects a spec of another class", () => {
+    // Act
+    const result = resolveCharacter(
+      withSpecs,
+      specInput({ specKey: "warrior-arms" }),
+    );
+
+    // Assert
+    expect(result).toMatchObject({
+      ok: false,
+      errors: { specKey: expect.stringMatching(/Passt nicht/) },
+    });
+  });
+
+  it("rejects an off-spec without main spec or equal to it", () => {
+    // Act
+    const withoutMain = resolveCharacter(
+      withSpecs,
+      specInput({ offSpecKey: "paladin-holy" }),
+    );
+    const same = resolveCharacter(
+      withSpecs,
+      specInput({ specKey: "paladin-holy", offSpecKey: "paladin-holy" }),
+    );
+
+    // Assert
+    expect(withoutMain).toMatchObject({
+      ok: false,
+      errors: { offSpecKey: expect.stringMatching(/Hauptspezialisierung/) },
+    });
+    expect(same).toMatchObject({
+      ok: false,
+      errors: { offSpecKey: expect.stringMatching(/gleich/) },
+    });
+  });
+
+  it("keeps the free-text spec in games without spec catalog", () => {
+    // Act
+    const result = resolveCharacter(
+      catalog({ classes: true }, [paladin]),
+      specInput({ spec: "Heilig" }),
+    );
+
+    // Assert
+    expect(result).toMatchObject({ ok: true, value: { spec: "Heilig" } });
+  });
+
+  it("hints at a missing spec, since the role is unknown then", () => {
+    // Act
+    const hints = characterHints(withSpecs, {
+      classEntryId: paladin.id,
+      specEntryId: null,
+      offSpecEntryId: null,
+      raceEntryId: null,
+      factionEntryId: null,
+      serverKey: null,
+      professionEntryIds: [],
+    });
+
+    // Assert
+    expect(hints).toEqual([
+      {
+        field: "specKey",
+        message: "Ohne Spezialisierung ist die Rolle unbekannt.",
+      },
+    ]);
   });
 });

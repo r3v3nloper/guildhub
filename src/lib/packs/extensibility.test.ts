@@ -87,6 +87,8 @@ describe("a new game from a pack alone", () => {
       factionKey: "",
       raceKey: "",
       classKey: "krieger",
+      specKey: "",
+      offSpecKey: "",
       spec: "",
       level: null,
       isMain: true,

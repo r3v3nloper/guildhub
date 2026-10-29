@@ -5,9 +5,12 @@ import { de } from "@/i18n/de";
 /** Role colours: told apart by lightness too, not by hue alone. */
 const roleColors: Record<string, string> = {
   tank: "#8fb4ff",
-  dps: "#ff9a8b",
   heal: "#7be3a9",
+  melee: "#ff9a8b",
+  ranged: "#d7a6ff",
+  dps: "#ff9a8b",
   support: "#ffc46b",
+  unknown: "#9aa1ad",
 };
 
 /** Class and role counts of the filtered roster, for raid planning (SPEC 7.4). */

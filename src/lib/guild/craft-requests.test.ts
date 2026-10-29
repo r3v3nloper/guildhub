@@ -32,6 +32,8 @@ const miner: CharacterInput = {
   factionKey: "",
   raceKey: "",
   classKey: "",
+  specKey: "",
+  offSpecKey: "",
   spec: "",
   level: null,
   isMain: false,

@@ -212,6 +212,9 @@ export const characters = sqliteTable(
     factionEntryId: catalogReference("faction_entry_id"),
     raceEntryId: catalogReference("race_entry_id"),
     classEntryId: catalogReference("class_entry_id"),
+    // Games whose pack lists specs pick them from the catalog; others keep the free text.
+    specEntryId: catalogReference("spec_entry_id"),
+    offSpecEntryId: catalogReference("off_spec_entry_id"),
     spec: text("spec"),
     level: integer("level"),
     isMain: integer("is_main", { mode: "boolean" }).notNull().default(false),

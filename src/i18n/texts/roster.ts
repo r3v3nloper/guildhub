@@ -1,8 +1,11 @@
 export const roles = {
   tank: "Tank",
-  dps: "DPS",
   heal: "Heiler",
+  melee: "Nahkampf-DPS",
+  ranged: "Fernkampf-DPS",
+  dps: "DPS",
   support: "Support",
+  unknown: "ohne Spec",
 } as Record<string, string>;
 
 export const memberRoles = {
@@ -36,6 +39,7 @@ export const characters = {
   race: "Rasse",
   class: "Klasse",
   spec: "Spezialisierung",
+  offSpec: "Off-Spec",
   level: "Stufe",
   isMain: "Main-Charakter",
   notes: "Notizen",

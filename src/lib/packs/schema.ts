@@ -39,7 +39,16 @@ const catalogEntry = {
   ...lifecycleFields,
 };
 
-export const ROLES = ["tank", "dps", "heal", "support"] as const;
+// "dps" stays for games that do not split damage dealers by range (AION 2).
+export const ROLES = [
+  "tank",
+  "heal",
+  "melee",
+  "ranged",
+  "dps",
+  "support",
+] as const;
+export type Role = (typeof ROLES)[number];
 export const PROFESSION_KINDS = ["primary", "secondary", "gathering"] as const;
 
 export const factionSchema = z.strictObject(catalogEntry);
@@ -52,6 +61,13 @@ export const classSchema = z.strictObject({
     .regex(/^#[0-9a-fA-F]{6}$/, "Farbe als #rrggbb")
     .optional(),
   factions: z.array(slug).default([]),
+});
+
+/** A class specialization; where a pack lists them, the spec decides the role, not the class. */
+export const specSchema = z.strictObject({
+  ...catalogEntry,
+  class: slug,
+  role: z.enum(ROLES),
 });
 
 export const raceSchema = z.strictObject({
@@ -148,6 +164,7 @@ export const packSchema = z.strictObject({
   factions: z.array(factionSchema).default([]),
   races: z.array(raceSchema).default([]),
   classes: z.array(classSchema).default([]),
+  specs: z.array(specSchema).default([]),
   professions: z.array(professionSchema).default([]),
   bosses: z.array(bossSchema).default([]),
   servers: z.array(serverSchema).default([]),
@@ -158,6 +175,7 @@ export const packSchema = z.strictObject({
 
 export type Pack = z.infer<typeof packSchema>;
 export type PackClass = z.infer<typeof classSchema>;
+export type PackSpec = z.infer<typeof specSchema>;
 export type PackRace = z.infer<typeof raceSchema>;
 export type PackTask = z.infer<typeof taskSchema>;
 export type PackResetRule = z.infer<typeof resetRuleSchema>;

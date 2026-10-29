@@ -44,6 +44,8 @@ async function NewCharacterContent({
           faction: "",
           race: "",
           characterClass: "",
+          specKey: "",
+          offSpecKey: "",
           spec: "",
           level: "",
           isMain: false,

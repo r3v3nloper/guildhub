@@ -4,6 +4,7 @@ export const CATALOG_KINDS = [
   "faction",
   "race",
   "class",
+  "spec",
   "profession",
   "boss",
   "server",
@@ -17,6 +18,7 @@ interface CatalogDefinition {
     | "factions"
     | "races"
     | "classes"
+    | "specs"
     | "professions"
     | "bosses"
     | "servers"
@@ -30,6 +32,7 @@ export const CATALOG_DEFINITIONS: Record<CatalogKind, CatalogDefinition> = {
   faction: { packKey: "factions", capability: "factions" },
   race: { packKey: "races", capability: "races" },
   class: { packKey: "classes" },
+  spec: { packKey: "specs", capability: "classes" },
   profession: { packKey: "professions", capability: "professions" },
   boss: { packKey: "bosses", capability: "lockouts" },
   server: { packKey: "servers", capability: "servers" },

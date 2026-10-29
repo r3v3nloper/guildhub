@@ -1,7 +1,7 @@
 {
   "id": "wow-forever",
   "name": "WoW: Forever",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "mmo",
   "server_label": "Realm",
   "capabilities": {
@@ -47,9 +47,7 @@
         "de": "Krieger",
         "en": "Warrior"
       },
-      "role": "tank",
-      "color": "#c69b6d",
-      "todo": true
+      "color": "#c69b6d"
     },
     {
       "id": "paladin",
@@ -57,10 +55,7 @@
         "de": "Paladin",
         "en": "Paladin"
       },
-      "role": "heal",
-      "color": "#f48cba",
-      "factions": ["alliance"],
-      "todo": true
+      "color": "#f48cba"
     },
     {
       "id": "hunter",
@@ -68,9 +63,7 @@
         "de": "Jäger",
         "en": "Hunter"
       },
-      "role": "dps",
-      "color": "#aad372",
-      "todo": true
+      "color": "#aad372"
     },
     {
       "id": "rogue",
@@ -78,9 +71,7 @@
         "de": "Schurke",
         "en": "Rogue"
       },
-      "role": "dps",
-      "color": "#fff468",
-      "todo": true
+      "color": "#fff468"
     },
     {
       "id": "priest",
@@ -88,9 +79,7 @@
         "de": "Priester",
         "en": "Priest"
       },
-      "role": "heal",
-      "color": "#ffffff",
-      "todo": true
+      "color": "#ffffff"
     },
     {
       "id": "shaman",
@@ -98,10 +87,7 @@
         "de": "Schamane",
         "en": "Shaman"
       },
-      "role": "heal",
-      "color": "#0070dd",
-      "factions": ["horde"],
-      "todo": true
+      "color": "#0070dd"
     },
     {
       "id": "mage",
@@ -109,9 +95,7 @@
         "de": "Magier",
         "en": "Mage"
       },
-      "role": "dps",
-      "color": "#3fc7eb",
-      "todo": true
+      "color": "#3fc7eb"
     },
     {
       "id": "warlock",
@@ -119,9 +103,7 @@
         "de": "Hexenmeister",
         "en": "Warlock"
       },
-      "role": "dps",
-      "color": "#8788ee",
-      "todo": true
+      "color": "#8788ee"
     },
     {
       "id": "druid",
@@ -129,9 +111,261 @@
         "de": "Druide",
         "en": "Druid"
       },
-      "role": "heal",
-      "color": "#ff7c0a",
-      "todo": true
+      "color": "#ff7c0a"
+    }
+  ],
+  "specs": [
+    {
+      "id": "warrior-waffen",
+      "name": {
+        "de": "Waffen",
+        "en": "Arms"
+      },
+      "class": "warrior",
+      "role": "melee"
+    },
+    {
+      "id": "warrior-furor",
+      "name": {
+        "de": "Furor",
+        "en": "Fury"
+      },
+      "class": "warrior",
+      "role": "melee"
+    },
+    {
+      "id": "warrior-schutz",
+      "name": {
+        "de": "Schutz",
+        "en": "Protection"
+      },
+      "class": "warrior",
+      "role": "tank"
+    },
+    {
+      "id": "paladin-heilig",
+      "name": {
+        "de": "Heilig",
+        "en": "Holy"
+      },
+      "class": "paladin",
+      "role": "heal"
+    },
+    {
+      "id": "paladin-schutz",
+      "name": {
+        "de": "Schutz",
+        "en": "Protection"
+      },
+      "class": "paladin",
+      "role": "tank"
+    },
+    {
+      "id": "paladin-vergeltung",
+      "name": {
+        "de": "Vergeltung",
+        "en": "Retribution"
+      },
+      "class": "paladin",
+      "role": "melee"
+    },
+    {
+      "id": "hunter-tierherrschaft",
+      "name": {
+        "de": "Tierherrschaft",
+        "en": "Beast Mastery"
+      },
+      "class": "hunter",
+      "role": "ranged"
+    },
+    {
+      "id": "hunter-treffsicherheit",
+      "name": {
+        "de": "Treffsicherheit",
+        "en": "Marksmanship"
+      },
+      "class": "hunter",
+      "role": "ranged"
+    },
+    {
+      "id": "hunter-ueberleben",
+      "name": {
+        "de": "Überleben",
+        "en": "Survival"
+      },
+      "class": "hunter",
+      "role": "melee"
+    },
+    {
+      "id": "rogue-meucheln",
+      "name": {
+        "de": "Meucheln",
+        "en": "Assassination"
+      },
+      "class": "rogue",
+      "role": "melee"
+    },
+    {
+      "id": "rogue-kampf",
+      "name": {
+        "de": "Kampf",
+        "en": "Combat"
+      },
+      "class": "rogue",
+      "role": "melee"
+    },
+    {
+      "id": "rogue-taeuschung",
+      "name": {
+        "de": "Täuschung",
+        "en": "Subtlety"
+      },
+      "class": "rogue",
+      "role": "melee"
+    },
+    {
+      "id": "priest-disziplin",
+      "name": {
+        "de": "Disziplin",
+        "en": "Discipline"
+      },
+      "class": "priest",
+      "role": "heal"
+    },
+    {
+      "id": "priest-heilig",
+      "name": {
+        "de": "Heilig",
+        "en": "Holy"
+      },
+      "class": "priest",
+      "role": "heal"
+    },
+    {
+      "id": "priest-schatten",
+      "name": {
+        "de": "Schatten",
+        "en": "Shadow"
+      },
+      "class": "priest",
+      "role": "ranged"
+    },
+    {
+      "id": "shaman-elementar",
+      "name": {
+        "de": "Elementar",
+        "en": "Elemental"
+      },
+      "class": "shaman",
+      "role": "ranged"
+    },
+    {
+      "id": "shaman-verstaerkung",
+      "name": {
+        "de": "Verstärkung",
+        "en": "Enhancement"
+      },
+      "class": "shaman",
+      "role": "melee"
+    },
+    {
+      "id": "shaman-wiederherstellung",
+      "name": {
+        "de": "Wiederherstellung",
+        "en": "Restoration"
+      },
+      "class": "shaman",
+      "role": "heal"
+    },
+    {
+      "id": "mage-arkan",
+      "name": {
+        "de": "Arkan",
+        "en": "Arcane"
+      },
+      "class": "mage",
+      "role": "ranged"
+    },
+    {
+      "id": "mage-feuer",
+      "name": {
+        "de": "Feuer",
+        "en": "Fire"
+      },
+      "class": "mage",
+      "role": "ranged"
+    },
+    {
+      "id": "mage-frost",
+      "name": {
+        "de": "Frost",
+        "en": "Frost"
+      },
+      "class": "mage",
+      "role": "ranged"
+    },
+    {
+      "id": "warlock-gebrechen",
+      "name": {
+        "de": "Gebrechen",
+        "en": "Affliction"
+      },
+      "class": "warlock",
+      "role": "ranged"
+    },
+    {
+      "id": "warlock-daemonologie",
+      "name": {
+        "de": "Dämonologie",
+        "en": "Demonology"
+      },
+      "class": "warlock",
+      "role": "ranged"
+    },
+    {
+      "id": "warlock-zerstoerung",
+      "name": {
+        "de": "Zerstörung",
+        "en": "Destruction"
+      },
+      "class": "warlock",
+      "role": "ranged"
+    },
+    {
+      "id": "druid-gleichgewicht",
+      "name": {
+        "de": "Gleichgewicht",
+        "en": "Balance"
+      },
+      "class": "druid",
+      "role": "ranged"
+    },
+    {
+      "id": "druid-wildheit-katze",
+      "name": {
+        "de": "Wildheit (Katze)",
+        "en": "Feral (Cat)"
+      },
+      "class": "druid",
+      "role": "melee"
+    },
+    {
+      "id": "druid-wildheit-baer",
+      "name": {
+        "de": "Wildheit (Bär)",
+        "en": "Feral (Bear)"
+      },
+      "class": "druid",
+      "role": "tank"
+    },
+    {
+      "id": "druid-wiederherstellung",
+      "name": {
+        "de": "Wiederherstellung",
+        "en": "Restoration"
+      },
+      "class": "druid",
+      "role": "heal"
     }
   ],
   "races": [
@@ -145,12 +379,12 @@
       "allowed_classes": [
         "warrior",
         "paladin",
+        "hunter",
         "rogue",
         "priest",
         "mage",
         "warlock"
-      ],
-      "todo": true
+      ]
     },
     {
       "id": "dwarf",
@@ -159,8 +393,14 @@
         "en": "Dwarf"
       },
       "faction": "alliance",
-      "allowed_classes": ["warrior", "paladin", "hunter", "rogue", "priest"],
-      "todo": true
+      "allowed_classes": [
+        "warrior",
+        "paladin",
+        "hunter",
+        "rogue",
+        "priest",
+        "shaman"
+      ]
     },
     {
       "id": "night-elf",
@@ -169,8 +409,7 @@
         "en": "Night Elf"
       },
       "faction": "alliance",
-      "allowed_classes": ["warrior", "hunter", "rogue", "priest", "druid"],
-      "todo": true
+      "allowed_classes": ["warrior", "hunter", "rogue", "priest", "druid"]
     },
     {
       "id": "gnome",
@@ -179,8 +418,7 @@
         "en": "Gnome"
       },
       "faction": "alliance",
-      "allowed_classes": ["warrior", "rogue", "mage", "warlock"],
-      "todo": true
+      "allowed_classes": ["warrior", "rogue", "priest", "mage", "warlock"]
     },
     {
       "id": "orc",
@@ -189,8 +427,14 @@
         "en": "Orc"
       },
       "faction": "horde",
-      "allowed_classes": ["warrior", "hunter", "rogue", "shaman", "warlock"],
-      "todo": true
+      "allowed_classes": [
+        "warrior",
+        "hunter",
+        "rogue",
+        "mage",
+        "warlock",
+        "shaman"
+      ]
     },
     {
       "id": "undead",
@@ -199,8 +443,14 @@
         "en": "Undead"
       },
       "faction": "horde",
-      "allowed_classes": ["warrior", "rogue", "priest", "mage", "warlock"],
-      "todo": true
+      "allowed_classes": [
+        "warrior",
+        "rogue",
+        "priest",
+        "mage",
+        "warlock",
+        "paladin"
+      ]
     },
     {
       "id": "tauren",
@@ -209,8 +459,7 @@
         "en": "Tauren"
       },
       "faction": "horde",
-      "allowed_classes": ["warrior", "hunter", "shaman", "druid"],
-      "todo": true
+      "allowed_classes": ["warrior", "hunter", "shaman", "druid"]
     },
     {
       "id": "troll",
@@ -225,17 +474,21 @@
         "rogue",
         "priest",
         "shaman",
-        "mage"
-      ],
-      "todo": true
+        "mage",
+        "warlock"
+      ]
     },
     {
-      "id": "himmelsgeborene",
-      "name": {
-        "de": "Himmelsgeborene"
-      },
-      "allowed_classes": [],
-      "todo": true
+      "id": "himmelsgeborene-hoher-orden",
+      "name": "Himmelsgeborene (Hoher Orden)",
+      "faction": "alliance",
+      "allowed_classes": ["warrior", "hunter", "rogue", "mage", "druid"]
+    },
+    {
+      "id": "himmelsgeborene-windformer",
+      "name": "Himmelsgeborene (Windformer)",
+      "faction": "horde",
+      "allowed_classes": ["warrior", "hunter", "rogue", "shaman", "druid"]
     }
   ],
   "professions": [

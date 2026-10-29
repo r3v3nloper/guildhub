@@ -181,6 +181,26 @@ describe("validatePack", () => {
     ]);
   });
 
+  it("checks that a spec belongs to a known class", () => {
+    // Act
+    const errors = errorsOf(
+      basePack({
+        specs: [
+          {
+            id: "warrior-arms",
+            name: "Waffen",
+            class: "warrior",
+            role: "melee",
+          },
+          { id: "mage-fire", name: "Feuer", class: "mage", role: "ranged" },
+        ],
+      }),
+    );
+
+    // Assert
+    expect(errors.map((e) => e.path)).toEqual(["specs[1].class"]);
+  });
+
   it("rejects replaces pointing at an ID that is still active", () => {
     const errors = errorsOf(
       basePack({

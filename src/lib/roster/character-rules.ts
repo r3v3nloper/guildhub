@@ -14,6 +14,8 @@ export interface CharacterInput {
   factionKey: string;
   raceKey: string;
   classKey: string;
+  specKey: string;
+  offSpecKey: string;
   spec: string;
   level: number | null;
   isMain: boolean;
@@ -26,6 +28,8 @@ export interface PreviousSelection {
   factionEntryId: number | null;
   raceEntryId: number | null;
   classEntryId: number | null;
+  specEntryId: number | null;
+  offSpecEntryId: number | null;
   serverKey: string | null;
   professionEntryIds: number[];
 }
@@ -37,6 +41,8 @@ export interface ResolvedCharacter {
   factionEntryId: number | null;
   raceEntryId: number | null;
   classEntryId: number | null;
+  specEntryId: number | null;
+  offSpecEntryId: number | null;
   spec: string | null;
   level: number | null;
   isMain: boolean;
@@ -56,6 +62,8 @@ const NO_PREVIOUS: PreviousSelection = {
   factionEntryId: null,
   raceEntryId: null,
   classEntryId: null,
+  specEntryId: null,
+  offSpecEntryId: null,
   serverKey: null,
   professionEntryIds: [],
 };
@@ -162,6 +170,26 @@ export function resolveCharacter(
     }
   }
 
+  const usesSpecCatalog =
+    characterClass !== null && hasEntries(catalog, "spec");
+  const mainSpec = usesSpecCatalog
+    ? pick("spec", input.specKey, previous.specEntryId, "specKey")
+    : null;
+  const offSpec = usesSpecCatalog
+    ? pick("spec", input.offSpecKey, previous.offSpecEntryId, "offSpecKey")
+    : null;
+  const specClassError = `Passt nicht zur Klasse ${localize(characterClass?.name)}.`;
+  if (mainSpec && mainSpec.data.class !== characterClass?.key) {
+    errors.specKey = specClassError;
+  }
+  if (offSpec && offSpec.data.class !== characterClass?.key) {
+    errors.offSpecKey = specClassError;
+  } else if (offSpec && !mainSpec && !errors.specKey) {
+    errors.offSpecKey = "Erst die Hauptspezialisierung wählen.";
+  } else if (offSpec && offSpec.id === mainSpec?.id) {
+    errors.offSpecKey = "Off-Spec und Hauptspezialisierung sind gleich.";
+  }
+
   const server = resolveServer(
     catalog,
     input.server,
@@ -199,7 +227,10 @@ export function resolveCharacter(
       factionEntryId: faction?.id ?? null,
       raceEntryId: race?.id ?? null,
       classEntryId: characterClass?.id ?? null,
-      spec: optionalText(input.spec),
+      specEntryId: mainSpec?.id ?? null,
+      offSpecEntryId: offSpec?.id ?? null,
+      // A game with a spec catalog keeps no free-text spec beside it.
+      spec: usesSpecCatalog ? null : optionalText(input.spec),
       level: input.level,
       isMain: input.isMain,
       notes: optionalText(input.notes),
@@ -250,7 +281,13 @@ function optionalText(value: string): string | null {
 }
 
 export interface CharacterHint {
-  field: "classKey" | "raceKey" | "factionKey" | "professionKeys";
+  field:
+    | "classKey"
+    | "specKey"
+    | "offSpecKey"
+    | "raceKey"
+    | "factionKey"
+    | "professionKeys";
   message: string;
 }
 
@@ -300,6 +337,15 @@ export function characterHints(
     "Klasse wählen.",
     true,
   );
+  const hasSpecs = capabilities.classes && hasEntries(catalog, "spec");
+  check(
+    "specKey",
+    hasSpecs && selection.classEntryId !== null,
+    selection.specEntryId,
+    "Ohne Spezialisierung ist die Rolle unbekannt.",
+    true,
+  );
+  check("offSpecKey", hasSpecs, selection.offSpecEntryId, "", false);
   check(
     "raceKey",
     capabilities.races,

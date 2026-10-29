@@ -119,6 +119,8 @@ export function selectionOf(character: CharacterDetails): PreviousSelection {
     factionEntryId: character.factionEntryId,
     raceEntryId: character.raceEntryId,
     classEntryId: character.classEntryId,
+    specEntryId: character.specEntryId,
+    offSpecEntryId: character.offSpecEntryId,
     serverKey: character.serverKey,
     professionEntryIds: character.professionEntryIds,
   };

@@ -55,9 +55,14 @@ export function MemberCard({
                   <Badge tone="accent">{de.badges.main}</Badge>
                 )}
                 <ClassName entry={character.characterClass} />
-                {character.characterClass?.role && (
+                {character.mainSpec && (
+                  <span className="text-soft">
+                    {localize(character.mainSpec.name)}
+                  </span>
+                )}
+                {character.role && (
                   <span className="text-muted">
-                    {de.roles[character.characterClass.role]}
+                    {de.roles[character.role] ?? character.role}
                   </span>
                 )}
                 {character.level !== null && (
@@ -82,6 +87,11 @@ export function MemberCard({
                 )}
                 {character.server && <span>{character.server}</span>}
                 {character.spec && <span>{character.spec}</span>}
+                {character.offSpec && (
+                  <span>
+                    {de.characters.offSpec}: {localize(character.offSpec.name)}
+                  </span>
+                )}
                 {character.professions.length > 0 && (
                   <span>
                     {character.professions.map(professionLabel).join(", ")}

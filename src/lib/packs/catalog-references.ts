@@ -51,6 +51,20 @@ export const CATALOG_REFERENCES: Record<CatalogKind, CatalogReference[]> = {
       storedAs: "entryId",
     },
   ],
+  spec: [
+    {
+      table: characters,
+      column: characters.specEntryId,
+      storedAs: "entryId",
+      characterColumn: characters.id,
+    },
+    {
+      table: characters,
+      column: characters.offSpecEntryId,
+      storedAs: "entryId",
+      characterColumn: characters.id,
+    },
+  ],
   race: [
     {
       table: characters,

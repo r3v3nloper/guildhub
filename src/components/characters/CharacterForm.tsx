@@ -30,6 +30,8 @@ export interface CharacterFormValues {
   faction: string;
   race: string;
   characterClass: string;
+  specKey: string;
+  offSpecKey: string;
   spec: string;
   level: string;
   isMain: boolean;
@@ -80,21 +82,39 @@ export function CharacterForm({
   const [faction, setFaction] = useState(values.faction);
   const [race, setRace] = useState(values.race);
   const [characterClass, setCharacterClass] = useState(values.characterClass);
+  const [specKey, setSpecKey] = useState(values.specKey);
+  const [offSpecKey, setOffSpecKey] = useState(values.offSpecKey);
   const { capabilities } = options;
   const errors = state.errors ?? {};
   const hintFor = (field: CharacterHint["field"]) =>
     hints.find((hint) => hint.field === field)?.message;
 
   const classes = classesFor(options, faction, race);
+  const chooseClass = (next: string) => {
+    if (next !== characterClass) {
+      setSpecKey("");
+      setOffSpecKey("");
+    }
+    setCharacterClass(next);
+  };
   const keepClassIfAllowed = (nextFaction: string, nextRace: string) => {
     if (
       !classesFor(options, nextFaction, nextRace).some(
         (o) => o.key === characterClass,
       )
     ) {
-      setCharacterClass("");
+      chooseClass("");
     }
   };
+  const usesSpecCatalog = capabilities.classes && options.specs.length > 0;
+  const specOptions = options.specs
+    .filter((option) => option.specClass === characterClass)
+    .map((option) => ({
+      value: option.key,
+      label: option.role
+        ? `${optionLabel(option)} – ${de.roles[option.role] ?? option.role}`
+        : optionLabel(option),
+    }));
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
@@ -198,14 +218,52 @@ export function CharacterForm({
                   ? `${optionLabel(option)} – ${de.roles[option.role] ?? option.role}`
                   : optionLabel(option),
               }))}
-              onChange={setCharacterClass}
+              onChange={chooseClass}
             />
           </Field>
         )}
 
-        <Field label={de.characters.spec} error={errors.spec}>
-          <TextInput name="spec" defaultValue={values.spec} />
-        </Field>
+        {usesSpecCatalog ? (
+          <>
+            <Field
+              label={de.characters.spec}
+              error={errors.specKey}
+              hint={hintFor("specKey")}
+            >
+              <SelectField
+                name="specKey"
+                value={specKey}
+                emptyLabel={de.common.none}
+                disabled={!characterClass}
+                options={specOptions}
+                onChange={(next) => {
+                  setSpecKey(next);
+                  if (!next || next === offSpecKey) {
+                    setOffSpecKey("");
+                  }
+                }}
+              />
+            </Field>
+            <Field
+              label={de.characters.offSpec}
+              error={errors.offSpecKey}
+              hint={hintFor("offSpecKey")}
+            >
+              <SelectField
+                name="offSpecKey"
+                value={offSpecKey}
+                emptyLabel={de.common.none}
+                disabled={!specKey}
+                options={specOptions.filter((o) => o.value !== specKey)}
+                onChange={setOffSpecKey}
+              />
+            </Field>
+          </>
+        ) : (
+          <Field label={de.characters.spec} error={errors.spec}>
+            <TextInput name="spec" defaultValue={values.spec} />
+          </Field>
+        )}
 
         <Field label={de.characters.level} error={errors.level}>
           <TextInput

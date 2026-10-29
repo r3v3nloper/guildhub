@@ -17,6 +17,8 @@ export interface CatalogOption {
   faction?: string;
   /** Races: classes they may be (empty = all). */
   allowedClasses: string[];
+  /** Specs: the class they belong to. */
+  specClass?: string;
   /** Professions: primary, secondary or gathering. */
   professionKind?: string;
 }
@@ -28,6 +30,7 @@ export interface CharacterFormOptions {
   factions: CatalogOption[];
   races: CatalogOption[];
   classes: CatalogOption[];
+  specs: CatalogOption[];
   professions: CatalogOption[];
   servers: CatalogOption[];
 }
@@ -63,6 +66,7 @@ export function optionsOfKind(
         factions: stringList(data.factions),
         faction: typeof data.faction === "string" ? data.faction : undefined,
         allowedClasses: stringList(data.allowed_classes),
+        specClass: typeof data.class === "string" ? data.class : undefined,
         professionKind: typeof data.kind === "string" ? data.kind : undefined,
       };
     });
@@ -80,6 +84,7 @@ export function characterFormOptions(
     factions: optionsOfKind(catalog, "faction", selectedIds),
     races: optionsOfKind(catalog, "race", selectedIds),
     classes: optionsOfKind(catalog, "class", selectedIds),
+    specs: optionsOfKind(catalog, "spec", selectedIds),
     professions: optionsOfKind(catalog, "profession", selectedIds),
     servers: optionsOfKind(catalog, "server"),
   };

@@ -420,12 +420,14 @@ Pflichtfelder sind markiert, alle anderen sind optional mit dem genannten Defaul
   "races": [ { "id": "...", "name": "...", "faction": "elyos", "allowed_classes": ["..."] } ],
   "classes": [ {
       "id": "gladiator", "name": "Gladiator",
-      "role": "tank",                 // tank | dps | heal | support
+      "role": "tank",                 // tank | heal | melee | ranged | dps | support; entfällt bei specs
       "color": "#c79c6e",
       "factions": [],                 // leer = alle Fraktionen
       "deprecated": false,            // noch gültig, aber nicht mehr auswählbar
       "replaces": []                  // alte IDs, die auf diese ID migriert werden
   } ],
+  "specs": [ { "id": "paladin-heilig", "name": "Heilig", "class": "paladin", "role": "heal" } ],
+                                      // optional; gibt es Specs, bestimmt die Spec die Rolle, nicht die Klasse
   "professions": [ { "id": "...", "name": "...", "kind": "primary" } ],  // primary | secondary | gathering
   "bosses": [ { "id": "...", "name": "..." } ],   // für lockout-Aufgaben
   "servers": [ { "id": "...", "name": "..." } ],  // optional, sonst Freitext (4.6)
@@ -953,10 +955,11 @@ docker-compose.yml
 - [x] AION 2: Aufgaben aus dem Spiel übernommen (Pack 0.4.0): Pflichten 5/Tag pro Server, Shugofesta 12/Tag, Daily Login, Albtraum-Dungeon +2/Tag bis 14, Tägliche Dungeons 14/Woche, Wochenquests PvE 12 und PvP 20 pro Woche, Aszensusritus 3/Woche
 - [x] AION 2: Odyle-Energie (+15 alle 3 Std., max. 200) und Reset-Zeiten (täglich 05:00, wöchentlich Mi 05:00) im Spiel bestätigt
 - [x] AION 2: keine Berufe, Capability `professions` aus (6.3)
-- [ ] WoW Forever: Klassen-/Rassen-Kombinationen, Raid-IDs, Reset-Tage (ab 04.11.)
+- [x] WoW Forever: Klassen-/Rassen-Kombinationen bestätigt (Pack 0.3.0); Paladin und Schamane auf beiden Seiten
+- [ ] WoW Forever: Raid-IDs, Reset-Tage und Berufe (ab 04.11.)
 - [ ] Gewünschte Akzentfarbe/Logo der Gilde (optional)
 - [x] WoW Forever: neue Rasse **Himmelsgeborene** im Pack (`todo`)
-- [ ] WoW Forever: Fraktion, erlaubte Klassen und englischer Name der Himmelsgeborenen
+- [x] WoW Forever: Himmelsgeborene je Fraktion getrennt – „Hoher Orden“ (Allianz) und „Windformer“ (Horde) mit eigenen Klassen; englischer Name noch offen
 
 ### Umsetzungsnotizen Phase 1
 
@@ -972,6 +975,7 @@ Entscheidungen, die beim Bauen getroffen wurden und das Modell aus 4.1 ergänzen
 - Der Spiel-Umschalter (Abschnitt 7, Punkt 2) merkt sich die Auswahl pro Browser in einem Cookie.
 - Klassen-, Berufs- und Fraktionsfilter im Roster gibt es nur, wenn ein einzelnes Spiel gewählt ist; der Rollenfilter gilt immer.
 - Backups: Das Datum im Dateinamen richtet sich nach `DEFAULT_TIMEZONE`. Das Script schreibt erst in eine temporäre Datei und benennt sie danach um, damit ein abgebrochener Lauf kein halbes Backup hinterlässt. Der Admin-Download liegt unter `/admin/backup`; Nicht-Owner bekommen dort 404. Der Service Worker cacht ihn nie.
+- **Spezialisierungen:** Listet ein Pack `specs`, wählt der Charakter-Editor Haupt-Spec und optionale Off-Spec aus den Specs seiner Klasse (statt Freitext). Die Rolle im Roster kommt dann aus der Haupt-Spec; ohne Spec ist sie „ohne Spec“ und der Editor weist darauf hin. Spiele ohne Specs (AION 2) behalten die Rolle der Klasse und das Freitextfeld. DPS ist bei WoW in Nahkampf- und Fernkampf-DPS geteilt.
 - Berufe: Fertigkeit (0 bis 10000), Spezialisierung und Notiz werden je Beruf im Charakter-Editor gepflegt und im Roster als „Alchemie 300 (Tränke)“ angezeigt.
 
 ### Umsetzungsnotizen Phase 2

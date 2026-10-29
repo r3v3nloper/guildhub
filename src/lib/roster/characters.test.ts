@@ -30,6 +30,8 @@ function input(overrides: Partial<CharacterInput> = {}): CharacterInput {
     factionKey: "",
     raceKey: "",
     classKey: "",
+    specKey: "",
+    offSpecKey: "",
     spec: "",
     level: null,
     isMain: false,
@@ -95,7 +97,12 @@ describe("characters and roster with the shipped packs", () => {
         db,
         ben,
         "wow-forever",
-        input({ name: "Thrall", raceKey: "orc", classKey: "shaman" }),
+        input({
+          name: "Thrall",
+          raceKey: "orc",
+          classKey: "shaman",
+          specKey: "shaman-wiederherstellung",
+        }),
       ),
     ).toMatchObject({ ok: true });
     expect(
@@ -125,6 +132,7 @@ describe("characters and roster with the shipped packs", () => {
     expect(roster.roles).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ key: "heal", count: 2 }),
+        expect.objectContaining({ key: "unknown", count: 1 }),
       ]),
     );
   });
@@ -141,7 +149,13 @@ describe("characters and roster with the shipped packs", () => {
       db,
       anna,
       "wow-forever",
-      input({ name: "Uther", raceKey: "human", classKey: "paladin" }),
+      input({
+        name: "Uther",
+        raceKey: "human",
+        classKey: "paladin",
+        specKey: "paladin-heilig",
+        offSpecKey: "paladin-schutz",
+      }),
     );
     saveCharacter(
       db,
@@ -156,6 +170,10 @@ describe("characters and roster with the shipped packs", () => {
 
     expect(healers.members[0].characters.map((c) => c.name)).toEqual(["Uther"]);
     expect(mages.members[0].characters.map((c) => c.name)).toEqual(["Jaina"]);
+    expect(mages.members[0].characters[0].role).toBe("unknown");
+    expect(healers.members[0].characters[0].offSpec?.key).toBe(
+      "paladin-schutz",
+    );
     expect(
       filterRoster(all, { classKey: OUTDATED_FILTER_KEY }).members,
     ).toEqual([]);

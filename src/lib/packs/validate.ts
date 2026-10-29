@@ -158,6 +158,12 @@ function checkReferences(pack: Pack, error: Report) {
     });
   });
 
+  pack.specs.forEach((entry, index) => {
+    if (!classIds.has(entry.class)) {
+      error(`specs[${index}].class`, `unbekannte Klasse '${entry.class}'`);
+    }
+  });
+
   pack.tasks.forEach((task, index) => {
     if (task.reset_rule_id && !ruleIds.has(task.reset_rule_id)) {
       error(
