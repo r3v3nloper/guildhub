@@ -1,7 +1,7 @@
 {
   "id": "aion2",
   "name": "AION 2",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "mmo",
   "capabilities": {
     "characters": true,
@@ -43,8 +43,7 @@
         "en": "Gladiator"
       },
       "role": "dps",
-      "color": "#c79c6e",
-      "todo": true
+      "color": "#c79c6e"
     },
     {
       "id": "templar",
@@ -53,8 +52,7 @@
         "en": "Templar"
       },
       "role": "tank",
-      "color": "#8c9bb0",
-      "todo": true
+      "color": "#8c9bb0"
     },
     {
       "id": "assassin",
@@ -63,8 +61,7 @@
         "en": "Assassin"
       },
       "role": "dps",
-      "color": "#9b59b6",
-      "todo": true
+      "color": "#9b59b6"
     },
     {
       "id": "ranger",
@@ -73,8 +70,7 @@
         "en": "Ranger"
       },
       "role": "dps",
-      "color": "#6fae4f",
-      "todo": true
+      "color": "#6fae4f"
     },
     {
       "id": "sorcerer",
@@ -83,8 +79,7 @@
         "en": "Sorcerer"
       },
       "role": "dps",
-      "color": "#3fa7e0",
-      "todo": true
+      "color": "#3fa7e0"
     },
     {
       "id": "spiritmaster",
@@ -93,8 +88,7 @@
         "en": "Spiritmaster"
       },
       "role": "dps",
-      "color": "#7b68ee",
-      "todo": true
+      "color": "#7b68ee"
     },
     {
       "id": "cleric",
@@ -103,8 +97,7 @@
         "en": "Cleric"
       },
       "role": "heal",
-      "color": "#f0e68c",
-      "todo": true
+      "color": "#f0e68c"
     },
     {
       "id": "chanter",
@@ -113,8 +106,7 @@
         "en": "Chanter"
       },
       "role": "support",
-      "color": "#e08a3c",
-      "todo": true
+      "color": "#e08a3c"
     }
   ],
   "build_sources": [
@@ -127,43 +119,88 @@
     {
       "id": "daily",
       "type": "daily",
-      "time": "05:00",
-      "todo": true
+      "time": "05:00"
     },
     {
       "id": "weekly",
       "type": "weekly",
       "time": "05:00",
-      "weekday": 3,
-      "todo": true
+      "weekday": 3
     }
   ],
   "tasks": [
     {
       "id": "duty-missions",
       "kind": "counter",
-      "title": {
-        "de": "Duty-Missionen",
-        "en": "Duty Missions"
-      },
+      "title": "Pflichten",
       "category": "PvE",
       "scope": "server",
       "reset_rule_id": "daily",
       "cap": 5,
-      "priority": "high",
-      "todo": true
+      "priority": "high"
     },
     {
-      "id": "daily-dungeons",
-      "kind": "recurring",
-      "title": {
-        "de": "Tägliche Dungeons",
-        "en": "Daily Dungeons"
-      },
+      "id": "shugofesta",
+      "kind": "counter",
+      "title": "Shugofesta",
       "category": "PvE",
       "scope": "character",
       "reset_rule_id": "daily",
-      "todo": true
+      "cap": 12
+    },
+    {
+      "id": "daily-login",
+      "kind": "recurring",
+      "title": "Daily Login",
+      "category": "Login",
+      "scope": "character",
+      "reset_rule_id": "daily"
+    },
+    {
+      "id": "nightmare",
+      "kind": "stacking",
+      "title": "Albtraum-Dungeon",
+      "category": "PvE",
+      "scope": "character",
+      "reset_rule_id": "daily",
+      "cap": 14,
+      "per_period_gain": 2
+    },
+    {
+      "id": "daily-dungeons-weekly",
+      "kind": "counter",
+      "title": "Tägliche Dungeons",
+      "category": "PvE",
+      "scope": "character",
+      "reset_rule_id": "weekly",
+      "cap": 14
+    },
+    {
+      "id": "weekly-quests-pve-count",
+      "kind": "counter",
+      "title": "Wochenquests PvE",
+      "category": "PvE",
+      "scope": "character",
+      "reset_rule_id": "weekly",
+      "cap": 12
+    },
+    {
+      "id": "weekly-quests-pvp-count",
+      "kind": "counter",
+      "title": "Wochenquests PvP",
+      "category": "PvP",
+      "scope": "character",
+      "reset_rule_id": "weekly",
+      "cap": 20
+    },
+    {
+      "id": "ascension-rite",
+      "kind": "counter",
+      "title": "Aszensusritus",
+      "category": "PvE",
+      "scope": "character",
+      "reset_rule_id": "weekly",
+      "cap": 3
     },
     {
       "id": "odyle-energy",
@@ -177,58 +214,7 @@
       "cap": 200,
       "regen_amount": 15,
       "regen_interval_minutes": 180,
-      "regen_alignment": "fixed",
-      "todo": true
-    },
-    {
-      "id": "nightmare",
-      "kind": "stacking",
-      "title": {
-        "de": "Albtraum-Einträge",
-        "en": "Nightmare Entries"
-      },
-      "category": "PvE",
-      "scope": "character",
-      "reset_rule_id": "daily",
-      "cap": 14,
-      "per_period_gain": 2,
-      "todo": true
-    },
-    {
-      "id": "ascension-trial",
-      "kind": "recurring",
-      "title": {
-        "de": "Aufstiegsprüfung",
-        "en": "Ascension Trial"
-      },
-      "category": "PvE",
-      "scope": "character",
-      "reset_rule_id": "weekly",
-      "todo": true
-    },
-    {
-      "id": "weekly-quests-pve",
-      "kind": "recurring",
-      "title": {
-        "de": "Wochenquests PvE",
-        "en": "Weekly Quests PvE"
-      },
-      "category": "PvE",
-      "scope": "character",
-      "reset_rule_id": "weekly",
-      "todo": true
-    },
-    {
-      "id": "weekly-quests-pvp",
-      "kind": "recurring",
-      "title": {
-        "de": "Wochenquests PvP",
-        "en": "Weekly Quests PvP"
-      },
-      "category": "PvP",
-      "scope": "character",
-      "reset_rule_id": "weekly",
-      "todo": true
+      "regen_alignment": "fixed"
     }
   ]
 }

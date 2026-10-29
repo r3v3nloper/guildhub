@@ -949,8 +949,9 @@ docker-compose.yml
 - [x] Domain/Subdomain für die App: **`guildhub.licktherainbow.de`**
 - [x] Discord-App für OAuth angelegt (Client-ID `1564751806851194893`; Secret nur in `.env`), Redirect-URL: `AUTH_URL/api/auth/callback/discord`
 - [ ] Discord-IDs der aktuell 6 Mitglieder für die Allowlist (Owner `418171274456727564` steht, die übrigen folgen)
-- [ ] AION 2: Reset-Uhrzeit EU, exakte Klassennamen (EN/DE)
-- [ ] AION 2: Werte der Startaufgaben prüfen (Odyle-Energie: Maximum und Takt, Albtraum-Einträge, Rhythmus der Aufstiegsprüfung)
+- [x] AION 2: Reset-Uhrzeit EU und Klassennamen/Rollen im Spiel bestätigt
+- [x] AION 2: Aufgaben aus dem Spiel übernommen (Pack 0.4.0): Pflichten 5/Tag pro Server, Shugofesta 12/Tag, Daily Login, Albtraum-Dungeon +2/Tag bis 14, Tägliche Dungeons 14/Woche, Wochenquests PvE 12 und PvP 20 pro Woche, Aszensusritus 3/Woche
+- [x] AION 2: Odyle-Energie (+15 alle 3 Std., max. 200) und Reset-Zeiten (täglich 05:00, wöchentlich Mi 05:00) im Spiel bestätigt
 - [x] AION 2: keine Berufe, Capability `professions` aus (6.3)
 - [ ] WoW Forever: Klassen-/Rassen-Kombinationen, Raid-IDs, Reset-Tage (ab 04.11.)
 - [ ] Gewünschte Akzentfarbe/Logo der Gilde (optional)
