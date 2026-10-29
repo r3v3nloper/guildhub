@@ -1,5 +1,5 @@
 export const today = {
-  title: "Heute",
+  title: "Übersicht",
   openCount: (count: number) =>
     count === 1 ? "1 offene Aufgabe" : `${count} offene Aufgaben`,
   allDone: "Alles erledigt.",

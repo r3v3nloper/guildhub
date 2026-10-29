@@ -456,7 +456,7 @@ export const checklistTicks = sqliteTable(
   (tick) => [primaryKey({ columns: [tick.itemId, tick.userId] })],
 );
 
-/** Checklists a member pinned to their "Heute" dashboard; personal, like the ticks. */
+/** Checklists a member pinned to their overview (start page); personal, like the ticks. */
 export const checklistPins = sqliteTable(
   "checklist_pin",
   {

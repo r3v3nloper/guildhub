@@ -1,7 +1,7 @@
 import type { DashboardSummary } from "@/lib/tasks/dashboard-summary";
 import { de } from "@/i18n/de";
 
-/** Head of "Heute": how much is left, and which resources want spending. */
+/** Head of the overview: how much is left, and which resources want spending. */
 export function TodaySummary({ summary }: { summary: DashboardSummary }) {
   const open = summary.total - summary.done;
   const percent =

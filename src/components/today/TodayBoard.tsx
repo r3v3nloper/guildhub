@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/ui";
 import { de } from "@/i18n/de";
 import { TaskList } from "./TaskList";
 
-/** The personal "Heute" dashboard: guild and general tasks, then game → server → character. */
+/** The personal overview (start page): guild and general tasks, then game → server → character. */
 export function TodayBoard({
   dashboard,
   now,

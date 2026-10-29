@@ -36,7 +36,7 @@ export interface BossView {
 
 export type { ResourceView } from "./resource-view";
 
-/** One task as it appears in the "Heute" dashboard (SPEC 7, item 3). */
+/** One task as it appears in the overview (start page) (SPEC 7, item 3). */
 export interface DashboardItem {
   taskId: number;
   characterId: number | null;

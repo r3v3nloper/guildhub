@@ -20,7 +20,7 @@ export interface DashboardSummary {
   nextReset: string | null;
 }
 
-/** Totals for the head of the "Heute" page. */
+/** Totals for the head of the overview page. */
 export function summarizeDashboard(dashboard: Dashboard): DashboardSummary {
   const entries: { item: DashboardItem; owner: string | null }[] = [
     ...dashboard.guild.map((item) => ({ item, owner: null })),

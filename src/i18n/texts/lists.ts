@@ -24,8 +24,8 @@ export const checklists = {
   items: "Punkte (einer pro Zeile)",
   itemsHint: "Beim Speichern werden alle Haken dieser Liste zurückgesetzt.",
   newRun: "Neuer Run",
-  pin: "An „Heute“ anheften",
-  unpin: "Von „Heute“ lösen",
+  pin: "An die Übersicht anheften",
+  unpin: "Von der Übersicht lösen",
   deleteConfirm: "Diese Checkliste löschen?",
   progress: (ticked: number, total: number) => `${ticked}/${total}`,
 } as const;

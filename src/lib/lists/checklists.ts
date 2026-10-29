@@ -20,7 +20,7 @@ export interface ChecklistView extends ChecklistRow {
   ownerName: string | null;
   items: Array<{ id: number; label: string; ticked: boolean }>;
   canEdit: boolean;
-  /** Shown on the actor's "Heute" dashboard. */
+  /** Shown on the actor's overview (start page). */
   pinned: boolean;
 }
 
@@ -293,7 +293,7 @@ export function resetChecklistRun(
     .run();
 }
 
-/** The checklists the actor pinned to "Heute", with their own ticks. */
+/** The checklists the actor pinned to the overview, with their own ticks. */
 export function listPinnedChecklists(
   db: AppDatabase,
   actor: Actor,

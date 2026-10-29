@@ -23,7 +23,7 @@ export const nav = {
   characters: "Meine Charaktere",
   charactersShort: "Charaktere",
   admin: "Admin",
-  today: "Heute",
+  today: "Übersicht",
   more: "Mehr",
   mainGroup: "Übersicht",
   guildGroup: "Gilde",

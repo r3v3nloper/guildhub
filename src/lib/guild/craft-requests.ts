@@ -89,7 +89,7 @@ export function listCraftRequests(
 }
 
 /**
- * What the user can craft right now, for the "Heute" dashboard: requests they accepted
+ * What the user can craft right now, for the overview (start page): requests they accepted
  * and still have to finish, then open requests for a profession one of their characters
  * holds. Their own requests are left out; nobody crafts for themselves.
  */
