@@ -1,7 +1,7 @@
 {
   "id": "wow-forever",
   "name": "WoW: Forever",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "type": "mmo",
   "server_label": "Realm",
   "capabilities": {
@@ -88918,7 +88918,10 @@
   "instances": [
     {
       "id": "ragefire-chasm",
-      "name": "Ragefire Chasm",
+      "name": {
+        "de": "Flammenschlund",
+        "en": "Ragefire Chasm"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 13,
@@ -88983,7 +88986,10 @@
     },
     {
       "id": "wailing-caverns",
-      "name": "Wailing Caverns",
+      "name": {
+        "de": "Höhlen des Wehklagens",
+        "en": "Wailing Caverns"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 15,
@@ -89015,7 +89021,10 @@
     },
     {
       "id": "deadmines",
-      "name": "Deadmines",
+      "name": {
+        "de": "Die Todesminen",
+        "en": "Deadmines"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 17,
@@ -89047,7 +89056,10 @@
     },
     {
       "id": "shadowfang-keep",
-      "name": "Shadowfang Keep",
+      "name": {
+        "de": "Burg Schattenfang",
+        "en": "Shadowfang Keep"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 20,
@@ -89079,7 +89091,10 @@
     },
     {
       "id": "blackfathom-deeps",
-      "name": "Blackfathom Deeps",
+      "name": {
+        "de": "Tiefschwarze Grotte",
+        "en": "Blackfathom Deeps"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 24,
@@ -89112,7 +89127,10 @@
     },
     {
       "id": "stormwind-stockade",
-      "name": "Stormwind Stockade",
+      "name": {
+        "de": "Das Verlies",
+        "en": "Stormwind Stockade"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 24,
@@ -89194,7 +89212,10 @@
     },
     {
       "id": "gnomeregan",
-      "name": "Gnomeregan",
+      "name": {
+        "de": "Gnomeregan",
+        "en": "Gnomeregan"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 29,
@@ -89224,7 +89245,10 @@
     },
     {
       "id": "razorfen-kraul",
-      "name": "Razorfen Kraul",
+      "name": {
+        "de": "Kral der Klingenhauer",
+        "en": "Razorfen Kraul"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 29,
@@ -89254,7 +89278,10 @@
     },
     {
       "id": "scarlet-monastery",
-      "name": "Scarlet Monastery",
+      "name": {
+        "de": "Das Scharlachrote Kloster",
+        "en": "Scarlet Monastery"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 30,
@@ -89285,7 +89312,10 @@
     },
     {
       "id": "razorfen-downs",
-      "name": "Razorfen Downs",
+      "name": {
+        "de": "Hügel der Klingenhauer",
+        "en": "Razorfen Downs"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 37,
@@ -89301,7 +89331,10 @@
     },
     {
       "id": "uldaman",
-      "name": "Uldaman",
+      "name": {
+        "de": "Uldaman",
+        "en": "Uldaman"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 41,
@@ -89319,7 +89352,10 @@
     },
     {
       "id": "zulfarrak",
-      "name": "Zul'Farrak",
+      "name": {
+        "de": "Zul'Farrak",
+        "en": "Zul'Farrak"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 44,
@@ -89337,7 +89373,10 @@
     },
     {
       "id": "maraudon",
-      "name": "Maraudon",
+      "name": {
+        "de": "Maraudon",
+        "en": "Maraudon"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 46,
@@ -89355,7 +89394,10 @@
     },
     {
       "id": "sunken-temple",
-      "name": "Sunken Temple",
+      "name": {
+        "de": "Der Tempel von Atal'Hakkar",
+        "en": "Sunken Temple"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 50,
@@ -89378,7 +89420,10 @@
     },
     {
       "id": "blackrock-depths",
-      "name": "Blackrock Depths",
+      "name": {
+        "de": "Schwarzfelstiefen",
+        "en": "Blackrock Depths"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 52,
@@ -89409,7 +89454,10 @@
     },
     {
       "id": "dire-maul",
-      "name": "Dire Maul",
+      "name": {
+        "de": "Düsterbruch",
+        "en": "Dire Maul"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 54,
@@ -89438,7 +89486,10 @@
     },
     {
       "id": "blackrock-spire",
-      "name": "Blackrock Spire",
+      "name": {
+        "de": "Schwarzfelsspitze",
+        "en": "Blackrock Spire"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 55,
@@ -89476,7 +89527,10 @@
     },
     {
       "id": "scholomance",
-      "name": "Scholomance",
+      "name": {
+        "de": "Scholomance",
+        "en": "Scholomance"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 58,
@@ -89514,7 +89568,10 @@
     },
     {
       "id": "stratholme",
-      "name": "Stratholme",
+      "name": {
+        "de": "Stratholme",
+        "en": "Stratholme"
+      },
       "kind": "dungeon",
       "players": 5,
       "level_min": 58,
@@ -89557,7 +89614,10 @@
     },
     {
       "id": "ahnqiraj-temple",
-      "name": "Ahn'Qiraj Temple",
+      "name": {
+        "de": "Tempel von Ahn'Qiraj",
+        "en": "Ahn'Qiraj Temple"
+      },
       "kind": "raid",
       "players": 40,
       "level_min": 60,
@@ -89576,7 +89636,10 @@
     },
     {
       "id": "blackwing-lair",
-      "name": "Blackwing Lair",
+      "name": {
+        "de": "Pechschwingenhort",
+        "en": "Blackwing Lair"
+      },
       "kind": "raid",
       "players": 40,
       "level_min": 60,
@@ -89594,7 +89657,10 @@
     },
     {
       "id": "molten-core",
-      "name": "Molten Core",
+      "name": {
+        "de": "Geschmolzener Kern",
+        "en": "Molten Core"
+      },
       "kind": "raid",
       "players": 40,
       "level_min": 60,
@@ -89615,7 +89681,10 @@
     },
     {
       "id": "naxxramas",
-      "name": "Naxxramas",
+      "name": {
+        "de": "Naxxramas",
+        "en": "Naxxramas"
+      },
       "kind": "raid",
       "players": 40,
       "level_min": 60,
@@ -89654,7 +89723,10 @@
     },
     {
       "id": "onyxias-lair",
-      "name": "Onyxia's Lair",
+      "name": {
+        "de": "Onyxias Hort",
+        "en": "Onyxia's Lair"
+      },
       "kind": "raid",
       "players": 40,
       "level_min": 60,
@@ -89663,7 +89735,10 @@
     },
     {
       "id": "ruins-of-ahnqiraj",
-      "name": "Ruins of Ahn'Qiraj",
+      "name": {
+        "de": "Ruinen von Ahn'Qiraj",
+        "en": "Ruins of Ahn'Qiraj"
+      },
       "kind": "raid",
       "players": 20,
       "level_min": 60,
@@ -89679,7 +89754,10 @@
     },
     {
       "id": "zulgurub",
-      "name": "Zul'Gurub",
+      "name": {
+        "de": "Zul'Gurub",
+        "en": "Zul'Gurub"
+      },
       "kind": "raid",
       "players": 20,
       "level_min": 60,

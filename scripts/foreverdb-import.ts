@@ -130,10 +130,24 @@ function slugOf(name: string): string {
     .replace(/^-|-$/g, "");
 }
 
-function toPackInstance(id: string, data: ApiInstance): PackInstance {
+/**
+ * ForeverDB names instances only in English. A German name kept by hand in the pack
+ * survives every import; the English one follows the API.
+ */
+function instanceName(apiName: string, kept: unknown): PackInstance["name"] {
+  const german =
+    kept && typeof kept === "object" && "de" in kept ? kept.de : undefined;
+  return typeof german === "string" ? { de: german, en: apiName } : apiName;
+}
+
+function toPackInstance(
+  id: string,
+  data: ApiInstance,
+  keptName: unknown,
+): PackInstance {
   return {
     id,
-    name: data.name,
+    name: instanceName(data.name, keptName),
     kind: data.kind,
     players: data.players ?? undefined,
     level_min: data.levelRange?.[0],
@@ -153,7 +167,10 @@ function toPackInstance(id: string, data: ApiInstance): PackInstance {
  * Dungeons and raids of WoW Forever that have bosses; instances without any are not in
  * the game (yet) and would make empty templates.
  */
-async function instancesOf(key: string): Promise<PackInstance[]> {
+async function instancesOf(
+  key: string,
+  keptNames: ReadonlyMap<string, unknown>,
+): Promise<PackInstance[]> {
   const list = await fetchJson<{ data: ApiInstanceSummary[] }>(
     key,
     `${API}/dungeons?limit=${PAGE_SIZE}`,
@@ -175,7 +192,7 @@ async function instancesOf(key: string): Promise<PackInstance[]> {
     const slug = slugOf(data.name);
     const id = ids.has(slug) ? `${slug}-${data.id}` : slug;
     ids.add(id);
-    instances.push(toPackInstance(id, data));
+    instances.push(toPackInstance(id, data, keptNames.get(id)));
   }
   return instances.sort(
     (a, b) =>
@@ -231,7 +248,10 @@ async function main() {
   const pack = JSON.parse(fs.readFileSync(file, "utf8")) as Record<
     string,
     unknown
-  > & { professions: Array<{ id: string }> };
+  > & {
+    professions: Array<{ id: string }>;
+    instances?: Array<{ id: string; name: unknown }>;
+  };
   const key = apiKey();
 
   const recipes: Array<Record<string, unknown>> = [];
@@ -242,7 +262,10 @@ async function main() {
     );
     recipes.push(...result.recipes.map((recipe) => compact({ ...recipe })));
   }
-  const instances = (await instancesOf(key)).map((instance) =>
+  const keptNames = new Map(
+    (pack.instances ?? []).map((instance) => [instance.id, instance.name]),
+  );
+  const instances = (await instancesOf(key, keptNames)).map((instance) =>
     compact({
       ...instance,
       loot: instance.loot.map((item) => compact({ ...item })),
