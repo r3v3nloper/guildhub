@@ -11,6 +11,20 @@ const raw = {
     { id: "mining", name: "Bergbau", kind: "gathering" },
     { id: "leatherworking", name: "Lederverarbeitung", kind: "primary" },
   ],
+  instances: [
+    {
+      id: "deadmines",
+      name: "Deadmines",
+      kind: "dungeon",
+      players: 5,
+      level_min: 17,
+      level_max: 26,
+      bosses: ["Rhahk'Zor", "Edwin VanCleef"],
+      loot: [
+        { name: "Cape of the Brotherhood", reason: "top pick for rogues" },
+      ],
+    },
+  ],
   recipes: [
     {
       id: "mining-thorium",

@@ -1,10 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import { packsDirectory, PACK_FILE_NAME } from "../src/lib/packs/loader";
-import type { PackRecipe } from "../src/lib/packs/schema";
+import type { PackInstance, PackRecipe } from "../src/lib/packs/schema";
 
-// Pulls every recipe of the pack's professions from the ForeverDB API into pack.json, so
-// the app itself never needs the API key or a connection to ForeverDB at runtime.
+// Pulls the recipes of the pack's professions and the dungeons and raids from the ForeverDB
+// API into pack.json, so the app itself never needs the API key or a connection to
+// ForeverDB at runtime.
 // Usage: npm run packs:foreverdb [-- <pack-id>]   (needs FOREVERDB_API_KEY, e.g. in .env.local)
 
 const API = "https://foreverdb.net/api/v1";
@@ -31,10 +32,27 @@ interface ApiRecipe extends ApiName {
   leftoverOf: number | null;
 }
 
-interface ApiPage {
+interface ApiRecipePage {
   data: { recipes: ApiRecipe[] };
-  meta: { total: number; next: string | null; build: string };
+  meta: { next: string | null; build: string };
 }
+
+interface ApiInstanceSummary {
+  id: number;
+  name: string;
+  /** classic and forever are in WoW Forever; other is Season of Discovery content. */
+  status: "classic" | "forever" | "other";
+}
+
+interface ApiInstance extends ApiInstanceSummary {
+  kind: "dungeon" | "raid";
+  players: number | null;
+  levelRange: [number, number] | null;
+  bosses: string[];
+  notableLoot: Array<{ name: string; why: string[] }>;
+}
+
+const FOREVER_STATUSES = new Set(["classic", "forever"]);
 
 function apiKey(): string {
   if (!process.env.FOREVERDB_API_KEY && fs.existsSync(".env.local")) {
@@ -49,12 +67,13 @@ function apiKey(): string {
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function fetchPage(key: string, url: string): Promise<ApiPage> {
+async function fetchJson<T>(key: string, url: string): Promise<T> {
   const response = await fetch(url, { headers: { "X-API-Key": key } });
   if (!response.ok) {
     throw new Error(`${response.status} bei ${url}: ${await response.text()}`);
   }
-  return (await response.json()) as ApiPage;
+  await wait(REQUEST_GAP_MS);
+  return (await response.json()) as T;
 }
 
 const UNKNOWN_ITEM = { de: "Unbekannter Gegenstand", en: "Unknown item" };
@@ -73,11 +92,11 @@ function toPackRecipe(professionId: string, recipe: ApiRecipe): PackRecipe {
     name: localized(recipe),
     profession: professionId,
     skill: recipe.skill?.orange ?? undefined,
+    link: recipe.url,
     reagents: recipe.reagents.map((reagent) => ({
       name: localized(reagent),
       count: reagent.count,
     })),
-    link: recipe.url,
     deprecated: false,
     replaces: [],
     todo: false,
@@ -90,7 +109,7 @@ async function recipesOf(key: string, professionId: string) {
     `${API}/professions/${professionId}?lang=de&limit=${PAGE_SIZE}`;
   let build = "";
   while (url) {
-    const page = await fetchPage(key, url);
+    const page: ApiRecipePage = await fetchJson<ApiRecipePage>(key, url);
     // Leftover copies (Season of Discovery items) cannot be learned in Forever.
     recipes.push(
       ...page.data.recipes
@@ -99,21 +118,88 @@ async function recipesOf(key: string, professionId: string) {
     );
     build = page.meta.build;
     url = page.meta.next ? new URL(page.meta.next, API).toString() : null;
-    await wait(REQUEST_GAP_MS);
   }
   return { recipes, build };
 }
 
-/** Keeps pack.json readable: no default-valued lifecycle fields, no empty reagent lists. */
-function compact(recipe: PackRecipe) {
-  const { deprecated, replaces, todo, reagents, ...rest } = recipe;
+function slugOf(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/'/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function toPackInstance(id: string, data: ApiInstance): PackInstance {
   return {
-    ...rest,
-    ...(reagents.length > 0 ? { reagents } : {}),
-    ...(deprecated ? { deprecated } : {}),
-    ...(replaces.length > 0 ? { replaces } : {}),
-    ...(todo ? { todo } : {}),
+    id,
+    name: data.name,
+    kind: data.kind,
+    players: data.players ?? undefined,
+    level_min: data.levelRange?.[0],
+    level_max: data.levelRange?.[1],
+    bosses: data.bosses,
+    loot: data.notableLoot.map((item) => ({
+      name: item.name,
+      reason: item.why.length > 0 ? item.why.join("; ") : undefined,
+    })),
+    deprecated: false,
+    replaces: [],
+    todo: false,
   };
+}
+
+/**
+ * Dungeons and raids of WoW Forever that have bosses; instances without any are not in
+ * the game (yet) and would make empty templates.
+ */
+async function instancesOf(key: string): Promise<PackInstance[]> {
+  const list = await fetchJson<{ data: ApiInstanceSummary[] }>(
+    key,
+    `${API}/dungeons?limit=${PAGE_SIZE}`,
+  );
+  const instances: PackInstance[] = [];
+  const ids = new Set<string>();
+  for (const summary of list.data) {
+    if (!FOREVER_STATUSES.has(summary.status)) {
+      continue;
+    }
+    const { data } = await fetchJson<{ data: ApiInstance }>(
+      key,
+      `${API}/dungeons/${summary.id}`,
+    );
+    if (data.bosses.length === 0) {
+      continue;
+    }
+    // Names are unique so far; the ForeverDB id keeps a future clash apart.
+    const slug = slugOf(data.name);
+    const id = ids.has(slug) ? `${slug}-${data.id}` : slug;
+    ids.add(id);
+    instances.push(toPackInstance(id, data));
+  }
+  return instances.sort(
+    (a, b) =>
+      (a.level_min ?? Infinity) - (b.level_min ?? Infinity) ||
+      a.id.localeCompare(b.id),
+  );
+}
+
+/**
+ * Keeps pack.json readable: no default-valued lifecycle fields, no empty lists, no
+ * undefined fields.
+ */
+function compact(entry: Record<string, unknown>) {
+  return Object.fromEntries(
+    Object.entries(entry).filter(([key, value]) => {
+      if (value === undefined) {
+        return false;
+      }
+      if (Array.isArray(value)) {
+        return value.length > 0 || key === "bosses";
+      }
+      return !(["deprecated", "todo"].includes(key) && value === false);
+    }),
+  );
 }
 
 /** Inserts `value` under `key` right after `afterKey`, keeping the file's key order. */
@@ -148,17 +234,27 @@ async function main() {
   > & { professions: Array<{ id: string }> };
   const key = apiKey();
 
-  const all: ReturnType<typeof compact>[] = [];
+  const recipes: Array<Record<string, unknown>> = [];
   for (const profession of pack.professions) {
-    const { recipes, build } = await recipesOf(key, profession.id);
-    console.log(`${profession.id}: ${recipes.length} Rezepte (Build ${build})`);
-    all.push(...recipes.map(compact));
+    const result = await recipesOf(key, profession.id);
+    console.log(
+      `${profession.id}: ${result.recipes.length} Rezepte (Build ${result.build})`,
+    );
+    recipes.push(...result.recipes.map((recipe) => compact({ ...recipe })));
   }
+  const instances = (await instancesOf(key)).map((instance) =>
+    compact({
+      ...instance,
+      loot: instance.loot.map((item) => compact({ ...item })),
+    }),
+  );
+  console.log(`${instances.length} Dungeons und Raids`);
 
-  let updated = withKeyAfter(pack, "professions", "recipes", all);
+  let updated = withKeyAfter(pack, "professions", "recipes", recipes);
+  updated = withKeyAfter(updated, "recipes", "instances", instances);
   updated = withKeyAfter(updated, "build_sources", "credits", [CREDIT]);
   fs.writeFileSync(file, `${JSON.stringify(updated, null, 2)}\n`);
-  console.log(`${all.length} Rezepte nach ${file} geschrieben.`);
+  console.log(`Nach ${file} geschrieben.`);
 }
 
 main().catch((error: unknown) => {

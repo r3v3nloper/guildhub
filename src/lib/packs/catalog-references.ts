@@ -3,6 +3,7 @@ import {
   builds,
   characterProfessions,
   characters,
+  checklists,
   craftRequests,
   farmSpots,
   recipeEntries,
@@ -114,6 +115,13 @@ export const CATALOG_REFERENCES: Record<CatalogKind, CatalogReference[]> = {
     {
       table: craftRequests,
       column: craftRequests.recipeEntryId,
+      storedAs: "entryId",
+    },
+  ],
+  instance: [
+    {
+      table: checklists,
+      column: checklists.instanceEntryId,
       storedAs: "entryId",
     },
   ],

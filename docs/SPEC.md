@@ -433,6 +433,9 @@ Pflichtfelder sind markiert, alle anderen sind optional mit dem genannten Defaul
   "recipes": [ { "id": "alchemy-2330", "name": { "de": "...", "en": "..." }, "profession": "alchemy",
                  "skill": 1, "reagents": [ { "name": "...", "count": 1 } ], "link": "https://..." } ],
                                       // optional; Charaktere wählen Rezepte daraus, Freitext bleibt möglich
+  "instances": [ { "id": "deadmines", "name": "Deadmines", "kind": "dungeon", "players": 5, "level_min": 17, "level_max": 26,
+                   "bosses": [ "..." ], "loot": [ { "name": "...", "reason": "..." } ] } ],
+                                      // optional; Vorlage für neue Dungeon-Seiten (Name, Bosse, wichtige Beute)
   "credits": [ { "label": "Data from ForeverDB.net", "url": "https://foreverdb.net" } ],
                                       // Quellenangabe, wird überall angezeigt, wo diese Daten erscheinen
   "bosses": [ { "id": "...", "name": "..." } ],   // für lockout-Aufgaben
@@ -986,6 +989,7 @@ Entscheidungen, die beim Bauen getroffen wurden und das Modell aus 4.1 ergänzen
 - **Rezepte aus ForeverDB:** `npm run packs:foreverdb` holt alle Rezepte der Pack-Berufe von der ForeverDB-API (deutsche und englische Namen, Fertigkeit, Reagenzien) ins WoW-Pack; der Key (`FOREVERDB_API_KEY`) wird nur dafür lokal gebraucht, nie im Betrieb. Übersprungen werden Altkopien (Season of Discovery); IDs sind `<beruf>-<spellId>`, weil wenige Rezepte zu zwei Berufen gehören. Im Charakter fügt eine Auswahl Rezepte als Zeile hinzu; sie zeigt nur Rezepte bis zur eingetragenen Fertigkeit (ohne Fertigkeit alle) und rendert lange Listen virtuell; beim Speichern wird jede Zeile, die mit einem Rezeptnamen (beliebige Sprache) beginnt, verknüpft, auch wenn der Name selbst einen Bindestrich enthält. Alles andere bleibt Freitext. Wo Rezeptdaten erscheinen (Charakter, Berufe-Verzeichnis), steht die Quellenangabe aus `credits`, wie ForeverDB es verlangt.
 - **Crafting-Anträge aus Rezepten:** Bei Berufen mit Pack-Rezepten wählt „Was“ ein Rezept aus der Liste (Server prüft das, der Antrag speichert Rezept und Namen); unter den Feldern stehen die benötigten Reagenzien, und die Seite trägt die ForeverDB-Quellenangabe. Freitext bleibt für Materialien: Sammelberufe von sich aus, sonst per `requests: "free"` am Beruf (WoW: Angeln), und für Berufe ohne Rezepte.
 - **Charaktere auf der Übersicht:** Ganz oben stehen die eigenen Charaktere des gewählten Spiels (Main zuerst) mit Stufe und Berufsfertigkeit als −/+-Feld; Eintippen geht auch. Gespeichert wird 600 ms nach der letzten Änderung, mit denselben Grenzen wie im Editor. Der Block ist klappbar und merkt sich den Zustand im Browser.
+- **Dungeons aus ForeverDB:** `npm run packs:foreverdb` holt außer den Rezepten die Dungeons und Raids von WoW Forever (ohne Season-of-Discovery-Inhalte und ohne Instanzen ohne Bosse; derzeit 30). Eine neue Dungeon-Seite kann eine Instanz als Vorlage wählen: Name und leere Punkte werden im Formular vorbefüllt, die Bosse beim Speichern angelegt. Die Seite merkt sich die Instanz und zeigt deren „Wichtige Beute“ (Name und Begründung, laut API nur englisch) mit Quellenangabe.
 - Berufe: Fertigkeit (0 bis 10000), Spezialisierung und Notiz werden je Beruf im Charakter-Editor gepflegt und im Roster als „Alchemie 300 (Tränke)“ angezeigt.
 
 ### Umsetzungsnotizen Phase 2

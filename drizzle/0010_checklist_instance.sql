@@ -1,0 +1,1 @@
+ALTER TABLE `checklist` ADD `instance_entry_id` integer REFERENCES game_catalog_entry(id);

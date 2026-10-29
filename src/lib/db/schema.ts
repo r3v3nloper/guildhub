@@ -429,6 +429,8 @@ export const checklists = sqliteTable("checklist", {
     .notNull()
     .references(() => games.id),
   name: text("name").notNull(),
+  // The pack instance the page started from; shows its notable loot.
+  instanceEntryId: catalogReference("instance_entry_id"),
   visibility: text("visibility", { enum: VISIBILITIES })
     .notNull()
     .default("private"),

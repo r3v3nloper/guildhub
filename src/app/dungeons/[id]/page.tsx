@@ -17,6 +17,9 @@ import { getChecklist, type ChecklistView } from "@/lib/lists/checklists";
 import { listBosses, type BossView } from "@/lib/lists/dungeon-bosses";
 import { idParam, orNotFound } from "@/lib/not-found";
 import { de } from "@/i18n/de";
+import { NotableLootCard } from "@/components/lists/NotableLootCard";
+import { notableLootOf } from "@/lib/lists/dungeon-instances";
+import { listGuildGames } from "@/lib/roster/game-catalog";
 import {
   deleteBossAction,
   resetChecklistRunAction,
@@ -34,6 +37,10 @@ async function DungeonContent({ params }: PageProps<"/dungeons/[id]">) {
   const db = getDb();
   const checklist = orNotFound(() => getChecklist(db, actor, checklistId));
   const bosses = listBosses(db, checklist.id);
+  const notableLoot = notableLootOf(db, checklist.instanceEntryId);
+  const gameMeta = listGuildGames(db, actor.guildId).find(
+    (game) => game.id === checklist.gameId,
+  )?.meta;
 
   return (
     <div className="flex flex-col gap-4">
@@ -80,6 +87,7 @@ async function DungeonContent({ params }: PageProps<"/dungeons/[id]">) {
               <p className="text-sm whitespace-pre-line">{checklist.notes}</p>
             </Card>
           )}
+          {gameMeta && <NotableLootCard loot={notableLoot} meta={gameMeta} />}
         </div>
 
         <section className="flex flex-col gap-4">

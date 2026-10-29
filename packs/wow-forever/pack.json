@@ -1,7 +1,7 @@
 {
   "id": "wow-forever",
   "name": "WoW: Forever",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "type": "mmo",
   "server_label": "Realm",
   "capabilities": {
@@ -88912,6 +88912,789 @@
           },
           "count": 1
         }
+      ]
+    }
+  ],
+  "instances": [
+    {
+      "id": "ragefire-chasm",
+      "name": "Ragefire Chasm",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 13,
+      "level_max": 18,
+      "bosses": [
+        "Oggleflint",
+        "Taragaman the Hungerer",
+        "Jergosh the Invoker",
+        "Bazzalan"
+      ],
+      "loot": [
+        {
+          "name": "Trogg Scepter",
+          "reason": "top pick for Holy Priest at level 20"
+        }
+      ]
+    },
+    {
+      "id": "the-hall-of-thanes",
+      "name": "The Hall of Thanes",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 13,
+      "level_max": 20,
+      "bosses": [
+        "Faldrim Anvilmar",
+        "Infurnus",
+        "Plunder",
+        "Durgen Dirgehammer"
+      ]
+    },
+    {
+      "id": "ruins-of-lordaeron",
+      "name": "Ruins of Lordaeron",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 15,
+      "level_max": 22,
+      "bosses": [
+        "Witherfang",
+        "The Abandoned",
+        "The Butcher",
+        "Rath'mael",
+        "Lordaeron Captain",
+        "Viktor the Vile",
+        "Bjork"
+      ],
+      "loot": [
+        {
+          "name": "Rotmender's Treads",
+          "reason": "Rotmender's Raiment set; top pick for Affliction Warlock and 13 more specs at level 20/30"
+        },
+        {
+          "name": "Tuskwrap Belt",
+          "reason": "top pick for Affliction Warlock and 10 more specs at level 20"
+        },
+        {
+          "name": "Witherbite Bracers",
+          "reason": "top pick for Balance Druid and 6 more specs at level 20"
+        }
+      ]
+    },
+    {
+      "id": "wailing-caverns",
+      "name": "Wailing Caverns",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 15,
+      "level_max": 24,
+      "bosses": [
+        "Lady Anacondra",
+        "Lord Cobrahn",
+        "Kresh",
+        "Lord Pythas",
+        "Skum",
+        "Lord Serpentis",
+        "Verdan the Everliving",
+        "Mutanus the Devourer"
+      ],
+      "loot": [
+        {
+          "name": "Leggings of the Fang",
+          "reason": "Embrace of the Viper set; top pick for Assassination Rogue and 8 more specs at level 20"
+        },
+        {
+          "name": "Serpent Gloves",
+          "reason": "top pick for Affliction Warlock and 9 more specs at level 20"
+        },
+        {
+          "name": "Feyscale Cloak",
+          "reason": "top pick for Affliction Warlock and 8 more specs at level 20"
+        }
+      ]
+    },
+    {
+      "id": "deadmines",
+      "name": "Deadmines",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 17,
+      "level_max": 26,
+      "bosses": [
+        "Rhahk'Zor",
+        "Sneed",
+        "Miner Johnson",
+        "Gilnid",
+        "Captain Greenskin",
+        "Mr. Smite",
+        "Cookie",
+        "Edwin VanCleef"
+      ],
+      "loot": [
+        {
+          "name": "Blackened Defias Belt",
+          "reason": "Defias Leather set; top pick for Arms Warrior and 7 more specs at level 20"
+        },
+        {
+          "name": "Cape of the Brotherhood",
+          "reason": "top pick for Assassination Rogue and 6 more specs at level 20"
+        },
+        {
+          "name": "Ogre Loincloth",
+          "reason": "top pick for Affliction Warlock and 5 more specs at level 20"
+        }
+      ]
+    },
+    {
+      "id": "shadowfang-keep",
+      "name": "Shadowfang Keep",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 20,
+      "level_max": 30,
+      "bosses": [
+        "Rethilgore",
+        "Razorclaw the Butcher",
+        "Baron Silverlaine",
+        "Commander Springvale",
+        "Odo the Blindwatcher",
+        "Fenrus the Devourer",
+        "Wolf Master Nandos",
+        "Archmage Arugal"
+      ],
+      "loot": [
+        {
+          "name": "Worgenbane Talisman",
+          "reason": "top pick for Arcane Mage and 9 more specs at level 30"
+        },
+        {
+          "name": "Violet Sorcerer's Robes",
+          "reason": "Violet Sorcerer's Vestments set; top pick for Arcane Mage and 2 more specs at level 30"
+        },
+        {
+          "name": "Butcher's Cleaver",
+          "reason": "top pick for Assassination Rogue and 3 more specs at level 20"
+        }
+      ]
+    },
+    {
+      "id": "blackfathom-deeps",
+      "name": "Blackfathom Deeps",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 24,
+      "level_max": 32,
+      "bosses": [
+        "Ghamoo-ra",
+        "Lady Sarevess",
+        "Geilhast",
+        "Lorgus Jett",
+        "Old Serra'kis",
+        "Twilight Lord Kelris",
+        "Aku'mai",
+        "Baron Aquanis",
+        "Gelihast"
+      ],
+      "loot": [
+        {
+          "name": "Violet Sorcerer's Wraps",
+          "reason": "Violet Sorcerer's Vestments set; top pick for Affliction Warlock and 18 more specs at level 30"
+        },
+        {
+          "name": "Tattered Kirin Tor Cloak",
+          "reason": "top pick for Affliction Warlock and 14 more specs at level 30"
+        },
+        {
+          "name": "Mark of the Marsh",
+          "reason": "top pick for Arms Warrior and 9 more specs at level 30"
+        }
+      ]
+    },
+    {
+      "id": "stormwind-stockade",
+      "name": "Stormwind Stockade",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 24,
+      "level_max": 32,
+      "bosses": [
+        "Targorr the Dread",
+        "Kam Deepfury",
+        "Hamhock",
+        "Dextren Ward",
+        "Bazil Thredd"
+      ],
+      "loot": [
+        {
+          "name": "Red Wool Cloak",
+          "reason": "top pick for Arcane Mage and 8 more specs at level 30"
+        },
+        {
+          "name": "Jimmied Handcuffs",
+          "reason": "top pick for Protection Paladin and 1 more spec at level 30"
+        },
+        {
+          "name": "Ogre Grips",
+          "reason": "top pick for Protection Paladin and 1 more spec at level 30"
+        }
+      ]
+    },
+    {
+      "id": "excavation-site-wetlands",
+      "name": "Excavation Site: Wetlands",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 26,
+      "level_max": 33,
+      "bosses": [
+        "Saltspine",
+        "Shadetooth",
+        "Highland Horror",
+        "Relic Guardian"
+      ],
+      "loot": [
+        {
+          "name": "Glinteye Slippers",
+          "reason": "top pick for Balance Druid and 1 more spec at level 30"
+        }
+      ]
+    },
+    {
+      "id": "city-of-dalaran",
+      "name": "City of Dalaran",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 28,
+      "level_max": 35,
+      "bosses": [
+        "Arcane Anomaly",
+        "Fel Ancient",
+        "Mana Devourer",
+        "Mana Elemental",
+        "Unstable Sentinel",
+        "Shade of the Archmage",
+        "Lyn the Ignored",
+        "Atrexis the Grave Knight",
+        "Mana Wraith"
+      ],
+      "loot": [
+        {
+          "name": "Ephemeral Grips",
+          "reason": "top pick for Affliction Warlock and 3 more specs at level 30"
+        },
+        {
+          "name": "Graveweave Bindings",
+          "reason": "top pick for Elemental Shaman and 2 more specs at level 30"
+        },
+        {
+          "name": "Manascale Treads",
+          "reason": "top pick for Arms Warrior and 2 more specs at level 30"
+        }
+      ]
+    },
+    {
+      "id": "gnomeregan",
+      "name": "Gnomeregan",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 29,
+      "level_max": 38,
+      "bosses": [
+        "Viscous Fallout",
+        "Electrocutioner 6000",
+        "Crowd Pummeler 9-60",
+        "Mekgineer Thermaplugg",
+        "Grubbis",
+        "Mechanical Menagerie"
+      ],
+      "loot": [
+        {
+          "name": "Spidertank Oilrag",
+          "reason": "top pick for Affliction Warlock and 13 more specs at level 30"
+        },
+        {
+          "name": "Electrocutioner Lagnut",
+          "reason": "top pick for Holy Priest and 1 more spec at level 30"
+        },
+        {
+          "name": "Acidic Walkers",
+          "reason": "top pick for Elemental Shaman at level 30"
+        }
+      ]
+    },
+    {
+      "id": "razorfen-kraul",
+      "name": "Razorfen Kraul",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 29,
+      "level_max": 38,
+      "bosses": [
+        "Roogug",
+        "Aggem Thorncurse",
+        "Death Speaker Jargba",
+        "Overlord Ramtusk",
+        "Agathelos the Raging",
+        "Charlga Razorflank"
+      ],
+      "loot": [
+        {
+          "name": "Roogug's Severed Head",
+          "reason": "top pick for Arcane Mage and 9 more specs at level 30"
+        },
+        {
+          "name": "Death Speaker Scepter",
+          "reason": "top pick for Discipline Priest and 4 more specs at level 30"
+        },
+        {
+          "name": "Death Speaker Robes",
+          "reason": "top pick for Discipline Priest and 4 more specs at level 30"
+        }
+      ]
+    },
+    {
+      "id": "scarlet-monastery",
+      "name": "Scarlet Monastery",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 30,
+      "level_max": 38,
+      "bosses": [
+        "Interrogator Vishas",
+        "Bloodmage Thalnos",
+        "Houndmaster Loksey",
+        "Arcanist Doan",
+        "Herod",
+        "High Inquisitor Fairbanks",
+        "High Inquisitor Whitemane"
+      ],
+      "loot": [
+        {
+          "name": "Bloodmage Mantle",
+          "reason": "top pick for Affliction Warlock and 13 more specs at level 30"
+        },
+        {
+          "name": "Forest Leather Bracers",
+          "reason": "top pick for Assassination Rogue and 5 more specs at level 20"
+        },
+        {
+          "name": "Scarlet Leggings",
+          "reason": "Chain of the Scarlet Crusade set"
+        }
+      ]
+    },
+    {
+      "id": "razorfen-downs",
+      "name": "Razorfen Downs",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 37,
+      "level_max": 46,
+      "bosses": [
+        "Tuten'kash",
+        "Plaguemaw the Rotting",
+        "Mordresh Fire Eye",
+        "Ragglesnout",
+        "Glutton",
+        "Amnennar the Coldbringer"
+      ]
+    },
+    {
+      "id": "uldaman",
+      "name": "Uldaman",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 41,
+      "level_max": 51,
+      "bosses": [
+        "Revelosh",
+        "The Lost Dwarves",
+        "Ironaya",
+        "Obsidian Sentinel",
+        "Ancient Stone Keeper",
+        "Galgann Firehammer",
+        "Grimlok",
+        "Archaedas"
+      ]
+    },
+    {
+      "id": "zulfarrak",
+      "name": "Zul'Farrak",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 44,
+      "level_max": 54,
+      "bosses": [
+        "Hydromancer Velratha",
+        "Gahz'rilla",
+        "Antu'sul",
+        "Theka the Martyr",
+        "Witch Doctor Zum'rah",
+        "Nekrum Gutchewer",
+        "Shadowpriest Sezz'ziz",
+        "Chief Ukorz Sandscalp"
+      ]
+    },
+    {
+      "id": "maraudon",
+      "name": "Maraudon",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 46,
+      "level_max": 55,
+      "bosses": [
+        "Noxxion",
+        "Razorlash",
+        "Tinkerer Gizlock",
+        "Lord Vyletongue",
+        "Celebras the Cursed",
+        "Landslide",
+        "Rotgrip",
+        "Princess Theradras"
+      ]
+    },
+    {
+      "id": "sunken-temple",
+      "name": "Sunken Temple",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 50,
+      "level_max": 60,
+      "bosses": [
+        "Atal'alarion",
+        "Avatar of Hakkar",
+        "Shade of Eranikus",
+        "Hazzas",
+        "Morphaz",
+        "Weaver",
+        "Dreamscythe",
+        "Jammal'an the Prophet",
+        "Festering Rotslime",
+        "Atal'ai Defenders",
+        "Dreamscythe and Weaver",
+        "Jammal'an and Ogom",
+        "Morphaz and Hazzas"
+      ]
+    },
+    {
+      "id": "blackrock-depths",
+      "name": "Blackrock Depths",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 52,
+      "level_max": 60,
+      "bosses": [
+        "High Interrogator Gerstahn",
+        "Lord Roccor",
+        "Houndmaster Grebmar",
+        "Ring of Law",
+        "Pyromancer Loregrain",
+        "Lord Incendius",
+        "Warder Stilgiss",
+        "Fineous Darkvire",
+        "Bael'Gar",
+        "General Angerforge",
+        "Golem Lord Argelmach",
+        "Hurley Blackbreath",
+        "Phalanx",
+        "Ribbly Screwspigot",
+        "Plugger Spazzring",
+        "The Vault",
+        "Ambassador Flamelash",
+        "The Seven",
+        "Magmus",
+        "Princess Moira Bronzebeard",
+        "Emperor Dagran Thaurissan"
+      ]
+    },
+    {
+      "id": "dire-maul",
+      "name": "Dire Maul",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 54,
+      "level_max": 60,
+      "bosses": [
+        "Zevrim Thornhoof",
+        "Hydrospawn",
+        "Lethtendris",
+        "Pusillin",
+        "Alzzin the Wildshaper",
+        "Tendris Warpwood",
+        "Illyanna Ravenoak",
+        "Magister Kalendris",
+        "Immol'thar",
+        "Prince Tortheldrin",
+        "Guard Mol'dar",
+        "Stomper Kreeg",
+        "Guard Fengus",
+        "Guard Slip'kik",
+        "Captain Kromcrush",
+        "Cho'Rush the Observer",
+        "King Gordok",
+        "Lord Hel'nurath",
+        "Tsu'zee"
+      ]
+    },
+    {
+      "id": "blackrock-spire",
+      "name": "Blackrock Spire",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 55,
+      "level_max": 60,
+      "bosses": [
+        "Highlord Omokk",
+        "Shadow Hunter Vosh'gajin",
+        "War Master Voone",
+        "Mother Smolderweb",
+        "Urok Doomhowl",
+        "Quartermaster Zigris",
+        "Halycon",
+        "Gizrul the Slavener",
+        "Overlord Wyrmthalak",
+        "Pyroguard Emberseer",
+        "Warchief Rend Blackhand",
+        "The Beast",
+        "General Drakkisath",
+        "Lord Valthalak"
+      ],
+      "loot": [
+        {
+          "name": "Vest of Elements",
+          "reason": "The Elements set"
+        },
+        {
+          "name": "Boots of Elements",
+          "reason": "The Elements set"
+        },
+        {
+          "name": "Gauntlets of Elements",
+          "reason": "The Elements set"
+        }
+      ]
+    },
+    {
+      "id": "scholomance",
+      "name": "Scholomance",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 58,
+      "level_max": 60,
+      "bosses": [
+        "Kirtonos",
+        "Jandice Barov",
+        "Rattlegore",
+        "Marduk Blackpool",
+        "Vectus",
+        "Kormok",
+        "Ras Frostwhisperer",
+        "Instructor Malicia",
+        "Doctor Theolen Krastinov",
+        "Lorekeeper Polkelt",
+        "The Ravenian",
+        "Lord Alexei Barov",
+        "Lady Illucia Barov",
+        "Darkmaster Gandling"
+      ],
+      "loot": [
+        {
+          "name": "Magister's Gloves",
+          "reason": "Magister's Regalia set"
+        },
+        {
+          "name": "Magister's Mantle",
+          "reason": "Magister's Regalia set"
+        },
+        {
+          "name": "Dreadmist Mantle",
+          "reason": "Dreadmist Raiment set"
+        }
+      ]
+    },
+    {
+      "id": "stratholme",
+      "name": "Stratholme",
+      "kind": "dungeon",
+      "players": 5,
+      "level_min": 58,
+      "level_max": 60,
+      "bosses": [
+        "Hearthsinger Forresten",
+        "Timmy the Cruel",
+        "Malor the Zealous",
+        "Cannon Master Willey",
+        "Archivist Galford",
+        "Balnazzar",
+        "The Unforgiven",
+        "Baroness Anastari",
+        "Nerub'enkan",
+        "Maleki the Pallid",
+        "Magistrate Barthilas",
+        "Ramstein the Gorger",
+        "Baron Rivendare",
+        "Black Guard Swordsmith",
+        "Crimson Hammersmith",
+        "Ezra Grimm",
+        "Postmaster Malown",
+        "Skul",
+        "Stonespine"
+      ],
+      "loot": [
+        {
+          "name": "Kilt of Elements",
+          "reason": "The Elements set"
+        },
+        {
+          "name": "Beaststalker's Boots",
+          "reason": "Beaststalker Armor set"
+        },
+        {
+          "name": "Beaststalker's Pants",
+          "reason": "Beaststalker Armor set"
+        }
+      ]
+    },
+    {
+      "id": "ahnqiraj-temple",
+      "name": "Ahn'Qiraj Temple",
+      "kind": "raid",
+      "players": 40,
+      "level_min": 60,
+      "level_max": 60,
+      "bosses": [
+        "The Prophet Skeram",
+        "Silithid Royalty",
+        "Battleguard Sartura",
+        "Fankriss the Unyielding",
+        "Viscidus",
+        "Princess Huhuran",
+        "Twin Emperors",
+        "Ouro",
+        "C'thun"
+      ]
+    },
+    {
+      "id": "blackwing-lair",
+      "name": "Blackwing Lair",
+      "kind": "raid",
+      "players": 40,
+      "level_min": 60,
+      "level_max": 60,
+      "bosses": [
+        "Razorgore the Untamed",
+        "Vaelastrasz the Corrupt",
+        "Broodlord Lashlayer",
+        "Firemaw",
+        "Ebonroc",
+        "Flamegor",
+        "Chromaggus",
+        "Nefarian"
+      ]
+    },
+    {
+      "id": "molten-core",
+      "name": "Molten Core",
+      "kind": "raid",
+      "players": 40,
+      "level_min": 60,
+      "level_max": 60,
+      "bosses": [
+        "Lucifron",
+        "Magmadar",
+        "Gehennas",
+        "Garr",
+        "Shazzrah",
+        "Baron Geddon",
+        "Sulfuron Harbinger",
+        "Golemagg the Incinerator",
+        "Majordomo Executus",
+        "Ragnaros",
+        "The Molten Core"
+      ]
+    },
+    {
+      "id": "naxxramas",
+      "name": "Naxxramas",
+      "kind": "raid",
+      "players": 40,
+      "level_min": 60,
+      "level_max": 60,
+      "bosses": [
+        "Anub'Rekhan",
+        "Grand Widow Faerlina",
+        "Maexxna",
+        "Noth the Plaguebringer",
+        "Heigan the Unclean",
+        "Loatheb",
+        "Instructor Razuvious",
+        "Gothik the Harvester",
+        "The Four Horsemen",
+        "Patchwerk",
+        "Grobbulus",
+        "Gluth",
+        "Thaddius",
+        "Sapphiron",
+        "Kel'Thuzad"
+      ],
+      "loot": [
+        {
+          "name": "Ring of the Dreadnaught",
+          "reason": "Dreadnaught's Battlegear set"
+        },
+        {
+          "name": "Bonescythe Ring",
+          "reason": "Bonescythe Armor set"
+        },
+        {
+          "name": "Ring of Faith",
+          "reason": "Vestments of Faith set"
+        }
+      ]
+    },
+    {
+      "id": "onyxias-lair",
+      "name": "Onyxia's Lair",
+      "kind": "raid",
+      "players": 40,
+      "level_min": 60,
+      "level_max": 60,
+      "bosses": ["Onyxia"]
+    },
+    {
+      "id": "ruins-of-ahnqiraj",
+      "name": "Ruins of Ahn'Qiraj",
+      "kind": "raid",
+      "players": 20,
+      "level_min": 60,
+      "level_max": 60,
+      "bosses": [
+        "Kurinnaxx",
+        "General Rajaxx",
+        "Moam",
+        "Buru the Gorger",
+        "Ayamiss the Hunter",
+        "Ossirian the Unscarred"
+      ]
+    },
+    {
+      "id": "zulgurub",
+      "name": "Zul'Gurub",
+      "kind": "raid",
+      "players": 20,
+      "level_min": 60,
+      "level_max": 60,
+      "bosses": [
+        "High Priestess Jeklik",
+        "High Priest Venoxis",
+        "High Priestess Mar'li",
+        "Bloodlord Mandokir",
+        "Edge of Madness",
+        "High Priest Thekal",
+        "Gahz'ranka",
+        "High Priestess Arlokk",
+        "Jin'do the Hexxer",
+        "Hakkar"
       ]
     }
   ],

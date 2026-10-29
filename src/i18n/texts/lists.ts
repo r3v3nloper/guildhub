@@ -21,6 +21,30 @@ export const checklists = {
   new: "Neue Checkliste",
   editTitle: "Checkliste bearbeiten",
   name: "Dungeon",
+  instance: "Instanz als Vorlage",
+  instanceNone: "Ohne Vorlage",
+  instanceHint:
+    "Übernimmt Name und Bosse; Punkte, Mechaniken und Loot trägst du danach selbst ein.",
+  instanceLabel: (
+    name: string,
+    kind: "dungeon" | "raid",
+    players: number | null,
+    levelMin: number | null,
+    levelMax: number | null,
+  ) => {
+    const size =
+      kind === "raid" ? `Raid${players ? ` ${players}` : ""}` : "Dungeon";
+    const level =
+      levelMin === null
+        ? ""
+        : levelMin === levelMax
+          ? `, Stufe ${levelMin}`
+          : `, Stufe ${levelMin}–${levelMax}`;
+    return `${name} (${size}${level})`;
+  },
+  notableLoot: "Wichtige Beute",
+  notableLootHint:
+    "Laut ForeverDB besonders begehrt; euer Loot steht bei den Bossen.",
   items: "Punkte (einer pro Zeile)",
   itemsHint:
     "Wer die Punkte ändert, setzt damit alle Haken dieser Liste zurück. Name und Notizen ändern die Haken nicht.",

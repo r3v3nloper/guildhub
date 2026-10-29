@@ -106,6 +106,27 @@ export const recipeSchema = z.strictObject({
   link: httpLink.optional(),
 });
 
+export const INSTANCE_KINDS = ["dungeon", "raid"] as const;
+
+/** A dungeon or raid; new dungeon pages can start from it (name, bosses, notable loot). */
+export const instanceSchema = z.strictObject({
+  ...catalogEntry,
+  kind: z.enum(INSTANCE_KINDS),
+  players: z.number().int().positive().optional(),
+  level_min: z.number().int().positive().optional(),
+  level_max: z.number().int().positive().optional(),
+  bosses: z.array(z.string().min(1)).default([]),
+  /** Items worth knowing about, with why (e.g. a set piece or best in slot). */
+  loot: z
+    .array(
+      z.strictObject({
+        name: localizedStringSchema,
+        reason: z.string().min(1).optional(),
+      }),
+    )
+    .default([]),
+});
+
 /** Where pack data comes from; shown wherever the app displays that data. */
 export const creditSchema = z.strictObject({
   label: z.string().min(1),
@@ -198,6 +219,7 @@ export const packSchema = z.strictObject({
   specs: z.array(specSchema).default([]),
   professions: z.array(professionSchema).default([]),
   recipes: z.array(recipeSchema).default([]),
+  instances: z.array(instanceSchema).default([]),
   bosses: z.array(bossSchema).default([]),
   servers: z.array(serverSchema).default([]),
   build_sources: z.array(buildSourceSchema).default([]),
@@ -210,6 +232,7 @@ export type Pack = z.infer<typeof packSchema>;
 export type PackClass = z.infer<typeof classSchema>;
 export type PackSpec = z.infer<typeof specSchema>;
 export type PackRecipe = z.infer<typeof recipeSchema>;
+export type PackInstance = z.infer<typeof instanceSchema>;
 export type PackRace = z.infer<typeof raceSchema>;
 export type PackTask = z.infer<typeof taskSchema>;
 export type PackResetRule = z.infer<typeof resetRuleSchema>;

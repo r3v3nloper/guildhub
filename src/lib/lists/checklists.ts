@@ -13,6 +13,7 @@ import {
 import { NotFoundError } from "@/lib/errors";
 import { isVisibleTo, visibleToFilter } from "./visible-entries";
 import { isGameEnabled } from "@/lib/roster/game-catalog";
+import { addInstanceBosses, instanceOf } from "./dungeon-instances";
 
 export type ChecklistRow = typeof checklists.$inferSelect;
 
@@ -32,6 +33,8 @@ export interface ChecklistInput {
   items: string;
   /** General notes on the dungeon. */
   notes: string;
+  /** New pages only: a pack dungeon or raid to start from (name, bosses). */
+  instanceKey: string;
 }
 
 export type ChecklistErrors = Partial<Record<keyof ChecklistInput, string>>;
@@ -217,6 +220,18 @@ export function saveChecklist(
   if (notes.length > 2000) {
     errors.notes = "Höchstens 2000 Zeichen.";
   }
+  const instance =
+    existing || !input.instanceKey
+      ? undefined
+      : instanceOf(db, gameId, input.instanceKey);
+  if (!existing && input.instanceKey && !instance) {
+    errors.instanceKey = "Bitte eine Instanz aus der Liste wählen.";
+  }
+  // A template without own points gets one per boss, so the run can be ticked off.
+  if (instance && labels.length === 0) {
+    labels.push(...instance.bosses);
+    delete errors.items;
+  }
   if (Object.keys(errors).length > 0) {
     return { ok: false, errors };
   }
@@ -246,9 +261,17 @@ export function saveChecklist(
           .get().id
       : tx
           .insert(checklists)
-          .values({ ...values, ownerId: actor.userId, gameId })
+          .values({
+            ...values,
+            ownerId: actor.userId,
+            gameId,
+            instanceEntryId: instance?.entryId ?? null,
+          })
           .returning()
           .get().id;
+    if (instance) {
+      addInstanceBosses(tx, savedId, instance.bosses);
+    }
     if (!pointsChanged) {
       return savedId;
     }

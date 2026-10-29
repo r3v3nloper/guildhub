@@ -40,6 +40,7 @@ export async function saveChecklistAction(
         visibility: formText(formData, "visibility"),
         items: formText(formData, "items"),
         notes: formText(formData, "notes"),
+        instanceKey: formText(formData, "instance"),
       },
       checklistId,
     );

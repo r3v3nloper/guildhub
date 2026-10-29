@@ -18,6 +18,7 @@ const checklist: ChecklistInput = {
   visibility: "guild",
   items: "Feuerschutztränke\nWasser",
   notes: "",
+  instanceKey: "",
 };
 
 describe("dungeon bosses", () => {

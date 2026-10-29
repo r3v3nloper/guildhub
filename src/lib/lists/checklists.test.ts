@@ -21,6 +21,7 @@ const input: ChecklistInput = {
   visibility: "guild",
   items: "Feuerschutztränke\n\nWasser einpacken\n",
   notes: "",
+  instanceKey: "",
 };
 
 describe("dungeon checklists", () => {
