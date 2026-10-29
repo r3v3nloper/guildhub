@@ -13,6 +13,8 @@ import type { LocalizedString } from "@/lib/packs/schema";
 import { listEnabledGames } from "./game-catalog";
 
 export interface RosterEntryRef {
+  /** The catalog entry, for changes that address it (e.g. a profession skill). */
+  entryId: number;
   key: string;
   name: LocalizedString;
   status: CatalogStatus;
@@ -150,6 +152,7 @@ export function loadRosterMembers(
     }
     const { color, role } = entry.data as { color?: string; role?: string };
     return {
+      entryId: entry.id,
       key: entry.key,
       name: entry.name,
       status: entry.status,

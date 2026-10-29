@@ -1,7 +1,7 @@
 import { and, asc, eq, inArray, ne } from "drizzle-orm";
 import { assertAllowed, permissions, type Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
-import { NotFoundError } from "@/lib/errors";
+import { DomainError, NotFoundError } from "@/lib/errors";
 import {
   builds,
   characterProfessions,
@@ -21,6 +21,7 @@ import {
   replaceRecipes,
 } from "./recipes";
 import {
+  LEVEL_MAX,
   resolveCharacter,
   type CharacterInput,
   type FieldErrors,
@@ -379,7 +380,7 @@ export type ProfessionDetailsErrors = Partial<
   Record<keyof ProfessionDetailsInput, string>
 >;
 
-const SKILL_LEVEL_MAX = 10000;
+export const SKILL_LEVEL_MAX = 10000;
 const PROFESSION_TEXT_MAX_LENGTH = 200;
 
 /** Skill, specialisation and notes of a profession the character already has. */
@@ -446,4 +447,54 @@ export function saveProfessionDetails(
       .run();
   });
   return { ok: true };
+}
+
+/**
+ * Quick level change from the overview: the same bounds as the editor, without
+ * touching anything else of the character.
+ */
+export function setCharacterLevel(
+  db: AppDatabase,
+  actor: Actor,
+  characterId: number,
+  level: number,
+): void {
+  ownedCharacter(db, actor, characterId);
+  if (!Number.isInteger(level) || level < 1 || level > LEVEL_MAX) {
+    throw new DomainError(`Stufe zwischen 1 und ${LEVEL_MAX}.`);
+  }
+  db.update(characters)
+    .set({ level })
+    .where(eq(characters.id, characterId))
+    .run();
+}
+
+/** Quick skill change from the overview, for a profession the character has. */
+export function setProfessionSkill(
+  db: AppDatabase,
+  actor: Actor,
+  characterId: number,
+  professionEntryId: number,
+  skillLevel: number,
+): void {
+  const character = ownedCharacter(db, actor, characterId);
+  if (!character.professionEntryIds.includes(professionEntryId)) {
+    throw new NotFoundError("Beruf");
+  }
+  if (
+    !Number.isInteger(skillLevel) ||
+    skillLevel < 0 ||
+    skillLevel > SKILL_LEVEL_MAX
+  ) {
+    throw new DomainError(`Fertigkeit zwischen 0 und ${SKILL_LEVEL_MAX}.`);
+  }
+  db.update(characterProfessions)
+    .set({ skillLevel })
+    .where(
+      and(
+        eq(characterProfessions.characterId, characterId),
+        eq(characterProfessions.professionEntryId, professionEntryId),
+      ),
+    )
+    .run();
 }

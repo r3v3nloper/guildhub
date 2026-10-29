@@ -86,3 +86,8 @@ export const pwa = {
   updateAvailable: "Neue Version verfügbar.",
   reload: "Neu laden",
 } as const;
+
+export const stepper = {
+  decrease: (label: string) => `${label} um eins verringern`,
+  increase: (label: string) => `${label} um eins erhöhen`,
+} as const;

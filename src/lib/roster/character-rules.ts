@@ -56,7 +56,7 @@ export type ResolveResult =
   { ok: true; value: ResolvedCharacter } | { ok: false; errors: FieldErrors };
 
 const NAME_MAX_LENGTH = 40;
-const LEVEL_MAX = 1000;
+export const LEVEL_MAX = 1000;
 
 const NO_PREVIOUS: PreviousSelection = {
   factionEntryId: null,

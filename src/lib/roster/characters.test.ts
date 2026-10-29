@@ -7,7 +7,7 @@ import { ensureMembershipOnSignIn, getActor } from "@/lib/auth/membership";
 import type { AppDatabase } from "@/lib/db/client";
 import { guildGames } from "@/lib/db/schema";
 import { createDiscordUser, createTestDb } from "@/lib/db/test-db";
-import { NotFoundError } from "@/lib/errors";
+import { DomainError, NotFoundError } from "@/lib/errors";
 import { ensureGuild } from "@/lib/guild/guild";
 import { loadPacks } from "@/lib/packs/loader";
 import { syncPacks } from "@/lib/packs/sync";
@@ -18,6 +18,8 @@ import {
   saveBuild,
   saveCharacter,
   saveProfessionDetails,
+  setCharacterLevel,
+  setProfessionSkill,
 } from "./characters";
 import { filterRoster, loadRosterMembers, OUTDATED_FILTER_KEY } from "./roster";
 
@@ -455,5 +457,69 @@ describe("characters and roster with the shipped packs", () => {
         skillLevel: 1,
       }),
     ).toThrow(NotFoundError);
+  });
+
+  describe("quick changes from the overview", () => {
+    function tailor(actor: Actor) {
+      const saved = saveCharacter(
+        db,
+        actor,
+        "wow-forever",
+        input({
+          raceKey: "human",
+          classKey: "mage",
+          level: 10,
+          professionKeys: ["tailoring"],
+        }),
+      );
+      return getCharacter(db, saved.ok ? saved.characterId : -1)!;
+    }
+
+    it("sets level and profession skill without touching anything else", () => {
+      // Arrange
+      const anna = member(OWNER, "Anna");
+      const character = tailor(anna);
+      const tailoring = character.professionEntryIds[0];
+
+      // Act
+      setCharacterLevel(db, anna, character.id, 11);
+      setProfessionSkill(db, anna, character.id, tailoring, 75);
+
+      // Assert
+      const updated = getCharacter(db, character.id)!;
+      expect(updated).toMatchObject({ level: 11, name: character.name });
+      expect(updated.professions[0].skillLevel).toBe(75);
+    });
+
+    it("rejects values outside the editor's bounds", () => {
+      // Arrange
+      const anna = member(OWNER, "Anna");
+      const character = tailor(anna);
+      const tailoring = character.professionEntryIds[0];
+
+      // Act & Assert
+      expect(() => setCharacterLevel(db, anna, character.id, 0)).toThrow(
+        DomainError,
+      );
+      expect(() =>
+        setProfessionSkill(db, anna, character.id, tailoring, -1),
+      ).toThrow(DomainError);
+      expect(getCharacter(db, character.id)!.level).toBe(10);
+    });
+
+    it("only changes the member's own characters and held professions", () => {
+      // Arrange
+      const anna = member(OWNER, "Anna");
+      const ben = memberAllowed("100000000000000002", "Ben");
+      const character = tailor(anna);
+
+      // Act & Assert
+      expect(() => setCharacterLevel(db, ben, character.id, 12)).toThrow(
+        ForbiddenError,
+      );
+      expect(() =>
+        setProfessionSkill(db, anna, character.id, 999999, 10),
+      ).toThrow(NotFoundError);
+    });
   });
 });

@@ -1,4 +1,13 @@
-import { app, auth, common, errors, home, nav, pwa } from "./texts/core";
+import {
+  app,
+  auth,
+  common,
+  errors,
+  home,
+  nav,
+  pwa,
+  stepper,
+} from "./texts/core";
 import { today } from "./texts/today";
 import { tasks } from "./texts/tasks";
 import { checklists, farmSpots, todos, visibility } from "./texts/lists";
@@ -30,6 +39,7 @@ export const de = {
   professionKinds,
   badges,
   common,
+  stepper,
   characters,
   roster,
   admin,

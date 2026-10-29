@@ -4,6 +4,7 @@ import { DateTime } from "luxon";
 import { signOutAction } from "@/components/auth/auth-actions";
 import { SignInButton } from "@/components/auth/SignInButton";
 import { CraftRequestsToday } from "@/components/today/CraftRequestsToday";
+import { QuickCharacters } from "@/components/today/QuickCharacters";
 import { TodayBoard } from "@/components/today/TodayBoard";
 import { TodayLists } from "@/components/today/TodayLists";
 import { TodaySummary } from "@/components/today/TodaySummary";
@@ -15,7 +16,9 @@ import { selectedGames } from "@/lib/game-filter";
 import { listCraftRequestsForCrafter } from "@/lib/guild/craft-requests";
 import { listPinnedChecklists } from "@/lib/lists/checklists";
 import { listTodoLists } from "@/lib/lists/todo-lists";
-import { listCharactersOfUser } from "@/lib/roster/characters";
+import { LEVEL_MAX } from "@/lib/roster/character-rules";
+import { listCharactersOfUser, SKILL_LEVEL_MAX } from "@/lib/roster/characters";
+import { loadRosterMembers } from "@/lib/roster/roster";
 import { buildDashboard } from "@/lib/tasks/dashboard";
 import { summarizeDashboard } from "@/lib/tasks/dashboard-summary";
 import { formatCountdown, formatDay } from "@/i18n/format";
@@ -55,6 +58,10 @@ async function HomeContent() {
     games.map((game) => game.id),
   );
   const hasCharacters = listCharactersOfUser(db, actor.userId).length > 0;
+  const shownGameIds = new Set(games.map((game) => game.id));
+  const ownCharacters = (
+    loadRosterMembers(db, actor.guildId, actor.userId)[0]?.characters ?? []
+  ).filter((character) => shownGameIds.has(character.gameId));
   const isEmpty =
     dashboard.general.length === 0 &&
     dashboard.guild.length === 0 &&
@@ -73,6 +80,11 @@ async function HomeContent() {
             </span>
           )
         }
+      />
+      <QuickCharacters
+        characters={ownCharacters}
+        levelMax={LEVEL_MAX}
+        skillMax={SKILL_LEVEL_MAX}
       />
       {enabledGames.length === 0 && (
         <p className="text-warning">{de.home.noGames}</p>
