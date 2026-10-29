@@ -1,7 +1,7 @@
 {
   "id": "wow-forever",
   "name": "WoW: Forever",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "mmo",
   "server_label": "Realm",
   "capabilities": {
@@ -498,8 +498,7 @@
         "de": "Alchemie",
         "en": "Alchemy"
       },
-      "kind": "primary",
-      "todo": true
+      "kind": "primary"
     },
     {
       "id": "blacksmithing",
@@ -507,8 +506,7 @@
         "de": "Schmiedekunst",
         "en": "Blacksmithing"
       },
-      "kind": "primary",
-      "todo": true
+      "kind": "primary"
     },
     {
       "id": "enchanting",
@@ -516,8 +514,7 @@
         "de": "Verzauberkunst",
         "en": "Enchanting"
       },
-      "kind": "primary",
-      "todo": true
+      "kind": "primary"
     },
     {
       "id": "engineering",
@@ -525,8 +522,7 @@
         "de": "Ingenieurskunst",
         "en": "Engineering"
       },
-      "kind": "primary",
-      "todo": true
+      "kind": "primary"
     },
     {
       "id": "leatherworking",
@@ -534,8 +530,7 @@
         "de": "Lederverarbeitung",
         "en": "Leatherworking"
       },
-      "kind": "primary",
-      "todo": true
+      "kind": "primary"
     },
     {
       "id": "tailoring",
@@ -543,8 +538,7 @@
         "de": "Schneiderei",
         "en": "Tailoring"
       },
-      "kind": "primary",
-      "todo": true
+      "kind": "primary"
     },
     {
       "id": "herbalism",
@@ -552,8 +546,7 @@
         "de": "Kräuterkunde",
         "en": "Herbalism"
       },
-      "kind": "gathering",
-      "todo": true
+      "kind": "gathering"
     },
     {
       "id": "mining",
@@ -561,8 +554,7 @@
         "de": "Bergbau",
         "en": "Mining"
       },
-      "kind": "gathering",
-      "todo": true
+      "kind": "gathering"
     },
     {
       "id": "skinning",
@@ -570,8 +562,7 @@
         "de": "Kürschnerei",
         "en": "Skinning"
       },
-      "kind": "gathering",
-      "todo": true
+      "kind": "gathering"
     },
     {
       "id": "cooking",
@@ -579,8 +570,7 @@
         "de": "Kochkunst",
         "en": "Cooking"
       },
-      "kind": "secondary",
-      "todo": true
+      "kind": "secondary"
     },
     {
       "id": "first-aid",
@@ -588,8 +578,7 @@
         "de": "Erste Hilfe",
         "en": "First Aid"
       },
-      "kind": "secondary",
-      "todo": true
+      "kind": "secondary"
     },
     {
       "id": "fishing",
@@ -597,8 +586,7 @@
         "de": "Angeln",
         "en": "Fishing"
       },
-      "kind": "secondary",
-      "todo": true
+      "kind": "secondary"
     }
   ],
   "reset_rules": [],

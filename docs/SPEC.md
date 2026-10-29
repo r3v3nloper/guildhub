@@ -956,7 +956,8 @@ docker-compose.yml
 - [x] AION 2: Odyle-Energie (+15 alle 3 Std., max. 200) und Reset-Zeiten (täglich 05:00, wöchentlich Mi 05:00) im Spiel bestätigt
 - [x] AION 2: keine Berufe, Capability `professions` aus (6.3)
 - [x] WoW Forever: Klassen-/Rassen-Kombinationen bestätigt (Pack 0.3.0); Paladin und Schamane auf beiden Seiten
-- [ ] WoW Forever: Raid-IDs, Reset-Tage und Berufe (ab 04.11.)
+- [x] WoW Forever: Berufe gegen ForeverDB-API geprüft (IDs, Art, englische Namen; Build 1.60.1)
+- [ ] WoW Forever: Raid-IDs und Reset-Tage (ab 04.11.)
 - [ ] Gewünschte Akzentfarbe/Logo der Gilde (optional)
 - [x] WoW Forever: neue Rasse **Himmelsgeborene** im Pack (`todo`)
 - [x] WoW Forever: Himmelsgeborene je Fraktion getrennt – „Hoher Orden“ (Allianz) und „Windformer“ (Horde) mit eigenen Klassen; englischer Name noch offen
