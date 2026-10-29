@@ -44,6 +44,16 @@ const raw = {
       profession: "leatherworking",
       skill: 1,
     },
+    {
+      id: "leatherworking-boots",
+      name: { de: "Wildlederstiefel", en: "Wild Leather Boots" },
+      profession: "leatherworking",
+      skill: 200,
+      link: "https://example.org/boots",
+      reagents: [
+        { name: { de: "Dickes Leder", en: "Thick Leather" }, count: 4 },
+      ],
+    },
   ],
 };
 

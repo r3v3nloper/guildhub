@@ -47,6 +47,54 @@ export const requests = {
     accepted: "Angenommen",
     done: "Erledigt",
   },
+  intro: "Wünsch dir etwas von der Gilde, oder stell her, was andere brauchen.",
+  viewLabel: "Ansicht",
+  views: { forYou: "Für dich", mine: "Meine Anträge", all: "Alle" },
+  acceptedGroup: "Von dir angenommen",
+  acceptedGroupHint: "Herstellen und als erledigt melden",
+  craftableGroup: "Kannst du herstellen",
+  craftableGroupHint: "Passend zu Berufen und Fertigkeit deiner Charaktere",
+  tooLowGroup: "Dafür fehlt dir noch Fertigkeit",
+  runningGroup: "Laufend",
+  doneGroup: "Erledigt",
+  showDone: (count: number) => `Erledigte anzeigen (${count})`,
+  emptyAccepted: "Gerade nichts in Arbeit.",
+  emptyCraftable: "Keine offenen Anträge für deine Berufe.",
+  emptyMine: "Du hast nichts angefragt.",
+  emptyRunning: "Keine laufenden Anträge.",
+  needs: "Benötigt",
+  yourRequest: "Dein Antrag",
+  canCraft: (names: string) => `Kann herstellen: ${names}`,
+  andMore: (count: number) => `+${count}`,
+  nobodyHas: (profession: string) => `Noch kein Hersteller für ${profession}`,
+  nobodySkilled: (skill: number | null) =>
+    skill === null
+      ? "Noch niemand kann das herstellen"
+      : `Noch niemand mit genug Fertigkeit (ab ${skill})`,
+  makes: (name: string) => `Stellt her: ${name}`,
+  madeBy: (name: string) => `Hergestellt von ${name}`,
+  ownSkillTooLow: (have: number, need: number) =>
+    `Deine Fertigkeit reicht noch nicht (${have} von ${need})`,
+  openSince: (days: number) => `seit ${days} Tagen offen`,
+  progress: "Fortschritt",
+  moreActions: (item: string) => `Weitere Aktionen für ${item}`,
+  openRecipe: "Rezept öffnen",
+  profession: "Beruf",
+  recipe: "Rezept",
+  crafterCount: (count: number) =>
+    count === 0
+      ? "noch kein Hersteller"
+      : count === 1
+        ? "1 Hersteller"
+        : `${count} Hersteller`,
+  totalNeeds: "Benötigt insgesamt",
+  craftersFor: (names: string) => `Kann herstellen: ${names}`,
+  nobodyForRecipe: "Noch niemand sonst ist dafür weit genug.",
+  fewer: "Weniger",
+  more: "Mehr",
+  close: "Schließen",
+  optional: "optional",
+  notePlaceholder: "z. B. Material bringe ich mit",
 } as const;
 
 export const statPriorities = {

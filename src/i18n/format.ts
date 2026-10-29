@@ -51,3 +51,27 @@ const dayFormat = new Intl.DateTimeFormat("de-DE", {
 export function formatDay(date: Date): string {
   return dayFormat.format(date);
 }
+
+const HOUR_MS = 60 * MINUTE_MS;
+const DAY_MS = 24 * HOUR_MS;
+
+/** How long ago, e.g. "vor 5 Min.", "vor 3 Std.", "gestern", "vor 4 Tagen". */
+export function formatAge(date: Date, now: Date): string {
+  const elapsed = Math.max(0, now.getTime() - date.getTime());
+  if (elapsed < MINUTE_MS) {
+    return "gerade eben";
+  }
+  if (elapsed < HOUR_MS) {
+    return `vor ${Math.floor(elapsed / MINUTE_MS)} Min.`;
+  }
+  if (elapsed < DAY_MS) {
+    return `vor ${Math.floor(elapsed / HOUR_MS)} Std.`;
+  }
+  const days = Math.floor(elapsed / DAY_MS);
+  return days === 1 ? "gestern" : `vor ${days} Tagen`;
+}
+
+/** Whole days since `date`, e.g. to flag requests that have waited long. */
+export function daysSince(date: Date, now: Date): number {
+  return Math.floor(Math.max(0, now.getTime() - date.getTime()) / DAY_MS);
+}

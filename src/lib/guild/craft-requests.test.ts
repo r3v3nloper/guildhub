@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { listAudit } from "@/lib/audit/audit";
 import { DomainError, ForbiddenError, NotFoundError } from "@/lib/errors";
-import { saveCharacter } from "@/lib/roster/characters";
+import { saveProfessionDetails } from "@/lib/roster/character-professions";
+import { getCharacter, saveCharacter } from "@/lib/roster/characters";
+import type { Actor } from "@/lib/auth/guards";
 import { characterInput } from "../../../test/fixtures/characters";
 import {
   createListFixture,
@@ -15,6 +17,7 @@ import {
   listCraftRequests,
   listCraftRequestsForCrafter,
   requestRecipeChoices,
+  professionCrafters,
   returnCraftRequest,
   type CraftRequestInput,
 } from "./craft-requests";
@@ -237,7 +240,14 @@ describe("requestRecipeChoices", () => {
       {
         value: "leatherworking-kit",
         label: "Leichtes Rüstungsset (ab 1)",
-        reagents: null,
+        reagents: [],
+        crafters: [],
+      },
+      {
+        value: "leatherworking-boots",
+        label: "Wildlederstiefel (ab 200)",
+        reagents: [{ name: "Dickes Leder", count: 4 }],
+        crafters: [],
       },
     ]);
     expect(mining).toBeNull();
@@ -251,5 +261,136 @@ describe("requestRecipeChoices", () => {
     expect(() =>
       requestRecipeChoices(fixture.db, fixture.member, "game", "alchemy"),
     ).toThrow(NotFoundError);
+  });
+});
+
+describe("skill check", () => {
+  let fixture: ListFixture;
+
+  /** A leatherworker for the actor, with the given skill (null: not entered). */
+  function leatherworker(actor: Actor, name: string, skill: number | null) {
+    const saved = saveCharacter(
+      fixture.db,
+      actor,
+      "game",
+      characterInput({ name, professionKeys: ["leatherworking"] }),
+    );
+    const character = getCharacter(
+      fixture.db,
+      saved.ok ? saved.characterId : -1,
+    )!;
+    saveProfessionDetails(
+      fixture.db,
+      actor,
+      character.id,
+      character.professionEntryIds[0],
+      { skillLevel: skill, specialization: "", notes: "", recipes: "" },
+    );
+  }
+
+  const bootsView = (actor: Actor) =>
+    listCraftRequests(fixture.db, actor, ["game"])[0];
+
+  beforeEach(() => {
+    fixture = createListFixture();
+    createCraftRequest(fixture.db, fixture.member, {
+      ...request,
+      professionKey: "leatherworking",
+      item: "leatherworking-boots",
+      quantity: 2,
+    });
+  });
+
+  it("lists the materials for the whole request and who is skilled enough", () => {
+    // Arrange
+    leatherworker(fixture.other, "Brakka", 210);
+    leatherworker(fixture.officer, "Lehrling", 50);
+
+    // Act
+    const view = bootsView(fixture.member);
+
+    // Assert
+    expect(view).toMatchObject({
+      reagents: [{ name: "Dickes Leder", count: 8 }],
+      requiredSkill: 200,
+      recipeLink: "https://example.org/boots",
+      professionHeld: true,
+      crafters: [
+        expect.objectContaining({ characterName: "Brakka", skill: 210 }),
+      ],
+    });
+  });
+
+  it("offers accepting only with enough skill and refuses it otherwise", () => {
+    // Arrange
+    leatherworker(fixture.other, "Brakka", 210);
+    leatherworker(fixture.officer, "Lehrling", 50);
+    const id = bootsView(fixture.member).id;
+
+    // Act & Assert
+    expect(bootsView(fixture.other).canAccept).toBe(true);
+    expect(bootsView(fixture.officer)).toMatchObject({
+      canAccept: false,
+      ownSkillTooLow: { have: 50, need: 200 },
+    });
+    expect(() => acceptCraftRequest(fixture.db, fixture.officer, id)).toThrow(
+      DomainError,
+    );
+    acceptCraftRequest(fixture.db, fixture.other, id);
+    expect(bootsView(fixture.member).status).toBe("accepted");
+  });
+
+  it("does not block on a skill nobody entered", () => {
+    // Arrange
+    leatherworker(fixture.other, "Brakka", null);
+
+    // Act & Assert
+    expect(bootsView(fixture.other)).toMatchObject({
+      canAccept: true,
+      ownSkillTooLow: null,
+    });
+  });
+
+  it("notices when nobody but the requester has the profession", () => {
+    // Arrange
+    leatherworker(fixture.member, "Selbst", 300);
+
+    // Act
+    const view = bootsView(fixture.member);
+
+    // Assert
+    expect(view).toMatchObject({
+      professionHeld: false,
+      crafters: [],
+      canAccept: false,
+    });
+  });
+
+  it("names the crafters per profession and recipe for the form", () => {
+    // Arrange
+    leatherworker(fixture.other, "Brakka", 210);
+    leatherworker(fixture.officer, "Lehrling", 50);
+
+    // Act
+    const byProfession = professionCrafters(fixture.db, fixture.member, [
+      "game",
+    ]);
+    const recipes = requestRecipeChoices(
+      fixture.db,
+      fixture.member,
+      "game",
+      "leatherworking",
+    )!;
+
+    // Assert
+    expect(byProfession.game.leatherworking).toEqual([
+      "User 2222 (Brakka, 210)",
+      "User 3333 (Lehrling, 50)",
+    ]);
+    expect(byProfession.game.mining).toEqual([]);
+    expect(
+      recipes.find((recipe) => recipe.value === "leatherworking-boots")
+        ?.crafters,
+    ).toEqual(["User 2222 (Brakka, 210)"]);
   });
 });

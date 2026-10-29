@@ -17,3 +17,20 @@ export function formatReagents(
     .map((reagent) => `${reagent.count}× ${localize(reagent.name)}`)
     .join(", ");
 }
+
+export interface Reagent {
+  name: string;
+  count: number;
+}
+
+/** A pack recipe's reagents, each count multiplied by how often it is crafted. */
+export function reagentsOf(
+  recipeData: Record<string, unknown>,
+  times = 1,
+): Reagent[] {
+  const { reagents } = recipeData as ReagentData;
+  return (reagents ?? []).map((reagent) => ({
+    name: localize(reagent.name),
+    count: reagent.count * times,
+  }));
+}

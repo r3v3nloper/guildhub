@@ -8,6 +8,7 @@ import {
   characters,
   craftRequests,
   gameCatalogEntries,
+  guildMembers,
   users,
   type CraftRequestStatus,
 } from "@/lib/db/schema";
@@ -21,16 +22,37 @@ import {
   type GameCatalog,
 } from "@/lib/roster/game-catalog";
 import { recipeChoices } from "@/lib/roster/form-options";
+import { reagentsOf, type Reagent } from "@/lib/roster/recipe-reagents";
 import { requestRecipesOf } from "@/lib/roster/request-recipes";
 import { de } from "@/i18n/de";
 import { localize } from "@/i18n/localize";
 
 export type CraftRequestRow = typeof craftRequests.$inferSelect;
 
+/** A member's character that can craft something, with the skill entered for it. */
+export interface CrafterView {
+  userId: string;
+  userName: string;
+  characterName: string;
+  skill: number | null;
+}
+
 export interface CraftRequestView extends CraftRequestRow {
   professionName: LocalizedString;
   requesterName: string | null;
   crafterName: string | null;
+  /** Materials for the whole request (recipe reagents times quantity). */
+  reagents: Reagent[];
+  /** Skill the recipe needs; null for free text or when the pack does not know it. */
+  requiredSkill: number | null;
+  recipeLink: string | null;
+  /** Other members who can craft it: the profession and, as far as known, the skill. */
+  crafters: CrafterView[];
+  /** Somebody besides the requester holds the profession, skilled enough or not. */
+  professionHeld: boolean;
+  /** The actor has the profession, but every known skill is below the recipe's. */
+  ownSkillTooLow: { have: number; need: number } | null;
+  /** Open, not the actor's own, and the actor has profession and skill. */
   canAccept: boolean;
   /** Mark done or hand back: the member who accepted it. */
   canProgress: boolean;
@@ -77,22 +99,71 @@ export function listCraftRequests(
     .orderBy(desc(craftRequests.doneAt))
     .limit(DONE_SHOWN)
     .all();
-  const ownProfessions = professionsOf(db, actor.userId);
+  const rows = [...pending, ...done];
+  const recipes = loadRecipeInfo(
+    db,
+    rows.map((row) => row.request.recipeEntryId),
+  );
+  const holders = professionHolders(
+    db,
+    actor.guildId,
+    rows.map((row) => row.request.professionEntryId),
+  );
 
-  return [...pending, ...done].map(
-    ({ request, professionName, requesterName, crafterName }) => ({
+  return rows.map(({ request, professionName, requesterName, crafterName }) => {
+    const recipe =
+      request.recipeEntryId === null
+        ? undefined
+        : recipes.get(request.recipeEntryId);
+    const requiredSkill = recipe?.skill ?? null;
+    const own = holders.filter(
+      (holder) =>
+        holder.userId === actor.userId &&
+        holder.professionEntryId === request.professionEntryId,
+    );
+    const ownAble = own.some((holder) =>
+      hasSkillFor(holder.skill, requiredSkill),
+    );
+    const ownSkills = own
+      .map((holder) => holder.skill)
+      .filter((skill): skill is number => skill !== null);
+    return {
       ...request,
       professionName,
       requesterName,
       crafterName,
+      reagents: recipe
+        ? recipe.reagents.map((reagent) => ({
+            ...reagent,
+            count: reagent.count * request.quantity,
+          }))
+        : [],
+      requiredSkill,
+      recipeLink: recipe?.link ?? null,
+      crafters: ableCrafters(
+        holders,
+        request.professionEntryId,
+        requiredSkill,
+        request.requesterId,
+      ),
+      professionHeld: holders.some(
+        (holder) =>
+          holder.professionEntryId === request.professionEntryId &&
+          holder.userId !== request.requesterId,
+      ),
+      ownSkillTooLow:
+        own.length > 0 && !ownAble && requiredSkill !== null
+          ? { have: Math.max(...ownSkills), need: requiredSkill }
+          : null,
       canAccept:
         request.status === "open" &&
-        ownProfessions.has(request.professionEntryId),
+        request.requesterId !== actor.userId &&
+        ownAble,
       canProgress:
         request.status === "accepted" && request.crafterId === actor.userId,
       canDelete: permissions.editSharedEntry(actor, ownership(request)).allowed,
-    }),
-  );
+    };
+  });
 }
 
 /**
@@ -108,10 +179,171 @@ export function listCraftRequestsForCrafter(
   const requests = listCraftRequests(db, actor, gameIds);
   return [
     ...requests.filter((request) => request.canProgress),
-    ...requests.filter(
-      (request) => request.canAccept && request.requesterId !== actor.userId,
-    ),
+    ...requests.filter((request) => request.canAccept),
   ];
+}
+
+/** Enough skill for a recipe, as far as known: a missing number never blocks. */
+export function hasSkillFor(
+  skill: number | null,
+  required: number | null,
+): boolean {
+  return required === null || skill === null || skill >= required;
+}
+
+interface ProfessionHolder extends CrafterView {
+  professionEntryId: number;
+}
+
+/** Characters of active guild members holding one of the professions. */
+function professionHolders(
+  db: AppDatabase,
+  guildId: number,
+  professionEntryIds: readonly number[],
+): ProfessionHolder[] {
+  const ids = [...new Set(professionEntryIds)];
+  if (ids.length === 0) {
+    return [];
+  }
+  return db
+    .select({
+      professionEntryId: characterProfessions.professionEntryId,
+      userId: characters.userId,
+      userName: users.name,
+      characterName: characters.name,
+      skill: characterProfessions.skillLevel,
+    })
+    .from(characterProfessions)
+    .innerJoin(characters, eq(characters.id, characterProfessions.characterId))
+    .innerJoin(users, eq(users.id, characters.userId))
+    .innerJoin(
+      guildMembers,
+      and(
+        eq(guildMembers.userId, characters.userId),
+        eq(guildMembers.guildId, guildId),
+        eq(guildMembers.status, "active"),
+      ),
+    )
+    .where(inArray(characterProfessions.professionEntryId, ids))
+    .all()
+    .map((row) => ({ ...row, userName: row.userName ?? "?" }));
+}
+
+/** The most skilled able character per member, best first; `exceptUserId` left out. */
+function ableCrafters(
+  holders: readonly ProfessionHolder[],
+  professionEntryId: number,
+  required: number | null,
+  exceptUserId?: string,
+): CrafterView[] {
+  const best = new Map<string, ProfessionHolder>();
+  for (const holder of holders) {
+    if (
+      holder.professionEntryId !== professionEntryId ||
+      holder.userId === exceptUserId ||
+      !hasSkillFor(holder.skill, required)
+    ) {
+      continue;
+    }
+    const current = best.get(holder.userId);
+    if (!current || (holder.skill ?? -1) > (current.skill ?? -1)) {
+      best.set(holder.userId, holder);
+    }
+  }
+  return [...best.values()]
+    .sort(
+      (a, b) =>
+        (b.skill ?? -1) - (a.skill ?? -1) ||
+        a.userName.localeCompare(b.userName),
+    )
+    .map((holder) => ({
+      userId: holder.userId,
+      userName: holder.userName,
+      characterName: holder.characterName,
+      skill: holder.skill,
+    }));
+}
+
+interface RecipeInfo {
+  skill: number | null;
+  link: string | null;
+  reagents: Reagent[];
+}
+
+function recipeInfo(entry: CatalogEntry): RecipeInfo {
+  const { skill, link } = entry.data as { skill?: unknown; link?: unknown };
+  return {
+    skill: typeof skill === "number" ? skill : null,
+    link: typeof link === "string" ? link : null,
+    reagents: reagentsOf(entry.data),
+  };
+}
+
+function loadRecipeInfo(
+  db: AppDatabase,
+  recipeEntryIds: ReadonlyArray<number | null>,
+): Map<number, RecipeInfo> {
+  const ids = [
+    ...new Set(recipeEntryIds.filter((id): id is number => id !== null)),
+  ];
+  if (ids.length === 0) {
+    return new Map();
+  }
+  return new Map(
+    db
+      .select()
+      .from(gameCatalogEntries)
+      .where(inArray(gameCatalogEntries.id, ids))
+      .all()
+      .map((entry) => [entry.id, recipeInfo(entry)]),
+  );
+}
+
+/**
+ * Who in the guild can craft for each profession of the games, as "Name (Charakter, 210)",
+ * for the request form; keyed by game, then profession key.
+ */
+export function professionCrafters(
+  db: AppDatabase,
+  actor: Actor,
+  gameIds: readonly string[],
+): Record<string, Record<string, string[]>> {
+  const result: Record<string, Record<string, string[]>> = {};
+  if (gameIds.length === 0) {
+    return result;
+  }
+  const professions = db
+    .select({
+      id: gameCatalogEntries.id,
+      gameId: gameCatalogEntries.gameId,
+      key: gameCatalogEntries.key,
+    })
+    .from(gameCatalogEntries)
+    .where(
+      and(
+        inArray(gameCatalogEntries.gameId, [...gameIds]),
+        eq(gameCatalogEntries.kind, "profession"),
+      ),
+    )
+    .all();
+  const holders = professionHolders(
+    db,
+    actor.guildId,
+    professions.map((profession) => profession.id),
+  );
+  for (const profession of professions) {
+    const names = ableCrafters(holders, profession.id, null, actor.userId).map(
+      crafterLabel,
+    );
+    (result[profession.gameId] ??= {})[profession.key] = names;
+  }
+  return result;
+}
+
+/** "Erik (Brakka, 210)": member, character and skill where known. */
+export function crafterLabel(crafter: CrafterView): string {
+  const skill = crafter.skill === null ? "" : `, ${crafter.skill}`;
+  return `${crafter.userName} (${crafter.characterName}${skill})`;
 }
 
 /** Requests with profession, requester and crafter names. */
@@ -133,22 +365,6 @@ function selectRequests(db: AppDatabase) {
     .innerJoin(requester, eq(requester.id, craftRequests.requesterId))
     .leftJoin(crafter, eq(crafter.id, craftRequests.crafterId))
     .$dynamic();
-}
-
-/** Profession entries the user holds on any of their characters. */
-function professionsOf(db: AppDatabase, userId: string): Set<number> {
-  return new Set(
-    db
-      .select({ id: characterProfessions.professionEntryId })
-      .from(characterProfessions)
-      .innerJoin(
-        characters,
-        eq(characters.id, characterProfessions.characterId),
-      )
-      .where(eq(characters.userId, userId))
-      .all()
-      .map((row) => row.id),
-  );
 }
 
 /** Requests are guild-visible entries of their requester; officers may tidy them up. */
@@ -277,8 +493,21 @@ export function acceptCraftRequest(
 ): void {
   const request = loadRequest(db, actor, requestId);
   requireStatus(request, "open");
-  if (!professionsOf(db, actor.userId).has(request.professionEntryId)) {
+  const own = professionHolders(db, actor.guildId, [
+    request.professionEntryId,
+  ]).filter((holder) => holder.userId === actor.userId);
+  if (own.length === 0) {
     throw new DomainError("Annehmen kann nur, wer den Beruf hat.");
+  }
+  const required =
+    request.recipeEntryId === null
+      ? null
+      : (loadRecipeInfo(db, [request.recipeEntryId]).get(request.recipeEntryId)
+          ?.skill ?? null);
+  if (!own.some((holder) => hasSkillFor(holder.skill, required))) {
+    throw new DomainError(
+      `Dafür reicht die Fertigkeit deiner Charaktere noch nicht (benötigt ${required}).`,
+    );
   }
   db.update(craftRequests)
     .set({ status: "accepted", crafterId: actor.userId, acceptedAt: now })
@@ -342,7 +571,10 @@ export function deleteCraftRequest(
 export interface RequestRecipeChoice {
   value: string;
   label: string;
-  reagents: string | null;
+  /** Reagents for one craft. */
+  reagents: Reagent[];
+  /** Other members skilled enough for it, as "Name (Charakter, Fertigkeit)". */
+  crafters: string[];
 }
 
 /**
@@ -368,9 +600,19 @@ export function requestRecipeChoices(
     throw new NotFoundError("Beruf");
   }
   const recipes = requestRecipesOf(catalog, profession);
-  return recipes
-    ? recipeChoices(recipes, de.characters.recipeFromSkill).map(
-        ({ key, label, reagents }) => ({ value: key, label, reagents }),
-      )
-    : null;
+  if (!recipes) {
+    return null;
+  }
+  const entries = new Map(recipes.map((entry) => [entry.key, entry]));
+  const holders = professionHolders(db, actor.guildId, [profession.id]);
+  return recipeChoices(recipes, de.characters.recipeFromSkill).map(
+    ({ key, label, skill }) => ({
+      value: key,
+      label,
+      reagents: reagentsOf(entries.get(key)!.data),
+      crafters: ableCrafters(holders, profession.id, skill, actor.userId).map(
+        crafterLabel,
+      ),
+    }),
+  );
 }

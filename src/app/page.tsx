@@ -102,7 +102,11 @@ async function HomeContent() {
         </p>
       )}
       {!isEmpty && <TodaySummary summary={summary} />}
-      <CraftRequestsToday requests={requests} />
+      <CraftRequestsToday
+        requests={requests}
+        actorId={actor.userId}
+        now={now.toJSDate()}
+      />
       <TodayLists todoLists={todoLists} checklists={checklists} />
       <TodayBoard dashboard={dashboard} now={nowIso} />
     </section>

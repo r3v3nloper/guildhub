@@ -35,6 +35,7 @@ describe("loadGameCatalog", () => {
     expect(catalogOfKind(catalog, "recipe").map((r) => r.key)).toEqual([
       "mining-thorium",
       "leatherworking-kit",
+      "leatherworking-boots",
     ]);
   });
 });
