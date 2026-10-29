@@ -122,6 +122,7 @@ export const instanceSchema = z.strictObject({
       z.strictObject({
         name: localizedStringSchema,
         reason: z.string().min(1).optional(),
+        link: httpLink.optional(),
       }),
     )
     .default([]),

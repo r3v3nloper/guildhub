@@ -1,7 +1,7 @@
 {
   "id": "wow-forever",
   "name": "WoW: Forever",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "type": "mmo",
   "server_label": "Realm",
   "capabilities": {
@@ -88935,7 +88935,8 @@
       "loot": [
         {
           "name": "Trogg Scepter",
-          "reason": "top pick for Holy Priest at level 20"
+          "reason": "top pick for Holy Priest at level 20",
+          "link": "https://foreverdb.net/item/272996"
         }
       ]
     },
@@ -88972,15 +88973,18 @@
       "loot": [
         {
           "name": "Rotmender's Treads",
-          "reason": "Rotmender's Raiment set; top pick for Affliction Warlock and 13 more specs at level 20/30"
+          "reason": "Rotmender's Raiment set; top pick for Affliction Warlock and 13 more specs at level 20/30",
+          "link": "https://foreverdb.net/item/271214"
         },
         {
           "name": "Tuskwrap Belt",
-          "reason": "top pick for Affliction Warlock and 10 more specs at level 20"
+          "reason": "top pick for Affliction Warlock and 10 more specs at level 20",
+          "link": "https://foreverdb.net/item/271210"
         },
         {
           "name": "Witherbite Bracers",
-          "reason": "top pick for Balance Druid and 6 more specs at level 20"
+          "reason": "top pick for Balance Druid and 6 more specs at level 20",
+          "link": "https://foreverdb.net/item/271202"
         }
       ]
     },
@@ -89007,15 +89011,18 @@
       "loot": [
         {
           "name": "Leggings of the Fang",
-          "reason": "Embrace of the Viper set; top pick for Assassination Rogue and 8 more specs at level 20"
+          "reason": "Embrace of the Viper set; top pick for Assassination Rogue and 8 more specs at level 20",
+          "link": "https://foreverdb.net/item/10410"
         },
         {
           "name": "Serpent Gloves",
-          "reason": "top pick for Affliction Warlock and 9 more specs at level 20"
+          "reason": "top pick for Affliction Warlock and 9 more specs at level 20",
+          "link": "https://foreverdb.net/item/5970"
         },
         {
           "name": "Feyscale Cloak",
-          "reason": "top pick for Affliction Warlock and 8 more specs at level 20"
+          "reason": "top pick for Affliction Warlock and 8 more specs at level 20",
+          "link": "https://foreverdb.net/item/6632"
         }
       ]
     },
@@ -89042,15 +89049,18 @@
       "loot": [
         {
           "name": "Blackened Defias Belt",
-          "reason": "Defias Leather set; top pick for Arms Warrior and 7 more specs at level 20"
+          "reason": "Defias Leather set; top pick for Arms Warrior and 7 more specs at level 20",
+          "link": "https://foreverdb.net/item/10403"
         },
         {
           "name": "Cape of the Brotherhood",
-          "reason": "top pick for Assassination Rogue and 6 more specs at level 20"
+          "reason": "top pick for Assassination Rogue and 6 more specs at level 20",
+          "link": "https://foreverdb.net/item/5193"
         },
         {
           "name": "Ogre Loincloth",
-          "reason": "top pick for Affliction Warlock and 5 more specs at level 20"
+          "reason": "top pick for Affliction Warlock and 5 more specs at level 20",
+          "link": "https://foreverdb.net/item/273289"
         }
       ]
     },
@@ -89077,15 +89087,18 @@
       "loot": [
         {
           "name": "Worgenbane Talisman",
-          "reason": "top pick for Arcane Mage and 9 more specs at level 30"
+          "reason": "top pick for Arcane Mage and 9 more specs at level 30",
+          "link": "https://foreverdb.net/item/273643"
         },
         {
           "name": "Violet Sorcerer's Robes",
-          "reason": "Violet Sorcerer's Vestments set; top pick for Arcane Mage and 2 more specs at level 30"
+          "reason": "Violet Sorcerer's Vestments set; top pick for Arcane Mage and 2 more specs at level 30",
+          "link": "https://foreverdb.net/item/273044"
         },
         {
           "name": "Butcher's Cleaver",
-          "reason": "top pick for Assassination Rogue and 3 more specs at level 20"
+          "reason": "top pick for Assassination Rogue and 3 more specs at level 20",
+          "link": "https://foreverdb.net/item/1292"
         }
       ]
     },
@@ -89113,15 +89126,18 @@
       "loot": [
         {
           "name": "Violet Sorcerer's Wraps",
-          "reason": "Violet Sorcerer's Vestments set; top pick for Affliction Warlock and 18 more specs at level 30"
+          "reason": "Violet Sorcerer's Vestments set; top pick for Affliction Warlock and 18 more specs at level 30",
+          "link": "https://foreverdb.net/item/286989"
         },
         {
           "name": "Tattered Kirin Tor Cloak",
-          "reason": "top pick for Affliction Warlock and 14 more specs at level 30"
+          "reason": "top pick for Affliction Warlock and 14 more specs at level 30",
+          "link": "https://foreverdb.net/item/286994"
         },
         {
           "name": "Mark of the Marsh",
-          "reason": "top pick for Arms Warrior and 9 more specs at level 30"
+          "reason": "top pick for Arms Warrior and 9 more specs at level 30",
+          "link": "https://foreverdb.net/item/286984"
         }
       ]
     },
@@ -89145,15 +89161,18 @@
       "loot": [
         {
           "name": "Red Wool Cloak",
-          "reason": "top pick for Arcane Mage and 8 more specs at level 30"
+          "reason": "top pick for Arcane Mage and 8 more specs at level 30",
+          "link": "https://foreverdb.net/item/273825"
         },
         {
           "name": "Jimmied Handcuffs",
-          "reason": "top pick for Protection Paladin and 1 more spec at level 30"
+          "reason": "top pick for Protection Paladin and 1 more spec at level 30",
+          "link": "https://foreverdb.net/item/3228"
         },
         {
           "name": "Ogre Grips",
-          "reason": "top pick for Protection Paladin and 1 more spec at level 30"
+          "reason": "top pick for Protection Paladin and 1 more spec at level 30",
+          "link": "https://foreverdb.net/item/273810"
         }
       ]
     },
@@ -89173,7 +89192,8 @@
       "loot": [
         {
           "name": "Glinteye Slippers",
-          "reason": "top pick for Balance Druid and 1 more spec at level 30"
+          "reason": "top pick for Balance Druid and 1 more spec at level 30",
+          "link": "https://foreverdb.net/item/273024"
         }
       ]
     },
@@ -89198,15 +89218,18 @@
       "loot": [
         {
           "name": "Ephemeral Grips",
-          "reason": "top pick for Affliction Warlock and 3 more specs at level 30"
+          "reason": "top pick for Affliction Warlock and 3 more specs at level 30",
+          "link": "https://foreverdb.net/item/273034"
         },
         {
           "name": "Graveweave Bindings",
-          "reason": "top pick for Elemental Shaman and 2 more specs at level 30"
+          "reason": "top pick for Elemental Shaman and 2 more specs at level 30",
+          "link": "https://foreverdb.net/item/273036"
         },
         {
           "name": "Manascale Treads",
-          "reason": "top pick for Arms Warrior and 2 more specs at level 30"
+          "reason": "top pick for Arms Warrior and 2 more specs at level 30",
+          "link": "https://foreverdb.net/item/273042"
         }
       ]
     },
@@ -89231,15 +89254,18 @@
       "loot": [
         {
           "name": "Spidertank Oilrag",
-          "reason": "top pick for Affliction Warlock and 13 more specs at level 30"
+          "reason": "top pick for Affliction Warlock and 13 more specs at level 30",
+          "link": "https://foreverdb.net/item/9448"
         },
         {
           "name": "Electrocutioner Lagnut",
-          "reason": "top pick for Holy Priest and 1 more spec at level 30"
+          "reason": "top pick for Holy Priest and 1 more spec at level 30",
+          "link": "https://foreverdb.net/item/9447"
         },
         {
           "name": "Acidic Walkers",
-          "reason": "top pick for Elemental Shaman at level 30"
+          "reason": "top pick for Elemental Shaman at level 30",
+          "link": "https://foreverdb.net/item/9454"
         }
       ]
     },
@@ -89264,15 +89290,18 @@
       "loot": [
         {
           "name": "Roogug's Severed Head",
-          "reason": "top pick for Arcane Mage and 9 more specs at level 30"
+          "reason": "top pick for Arcane Mage and 9 more specs at level 30",
+          "link": "https://foreverdb.net/item/274152"
         },
         {
           "name": "Death Speaker Scepter",
-          "reason": "top pick for Discipline Priest and 4 more specs at level 30"
+          "reason": "top pick for Discipline Priest and 4 more specs at level 30",
+          "link": "https://foreverdb.net/item/2816"
         },
         {
           "name": "Death Speaker Robes",
-          "reason": "top pick for Discipline Priest and 4 more specs at level 30"
+          "reason": "top pick for Discipline Priest and 4 more specs at level 30",
+          "link": "https://foreverdb.net/item/6682"
         }
       ]
     },
@@ -89298,15 +89327,18 @@
       "loot": [
         {
           "name": "Bloodmage Mantle",
-          "reason": "top pick for Affliction Warlock and 13 more specs at level 30"
+          "reason": "top pick for Affliction Warlock and 13 more specs at level 30",
+          "link": "https://foreverdb.net/item/7684"
         },
         {
           "name": "Forest Leather Bracers",
-          "reason": "top pick for Assassination Rogue and 5 more specs at level 20"
+          "reason": "top pick for Assassination Rogue and 5 more specs at level 20",
+          "link": "https://foreverdb.net/item/3202"
         },
         {
           "name": "Scarlet Leggings",
-          "reason": "Chain of the Scarlet Crusade set"
+          "reason": "Chain of the Scarlet Crusade set",
+          "link": "https://foreverdb.net/item/10330"
         }
       ]
     },
@@ -89513,15 +89545,18 @@
       "loot": [
         {
           "name": "Vest of Elements",
-          "reason": "The Elements set"
+          "reason": "The Elements set",
+          "link": "https://foreverdb.net/item/16666"
         },
         {
           "name": "Boots of Elements",
-          "reason": "The Elements set"
+          "reason": "The Elements set",
+          "link": "https://foreverdb.net/item/16670"
         },
         {
           "name": "Gauntlets of Elements",
-          "reason": "The Elements set"
+          "reason": "The Elements set",
+          "link": "https://foreverdb.net/item/16672"
         }
       ]
     },
@@ -89554,15 +89589,18 @@
       "loot": [
         {
           "name": "Magister's Gloves",
-          "reason": "Magister's Regalia set"
+          "reason": "Magister's Regalia set",
+          "link": "https://foreverdb.net/item/16684"
         },
         {
           "name": "Magister's Mantle",
-          "reason": "Magister's Regalia set"
+          "reason": "Magister's Regalia set",
+          "link": "https://foreverdb.net/item/16689"
         },
         {
           "name": "Dreadmist Mantle",
-          "reason": "Dreadmist Raiment set"
+          "reason": "Dreadmist Raiment set",
+          "link": "https://foreverdb.net/item/16701"
         }
       ]
     },
@@ -89600,15 +89638,18 @@
       "loot": [
         {
           "name": "Kilt of Elements",
-          "reason": "The Elements set"
+          "reason": "The Elements set",
+          "link": "https://foreverdb.net/item/16668"
         },
         {
           "name": "Beaststalker's Boots",
-          "reason": "Beaststalker Armor set"
+          "reason": "Beaststalker Armor set",
+          "link": "https://foreverdb.net/item/16675"
         },
         {
           "name": "Beaststalker's Pants",
-          "reason": "Beaststalker Armor set"
+          "reason": "Beaststalker Armor set",
+          "link": "https://foreverdb.net/item/16678"
         }
       ]
     },
@@ -89709,15 +89750,18 @@
       "loot": [
         {
           "name": "Ring of the Dreadnaught",
-          "reason": "Dreadnaught's Battlegear set"
+          "reason": "Dreadnaught's Battlegear set",
+          "link": "https://foreverdb.net/item/23059"
         },
         {
           "name": "Bonescythe Ring",
-          "reason": "Bonescythe Armor set"
+          "reason": "Bonescythe Armor set",
+          "link": "https://foreverdb.net/item/23060"
         },
         {
           "name": "Ring of Faith",
-          "reason": "Vestments of Faith set"
+          "reason": "Vestments of Faith set",
+          "link": "https://foreverdb.net/item/23061"
         }
       ]
     },

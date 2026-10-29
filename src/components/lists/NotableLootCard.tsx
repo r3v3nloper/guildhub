@@ -26,7 +26,20 @@ export function NotableLootCard({
       <ul className="flex flex-col gap-2.5 text-sm">
         {loot.map((item) => (
           <li key={item.name} className="flex flex-col gap-0.5">
-            <span className="font-semibold text-white">{item.name}</span>
+            {item.link ? (
+              <a
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 self-start font-semibold text-accent-strong hover:text-white"
+              >
+                {item.name}
+                <i className="pi pi-external-link text-[10px]" aria-hidden />
+                <span className="sr-only">{de.checklists.openLink}</span>
+              </a>
+            ) : (
+              <span className="font-semibold text-white">{item.name}</span>
+            )}
             {item.reason && (
               <span className="text-[12.5px] text-muted">{item.reason}</span>
             )}

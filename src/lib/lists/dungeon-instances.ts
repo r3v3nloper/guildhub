@@ -24,6 +24,8 @@ export interface InstanceTemplate {
 export interface NotableLoot {
   name: string;
   reason: string | null;
+  /** Item page with stats and more, at the data source. */
+  link: string | null;
 }
 
 interface InstanceData {
@@ -32,7 +34,7 @@ interface InstanceData {
   level_min?: number;
   level_max?: number;
   bosses?: string[];
-  loot?: Array<{ name: LocalizedString; reason?: string }>;
+  loot?: Array<{ name: LocalizedString; reason?: string; link?: string }>;
 }
 
 function toTemplate(entry: CatalogEntry): InstanceTemplate {
@@ -97,6 +99,7 @@ export function notableLootOf(
   return loot.map((item) => ({
     name: localize(item.name),
     reason: item.reason ?? null,
+    link: item.link ?? null,
   }));
 }
 

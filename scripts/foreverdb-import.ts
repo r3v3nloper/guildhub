@@ -49,7 +49,7 @@ interface ApiInstance extends ApiInstanceSummary {
   players: number | null;
   levelRange: [number, number] | null;
   bosses: string[];
-  notableLoot: Array<{ name: string; why: string[] }>;
+  notableLoot: Array<{ itemId: number; name: string; why: string[] }>;
 }
 
 const FOREVER_STATUSES = new Set(["classic", "forever"]);
@@ -156,6 +156,7 @@ function toPackInstance(
     loot: data.notableLoot.map((item) => ({
       name: item.name,
       reason: item.why.length > 0 ? item.why.join("; ") : undefined,
+      link: `https://foreverdb.net/item/${item.itemId}`,
     })),
     deprecated: false,
     replaces: [],

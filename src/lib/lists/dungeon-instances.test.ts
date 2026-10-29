@@ -44,7 +44,11 @@ describe("dungeon pages from a pack instance", () => {
       "Edwin VanCleef",
     ]);
     expect(notableLootOf(fixture.db, checklist.instanceEntryId)).toEqual([
-      { name: "Cape of the Brotherhood", reason: "top pick for rogues" },
+      {
+        name: "Cape of the Brotherhood",
+        reason: "top pick for rogues",
+        link: "https://example.org/item/5193",
+      },
     ]);
     expect(
       instancesById(fixture.db, [checklist.instanceEntryId, null]).get(

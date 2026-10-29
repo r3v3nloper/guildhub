@@ -21,7 +21,11 @@ const raw = {
       level_max: 26,
       bosses: ["Rhahk'Zor", "Edwin VanCleef"],
       loot: [
-        { name: "Cape of the Brotherhood", reason: "top pick for rogues" },
+        {
+          name: "Cape of the Brotherhood",
+          reason: "top pick for rogues",
+          link: "https://example.org/item/5193",
+        },
       ],
     },
   ],
