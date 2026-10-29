@@ -1,7 +1,7 @@
 {
   "id": "wow-forever",
   "name": "WoW: Forever",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "type": "mmo",
   "server_label": "Realm",
   "capabilities": {
@@ -586,7 +586,8 @@
         "de": "Angeln",
         "en": "Fishing"
       },
-      "kind": "secondary"
+      "kind": "secondary",
+      "requests": "free"
     }
   ],
   "recipes": [

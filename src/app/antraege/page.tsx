@@ -31,9 +31,9 @@ async function RequestsContent() {
   const { games, selectedId } = await selectedGames(db, actor.guildId);
   const shownIds = new Set(games.map((game) => game.id));
   // Only games with professions can take requests.
-  const formGames = professionGameOptions(db, actor.guildId, true).filter(
-    (game) => shownIds.has(game.value) && game.professions.length > 0,
-  );
+  const formGames = professionGameOptions(db, actor.guildId, true, {
+    withRequestRecipes: true,
+  }).filter((game) => shownIds.has(game.value) && game.professions.length > 0);
   const requests = listCraftRequests(
     db,
     actor,

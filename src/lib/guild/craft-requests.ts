@@ -17,7 +17,11 @@ import {
   isGameEnabled,
   loadGameCatalog,
   selectableOfKind,
+  type CatalogEntry,
+  type GameCatalog,
 } from "@/lib/roster/game-catalog";
+import { requestRecipesOf } from "@/lib/roster/request-recipes";
+import { localize } from "@/i18n/localize";
 
 export type CraftRequestRow = typeof craftRequests.$inferSelect;
 
@@ -34,6 +38,7 @@ export interface CraftRequestView extends CraftRequestRow {
 export interface CraftRequestInput {
   gameId: string;
   professionKey: string;
+  /** Free text, or the recipe key where the profession only takes pack recipes. */
   item: string;
   quantity: number | null;
   notes: string;
@@ -168,11 +173,13 @@ export function createCraftRequest(
   if (!profession) {
     errors.professionKey = "Bitte einen Beruf wählen.";
   }
-  const item = input.item.trim();
-  if (!item) {
-    errors.item = "Bitte eintragen, was gebraucht wird.";
-  } else if (item.length > 100) {
-    errors.item = "Höchstens 100 Zeichen.";
+  const {
+    item,
+    recipeEntryId,
+    error: itemError,
+  } = resolveItem(catalog, profession, input.item.trim());
+  if (itemError) {
+    errors.item = itemError;
   }
   const quantity = input.quantity ?? 1;
   if (!Number.isInteger(quantity) || quantity < 1 || quantity > MAX_QUANTITY) {
@@ -190,6 +197,7 @@ export function createCraftRequest(
     .values({
       gameId: input.gameId,
       professionEntryId: profession!.id,
+      recipeEntryId,
       item,
       quantity,
       notes: notes || null,
@@ -197,6 +205,40 @@ export function createCraftRequest(
     })
     .run();
   return { ok: true };
+}
+
+/**
+ * What the request asks for. Crafting professions with pack recipes only take one of
+ * them, so nobody asks for items that do not exist; materials stay free text.
+ */
+function resolveItem(
+  catalog: GameCatalog | undefined,
+  profession: CatalogEntry | undefined,
+  input: string,
+): { item: string; recipeEntryId: number | null; error?: string } {
+  const recipes =
+    catalog && profession ? requestRecipesOf(catalog, profession) : null;
+  if (recipes) {
+    const recipe = recipes.find((entry) => entry.key === input);
+    return recipe
+      ? { item: localize(recipe.name), recipeEntryId: recipe.id }
+      : {
+          item: "",
+          recipeEntryId: null,
+          error: "Bitte ein Rezept aus der Liste wählen.",
+        };
+  }
+  if (!input) {
+    return {
+      item: "",
+      recipeEntryId: null,
+      error: "Bitte eintragen, was gebraucht wird.",
+    };
+  }
+  if (input.length > 100) {
+    return { item: "", recipeEntryId: null, error: "Höchstens 100 Zeichen." };
+  }
+  return { item: input, recipeEntryId: null };
 }
 
 function loadRequest(

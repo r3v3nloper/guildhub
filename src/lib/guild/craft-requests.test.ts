@@ -179,3 +179,48 @@ describe("craft requests", () => {
     });
   });
 });
+
+describe("what a request asks for", () => {
+  let fixture: ListFixture;
+
+  beforeEach(() => {
+    fixture = createListFixture();
+  });
+
+  const create = (professionKey: string, item: string) =>
+    createCraftRequest(fixture.db, fixture.member, {
+      ...request,
+      professionKey,
+      item,
+    });
+
+  it("takes only a pack recipe for a crafting profession and stores its name", () => {
+    // Act
+    const invented = create("leatherworking", "Lederhose der Unbesiegbarkeit");
+    const chosen = create("leatherworking", "leatherworking-kit");
+
+    // Assert
+    expect(invented).toEqual({
+      ok: false,
+      errors: { item: "Bitte ein Rezept aus der Liste wählen." },
+    });
+    expect(chosen).toEqual({ ok: true });
+    expect(listCraftRequests(fixture.db, fixture.member, ["game"])).toEqual([
+      expect.objectContaining({
+        item: "Leichtes Rüstungsset",
+        recipeEntryId: expect.any(Number),
+      }),
+    ]);
+  });
+
+  it("keeps free text for gathering professions, even with recipes", () => {
+    // Act
+    const result = create("mining", "20 Thoriumerz");
+
+    // Assert
+    expect(result).toEqual({ ok: true });
+    expect(listCraftRequests(fixture.db, fixture.member, ["game"])).toEqual([
+      expect.objectContaining({ item: "20 Thoriumerz", recipeEntryId: null }),
+    ]);
+  });
+});

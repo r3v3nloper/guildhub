@@ -24,6 +24,8 @@ export const requests = {
   hint: "Jedes Mitglied kann etwas anfragen. Annehmen kann, wer den Beruf hat; wer annimmt, meldet es als erledigt oder gibt es zurück.",
   new: "Neuer Antrag",
   item: "Was",
+  chooseRecipe: "Rezept wählen",
+  itemFreeText: "z. B. 20 Silberblatt",
   quantity: "Anzahl",
   notes: "Notiz",
   submit: "Anfragen",

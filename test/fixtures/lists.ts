@@ -20,6 +20,12 @@ const raw = {
       reagents: [{ name: { de: "Thoriumerz", en: "Thorium Ore" }, count: 1 }],
       link: "https://example.org/thorium",
     },
+    {
+      id: "leatherworking-kit",
+      name: { de: "Leichtes Rüstungsset", en: "Light Armor Kit" },
+      profession: "leatherworking",
+      skill: 1,
+    },
   ],
 };
 

@@ -572,6 +572,8 @@ export const craftRequests = sqliteTable(
     professionEntryId: integer("profession_entry_id")
       .notNull()
       .references(() => gameCatalogEntries.id),
+    // Set when the request names one of the pack recipes; item keeps its name.
+    recipeEntryId: catalogReference("recipe_entry_id"),
     item: text("item").notNull(),
     quantity: integer("quantity").notNull().default(1),
     notes: text("notes"),

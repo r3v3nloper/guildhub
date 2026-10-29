@@ -1,7 +1,11 @@
 import { localize } from "@/i18n/localize";
 import type { CatalogStatus } from "@/lib/db/schema";
 import type { CatalogKind } from "@/lib/packs/catalog";
-import { catalogOfKind, type GameCatalog } from "./game-catalog";
+import {
+  catalogOfKind,
+  type CatalogEntry,
+  type GameCatalog,
+} from "./game-catalog";
 
 /** A catalog entry as the client-side forms need it: serialisable and already localised. */
 export interface CatalogOption {
@@ -114,12 +118,31 @@ export function recipeOptionsOf(
   professionKey: string,
   fromSkillLabel: string,
 ): RecipeOption[] {
-  return catalogOfKind(catalog, "recipe")
-    .filter(
-      (entry) =>
-        entry.status === "active" && entry.data.profession === professionKey,
-    )
+  const recipes = catalogOfKind(catalog, "recipe").filter(
+    (entry) =>
+      entry.status === "active" && entry.data.profession === professionKey,
+  );
+  return recipeChoices(recipes, fromSkillLabel).map(
+    ({ name, label, skill }) => ({ value: name, label, skill }),
+  );
+}
+
+export interface RecipeChoice {
+  key: string;
+  name: string;
+  /** Name plus the skill it is learned at, e.g. "Leinenstoffballen (ab 1)". */
+  label: string;
+  skill: number | null;
+}
+
+/** Recipes as choices, easiest first; recipes without a known skill come last. */
+export function recipeChoices(
+  recipes: readonly CatalogEntry[],
+  fromSkillLabel: string,
+): RecipeChoice[] {
+  return recipes
     .map((entry) => ({
+      key: entry.key,
       name: localize(entry.name),
       skill: typeof entry.data.skill === "number" ? entry.data.skill : null,
     }))
@@ -128,9 +151,11 @@ export function recipeOptionsOf(
         (a.skill ?? Infinity) - (b.skill ?? Infinity) ||
         a.name.localeCompare(b.name),
     )
-    .map(({ name, skill }) => ({
-      value: name,
-      label: skill === null ? name : `${name} (${fromSkillLabel} ${skill})`,
-      skill,
+    .map((recipe) => ({
+      ...recipe,
+      label:
+        recipe.skill === null
+          ? recipe.name
+          : `${recipe.name} (${fromSkillLabel} ${recipe.skill})`,
     }));
 }

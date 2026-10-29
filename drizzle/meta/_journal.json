@@ -64,6 +64,13 @@
       "when": 1793274122913,
       "tag": "0008_recipe_catalog",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1793275813082,
+      "tag": "0009_craft_request_recipe",
+      "breakpoints": true
     }
   ]
 }

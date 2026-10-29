@@ -79,6 +79,12 @@ export const raceSchema = z.strictObject({
 export const professionSchema = z.strictObject({
   ...catalogEntry,
   kind: z.enum(PROFESSION_KINDS).default("primary"),
+  /**
+   * What a crafting request names: "recipes" = only one of the pack's recipes, "free" =
+   * any text (materials). Unset: gathering professions free, others recipes if the pack
+   * lists any.
+   */
+  requests: z.enum(["recipes", "free"]).optional(),
 });
 
 const httpLink = z.url().refine(isHttpUrl, "nur http(s)-Links");

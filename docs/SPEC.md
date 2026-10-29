@@ -428,7 +428,8 @@ Pflichtfelder sind markiert, alle anderen sind optional mit dem genannten Defaul
   } ],
   "specs": [ { "id": "paladin-heilig", "name": "Heilig", "class": "paladin", "role": "heal" } ],
                                       // optional; gibt es Specs, bestimmt die Spec die Rolle, nicht die Klasse
-  "professions": [ { "id": "...", "name": "...", "kind": "primary" } ],  // primary | secondary | gathering
+  "professions": [ { "id": "...", "name": "...", "kind": "primary", "requests": "recipes" } ],
+                                      // kind: primary | secondary | gathering; requests: recipes | free (Crafting-Anträge)
   "recipes": [ { "id": "alchemy-2330", "name": { "de": "...", "en": "..." }, "profession": "alchemy",
                  "skill": 1, "reagents": [ { "name": "...", "count": 1 } ], "link": "https://..." } ],
                                       // optional; Charaktere wählen Rezepte daraus, Freitext bleibt möglich
@@ -983,6 +984,7 @@ Entscheidungen, die beim Bauen getroffen wurden und das Modell aus 4.1 ergänzen
 - Backups: Das Datum im Dateinamen richtet sich nach `DEFAULT_TIMEZONE`. Das Script schreibt erst in eine temporäre Datei und benennt sie danach um, damit ein abgebrochener Lauf kein halbes Backup hinterlässt. Der Admin-Download liegt unter `/admin/backup`; Nicht-Owner bekommen dort 404. Der Service Worker cacht ihn nie.
 - **Spezialisierungen:** Listet ein Pack `specs`, wählt der Charakter-Editor Haupt-Spec und optionale Off-Spec aus den Specs seiner Klasse (statt Freitext). Die Rolle im Roster kommt dann aus der Haupt-Spec; ohne Spec ist sie „ohne Spec“ und der Editor weist darauf hin. Spiele ohne Specs (AION 2) behalten die Rolle der Klasse und das Freitextfeld. DPS ist bei WoW in Nahkampf- und Fernkampf-DPS geteilt.
 - **Rezepte aus ForeverDB:** `npm run packs:foreverdb` holt alle Rezepte der Pack-Berufe von der ForeverDB-API (deutsche und englische Namen, Fertigkeit, Reagenzien) ins WoW-Pack; der Key (`FOREVERDB_API_KEY`) wird nur dafür lokal gebraucht, nie im Betrieb. Übersprungen werden Altkopien (Season of Discovery); IDs sind `<beruf>-<spellId>`, weil wenige Rezepte zu zwei Berufen gehören. Im Charakter fügt eine Auswahl Rezepte als Zeile hinzu; sie zeigt nur Rezepte bis zur eingetragenen Fertigkeit (ohne Fertigkeit alle) und rendert lange Listen virtuell; beim Speichern wird jede Zeile, die mit einem Rezeptnamen (beliebige Sprache) beginnt, verknüpft, auch wenn der Name selbst einen Bindestrich enthält. Alles andere bleibt Freitext. Wo Rezeptdaten erscheinen (Charakter, Berufe-Verzeichnis), steht die Quellenangabe aus `credits`, wie ForeverDB es verlangt.
+- **Crafting-Anträge aus Rezepten:** Bei Berufen mit Pack-Rezepten wählt „Was“ ein Rezept aus der Liste (Server prüft das, der Antrag speichert Rezept und Namen). Freitext bleibt für Materialien: Sammelberufe von sich aus, sonst per `requests: "free"` am Beruf (WoW: Angeln), und für Berufe ohne Rezepte.
 - Berufe: Fertigkeit (0 bis 10000), Spezialisierung und Notiz werden je Beruf im Charakter-Editor gepflegt und im Roster als „Alchemie 300 (Tränke)“ angezeigt.
 
 ### Umsetzungsnotizen Phase 2

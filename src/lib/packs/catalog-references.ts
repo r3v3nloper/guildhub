@@ -111,6 +111,11 @@ export const CATALOG_REFERENCES: Record<CatalogKind, CatalogReference[]> = {
       column: recipeEntries.recipeEntryId,
       storedAs: "entryId",
     },
+    {
+      table: craftRequests,
+      column: craftRequests.recipeEntryId,
+      storedAs: "entryId",
+    },
   ],
   server: [
     {
