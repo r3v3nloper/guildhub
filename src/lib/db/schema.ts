@@ -427,8 +427,41 @@ export const checklists = sqliteTable("checklist", {
   visibility: text("visibility", { enum: VISIBILITIES })
     .notNull()
     .default("private"),
+  /** General notes on the dungeon: route, tips, what to bring. */
+  notes: text("notes"),
   createdAt: createdAt(),
 });
+
+/** A boss of a dungeon checklist, with what to watch out for. */
+export const checklistBosses = sqliteTable(
+  "checklist_boss",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    checklistId: integer("checklist_id")
+      .notNull()
+      .references(() => checklists.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    mechanics: text("mechanics"),
+    sortOrder: integer("sort_order").notNull(),
+  },
+  (boss) => [index("checklist_boss_checklist").on(boss.checklistId)],
+);
+
+/** What a boss drops, as the guild keeps it; not a full item database (SPEC 9). */
+export const bossLoot = sqliteTable(
+  "boss_loot",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    bossId: integer("boss_id")
+      .notNull()
+      .references(() => checklistBosses.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    link: text("link"),
+    notes: text("notes"),
+    sortOrder: integer("sort_order").notNull(),
+  },
+  (loot) => [index("boss_loot_boss").on(loot.bossId)],
+);
 
 export const checklistItems = sqliteTable(
   "checklist_item",

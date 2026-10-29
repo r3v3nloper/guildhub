@@ -43,6 +43,13 @@
       "when": 1793260269915,
       "tag": "0005_checklist_pins",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1793266337122,
+      "tag": "0006_dungeon_details",
+      "breakpoints": true
     }
   ]
 }

@@ -20,6 +20,7 @@ const input: ChecklistInput = {
   gameId: "game",
   visibility: "guild",
   items: "Feuerschutztränke\n\nWasser einpacken\n",
+  notes: "",
 };
 
 describe("dungeon checklists", () => {

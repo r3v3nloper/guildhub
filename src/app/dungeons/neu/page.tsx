@@ -31,6 +31,7 @@ async function NewChecklistContent() {
           game: selected ?? games[0]?.id ?? "",
           visibility: "guild",
           items: "",
+          notes: "",
         }}
         isNew
       />

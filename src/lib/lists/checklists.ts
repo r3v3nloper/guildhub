@@ -30,6 +30,8 @@ export interface ChecklistInput {
   visibility: string;
   /** One item per line. */
   items: string;
+  /** General notes on the dungeon. */
+  notes: string;
 }
 
 export type ChecklistErrors = Partial<Record<keyof ChecklistInput, string>>;
@@ -109,6 +111,29 @@ export function listChecklists(
   }));
 }
 
+/** One checklist as the list page shows it, if the actor may see it. */
+export function getChecklist(
+  db: AppDatabase,
+  actor: Actor,
+  checklistId: number,
+): ChecklistView {
+  const checklist = visibleChecklist(db, actor, checklistId);
+  return listChecklists(db, actor, [checklist.gameId]).find(
+    (view) => view.id === checklistId,
+  )!;
+}
+
+/** A checklist the actor may change; bosses and loot hang off it. */
+export function editableChecklist(
+  db: AppDatabase,
+  actor: Actor,
+  checklistId: number,
+): ChecklistRow {
+  const checklist = visibleChecklist(db, actor, checklistId);
+  assertAllowed(permissions.editSharedEntry(actor, checklist));
+  return checklist;
+}
+
 function visibleChecklist(
   db: AppDatabase,
   actor: Actor,
@@ -143,8 +168,9 @@ export function getEditableChecklist(
 }
 
 /**
- * Creates a checklist, or updates it when `checklistId` is given. Editing replaces the
- * items, which also clears everyone's ticks for the old ones.
+ * Creates a checklist, or updates it when `checklistId` is given. Changing the points
+ * replaces them, which also clears everyone's ticks; editing only name or notes keeps
+ * them.
  */
 export function saveChecklist(
   db: AppDatabase,
@@ -187,11 +213,29 @@ export function saveChecklist(
   } else if (labels.some((label) => label.length > 120)) {
     errors.items = "Ein Punkt darf höchstens 120 Zeichen haben.";
   }
+  const notes = input.notes.trim();
+  if (notes.length > 2000) {
+    errors.notes = "Höchstens 2000 Zeichen.";
+  }
   if (Object.keys(errors).length > 0) {
     return { ok: false, errors };
   }
 
-  const values = { name, visibility: input.visibility as Visibility };
+  const values = {
+    name,
+    notes: notes || null,
+    visibility: input.visibility as Visibility,
+  };
+  const currentLabels = existing
+    ? db
+        .select({ label: checklistItems.label })
+        .from(checklistItems)
+        .where(eq(checklistItems.checklistId, existing.id))
+        .orderBy(asc(checklistItems.sortOrder))
+        .all()
+        .map((item) => item.label)
+    : [];
+  const pointsChanged = currentLabels.join("\n") !== labels.join("\n");
   const id = db.transaction((tx) => {
     const savedId = existing
       ? tx
@@ -205,6 +249,9 @@ export function saveChecklist(
           .values({ ...values, ownerId: actor.userId, gameId })
           .returning()
           .get().id;
+    if (!pointsChanged) {
+      return savedId;
+    }
     tx.delete(checklistItems)
       .where(eq(checklistItems.checklistId, savedId))
       .run();

@@ -18,6 +18,7 @@ export interface ChecklistFormValues {
   game: string;
   visibility: string;
   items: string;
+  notes: string;
 }
 
 export function ChecklistForm({
@@ -63,6 +64,13 @@ export function ChecklistForm({
         hint={isNew ? undefined : de.checklists.itemsHint}
       >
         <TextArea name="items" defaultValue={values.items} rows={8} />
+      </Field>
+      <Field
+        label={de.checklists.notes}
+        error={errors.notes}
+        hint={de.checklists.notesHint}
+      >
+        <TextArea name="notes" defaultValue={values.notes} rows={5} />
       </Field>
       <div className="flex items-center gap-3">
         <Button disabled={pending}>{de.common.save}</Button>

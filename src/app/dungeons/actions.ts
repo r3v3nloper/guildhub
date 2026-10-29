@@ -18,6 +18,8 @@ import {
   setChecklistItemTicked,
   setChecklistPinned,
 } from "@/lib/lists/checklists";
+import { deleteBoss, saveBoss } from "@/lib/lists/dungeon-bosses";
+import { de } from "@/i18n/de";
 
 // "/" shows pinned checklists on the dashboard.
 const CHECKLISTS = ["/dungeons", "/"];
@@ -27,6 +29,7 @@ export async function saveChecklistAction(
   _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  let savedId: number | undefined;
   const state = await guarded(async () => {
     const result = saveChecklist(
       getDb(),
@@ -36,16 +39,60 @@ export async function saveChecklistAction(
         gameId: formText(formData, "game"),
         visibility: formText(formData, "visibility"),
         items: formText(formData, "items"),
+        notes: formText(formData, "notes"),
       },
       checklistId,
     );
-    return result.ok ? { ok: true } : { ok: false, errors: result.errors };
+    if (!result.ok) {
+      return { ok: false, errors: result.errors };
+    }
+    savedId = result.checklistId;
+    return { ok: true };
   });
-  if (state.ok) {
-    revalidatePath("/dungeons");
-    redirect("/dungeons");
+  if (state.ok && savedId !== undefined) {
+    for (const path of CHECKLISTS) {
+      revalidatePath(path);
+    }
+    redirect(`/dungeons/${savedId}`);
   }
   return state;
+}
+
+export async function saveBossAction(
+  checklistId: number,
+  bossId: number | undefined,
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const state = await guarded(async () => {
+    const result = saveBoss(
+      getDb(),
+      await actorForAction(),
+      checklistId,
+      {
+        name: formText(formData, "name"),
+        mechanics: formText(formData, "mechanics"),
+        loot: formText(formData, "loot"),
+      },
+      bossId,
+    );
+    return result.ok
+      ? { ok: true, message: de.common.saved }
+      : { ok: false, errors: result.errors };
+  });
+  if (state.ok) {
+    revalidatePath(`/dungeons/${checklistId}`);
+  }
+  return state;
+}
+
+export async function deleteBossAction(
+  checklistId: number,
+  bossId: number,
+): Promise<ActionState> {
+  return runMutation([`/dungeons/${checklistId}`], (db, actor) =>
+    deleteBoss(db, actor, checklistId, bossId),
+  );
 }
 
 export async function deleteChecklistAction(

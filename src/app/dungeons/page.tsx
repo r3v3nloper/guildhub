@@ -76,14 +76,20 @@ function ChecklistCard({ checklist }: { checklist: ChecklistView }) {
       title={
         <span className="flex flex-wrap items-center justify-between gap-2">
           <span className="flex items-center gap-2">
-            {checklist.name}
+            <Link
+              href={`/dungeons/${checklist.id}`}
+              title={de.checklists.detail}
+              className="hover:text-accent"
+            >
+              {checklist.name}
+            </Link>
             <span className="text-sm font-normal text-muted">
               {de.checklists.progress(ticked, checklist.items.length)}
             </span>
           </span>
           {checklist.canEdit && (
             <Link
-              href={`/dungeons/${checklist.id}`}
+              href={`/dungeons/${checklist.id}/bearbeiten`}
               aria-label={de.checklists.editTitle}
               title={de.checklists.editTitle}
               className="text-base text-muted hover:text-accent"

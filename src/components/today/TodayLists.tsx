@@ -75,7 +75,7 @@ function ChecklistCard({ checklist }: { checklist: ChecklistView }) {
       icon="pi-flag"
       kind={de.today.checklist}
       title={checklist.name}
-      href="/dungeons"
+      href={`/dungeons/${checklist.id}`}
       meta={de.checklists.progress(ticked, checklist.items.length)}
     >
       <ul className="divide-y divide-border">

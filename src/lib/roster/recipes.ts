@@ -1,6 +1,7 @@
 import { and, asc, eq, inArray } from "drizzle-orm";
 import type { DbExecutor } from "@/lib/db/client";
 import { recipeEntries } from "@/lib/db/schema";
+import { splitNameNote } from "@/lib/name-note";
 
 export interface Recipe {
   name: string;
@@ -10,8 +11,6 @@ export interface Recipe {
 const MAX_RECIPES = 100;
 const MAX_NAME = 100;
 const MAX_NOTES = 200;
-/** "Name – Notiz": a spaced dash separates the optional note. */
-const NOTE_SEPARATOR = /(?:^|\s)[-–]\s/;
 
 /**
  * Recipes are edited as text, one per line, optionally with a note after a spaced dash
@@ -24,15 +23,7 @@ export function parseRecipeLines(
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean)
-    .map((line) => {
-      const match = NOTE_SEPARATOR.exec(line);
-      return match
-        ? {
-            name: line.slice(0, match.index).trim(),
-            notes: line.slice(match.index + match[0].length).trim() || null,
-          }
-        : { name: line, notes: null };
-    });
+    .map(splitNameNote);
   if (recipes.length > MAX_RECIPES) {
     return { ok: false, error: `Höchstens ${MAX_RECIPES} Rezepte.` };
   }
