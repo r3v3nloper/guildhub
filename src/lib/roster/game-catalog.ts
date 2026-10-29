@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import type { AppDatabase } from "@/lib/db/client";
 import {
   gameCatalogEntries,
@@ -21,12 +21,18 @@ export interface GameInfo {
 export interface GameCatalog {
   game: GameInfo;
   entries: CatalogEntry[];
+  /** False when loaded without recipes; absent means every kind is there. */
+  withRecipes?: boolean;
 }
 
 export function catalogOfKind(
   catalog: GameCatalog,
   kind: CatalogKind,
 ): CatalogEntry[] {
+  // An empty recipe list would silently turn recipe lookups into free text.
+  if (kind === "recipe" && catalog.withRecipes === false) {
+    throw new Error("Katalog wurde ohne Rezepte geladen.");
+  }
   return catalog.entries.filter((entry) => entry.kind === kind);
 }
 
@@ -40,20 +46,32 @@ export function selectableOfKind(
   );
 }
 
+/**
+ * Recipes are by far the largest catalog (thousands in WoW), so they are only loaded
+ * when a caller asks for them.
+ */
 export function loadGameCatalog(
   db: AppDatabase,
   gameId: string,
+  options: { withRecipes?: boolean } = {},
 ): GameCatalog | undefined {
   const game = db.select().from(games).where(eq(games.id, gameId)).get();
   if (!game) {
     return undefined;
   }
+  const withRecipes = options.withRecipes ?? false;
   return {
     game,
+    withRecipes,
     entries: db
       .select()
       .from(gameCatalogEntries)
-      .where(eq(gameCatalogEntries.gameId, gameId))
+      .where(
+        and(
+          eq(gameCatalogEntries.gameId, gameId),
+          withRecipes ? undefined : ne(gameCatalogEntries.kind, "recipe"),
+        ),
+      )
       .orderBy(gameCatalogEntries.id)
       .all(),
   };
@@ -106,5 +124,21 @@ export function isGameEnabled(
         and(eq(guildGames.guildId, guildId), eq(guildGames.gameId, gameId)),
       )
       .get()?.enabled === true
+  );
+}
+
+/**
+ * A profession's recipes: the active ones, plus outdated ones listed in `keepIds` because
+ * something still references them (SPEC 6.5 B).
+ */
+export function recipesOfProfession(
+  catalog: GameCatalog,
+  professionKey: string,
+  keepIds: readonly number[] = [],
+): CatalogEntry[] {
+  return catalogOfKind(catalog, "recipe").filter(
+    (entry) =>
+      entry.data.profession === professionKey &&
+      (entry.status === "active" || keepIds.includes(entry.id)),
   );
 }

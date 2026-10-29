@@ -11,37 +11,18 @@ import { DomainError, NotFoundError } from "@/lib/errors";
 import { ensureGuild } from "@/lib/guild/guild";
 import { loadPacks } from "@/lib/packs/loader";
 import { syncPacks } from "@/lib/packs/sync";
-import type { CharacterInput } from "./character-rules";
+import { characterInput } from "../../../test/fixtures/characters";
+import { deleteBuild, saveBuild } from "./builds";
 import {
-  deleteBuild,
-  getCharacter,
-  saveBuild,
-  saveCharacter,
   saveProfessionDetails,
-  setCharacterLevel,
   setProfessionSkill,
-} from "./characters";
+} from "./character-professions";
+import { getCharacter, saveCharacter, setCharacterLevel } from "./characters";
 import { filterRoster, loadRosterMembers, OUTDATED_FILTER_KEY } from "./roster";
 
 const OWNER = "100000000000000001";
 
-function input(overrides: Partial<CharacterInput> = {}): CharacterInput {
-  return {
-    name: "Held",
-    server: "",
-    factionKey: "",
-    raceKey: "",
-    classKey: "",
-    specKey: "",
-    offSpecKey: "",
-    spec: "",
-    level: null,
-    isMain: false,
-    notes: "",
-    professionKeys: [],
-    ...overrides,
-  };
-}
+const input = characterInput;
 
 describe("characters and roster with the shipped packs", () => {
   let db: AppDatabase;

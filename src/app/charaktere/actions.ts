@@ -12,13 +12,9 @@ import { actorForAction } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { BUILD_STATUSES, type BuildStatus } from "@/lib/db/schema";
 import type { CharacterInput } from "@/lib/roster/character-rules";
-import {
-  deleteBuild,
-  deleteCharacter,
-  saveBuild,
-  saveCharacter,
-  saveProfessionDetails,
-} from "@/lib/roster/characters";
+import { deleteBuild, saveBuild } from "@/lib/roster/builds";
+import { saveProfessionDetails } from "@/lib/roster/character-professions";
+import { deleteCharacter, saveCharacter } from "@/lib/roster/characters";
 import { de } from "@/i18n/de";
 
 function characterInputOf(formData: FormData): CharacterInput {

@@ -7,6 +7,7 @@ import {
   type CharacterInput,
 } from "./character-rules";
 import type { CatalogEntry, GameCatalog } from "./game-catalog";
+import { characterInput } from "../../../test/fixtures/characters";
 
 let nextId = 1;
 function entry(
@@ -98,21 +99,12 @@ const wow = catalog({
 });
 
 function input(overrides: Partial<CharacterInput> = {}): CharacterInput {
-  return {
+  return characterInput({
     name: "Anduin",
-    server: "",
-    factionKey: "",
     raceKey: "human",
     classKey: "paladin",
-    specKey: "",
-    offSpecKey: "",
-    spec: "",
-    level: null,
-    isMain: false,
-    notes: "",
-    professionKeys: [],
     ...overrides,
-  };
+  });
 }
 
 describe("resolveCharacter", () => {

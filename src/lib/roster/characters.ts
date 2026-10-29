@@ -2,24 +2,9 @@ import { and, asc, eq, inArray, ne } from "drizzle-orm";
 import { assertAllowed, permissions, type Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
 import { DomainError, NotFoundError } from "@/lib/errors";
-import {
-  builds,
-  characterProfessions,
-  characters,
-  type BuildStatus,
-} from "@/lib/db/schema";
+import { builds, characterProfessions, characters } from "@/lib/db/schema";
 import { deleteCharacterProgress } from "@/lib/tasks/progress";
-import { isHttpUrl } from "@/lib/url";
-import { detectBuildSource } from "./build-source";
-import {
-  deleteRecipes,
-  formatRecipeLines,
-  knownRecipesOf,
-  linkedRecipeIds,
-  listRecipes,
-  parseRecipeLines,
-  replaceRecipes,
-} from "./recipes";
+import { deleteRecipes, formatRecipeLines, listRecipes } from "./recipes";
 import {
   LEVEL_MAX,
   resolveCharacter,
@@ -28,12 +13,10 @@ import {
   type PreviousSelection,
 } from "./character-rules";
 import {
-  catalogOfKind,
   isGameEnabled,
   loadGameCatalog,
   type GameCatalog,
 } from "./game-catalog";
-import { keyOfEntry } from "./form-options";
 
 export type CharacterRow = typeof characters.$inferSelect;
 export type BuildRow = typeof builds.$inferSelect;
@@ -130,7 +113,8 @@ export function selectionOf(character: CharacterDetails): PreviousSelection {
   };
 }
 
-function ownedCharacter(
+/** The character, if the actor may change it; shared with builds and professions. */
+export function ownedCharacter(
   db: AppDatabase,
   actor: Actor,
   characterId: number,
@@ -143,8 +127,12 @@ function ownedCharacter(
   return character;
 }
 
-function requireCatalog(db: AppDatabase, gameId: string): GameCatalog {
-  const catalog = loadGameCatalog(db, gameId);
+export function requireCatalog(
+  db: AppDatabase,
+  gameId: string,
+  options: { withRecipes?: boolean } = {},
+): GameCatalog {
+  const catalog = loadGameCatalog(db, gameId, options);
   if (!catalog) {
     throw new NotFoundError("Spiel");
   }
@@ -277,178 +265,6 @@ export function deleteCharacter(
   });
 }
 
-export interface BuildInput {
-  title: string;
-  url: string;
-  status: BuildStatus;
-  targetClassKey: string;
-  notes: string;
-}
-
-export type BuildErrors = Partial<Record<keyof BuildInput, string>>;
-
-export type BuildSaveResult = { ok: true } | { ok: false; errors: BuildErrors };
-
-/** Adds a build link, or updates it when `buildId` is given. */
-export function saveBuild(
-  db: AppDatabase,
-  actor: Actor,
-  characterId: number,
-  input: BuildInput,
-  buildId?: number,
-): BuildSaveResult {
-  const character = ownedCharacter(db, actor, characterId);
-  const existing = buildId
-    ? character.builds.find((build) => build.id === buildId)
-    : undefined;
-  if (buildId && !existing) {
-    throw new NotFoundError("Build");
-  }
-
-  const catalog = requireCatalog(db, character.gameId);
-  const errors: BuildErrors = {};
-  const url = input.url.trim();
-  if (url && !isHttpUrl(url)) {
-    errors.url = "Bitte einen vollständigen Link (https://…) angeben.";
-  }
-  const source = url
-    ? detectBuildSource(url, catalog.game.meta.buildSources)
-    : undefined;
-  const title = input.title.trim() || source || "";
-  if (!title) {
-    errors.title = "Titel oder Link angeben.";
-  }
-
-  let targetClassEntryId: number | null = null;
-  if (input.status === "planned" && input.targetClassKey) {
-    const entry = catalogOfKind(catalog, "class").find(
-      (e) => e.key === input.targetClassKey,
-    );
-    if (
-      !entry ||
-      (entry.status !== "active" && entry.id !== existing?.targetClassEntryId)
-    ) {
-      errors.targetClassKey = "Klasse nicht auswählbar.";
-    } else {
-      targetClassEntryId = entry.id;
-    }
-  }
-
-  if (Object.keys(errors).length > 0) {
-    return { ok: false, errors };
-  }
-
-  const values = {
-    title,
-    url: url || null,
-    source: source ?? null,
-    status: input.status,
-    targetClassEntryId,
-    notes: input.notes.trim() || null,
-  };
-  if (existing) {
-    db.update(builds).set(values).where(eq(builds.id, existing.id)).run();
-  } else {
-    db.insert(builds)
-      .values({ ...values, characterId })
-      .run();
-  }
-  return { ok: true };
-}
-
-export function deleteBuild(
-  db: AppDatabase,
-  actor: Actor,
-  characterId: number,
-  buildId: number,
-): void {
-  const character = ownedCharacter(db, actor, characterId);
-  if (!character.builds.some((build) => build.id === buildId)) {
-    throw new NotFoundError("Build");
-  }
-  db.delete(builds).where(eq(builds.id, buildId)).run();
-}
-
-export interface ProfessionDetailsInput {
-  skillLevel: number | null;
-  specialization: string;
-  notes: string;
-  recipes: string;
-}
-
-export type ProfessionDetailsErrors = Partial<
-  Record<keyof ProfessionDetailsInput, string>
->;
-
-export const SKILL_LEVEL_MAX = 10000;
-const PROFESSION_TEXT_MAX_LENGTH = 200;
-
-/** Skill, specialisation and notes of a profession the character already has. */
-export function saveProfessionDetails(
-  db: AppDatabase,
-  actor: Actor,
-  characterId: number,
-  professionEntryId: number,
-  input: ProfessionDetailsInput,
-): { ok: true } | { ok: false; errors: ProfessionDetailsErrors } {
-  const character = ownedCharacter(db, actor, characterId);
-  if (!character.professionEntryIds.includes(professionEntryId)) {
-    throw new NotFoundError("Beruf");
-  }
-
-  const errors: ProfessionDetailsErrors = {};
-  const { skillLevel } = input;
-  if (
-    skillLevel !== null &&
-    (!Number.isInteger(skillLevel) ||
-      skillLevel < 0 ||
-      skillLevel > SKILL_LEVEL_MAX)
-  ) {
-    errors.skillLevel = `Wert zwischen 0 und ${SKILL_LEVEL_MAX}.`;
-  }
-  const specialization = input.specialization.trim();
-  const notes = input.notes.trim();
-  if (specialization.length > PROFESSION_TEXT_MAX_LENGTH) {
-    errors.specialization = `Höchstens ${PROFESSION_TEXT_MAX_LENGTH} Zeichen.`;
-  }
-  if (notes.length > PROFESSION_TEXT_MAX_LENGTH) {
-    errors.notes = `Höchstens ${PROFESSION_TEXT_MAX_LENGTH} Zeichen.`;
-  }
-  const catalog = requireCatalog(db, character.gameId);
-  const recipes = parseRecipeLines(
-    input.recipes,
-    knownRecipesOf(
-      catalog,
-      keyOfEntry(catalog, professionEntryId),
-      linkedRecipeIds(db, characterId),
-    ),
-  );
-  if (!recipes.ok) {
-    errors.recipes = recipes.error;
-  }
-  if (!recipes.ok || Object.keys(errors).length > 0) {
-    return { ok: false, errors };
-  }
-
-  db.transaction((tx) => {
-    replaceRecipes(tx, characterId, professionEntryId, recipes.recipes);
-    tx.update(characterProfessions)
-      .set({
-        skillLevel,
-        specialization: specialization || null,
-        notes: notes || null,
-      })
-      .where(
-        and(
-          eq(characterProfessions.characterId, characterId),
-          eq(characterProfessions.professionEntryId, professionEntryId),
-        ),
-      )
-      .run();
-  });
-  return { ok: true };
-}
-
 /**
  * Quick level change from the overview: the same bounds as the editor, without
  * touching anything else of the character.
@@ -466,35 +282,5 @@ export function setCharacterLevel(
   db.update(characters)
     .set({ level })
     .where(eq(characters.id, characterId))
-    .run();
-}
-
-/** Quick skill change from the overview, for a profession the character has. */
-export function setProfessionSkill(
-  db: AppDatabase,
-  actor: Actor,
-  characterId: number,
-  professionEntryId: number,
-  skillLevel: number,
-): void {
-  const character = ownedCharacter(db, actor, characterId);
-  if (!character.professionEntryIds.includes(professionEntryId)) {
-    throw new NotFoundError("Beruf");
-  }
-  if (
-    !Number.isInteger(skillLevel) ||
-    skillLevel < 0 ||
-    skillLevel > SKILL_LEVEL_MAX
-  ) {
-    throw new DomainError(`Fertigkeit zwischen 0 und ${SKILL_LEVEL_MAX}.`);
-  }
-  db.update(characterProfessions)
-    .set({ skillLevel })
-    .where(
-      and(
-        eq(characterProfessions.characterId, characterId),
-        eq(characterProfessions.professionEntryId, professionEntryId),
-      ),
-    )
     .run();
 }

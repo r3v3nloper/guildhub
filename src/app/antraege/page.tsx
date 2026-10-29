@@ -22,6 +22,7 @@ import {
   deleteCraftRequestAction,
   finishCraftRequestAction,
   returnCraftRequestAction,
+  requestRecipeChoicesAction,
 } from "./actions";
 
 export const metadata: Metadata = { title: de.requests.title };
@@ -32,9 +33,9 @@ async function RequestsContent() {
   const { games, selectedId } = await selectedGames(db, actor.guildId);
   const shownIds = new Set(games.map((game) => game.id));
   // Only games with professions can take requests.
-  const formGames = professionGameOptions(db, actor.guildId, true, {
-    withRequestRecipes: true,
-  }).filter((game) => shownIds.has(game.value) && game.professions.length > 0);
+  const formGames = professionGameOptions(db, actor.guildId, true).filter(
+    (game) => shownIds.has(game.value) && game.professions.length > 0,
+  );
   const requests = listCraftRequests(
     db,
     actor,
@@ -56,6 +57,7 @@ async function RequestsContent() {
         <Card title={de.requests.new}>
           <CraftRequestForm
             action={createCraftRequestAction}
+            loadRecipes={requestRecipeChoicesAction}
             games={formGames}
             defaultGame={selectedId ?? formGames[0].value}
           />

@@ -20,7 +20,9 @@ import {
   type CatalogEntry,
   type GameCatalog,
 } from "@/lib/roster/game-catalog";
+import { recipeChoices } from "@/lib/roster/form-options";
 import { requestRecipesOf } from "@/lib/roster/request-recipes";
+import { de } from "@/i18n/de";
 import { localize } from "@/i18n/localize";
 
 export type CraftRequestRow = typeof craftRequests.$inferSelect;
@@ -161,7 +163,7 @@ export function createCraftRequest(
 ): { ok: true } | { ok: false; errors: CraftRequestErrors } {
   assertAllowed(permissions.editOwnData(actor, actor.userId));
   const errors: CraftRequestErrors = {};
-  const catalog = loadGameCatalog(db, input.gameId);
+  const catalog = loadGameCatalog(db, input.gameId, { withRecipes: true });
   if (!catalog || !isGameEnabled(db, actor.guildId, input.gameId)) {
     errors.gameId = "Bitte ein Spiel wählen.";
   }
@@ -335,4 +337,40 @@ export function deleteCraftRequest(
       requesterId: request.requesterId,
     });
   }
+}
+
+export interface RequestRecipeChoice {
+  value: string;
+  label: string;
+  reagents: string | null;
+}
+
+/**
+ * What a request for this profession may name: its recipes, or null for free text. Asked
+ * for once a profession is chosen, so the page does not ship every recipe up front.
+ */
+export function requestRecipeChoices(
+  db: AppDatabase,
+  actor: Actor,
+  gameId: string,
+  professionKey: string,
+): RequestRecipeChoice[] | null {
+  assertAllowed(permissions.viewGuild(actor));
+  const catalog = isGameEnabled(db, actor.guildId, gameId)
+    ? loadGameCatalog(db, gameId, { withRecipes: true })
+    : undefined;
+  const profession = catalog
+    ? selectableOfKind(catalog, "profession").find(
+        (entry) => entry.key === professionKey,
+      )
+    : undefined;
+  if (!catalog || !profession) {
+    throw new NotFoundError("Beruf");
+  }
+  const recipes = requestRecipesOf(catalog, profession);
+  return recipes
+    ? recipeChoices(recipes, de.characters.recipeFromSkill).map(
+        ({ key, label, reagents }) => ({ value: key, label, reagents }),
+      )
+    : null;
 }

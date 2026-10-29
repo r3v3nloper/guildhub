@@ -4,7 +4,8 @@ import { z } from "zod";
 import { flagArg, idArg, parseArg } from "@/lib/actions/action-args";
 import type { ActionState } from "@/lib/actions/action-state";
 import { runMutation } from "@/lib/actions/mutation";
-import { setCharacterLevel, setProfessionSkill } from "@/lib/roster/characters";
+import { setProfessionSkill } from "@/lib/roster/character-professions";
+import { setCharacterLevel } from "@/lib/roster/characters";
 import {
   adjustCounter,
   consumeStacking,

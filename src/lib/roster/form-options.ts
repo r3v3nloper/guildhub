@@ -3,9 +3,11 @@ import type { CatalogStatus } from "@/lib/db/schema";
 import type { CatalogKind } from "@/lib/packs/catalog";
 import {
   catalogOfKind,
+  recipesOfProfession,
   type CatalogEntry,
   type GameCatalog,
 } from "./game-catalog";
+import { stringList } from "./catalog-data";
 import { formatReagents } from "./recipe-reagents";
 
 /** A catalog entry as the client-side forms need it: serialisable and already localised. */
@@ -38,12 +40,6 @@ export interface CharacterFormOptions {
   specs: CatalogOption[];
   professions: CatalogOption[];
   servers: CatalogOption[];
-}
-
-function stringList(value: unknown): string[] {
-  return Array.isArray(value)
-    ? value.filter((v): v is string => typeof v === "string")
-    : [];
 }
 
 /**
@@ -119,13 +115,10 @@ export function recipeOptionsOf(
   professionKey: string,
   fromSkillLabel: string,
 ): RecipeOption[] {
-  const recipes = catalogOfKind(catalog, "recipe").filter(
-    (entry) =>
-      entry.status === "active" && entry.data.profession === professionKey,
-  );
-  return recipeChoices(recipes, fromSkillLabel).map(
-    ({ name, label, skill }) => ({ value: name, label, skill }),
-  );
+  return recipeChoices(
+    recipesOfProfession(catalog, professionKey),
+    fromSkillLabel,
+  ).map(({ name, label, skill }) => ({ value: name, label, skill }));
 }
 
 export interface RecipeChoice {

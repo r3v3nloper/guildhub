@@ -15,8 +15,12 @@ import {
   createCraftRequest,
   deleteCraftRequest,
   finishCraftRequest,
+  requestRecipeChoices,
   returnCraftRequest,
+  type RequestRecipeChoice,
 } from "@/lib/guild/craft-requests";
+import { parseArg } from "@/lib/actions/action-args";
+import { z } from "zod";
 import { de } from "@/i18n/de";
 
 // "/" shows the requests a member can craft, and the navigation counts them.
@@ -75,5 +79,18 @@ export async function deleteCraftRequestAction(
 ): Promise<ActionState> {
   return runMutation(REQUESTS, (db, actor) =>
     deleteCraftRequest(db, actor, requestId),
+  );
+}
+
+/** The recipes a request for this profession must choose from; null means free text. */
+export async function requestRecipeChoicesAction(
+  gameId: string,
+  professionKey: string,
+): Promise<RequestRecipeChoice[] | null> {
+  return requestRecipeChoices(
+    getDb(),
+    await actorForAction(),
+    parseArg(z.string().min(1), gameId),
+    parseArg(z.string().min(1), professionKey),
   );
 }

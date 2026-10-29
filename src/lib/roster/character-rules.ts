@@ -6,6 +6,7 @@ import {
   type GameCatalog,
 } from "./game-catalog";
 import { classFitsFaction, classFitsRace } from "./class-restrictions";
+import { stringList } from "./catalog-data";
 import { cleanServerName, normalizeServerKey } from "./server-name";
 
 export interface CharacterInput {
@@ -267,12 +268,6 @@ function resolveServer(
 
 function hasEntries(catalog: GameCatalog, kind: CatalogKind): boolean {
   return catalogOfKind(catalog, kind).length > 0;
-}
-
-function stringList(value: unknown): string[] {
-  return Array.isArray(value)
-    ? value.filter((item): item is string => typeof item === "string")
-    : [];
 }
 
 function optionalText(value: string): string | null {

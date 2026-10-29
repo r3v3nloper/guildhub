@@ -3,7 +3,7 @@ import type { DbExecutor } from "@/lib/db/client";
 import { recipeEntries } from "@/lib/db/schema";
 import { allTranslations, localize } from "@/i18n/localize";
 import { splitNameNote } from "@/lib/name-note";
-import { catalogOfKind, type GameCatalog } from "./game-catalog";
+import { recipesOfProfession, type GameCatalog } from "./game-catalog";
 
 export interface Recipe {
   name: string;
@@ -32,17 +32,13 @@ export function knownRecipesOf(
   professionKey: string,
   linkedIds: readonly number[] = [],
 ): KnownRecipe[] {
-  return catalogOfKind(catalog, "recipe")
-    .filter(
-      (entry) =>
-        entry.data.profession === professionKey &&
-        (entry.status === "active" || linkedIds.includes(entry.id)),
-    )
-    .map((entry) => ({
+  return recipesOfProfession(catalog, professionKey, linkedIds).map(
+    (entry) => ({
       entryId: entry.id,
       name: localize(entry.name),
       names: allTranslations(entry.name),
-    }));
+    }),
+  );
 }
 
 const MAX_RECIPES = 100;

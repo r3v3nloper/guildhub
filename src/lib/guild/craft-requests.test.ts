@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { listAudit } from "@/lib/audit/audit";
-import { DomainError, ForbiddenError } from "@/lib/errors";
+import { DomainError, ForbiddenError, NotFoundError } from "@/lib/errors";
 import { saveCharacter } from "@/lib/roster/characters";
-import type { CharacterInput } from "@/lib/roster/character-rules";
+import { characterInput } from "../../../test/fixtures/characters";
 import {
   createListFixture,
   type ListFixture,
@@ -14,6 +14,7 @@ import {
   finishCraftRequest,
   listCraftRequests,
   listCraftRequestsForCrafter,
+  requestRecipeChoices,
   returnCraftRequest,
   type CraftRequestInput,
 } from "./craft-requests";
@@ -26,20 +27,7 @@ const request: CraftRequestInput = {
   notes: "Erz bringe ich mit",
 };
 
-const miner: CharacterInput = {
-  name: "Gimli",
-  server: "",
-  factionKey: "",
-  raceKey: "",
-  classKey: "",
-  specKey: "",
-  offSpecKey: "",
-  spec: "",
-  level: null,
-  isMain: false,
-  notes: "",
-  professionKeys: ["mining"],
-};
+const miner = characterInput({ name: "Gimli", professionKeys: ["mining"] });
 
 describe("craft requests", () => {
   let fixture: ListFixture;
@@ -222,5 +210,46 @@ describe("what a request asks for", () => {
     expect(listCraftRequests(fixture.db, fixture.member, ["game"])).toEqual([
       expect.objectContaining({ item: "20 Thoriumerz", recipeEntryId: null }),
     ]);
+  });
+});
+
+describe("requestRecipeChoices", () => {
+  it("offers the recipes of a crafting profession, free text for gathering", () => {
+    // Arrange
+    const fixture = createListFixture();
+
+    // Act
+    const leatherworking = requestRecipeChoices(
+      fixture.db,
+      fixture.member,
+      "game",
+      "leatherworking",
+    );
+    const mining = requestRecipeChoices(
+      fixture.db,
+      fixture.member,
+      "game",
+      "mining",
+    );
+
+    // Assert
+    expect(leatherworking).toEqual([
+      {
+        value: "leatherworking-kit",
+        label: "Leichtes Rüstungsset (ab 1)",
+        reagents: null,
+      },
+    ]);
+    expect(mining).toBeNull();
+  });
+
+  it("refuses unknown professions", () => {
+    // Arrange
+    const fixture = createListFixture();
+
+    // Act & Assert
+    expect(() =>
+      requestRecipeChoices(fixture.db, fixture.member, "game", "alchemy"),
+    ).toThrow(NotFoundError);
   });
 });

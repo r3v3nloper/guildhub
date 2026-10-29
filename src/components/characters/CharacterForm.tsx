@@ -17,6 +17,8 @@ import {
 import { useFormAction } from "@/components/ui/use-form-action";
 import type { ActionState } from "@/lib/actions/action-state";
 import type { CharacterHint } from "@/lib/roster/character-rules";
+import { optionLabel } from "./catalog-option-label";
+import { SpecFields } from "./SpecFields";
 import { allowedClasses } from "@/lib/roster/class-restrictions";
 import type {
   CatalogOption,
@@ -51,16 +53,6 @@ function toSelectOption(option: CatalogOption): SelectOption {
   return { value: option.key, label: optionLabel(option) };
 }
 
-function optionLabel(option: CatalogOption): string {
-  if (option.status === "removed") {
-    return `${option.label} (${de.badges.removed})`;
-  }
-  if (option.status === "deprecated") {
-    return `${option.label} (${de.badges.deprecated})`;
-  }
-  return option.todo ? `${option.label} (${de.badges.todo})` : option.label;
-}
-
 /** Classes the chosen race/faction may play; the same rule the server enforces. */
 function classesFor(
   options: CharacterFormOptions,
@@ -82,39 +74,23 @@ export function CharacterForm({
   const [faction, setFaction] = useState(values.faction);
   const [race, setRace] = useState(values.race);
   const [characterClass, setCharacterClass] = useState(values.characterClass);
-  const [specKey, setSpecKey] = useState(values.specKey);
-  const [offSpecKey, setOffSpecKey] = useState(values.offSpecKey);
   const { capabilities } = options;
   const errors = state.errors ?? {};
   const hintFor = (field: CharacterHint["field"]) =>
     hints.find((hint) => hint.field === field)?.message;
 
   const classes = classesFor(options, faction, race);
-  const chooseClass = (next: string) => {
-    if (next !== characterClass) {
-      setSpecKey("");
-      setOffSpecKey("");
-    }
-    setCharacterClass(next);
-  };
   const keepClassIfAllowed = (nextFaction: string, nextRace: string) => {
     if (
       !classesFor(options, nextFaction, nextRace).some(
         (o) => o.key === characterClass,
       )
     ) {
-      chooseClass("");
+      setCharacterClass("");
     }
   };
   const usesSpecCatalog = capabilities.classes && options.specs.length > 0;
-  const specOptions = options.specs
-    .filter((option) => option.specClass === characterClass)
-    .map((option) => ({
-      value: option.key,
-      label: option.role
-        ? `${optionLabel(option)} – ${de.roles[option.role] ?? option.role}`
-        : optionLabel(option),
-    }));
+  const isStoredClass = characterClass === values.characterClass;
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
@@ -218,47 +194,21 @@ export function CharacterForm({
                   ? `${optionLabel(option)} – ${de.roles[option.role] ?? option.role}`
                   : optionLabel(option),
               }))}
-              onChange={chooseClass}
+              onChange={setCharacterClass}
             />
           </Field>
         )}
 
         {usesSpecCatalog ? (
-          <>
-            <Field
-              label={de.characters.spec}
-              error={errors.specKey}
-              hint={hintFor("specKey")}
-            >
-              <SelectField
-                name="specKey"
-                value={specKey}
-                emptyLabel={de.common.none}
-                disabled={!characterClass}
-                options={specOptions}
-                onChange={(next) => {
-                  setSpecKey(next);
-                  if (!next || next === offSpecKey) {
-                    setOffSpecKey("");
-                  }
-                }}
-              />
-            </Field>
-            <Field
-              label={de.characters.offSpec}
-              error={errors.offSpecKey}
-              hint={hintFor("offSpecKey")}
-            >
-              <SelectField
-                name="offSpecKey"
-                value={offSpecKey}
-                emptyLabel={de.common.none}
-                disabled={!specKey}
-                options={specOptions.filter((o) => o.value !== specKey)}
-                onChange={setOffSpecKey}
-              />
-            </Field>
-          </>
+          <SpecFields
+            key={characterClass}
+            specs={options.specs}
+            classKey={characterClass}
+            defaultSpec={isStoredClass ? values.specKey : ""}
+            defaultOffSpec={isStoredClass ? values.offSpecKey : ""}
+            errors={{ spec: errors.specKey, offSpec: errors.offSpecKey }}
+            hints={{ spec: hintFor("specKey"), offSpec: hintFor("offSpecKey") }}
+          />
         ) : (
           <Field label={de.characters.spec} error={errors.spec}>
             <TextInput name="spec" defaultValue={values.spec} />

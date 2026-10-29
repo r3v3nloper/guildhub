@@ -1,49 +1,67 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import { SelectField, type SelectOption } from "@/components/ui/SelectField";
 import { Button, Field, FormMessage, TextInput } from "@/components/ui/ui";
 import { useFormAction } from "@/components/ui/use-form-action";
 import type { ActionState } from "@/lib/actions/action-state";
+import type { RequestRecipeChoice } from "@/lib/guild/craft-requests";
 import { de } from "@/i18n/de";
 
-export interface CraftRequestProfession extends SelectOption {
-  /** Recipes the request must choose from; absent means free text (materials). */
-  recipes?: Array<SelectOption & { reagents: string | null }>;
-}
-
 export interface CraftRequestGame extends SelectOption {
-  professions: CraftRequestProfession[];
+  professions: SelectOption[];
 }
 
 /** New crafting request: the profession list follows the chosen game. */
 export function CraftRequestForm({
   action,
+  loadRecipes,
   games,
   defaultGame,
 }: {
   action: (state: ActionState, formData: FormData) => Promise<ActionState>;
+  /** The recipes a request for the profession must name; null means free text. */
+  loadRecipes: (
+    gameId: string,
+    professionKey: string,
+  ) => Promise<RequestRecipeChoice[] | null>;
   games: CraftRequestGame[];
   defaultGame: string;
 }) {
   const [gameId, setGameId] = useState(defaultGame);
   const [profession, setProfession] = useState("");
   const [recipe, setRecipe] = useState("");
+  const [recipes, setRecipes] = useState<RequestRecipeChoice[] | null>(null);
+  const [loadingRecipes, startLoading] = useTransition();
+  // Only the answer for the latest choice counts when the user switches quickly.
+  const latestChoice = useRef("");
   const { state, pending, formRef, onSubmit } = useFormAction(action, {
     resetOnSuccess: true,
     onSuccess: () => {
       setProfession("");
       setRecipe("");
+      setRecipes(null);
+      latestChoice.current = "";
     },
   });
   const errors = state.errors ?? {};
   const professions =
     games.find((game) => game.value === gameId)?.professions ?? [];
-  const recipes = professions.find((p) => p.value === profession)?.recipes;
   const reagents = recipes?.find((r) => r.value === recipe)?.reagents;
   const chooseProfession = (next: string) => {
     setProfession(next);
     setRecipe("");
+    setRecipes(null);
+    latestChoice.current = next;
+    if (!next) {
+      return;
+    }
+    startLoading(async () => {
+      const choices = await loadRecipes(gameId, next);
+      if (latestChoice.current === next) {
+        setRecipes(choices);
+      }
+    });
   };
 
   return (
@@ -83,6 +101,7 @@ export function CraftRequestForm({
                 value={recipe}
                 onChange={setRecipe}
                 placeholder={de.requests.chooseRecipe}
+                disabled={loadingRecipes}
                 options={recipes}
               />
             ) : (

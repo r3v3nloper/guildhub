@@ -3,28 +3,12 @@ import {
   createListFixture,
   type ListFixture,
 } from "../../../test/fixtures/lists";
-import {
-  getCharacter,
-  saveCharacter,
-  saveProfessionDetails,
-} from "./characters";
-import type { CharacterInput } from "./character-rules";
+import { saveProfessionDetails } from "./character-professions";
+import { getCharacter, saveCharacter } from "./characters";
+import { characterInput } from "../../../test/fixtures/characters";
 import { loadProfessionDirectory } from "./profession-directory";
 
-const input: CharacterInput = {
-  name: "Gimli",
-  server: "",
-  factionKey: "",
-  raceKey: "",
-  classKey: "",
-  specKey: "",
-  offSpecKey: "",
-  spec: "",
-  level: null,
-  isMain: false,
-  notes: "",
-  professionKeys: ["mining"],
-};
+const input = characterInput({ name: "Gimli", professionKeys: ["mining"] });
 
 describe("loadProfessionDirectory", () => {
   let fixture: ListFixture;

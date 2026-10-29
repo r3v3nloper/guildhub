@@ -15,6 +15,7 @@ import { listEnabledGames } from "@/lib/roster/game-catalog";
 import { runStartup } from "@/lib/startup";
 import { buildDashboard } from "@/lib/tasks/dashboard";
 import { adjustCounter, setTaskDone } from "@/lib/tasks/progress";
+import { characterInput } from "../../../test/fixtures/characters";
 import { packsDirectory } from "./loader";
 
 const FIXTURE_PACKS = path.resolve("test/fixtures/packs");
@@ -81,20 +82,16 @@ describe("a new game from a pack alone", () => {
 
     // Act: enable, create a playthrough, make progress.
     setGameEnabled(db, owner, "beispiel-rpg", true);
-    const saved = saveCharacter(db, player, "beispiel-rpg", {
-      name: "Erster Durchlauf",
-      server: "",
-      factionKey: "",
-      raceKey: "",
-      classKey: "krieger",
-      specKey: "",
-      offSpecKey: "",
-      spec: "",
-      level: null,
-      isMain: true,
-      notes: "",
-      professionKeys: [],
-    });
+    const saved = saveCharacter(
+      db,
+      player,
+      "beispiel-rpg",
+      characterInput({
+        name: "Erster Durchlauf",
+        classKey: "krieger",
+        isMain: true,
+      }),
+    );
     const characterId = saved.ok ? saved.characterId : -1;
     const taskId = (key: string) =>
       db

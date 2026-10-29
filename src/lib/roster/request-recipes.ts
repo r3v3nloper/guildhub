@@ -1,5 +1,5 @@
 import {
-  catalogOfKind,
+  recipesOfProfession,
   type CatalogEntry,
   type GameCatalog,
 } from "./game-catalog";
@@ -19,9 +19,6 @@ export function requestRecipesOf(
   if (mode === "free") {
     return null;
   }
-  const recipes = catalogOfKind(catalog, "recipe").filter(
-    (entry) =>
-      entry.status === "active" && entry.data.profession === profession.key,
-  );
+  const recipes = recipesOfProfession(catalog, profession.key);
   return recipes.length > 0 ? recipes : null;
 }

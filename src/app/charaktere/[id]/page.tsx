@@ -49,7 +49,9 @@ async function EditCharacterContent({ params }: PageProps<"/charaktere/[id]">) {
   if (!character || !permissions.editOwnData(actor, character.userId).allowed) {
     notFound();
   }
-  const catalog = loadGameCatalog(db, character.gameId);
+  const catalog = loadGameCatalog(db, character.gameId, {
+    withRecipes: true,
+  });
   if (!catalog) {
     notFound();
   }
