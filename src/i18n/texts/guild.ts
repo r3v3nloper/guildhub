@@ -25,6 +25,7 @@ export const requests = {
   new: "Neuer Antrag",
   item: "Was",
   chooseRecipe: "Rezept wählen",
+  reagents: "Benötigt",
   itemFreeText: "z. B. 20 Silberblatt",
   quantity: "Anzahl",
   notes: "Notiz",

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CraftRequestForm } from "@/components/guild/CraftRequestForm";
+import { PackCredits } from "@/components/packs/PackCredits";
 import { ActionForm } from "@/components/ui/ActionForm";
 import { DeleteForm } from "@/components/ui/DeleteForm";
 import { PageSuspense } from "@/components/ui/PageSuspense";
@@ -58,6 +59,15 @@ async function RequestsContent() {
             games={formGames}
             defaultGame={selectedId ?? formGames[0].value}
           />
+          {games
+            .filter((game) => formGames.some((g) => g.value === game.id))
+            .map((game) => (
+              <PackCredits
+                key={game.id}
+                meta={game.meta}
+                label={de.directory.credits}
+              />
+            ))}
         </Card>
       )}
       {sections.map((section) => (

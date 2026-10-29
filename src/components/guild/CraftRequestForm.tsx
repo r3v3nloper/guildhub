@@ -9,7 +9,7 @@ import { de } from "@/i18n/de";
 
 export interface CraftRequestProfession extends SelectOption {
   /** Recipes the request must choose from; absent means free text (materials). */
-  recipes?: SelectOption[];
+  recipes?: Array<SelectOption & { reagents: string | null }>;
 }
 
 export interface CraftRequestGame extends SelectOption {
@@ -40,6 +40,7 @@ export function CraftRequestForm({
   const professions =
     games.find((game) => game.value === gameId)?.professions ?? [];
   const recipes = professions.find((p) => p.value === profession)?.recipes;
+  const reagents = recipes?.find((r) => r.value === recipe)?.reagents;
   const chooseProfession = (next: string) => {
     setProfession(next);
     setRecipe("");
@@ -73,24 +74,27 @@ export function CraftRequestForm({
             options={professions}
           />
         </Field>
-        <Field label={de.requests.item} error={errors.item}>
-          {recipes ? (
-            <SelectField
-              name="item"
-              value={recipe}
-              onChange={setRecipe}
-              placeholder={de.requests.chooseRecipe}
-              options={recipes}
-            />
-          ) : (
-            <TextInput
-              name="item"
-              required
-              maxLength={100}
-              placeholder={profession ? de.requests.itemFreeText : undefined}
-            />
-          )}
-        </Field>
+        {/* Recipe names are long; the wider field keeps them readable. */}
+        <div className="lg:col-span-2">
+          <Field label={de.requests.item} error={errors.item}>
+            {recipes ? (
+              <SelectField
+                name="item"
+                value={recipe}
+                onChange={setRecipe}
+                placeholder={de.requests.chooseRecipe}
+                options={recipes}
+              />
+            ) : (
+              <TextInput
+                name="item"
+                required
+                maxLength={100}
+                placeholder={profession ? de.requests.itemFreeText : undefined}
+              />
+            )}
+          </Field>
+        </div>
         <Field label={de.requests.quantity} error={errors.quantity}>
           <TextInput
             name="quantity"
@@ -101,6 +105,11 @@ export function CraftRequestForm({
           />
         </Field>
       </div>
+      {reagents && (
+        <p className="-mt-1 text-sm text-muted italic">
+          {de.requests.reagents}: {reagents}
+        </p>
+      )}
       <Field label={de.requests.notes} error={errors.notes}>
         <TextInput name="notes" maxLength={300} />
       </Field>

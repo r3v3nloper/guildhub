@@ -6,6 +6,7 @@ import {
   type CatalogEntry,
   type GameCatalog,
 } from "./game-catalog";
+import { formatReagents } from "./recipe-reagents";
 
 /** A catalog entry as the client-side forms need it: serialisable and already localised. */
 export interface CatalogOption {
@@ -133,6 +134,8 @@ export interface RecipeChoice {
   /** Name plus the skill it is learned at, e.g. "Leinenstoffballen (ab 1)". */
   label: string;
   skill: number | null;
+  /** What crafting it takes, e.g. "2× Leinenstoff"; null when the pack lists nothing. */
+  reagents: string | null;
 }
 
 /** Recipes as choices, easiest first; recipes without a known skill come last. */
@@ -145,6 +148,7 @@ export function recipeChoices(
       key: entry.key,
       name: localize(entry.name),
       skill: typeof entry.data.skill === "number" ? entry.data.skill : null,
+      reagents: formatReagents(entry.data),
     }))
     .sort(
       (a, b) =>

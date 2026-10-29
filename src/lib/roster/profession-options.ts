@@ -13,7 +13,7 @@ export interface ProfessionOption {
   value: string;
   label: string;
   /** Crafting requests: the recipes to choose from; absent means free text. */
-  recipes?: Array<{ value: string; label: string }>;
+  recipes?: Array<{ value: string; label: string; reagents: string | null }>;
 }
 
 export interface ProfessionGameOption {
@@ -51,7 +51,11 @@ export function professionGameOptions(
                   recipes: recipeChoices(
                     recipes,
                     de.characters.recipeFromSkill,
-                  ).map(({ key, label }) => ({ value: key, label })),
+                  ).map(({ key, label, reagents }) => ({
+                    value: key,
+                    label,
+                    reagents,
+                  })),
                 }),
               };
             })

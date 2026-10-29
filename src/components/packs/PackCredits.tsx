@@ -14,7 +14,8 @@ export function PackCredits({
     return null;
   }
   return (
-    <p className="text-xs text-muted">
+    // Bottom right, out of the way of the form, but visible as the data provider requires.
+    <p className="-mb-2 text-right text-xs text-muted">
       {label}:{" "}
       {credits.map((credit, index) => (
         <span key={credit.url}>
