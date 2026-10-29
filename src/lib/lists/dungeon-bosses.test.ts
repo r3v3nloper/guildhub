@@ -10,7 +10,12 @@ import {
   setChecklistItemTicked,
   type ChecklistInput,
 } from "./checklists";
-import { deleteBoss, listBosses, saveBoss } from "./dungeon-bosses";
+import {
+  bossStatsOf,
+  deleteBoss,
+  listBosses,
+  saveBoss,
+} from "./dungeon-bosses";
 
 const checklist: ChecklistInput = {
   name: "Feuerschlund",
@@ -29,6 +34,26 @@ describe("dungeon bosses", () => {
     fixture = createListFixture();
     const result = saveChecklist(fixture.db, fixture.member, checklist);
     checklistId = result.ok ? result.checklistId : -1;
+  });
+
+  it("counts bosses and those with mechanics or loot", () => {
+    // Arrange
+    const boss = (name: string, mechanics: string, loot: string) =>
+      saveBoss(fixture.db, fixture.member, checklistId, {
+        name,
+        mechanics,
+        loot,
+      });
+    boss("Lucifron", "Fluch entfernen.", "");
+    boss("Magmadar", "", "Hose");
+    boss("Gehennas", "", "");
+
+    // Act
+    const stats = bossStatsOf(fixture.db, [checklistId, checklistId + 1]);
+
+    // Assert
+    expect(stats.get(checklistId)).toEqual({ bosses: 3, withInfo: 2 });
+    expect(stats.has(checklistId + 1)).toBe(false);
   });
 
   it("keeps bosses with mechanics and loot in the order added", () => {

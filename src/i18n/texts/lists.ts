@@ -59,7 +59,7 @@ export const checklists = {
   deleteBossConfirm: "Diesen Boss mit seinem Loot löschen?",
   bossName: "Name",
   mechanics: "Mechaniken",
-  mechanicsHint: "Was ist zu beachten? Phasen, Fähigkeiten, Aufstellung.",
+  mechanicsHint: "Eine Mechanik pro Zeile: Phasen, Fähigkeiten, Aufstellung.",
   loot: "Loot",
   lootHint:
     "Ein Item pro Zeile, optional mit Notiz und Link: „Arkanitschnitter – BiS Krieger – https://…“",
@@ -70,6 +70,36 @@ export const checklists = {
   unpin: "Von der Übersicht lösen",
   deleteConfirm: "Diese Checkliste löschen?",
   progress: (ticked: number, total: number) => `${ticked}/${total}`,
+  preparation: "Vorbereitung",
+  newRunHint: "Setzt nur deine Haken zurück.",
+  pinned: "Angeheftet",
+  pinShort: "Anheften",
+  edit: "Bearbeiten",
+  instanceSize: (kind: "dungeon" | "raid", players: number | null) =>
+    `${kind === "raid" ? "Raid" : "Dungeon"}${players ? ` · ${players} Spieler` : ""}`,
+  levelRange: (min: number, max: number | null) =>
+    max === null || max === min ? `Stufe ${min}` : `Stufe ${min}–${max}`,
+  bossCount: (count: number) => (count === 1 ? "1 Boss" : `${count} Bosse`),
+  withInfoShort: (count: number) => `${count} mit Infos`,
+  withInfo: (count: number, total: number) => `${count} von ${total} mit Infos`,
+  sharedBy: (visibility: string, owner: string | null) =>
+    owner ? `${visibility} · ${owner}` : visibility,
+  expandAll: "Alle aufklappen",
+  collapseAll: "Alle zuklappen",
+  nothingYet: "Noch nichts eingetragen",
+  nothingFor: (name: string) => `Noch keine Mechaniken oder Loot für ${name}.`,
+  fillIn: "Jetzt eintragen",
+  editBossNamed: (name: string) => `${name} bearbeiten`,
+  deleteBoss: "Boss löschen",
+  lootCount: (count: number) => (count === 1 ? "1 Item" : `${count} Items`),
+  newBoss: "Neuer Boss",
+  newBossHint: "Mechaniken und Loot trägst du danach direkt beim Boss ein.",
+  tabs: "Bereiche",
+  infoTab: "Infos",
+  kindFilter: "Art",
+  kinds: { all: "Alle", dungeon: "Dungeons", raid: "Raids" },
+  noneOfKind: "Keine Checklisten dieser Art.",
+  pinnedHint: "An die Übersicht angeheftet",
 } as const;
 
 export const farmSpots = {

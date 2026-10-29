@@ -1,29 +1,28 @@
 import type { Metadata } from "next";
-import { BossForm } from "@/components/lists/BossForm";
+import Link from "next/link";
+import { BossList } from "@/components/lists/BossList";
+import { DungeonTabs } from "@/components/lists/DungeonTabs";
+import { FoldCard } from "@/components/lists/FoldCard";
+import { NotableLootCard } from "@/components/lists/NotableLootCard";
 import { TickItem } from "@/components/lists/TickItem";
 import { ActionForm } from "@/components/ui/ActionForm";
-import { DeleteForm } from "@/components/ui/DeleteForm";
 import { PageSuspense } from "@/components/ui/PageSuspense";
-import {
-  Badge,
-  Button,
-  ButtonLink,
-  Card,
-  PageHeader,
-} from "@/components/ui/ui";
+import { Button, ButtonLink, PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { getChecklist, type ChecklistView } from "@/lib/lists/checklists";
-import { listBosses, type BossView } from "@/lib/lists/dungeon-bosses";
-import { idParam, orNotFound } from "@/lib/not-found";
-import { de } from "@/i18n/de";
-import { NotableLootCard } from "@/components/lists/NotableLootCard";
-import { notableLootOf } from "@/lib/lists/dungeon-instances";
-import { listGuildGames } from "@/lib/roster/game-catalog";
+import { listBosses } from "@/lib/lists/dungeon-bosses";
 import {
-  deleteBossAction,
+  instancesById,
+  notableLootOf,
+  type InstanceTemplate,
+} from "@/lib/lists/dungeon-instances";
+import { idParam, orNotFound } from "@/lib/not-found";
+import { listGuildGames } from "@/lib/roster/game-catalog";
+import { localize } from "@/i18n/localize";
+import { de } from "@/i18n/de";
+import {
   resetChecklistRunAction,
-  saveBossAction,
   setChecklistItemTickedAction,
   setChecklistPinnedAction,
 } from "../actions";
@@ -38,14 +37,57 @@ async function DungeonContent({ params }: PageProps<"/dungeons/[id]">) {
   const checklist = orNotFound(() => getChecklist(db, actor, checklistId));
   const bosses = listBosses(db, checklist.id);
   const notableLoot = notableLootOf(db, checklist.instanceEntryId);
-  const gameMeta = listGuildGames(db, actor.guildId).find(
-    (game) => game.id === checklist.gameId,
-  )?.meta;
+  const instance = instancesById(db, [checklist.instanceEntryId]).get(
+    checklist.instanceEntryId ?? -1,
+  );
+  const game = listGuildGames(db, actor.guildId).find(
+    (entry) => entry.id === checklist.gameId,
+  );
+  const ticked = checklist.items.filter((item) => item.ticked).length;
+  const notes = (checklist.notes ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const hasLoot = Boolean(game) && notableLoot.length > 0;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       <PageHeader
         title={checklist.name}
+        eyebrow={
+          <nav
+            aria-label={de.checklists.title}
+            className="flex items-center gap-2"
+          >
+            <Link href="/dungeons" className="text-muted hover:text-white">
+              {de.checklists.title}
+            </Link>
+            {game && (
+              <>
+                <span aria-hidden>/</span>
+                <span>{localize(game.name)}</span>
+              </>
+            )}
+          </nav>
+        }
+        meta={
+          <>
+            {instanceFacts(instance, bosses.length).map((fact) => (
+              <span
+                key={fact}
+                className="rounded-full border border-[#2a2541] bg-raised px-3 py-1 text-[13px] font-semibold text-soft"
+              >
+                {fact}
+              </span>
+            ))}
+            <span className="px-1 py-1 text-[13px] text-muted">
+              {de.checklists.sharedBy(
+                de.visibility[checklist.visibility],
+                checklist.ownerName,
+              )}
+            </span>
+          </>
+        }
         actions={
           <span className="flex flex-wrap gap-2">
             <ActionForm
@@ -56,10 +98,16 @@ async function DungeonContent({ params }: PageProps<"/dungeons/[id]">) {
               )}
             >
               <Button
-                variant="secondary"
+                variant={checklist.pinned ? "primary" : "secondary"}
                 icon="pi pi-thumbtack"
-                label={
+                aria-pressed={checklist.pinned}
+                title={
                   checklist.pinned ? de.checklists.unpin : de.checklists.pin
+                }
+                label={
+                  checklist.pinned
+                    ? de.checklists.pinned
+                    : de.checklists.pinShort
                 }
               />
             </ActionForm>
@@ -68,180 +116,132 @@ async function DungeonContent({ params }: PageProps<"/dungeons/[id]">) {
                 href={`/dungeons/${checklist.id}/bearbeiten`}
                 variant="secondary"
               >
-                {de.checklists.editTitle}
+                <i className="pi pi-pencil mr-2 text-sm" aria-hidden />
+                {de.checklists.edit}
               </ButtonLink>
             )}
           </span>
         }
       />
-      <span className="flex flex-wrap items-center gap-2 text-xs text-muted">
-        <Badge>{de.visibility[checklist.visibility]}</Badge>
-        {checklist.ownerName}
-      </span>
 
-      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-        <div className="flex flex-col gap-4">
-          <RunCard checklist={checklist} />
-          {checklist.notes && (
-            <Card title={de.checklists.notes}>
-              <p className="text-sm whitespace-pre-line">{checklist.notes}</p>
-            </Card>
-          )}
-          {gameMeta && <NotableLootCard loot={notableLoot} meta={gameMeta} />}
-        </div>
-
-        <section className="flex flex-col gap-4">
-          <h2 className="font-display text-2xl font-semibold text-white">
-            {de.checklists.bosses}
-          </h2>
-          {bosses.length === 0 && (
-            <p className="text-sm text-muted">{de.checklists.noBosses}</p>
-          )}
-          {bosses.map((boss) => (
-            <BossCard
-              key={boss.id}
-              boss={boss}
-              checklistId={checklist.id}
-              canEdit={checklist.canEdit}
-            />
-          ))}
-          {checklist.canEdit && (
-            <Card title={de.checklists.addBoss}>
-              <BossForm
-                action={saveBossAction.bind(null, checklist.id, undefined)}
-                values={{ name: "", mechanics: "", loot: "" }}
-                isNew
-              />
-            </Card>
-          )}
-        </section>
-      </div>
+      <DungeonTabs
+        prepLabel={`${de.checklists.preparation} ${de.checklists.progress(ticked, checklist.items.length)}`}
+        prep={<PreparationCard checklist={checklist} ticked={ticked} />}
+        bosses={
+          <BossList
+            checklistId={checklist.id}
+            bosses={bosses}
+            canEdit={checklist.canEdit}
+          />
+        }
+        info={
+          notes.length > 0 || hasLoot ? (
+            <>
+              {notes.length > 0 && (
+                <FoldCard title={de.checklists.notes} defaultOpen>
+                  {notes.length === 1 ? (
+                    <p className="text-sm leading-relaxed text-soft">
+                      {notes[0]}
+                    </p>
+                  ) : (
+                    <ul className="flex list-disc flex-col gap-1.5 pl-5 text-sm leading-relaxed text-soft">
+                      {notes.map((line, index) => (
+                        <li key={index}>{line}</li>
+                      ))}
+                    </ul>
+                  )}
+                </FoldCard>
+              )}
+              {game && <NotableLootCard loot={notableLoot} meta={game.meta} />}
+            </>
+          ) : null
+        }
+      />
     </div>
   );
 }
 
-function RunCard({ checklist }: { checklist: ChecklistView }) {
-  const ticked = checklist.items.filter((item) => item.ticked).length;
+/** "Dungeon · 5 Spieler", "Stufe 17–26", "8 Bosse", as far as they are known. */
+function instanceFacts(
+  instance: InstanceTemplate | undefined,
+  bossCount: number,
+): string[] {
+  const facts: string[] = [];
+  if (instance) {
+    facts.push(de.checklists.instanceSize(instance.kind, instance.players));
+    if (instance.levelMin !== null) {
+      facts.push(
+        de.checklists.levelRange(instance.levelMin, instance.levelMax),
+      );
+    }
+  }
+  if (bossCount > 0) {
+    facts.push(de.checklists.bossCount(bossCount));
+  }
+  return facts;
+}
+
+function PreparationCard({
+  checklist,
+  ticked,
+}: {
+  checklist: ChecklistView;
+  ticked: number;
+}) {
+  const total = checklist.items.length;
   return (
-    <Card
-      title={`${de.checklists.checklist} ${de.checklists.progress(ticked, checklist.items.length)}`}
+    <section
+      aria-labelledby="preparation"
+      className="flex flex-col gap-1.5 rounded-[22px] border border-border bg-surface px-3 pt-4 pb-2"
     >
-      <div className="flex flex-col gap-3">
-        <ul className="divide-y divide-border">
-          {checklist.items.map((item) => (
-            <TickItem
-              key={item.id}
-              id={`dungeon-${item.id}`}
-              label={item.label}
-              checked={item.ticked}
-              onToggle={setChecklistItemTickedAction.bind(null, item.id)}
-            />
-          ))}
-        </ul>
-        {ticked > 0 && (
+      <div className="flex items-baseline justify-between gap-2 px-2.5">
+        <h2
+          id="preparation"
+          className="font-display text-xl font-semibold text-white"
+        >
+          {de.checklists.preparation}
+        </h2>
+        {total > 0 && (
+          <span className="text-sm font-bold tabular-nums">
+            {de.checklists.progress(ticked, total)}
+          </span>
+        )}
+      </div>
+      {total > 0 && (
+        <span className="mx-2.5 mt-1 mb-2 block h-2 overflow-hidden rounded-full bg-chip">
+          <span
+            className="block h-full rounded-full bg-success transition-[width] duration-300"
+            style={{ width: `${(ticked / total) * 100}%` }}
+          />
+        </span>
+      )}
+      <ul className="flex flex-col gap-0.5">
+        {checklist.items.map((item) => (
+          <TickItem
+            key={item.id}
+            id={`dungeon-${item.id}`}
+            label={item.label}
+            checked={item.ticked}
+            onToggle={setChecklistItemTickedAction.bind(null, item.id)}
+          />
+        ))}
+      </ul>
+      {ticked > 0 && (
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-[#2a2541] px-2.5 pt-1.5">
+          <span className="text-[12.5px] text-muted">
+            {de.checklists.newRunHint}
+          </span>
           <ActionForm action={resetChecklistRunAction.bind(null, checklist.id)}>
             <Button
               variant="secondary"
+              text
               icon="pi pi-refresh"
               label={de.checklists.newRun}
             />
           </ActionForm>
-        )}
-      </div>
-    </Card>
-  );
-}
-
-function BossCard({
-  boss,
-  checklistId,
-  canEdit,
-}: {
-  boss: BossView;
-  checklistId: number;
-  canEdit: boolean;
-}) {
-  return (
-    <Card
-      title={
-        <span className="flex items-center justify-between gap-2">
-          {boss.name}
-          {canEdit && (
-            <DeleteForm
-              action={deleteBossAction.bind(null, checklistId, boss.id)}
-              question={de.checklists.deleteBossConfirm}
-            />
-          )}
-        </span>
-      }
-    >
-      <div className="flex flex-col gap-4">
-        {boss.mechanics && (
-          <div className="flex flex-col gap-1">
-            <h3 className="text-xs font-bold tracking-widest text-muted uppercase">
-              {de.checklists.mechanics}
-            </h3>
-            <p className="text-sm whitespace-pre-line">{boss.mechanics}</p>
-          </div>
-        )}
-        <div className="flex flex-col gap-1">
-          <h3 className="text-xs font-bold tracking-widest text-muted uppercase">
-            {de.checklists.loot}
-          </h3>
-          {boss.loot.length === 0 ? (
-            <p className="text-sm text-muted">{de.checklists.noLoot}</p>
-          ) : (
-            <ul className="flex flex-col gap-1 text-sm">
-              {boss.loot.map((entry) => (
-                <li
-                  key={entry.id}
-                  className="flex flex-wrap items-center gap-x-2"
-                >
-                  {entry.link ? (
-                    <a
-                      href={entry.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title={de.checklists.openLink}
-                      className="font-semibold text-accent-strong hover:text-white"
-                    >
-                      {entry.name}
-                      <i
-                        className="pi pi-external-link ml-1 text-[10px]"
-                        aria-hidden
-                      />
-                    </a>
-                  ) : (
-                    <span className="font-semibold">{entry.name}</span>
-                  )}
-                  {entry.notes && (
-                    <span className="text-muted">{entry.notes}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
-        {canEdit && (
-          <details>
-            <summary className="cursor-pointer text-sm text-muted">
-              {de.checklists.editBoss}
-            </summary>
-            <div className="pt-3">
-              <BossForm
-                action={saveBossAction.bind(null, checklistId, boss.id)}
-                values={{
-                  name: boss.name,
-                  mechanics: boss.mechanics ?? "",
-                  loot: boss.lootText,
-                }}
-                isNew={false}
-              />
-            </div>
-          </details>
-        )}
-      </div>
-    </Card>
+      )}
+    </section>
   );
 }
 

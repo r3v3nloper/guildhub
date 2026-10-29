@@ -14,6 +14,7 @@ export function ConfirmButton({
   variant = "danger",
   icon,
   label,
+  text = false,
 }: {
   question: string;
   children?: ReactNode;
@@ -21,12 +22,15 @@ export function ConfirmButton({
   /** PrimeIcons class for an icon-only button; `label` then names it. */
   icon?: string;
   label?: string;
+  /** Plain text button, for actions that should not draw the eye. */
+  text?: boolean;
 }) {
   return (
     <Button
       type="button"
       variant={variant}
       icon={icon}
+      text={text}
       aria-label={label}
       title={label}
       onClick={(event) => {

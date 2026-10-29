@@ -5,7 +5,7 @@ import {
 } from "../../../test/fixtures/lists";
 import { getChecklist, saveChecklist, type ChecklistInput } from "./checklists";
 import { listBosses } from "./dungeon-bosses";
-import { notableLootOf } from "./dungeon-instances";
+import { instancesById, notableLootOf } from "./dungeon-instances";
 
 const blank: ChecklistInput = {
   name: "",
@@ -46,6 +46,16 @@ describe("dungeon pages from a pack instance", () => {
     expect(notableLootOf(fixture.db, checklist.instanceEntryId)).toEqual([
       { name: "Cape of the Brotherhood", reason: "top pick for rogues" },
     ]);
+    expect(
+      instancesById(fixture.db, [checklist.instanceEntryId, null]).get(
+        checklist.instanceEntryId!,
+      ),
+    ).toMatchObject({
+      kind: "dungeon",
+      players: 5,
+      levelMin: 17,
+      levelMax: 26,
+    });
   });
 
   it("keeps the page's own points", () => {

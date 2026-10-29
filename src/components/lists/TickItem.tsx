@@ -29,8 +29,8 @@ export function TickItem({
   const { error, run } = useOptimisticAction();
 
   return (
-    <li className="flex flex-col gap-1 py-1.5">
-      <div className="flex items-center gap-3">
+    <li className="flex flex-col gap-1">
+      <div className="flex min-h-11 items-center gap-3 rounded-xl px-2.5 transition-colors hover:bg-raised">
         <Checkbox
           inputId={id}
           checked={ticked}
@@ -43,7 +43,7 @@ export function TickItem({
         />
         <label
           htmlFor={id}
-          className={`flex-1 ${ticked ? "text-muted line-through" : ""}`}
+          className={`flex-1 cursor-pointer py-2.5 text-[14.5px] leading-snug ${ticked ? "text-muted line-through" : ""}`}
         >
           {label}
         </label>
@@ -60,7 +60,7 @@ export function TickItem({
         )}
       </div>
       {error && (
-        <p role="alert" className="text-sm text-danger">
+        <p role="alert" className="px-2.5 text-sm text-danger">
           {error}
         </p>
       )}

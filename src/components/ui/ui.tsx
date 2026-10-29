@@ -21,11 +21,14 @@ import {
 export function PageHeader({
   title,
   eyebrow,
+  meta,
   actions,
 }: {
   title: string;
   /** Small line above the title, e.g. the date or the selected game. */
   eyebrow?: ReactNode;
+  /** Below the title, e.g. chips with key facts. */
+  meta?: ReactNode;
   actions?: ReactNode;
 }) {
   return (
@@ -37,6 +40,7 @@ export function PageHeader({
         <h1 className="font-display text-4xl leading-tight font-semibold text-white md:text-5xl">
           {title}
         </h1>
+        {meta && <div className="mt-2 flex flex-wrap gap-2">{meta}</div>}
       </div>
       {actions}
     </div>
@@ -97,7 +101,7 @@ export function Field({
       </label>
       {control}
       {hint && (
-        <small id={hintId} className="text-warning">
+        <small id={hintId} className="text-muted">
           {hint}
         </small>
       )}

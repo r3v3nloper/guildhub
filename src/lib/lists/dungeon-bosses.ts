@@ -1,4 +1,4 @@
-import { asc, eq, inArray, max } from "drizzle-orm";
+import { asc, count, eq, inArray, max } from "drizzle-orm";
 import type { Actor } from "@/lib/auth/guards";
 import type { AppDatabase, DbExecutor } from "@/lib/db/client";
 import { bossLoot, checklistBosses } from "@/lib/db/schema";
@@ -161,4 +161,56 @@ function nextSortOrder(db: DbExecutor, checklistId: number): number {
     .where(eq(checklistBosses.checklistId, checklistId))
     .get();
   return (row?.last ?? -1) + 1;
+}
+
+export interface BossStats {
+  bosses: number;
+  /** Bosses with mechanics or loot entered. */
+  withInfo: number;
+}
+
+/** How many bosses each checklist has, and how many already carry information. */
+export function bossStatsOf(
+  db: AppDatabase,
+  checklistIds: readonly number[],
+): Map<number, BossStats> {
+  if (checklistIds.length === 0) {
+    return new Map();
+  }
+  const bosses = db
+    .select({
+      id: checklistBosses.id,
+      checklistId: checklistBosses.checklistId,
+      mechanics: checklistBosses.mechanics,
+    })
+    .from(checklistBosses)
+    .where(inArray(checklistBosses.checklistId, [...checklistIds]))
+    .all();
+  const withLoot = new Set(
+    bosses.length === 0
+      ? []
+      : db
+          .select({ bossId: bossLoot.bossId, items: count() })
+          .from(bossLoot)
+          .where(
+            inArray(
+              bossLoot.bossId,
+              bosses.map((boss) => boss.id),
+            ),
+          )
+          .groupBy(bossLoot.bossId)
+          .all()
+          .map((row) => row.bossId),
+  );
+
+  const stats = new Map<number, BossStats>();
+  for (const boss of bosses) {
+    const entry = stats.get(boss.checklistId) ?? { bosses: 0, withInfo: 0 };
+    entry.bosses += 1;
+    if (boss.mechanics?.trim() || withLoot.has(boss.id)) {
+      entry.withInfo += 1;
+    }
+    stats.set(boss.checklistId, entry);
+  }
+  return stats;
 }

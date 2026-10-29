@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import type { AppDatabase, DbExecutor } from "@/lib/db/client";
 import { checklistBosses, gameCatalogEntries } from "@/lib/db/schema";
 import type { LocalizedString } from "@/lib/packs/schema";
@@ -98,4 +98,23 @@ export function notableLootOf(
     name: localize(item.name),
     reason: item.reason ?? null,
   }));
+}
+
+/** Kind, size and level of the instances pages started from, e.g. for the list cards. */
+export function instancesById(
+  db: DbExecutor,
+  entryIds: ReadonlyArray<number | null>,
+): Map<number, InstanceTemplate> {
+  const ids = [...new Set(entryIds.filter((id): id is number => id !== null))];
+  if (ids.length === 0) {
+    return new Map();
+  }
+  return new Map(
+    db
+      .select()
+      .from(gameCatalogEntries)
+      .where(inArray(gameCatalogEntries.id, ids))
+      .all()
+      .map((entry) => [entry.id, toTemplate(entry)]),
+  );
 }
