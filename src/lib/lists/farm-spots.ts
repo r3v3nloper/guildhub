@@ -48,14 +48,23 @@ export type FarmSpotResult =
  * text) and an optional link to an external map. Members keep them in the app, not in
  * the pack; each spot is private or shared with the guild.
  */
+export interface FarmSpotFilter {
+  /** Profession key; only meaningful within one game. */
+  professionKey?: string;
+  /** Matches material, zone and notes, case-insensitively. */
+  query?: string;
+}
+
 export function listFarmSpots(
   db: AppDatabase,
   actor: Actor,
   gameIds: readonly string[],
+  filter: FarmSpotFilter = {},
 ): FarmSpotView[] {
   if (gameIds.length === 0) {
     return [];
   }
+  const query = filter.query?.trim().toLowerCase() ?? "";
   return db
     .select({
       spot: farmSpots,
@@ -83,7 +92,16 @@ export function listFarmSpots(
       professionKey,
       professionName,
       canEdit: permissions.editSharedEntry(actor, spot).allowed,
-    }));
+    }))
+    .filter(
+      (spot) =>
+        (!filter.professionKey ||
+          spot.professionKey === filter.professionKey) &&
+        (!query ||
+          [spot.resource, spot.zone, spot.notes].some((text) =>
+            text?.toLowerCase().includes(query),
+          )),
+    );
 }
 
 function visibleSpot(

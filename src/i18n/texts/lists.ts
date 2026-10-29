@@ -45,6 +45,9 @@ export const farmSpots = {
   openMap: "Karte öffnen",
   deleteConfirm: "Diesen Farmspot löschen?",
   allProfessions: "Alle Berufe",
+  search: "Material oder Zone suchen",
+  searchPlaceholder: "Material oder Zone …",
+  noMatches: "Keine Farmspots für diese Auswahl.",
 } as const;
 
 export const visibility = {

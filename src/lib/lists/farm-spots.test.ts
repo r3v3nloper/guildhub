@@ -90,4 +90,24 @@ describe("farm spots", () => {
     deleteFarmSpot(db, officer, spot.id);
     expect(listFarmSpots(db, member, ["game"])).toEqual([]);
   });
+
+  it("filters by profession and by material or zone", () => {
+    // Arrange
+    const { db, member } = fixture;
+    saveFarmSpot(db, member, input);
+    saveFarmSpot(db, member, {
+      ...input,
+      professionKey: "",
+      resource: "Silberblatt",
+      zone: "Eschental",
+    });
+    const names = (filter: { professionKey?: string; query?: string }) =>
+      listFarmSpots(db, member, ["game"], filter).map((spot) => spot.resource);
+
+    // Act & Assert
+    expect(names({ professionKey: "mining" })).toEqual(["Thoriumader"]);
+    expect(names({ query: "silber" })).toEqual(["Silberblatt"]);
+    expect(names({ query: "UN'GORO" })).toEqual(["Thoriumader"]);
+    expect(names({ professionKey: "mining", query: "silber" })).toEqual([]);
+  });
 });
