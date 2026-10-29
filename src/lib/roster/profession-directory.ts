@@ -12,11 +12,10 @@ import type { LocalizedString } from "@/lib/packs/schema";
 import { allTranslations, localize } from "@/i18n/localize";
 import type { Recipe } from "./recipes";
 
-/** A recipe as the directory shows it; pack recipes add skill, reagents and a link. */
+/** A recipe as the directory shows it; pack recipes add skill and reagents. */
 export interface DirectoryRecipe extends Recipe {
   skill: number | null;
   reagents: string | null;
-  link: string | null;
   /** Names in every language, so the search finds "Elixir" as well as "Elixier". */
   searchNames: string[];
 }
@@ -24,7 +23,6 @@ export interface DirectoryRecipe extends Recipe {
 interface PackRecipeData {
   skill?: number;
   reagents?: Array<{ name: LocalizedString; count: number }>;
-  link?: string;
 }
 
 export interface Crafter {
@@ -131,7 +129,6 @@ export function loadProfessionDirectory(
         data.reagents
           ?.map((reagent) => `${reagent.count}× ${localize(reagent.name)}`)
           .join(", ") ?? null,
-      link: data.link ?? null,
       searchNames: entry ? allTranslations(entry.name) : [recipe.name],
     };
   };

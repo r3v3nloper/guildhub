@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { SelectField } from "@/components/ui/SelectField";
 import {
   Button,
@@ -12,6 +12,7 @@ import {
 import { useFormAction } from "@/components/ui/use-form-action";
 import type { ActionState } from "@/lib/actions/action-state";
 import type { RecipeOption } from "@/lib/roster/form-options";
+import { learnableAt } from "@/lib/roster/recipe-skill";
 import { de } from "@/i18n/de";
 
 export interface ProfessionDetailsValues {
@@ -37,6 +38,17 @@ export function ProfessionDetailsForm({
   const { state, pending, onSubmit } = useFormAction(action);
   const errors = state.errors ?? {};
   const [recipes, setRecipes] = useState(values.recipes);
+  const [skillLevel, setSkillLevel] = useState(
+    values.skillLevel?.toString() ?? "",
+  );
+  const learnable = useMemo(
+    () =>
+      learnableAt(
+        recipeOptions,
+        skillLevel.trim() === "" ? null : Number(skillLevel),
+      ),
+    [recipeOptions, skillLevel],
+  );
 
   const addRecipe = (name: string) => {
     if (!name) {
@@ -56,7 +68,8 @@ export function ProfessionDetailsForm({
             name="skillLevel"
             type="number"
             min={0}
-            defaultValue={values.skillLevel ?? ""}
+            value={skillLevel}
+            onChange={(event) => setSkillLevel(event.target.value)}
           />
         </Field>
         <Field
@@ -83,7 +96,7 @@ export function ProfessionDetailsForm({
           value=""
           placeholder={de.characters.addRecipe}
           aria-label={de.characters.addRecipe}
-          options={recipeOptions}
+          options={learnable}
           onChange={addRecipe}
         />
       )}

@@ -145,18 +145,7 @@ function ProfessionCard({ profession }: { profession: DirectoryProfession }) {
 function RecipeItem({ recipe }: { recipe: DirectoryRecipe }) {
   return (
     <li>
-      {recipe.link ? (
-        <a
-          href={recipe.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-accent-strong hover:text-white"
-        >
-          {recipe.name}
-        </a>
-      ) : (
-        recipe.name
-      )}
+      {recipe.name}
       {recipe.skill !== null && (
         <span className="text-muted tabular-nums">
           {" "}

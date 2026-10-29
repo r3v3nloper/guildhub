@@ -104,6 +104,8 @@ export interface RecipeOption {
   /** The line the picker adds to the recipe text. */
   value: string;
   label: string;
+  /** Skill at which it can be learned; the picker hides recipes above the entered skill. */
+  skill: number | null;
 }
 
 /** Active pack recipes of one profession for the picker, easiest first. */
@@ -129,5 +131,6 @@ export function recipeOptionsOf(
     .map(({ name, skill }) => ({
       value: name,
       label: skill === null ? name : `${name} (${fromSkillLabel} ${skill})`,
+      skill,
     }));
 }

@@ -14,6 +14,9 @@ export interface SelectOption {
 // native form control. A hidden input carries it into FormData, so server actions and
 // plain GET forms receive it like from a <select>.
 
+const VIRTUAL_SCROLL_FROM = 100;
+const VIRTUAL_ITEM_HEIGHT = 38;
+
 interface SelectFieldProps {
   name: string;
   options: SelectOption[];
@@ -66,6 +69,12 @@ export function SelectField({
         invalid={invalid}
         disabled={disabled}
         filter={choices.length > 10}
+        // Long lists (e.g. hundreds of recipes) render only the visible rows.
+        virtualScrollerOptions={
+          choices.length > VIRTUAL_SCROLL_FROM
+            ? { itemSize: VIRTUAL_ITEM_HEIGHT }
+            : undefined
+        }
         aria-label={aria["aria-label"]}
         aria-describedby={aria["aria-describedby"]}
         className={className}
