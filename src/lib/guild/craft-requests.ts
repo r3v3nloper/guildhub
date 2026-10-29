@@ -9,6 +9,7 @@ import {
   craftRequests,
   gameCatalogEntries,
   guildMembers,
+  recipeEntries,
   users,
   type CraftRequestStatus,
 } from "@/lib/db/schema";
@@ -35,6 +36,8 @@ export interface CrafterView {
   userName: string;
   characterName: string;
   skill: number | null;
+  /** Entered the recipe under "Seltene Rezepte": can craft it whatever the skill. */
+  hasRecipe: boolean;
 }
 
 export interface CraftRequestView extends CraftRequestRow {
@@ -109,6 +112,10 @@ export function listCraftRequests(
     actor.guildId,
     rows.map((row) => row.request.professionEntryId),
   );
+  const knowledge = recipeKnowledge(
+    db,
+    rows.map((row) => row.request.recipeEntryId),
+  );
 
   return rows.map(({ request, professionName, requesterName, crafterName }) => {
     const recipe =
@@ -116,13 +123,15 @@ export function listCraftRequests(
         ? undefined
         : recipes.get(request.recipeEntryId);
     const requiredSkill = recipe?.skill ?? null;
+    const knows = knowsRecipe(knowledge, request.recipeEntryId);
     const own = holders.filter(
       (holder) =>
         holder.userId === actor.userId &&
         holder.professionEntryId === request.professionEntryId,
     );
-    const ownAble = own.some((holder) =>
-      hasSkillFor(holder.skill, requiredSkill),
+    const ownAble = own.some(
+      (holder) =>
+        knows(holder.characterId) || hasSkillFor(holder.skill, requiredSkill),
     );
     const ownSkills = own
       .map((holder) => holder.skill)
@@ -145,6 +154,7 @@ export function listCraftRequests(
         request.professionEntryId,
         requiredSkill,
         request.requesterId,
+        knows,
       ),
       professionHeld: holders.some(
         (holder) =>
@@ -191,8 +201,9 @@ export function hasSkillFor(
   return required === null || skill === null || skill >= required;
 }
 
-interface ProfessionHolder extends CrafterView {
+interface ProfessionHolder extends Omit<CrafterView, "hasRecipe"> {
   professionEntryId: number;
+  characterId: number;
 }
 
 /** Characters of active guild members holding one of the professions. */
@@ -208,6 +219,7 @@ function professionHolders(
   return db
     .select({
       professionEntryId: characterProfessions.professionEntryId,
+      characterId: characters.id,
       userId: characters.userId,
       userName: users.name,
       characterName: characters.name,
@@ -229,39 +241,76 @@ function professionHolders(
     .map((row) => ({ ...row, userName: row.userName ?? "?" }));
 }
 
-/** The most skilled able character per member, best first; `exceptUserId` left out. */
+/** Pack recipes characters entered as known, as "characterId|recipeEntryId". */
+function recipeKnowledge(
+  db: AppDatabase,
+  recipeEntryIds: ReadonlyArray<number | null>,
+): Set<string> {
+  const ids = [
+    ...new Set(recipeEntryIds.filter((id): id is number => id !== null)),
+  ];
+  if (ids.length === 0) {
+    return new Set();
+  }
+  return new Set(
+    db
+      .select({
+        characterId: recipeEntries.characterId,
+        recipeEntryId: recipeEntries.recipeEntryId,
+      })
+      .from(recipeEntries)
+      .where(inArray(recipeEntries.recipeEntryId, ids))
+      .all()
+      .map((row) => `${row.characterId}|${row.recipeEntryId}`),
+  );
+}
+
+function knowsRecipe(
+  knowledge: ReadonlySet<string>,
+  recipeEntryId: number | null,
+): (characterId: number) => boolean {
+  return (characterId) =>
+    recipeEntryId !== null && knowledge.has(`${characterId}|${recipeEntryId}`);
+}
+
+/**
+ * The best able character per member: who entered the recipe first, then the most
+ * skilled. Entering the recipe counts whatever the skill; `exceptUserId` is left out.
+ */
 function ableCrafters(
   holders: readonly ProfessionHolder[],
   professionEntryId: number,
   required: number | null,
   exceptUserId?: string,
+  knows: (characterId: number) => boolean = () => false,
 ): CrafterView[] {
-  const best = new Map<string, ProfessionHolder>();
+  const rank = (crafter: CrafterView) =>
+    (crafter.hasRecipe ? 100_000 : 0) + (crafter.skill ?? -1);
+  const best = new Map<string, CrafterView>();
   for (const holder of holders) {
+    const hasRecipe = knows(holder.characterId);
     if (
       holder.professionEntryId !== professionEntryId ||
       holder.userId === exceptUserId ||
-      !hasSkillFor(holder.skill, required)
+      (!hasRecipe && !hasSkillFor(holder.skill, required))
     ) {
       continue;
     }
-    const current = best.get(holder.userId);
-    if (!current || (holder.skill ?? -1) > (current.skill ?? -1)) {
-      best.set(holder.userId, holder);
-    }
-  }
-  return [...best.values()]
-    .sort(
-      (a, b) =>
-        (b.skill ?? -1) - (a.skill ?? -1) ||
-        a.userName.localeCompare(b.userName),
-    )
-    .map((holder) => ({
+    const crafter: CrafterView = {
       userId: holder.userId,
       userName: holder.userName,
       characterName: holder.characterName,
       skill: holder.skill,
-    }));
+      hasRecipe,
+    };
+    const current = best.get(holder.userId);
+    if (!current || rank(crafter) > rank(current)) {
+      best.set(holder.userId, crafter);
+    }
+  }
+  return [...best.values()].sort(
+    (a, b) => rank(b) - rank(a) || a.userName.localeCompare(b.userName),
+  );
 }
 
 interface RecipeInfo {
@@ -343,7 +392,8 @@ export function professionCrafters(
 /** "Erik (Brakka, 210)": member, character and skill where known. */
 export function crafterLabel(crafter: CrafterView): string {
   const skill = crafter.skill === null ? "" : `, ${crafter.skill}`;
-  return `${crafter.userName} (${crafter.characterName}${skill})`;
+  const recipe = crafter.hasRecipe ? `, ${de.requests.hasRecipe}` : "";
+  return `${crafter.userName} (${crafter.characterName}${skill}${recipe})`;
 }
 
 /** Requests with profession, requester and crafter names. */
@@ -493,6 +543,9 @@ export function acceptCraftRequest(
 ): void {
   const request = loadRequest(db, actor, requestId);
   requireStatus(request, "open");
+  if (request.requesterId === actor.userId) {
+    throw new DomainError("Den eigenen Antrag kann man nicht annehmen.");
+  }
   const own = professionHolders(db, actor.guildId, [
     request.professionEntryId,
   ]).filter((holder) => holder.userId === actor.userId);
@@ -504,7 +557,16 @@ export function acceptCraftRequest(
       ? null
       : (loadRecipeInfo(db, [request.recipeEntryId]).get(request.recipeEntryId)
           ?.skill ?? null);
-  if (!own.some((holder) => hasSkillFor(holder.skill, required))) {
+  const knows = knowsRecipe(
+    recipeKnowledge(db, [request.recipeEntryId]),
+    request.recipeEntryId,
+  );
+  if (
+    !own.some(
+      (holder) =>
+        knows(holder.characterId) || hasSkillFor(holder.skill, required),
+    )
+  ) {
     throw new DomainError(
       `Dafür reicht die Fertigkeit deiner Charaktere noch nicht (benötigt ${required}).`,
     );
@@ -605,14 +667,25 @@ export function requestRecipeChoices(
   }
   const entries = new Map(recipes.map((entry) => [entry.key, entry]));
   const holders = professionHolders(db, actor.guildId, [profession.id]);
+  const knowledge = recipeKnowledge(
+    db,
+    recipes.map((entry) => entry.id),
+  );
   return recipeChoices(recipes, de.characters.recipeFromSkill).map(
-    ({ key, label, skill }) => ({
-      value: key,
-      label,
-      reagents: reagentsOf(entries.get(key)!.data),
-      crafters: ableCrafters(holders, profession.id, skill, actor.userId).map(
-        crafterLabel,
-      ),
-    }),
+    ({ key, label, skill }) => {
+      const entry = entries.get(key)!;
+      return {
+        value: key,
+        label,
+        reagents: reagentsOf(entry.data),
+        crafters: ableCrafters(
+          holders,
+          profession.id,
+          skill,
+          actor.userId,
+          knowsRecipe(knowledge, entry.id),
+        ).map(crafterLabel),
+      };
+    },
   );
 }

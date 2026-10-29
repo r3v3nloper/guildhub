@@ -7,14 +7,17 @@ import { useOptimisticAction } from "@/components/ui/use-optimistic-action";
 import type { ActionState } from "@/lib/actions/action-state";
 import { de } from "@/i18n/de";
 
-/** The "⋯" of a request: rare actions such as deleting stay out of the row. */
+/** A "⋯" menu with delete: rare actions stay out of the row (requests, builds). */
 export function RequestMenu({
   label,
   onDelete,
+  question = de.requests.deleteConfirm,
 }: {
   /** Accessible name, e.g. "Weitere Aktionen für Dunkle Lederstiefel". */
   label: string;
   onDelete: () => Promise<ActionState>;
+  /** Confirmation before deleting. */
+  question?: string;
 }) {
   const menu = useRef<Menu>(null);
   const button = useRef<HTMLButtonElement>(null);
@@ -33,7 +36,7 @@ export function RequestMenu({
             command: () =>
               confirmPopup({
                 target: button.current ?? undefined,
-                message: de.requests.deleteConfirm,
+                message: question,
                 icon: "pi pi-exclamation-triangle",
                 acceptClassName: "p-button-danger",
                 accept: () => run(onDelete),

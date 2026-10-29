@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { PageSuspense } from "@/components/ui/PageSuspense";
 import Link from "next/link";
-import { ClassName } from "@/components/characters/ClassName";
-import { Badge, ButtonLink, Card, PageHeader } from "@/components/ui/ui";
+import {
+  ClassAvatar,
+  classTextColor,
+} from "@/components/characters/ClassAvatar";
+import { Badge, ButtonLink, PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { selectedGames } from "@/lib/game-filter";
@@ -22,7 +25,7 @@ async function CharactersContent() {
     )?.characters ?? [];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <PageHeader title={de.characters.title} />
       {games.length === 0 && <p className="text-muted">{de.home.noGames}</p>}
       {games.map((game) => {
@@ -30,51 +33,73 @@ async function CharactersContent() {
           (character) => character.gameId === game.id,
         );
         return (
-          <Card
-            key={game.id}
-            title={
-              <span className="flex items-center justify-between gap-2">
+          <section key={game.id} className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="font-display text-2xl font-semibold text-white">
                 {localize(game.name)}
-                <ButtonLink
-                  href={`/charaktere/neu?spiel=${game.id}`}
-                  variant="secondary"
-                >
-                  + {localize(game.meta.characterLabel)}
-                </ButtonLink>
-              </span>
-            }
-          >
+              </h2>
+              <ButtonLink
+                href={`/charaktere/neu?spiel=${game.id}`}
+                variant="secondary"
+              >
+                <i className="pi pi-plus mr-2 text-xs" aria-hidden />
+                {localize(game.meta.characterLabel)}
+              </ButtonLink>
+            </div>
             {characters.length === 0 ? (
-              <p className="text-sm text-muted">{de.characters.empty}</p>
+              <p className="rounded-[18px] border border-dashed border-[#2c2645] px-4.5 py-4 text-sm text-muted">
+                {de.characters.empty}
+              </p>
             ) : (
-              <ul className="divide-y divide-border">
+              <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {characters.map((character) => (
                   <li key={character.id}>
                     <Link
                       href={`/charaktere/${character.id}`}
-                      className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2 hover:text-accent"
+                      className="flex items-center gap-3.5 rounded-[20px] border border-border bg-surface px-4 py-3.5 transition-colors hover:border-[#3a3358] hover:bg-[#1a1630]"
                     >
-                      <span className="font-medium">{character.name}</span>
-                      {character.isMain && (
-                        <Badge tone="accent">{de.badges.main}</Badge>
-                      )}
-                      <ClassName entry={character.characterClass} />
-                      {character.level !== null && (
-                        <span className="text-sm text-muted">
-                          {de.characters.level} {character.level}
+                      <ClassAvatar
+                        initial={character.name.charAt(0).toUpperCase()}
+                        color={character.characterClass?.color}
+                      />
+                      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                        <span className="flex items-center gap-2">
+                          <span className="truncate text-base font-bold text-white">
+                            {character.name}
+                          </span>
+                          {character.isMain && (
+                            <Badge tone="accent">{de.badges.main}</Badge>
+                          )}
                         </span>
-                      )}
-                      {character.server && (
-                        <span className="text-sm text-muted">
-                          {character.server}
+                        <span className="flex flex-wrap gap-x-2.5 text-[13px] text-muted">
+                          {character.characterClass && (
+                            <span
+                              className="font-bold"
+                              style={{
+                                color: classTextColor(
+                                  character.characterClass.color,
+                                ),
+                              }}
+                            >
+                              {localize(character.characterClass.name)}
+                            </span>
+                          )}
+                          {character.level !== null && (
+                            <span>{de.today.level(character.level)}</span>
+                          )}
+                          {character.server && <span>{character.server}</span>}
                         </span>
-                      )}
+                      </span>
+                      <i
+                        className="pi pi-chevron-right text-xs text-muted"
+                        aria-hidden
+                      />
                     </Link>
                   </li>
                 ))}
               </ul>
             )}
-          </Card>
+          </section>
         );
       })}
     </div>

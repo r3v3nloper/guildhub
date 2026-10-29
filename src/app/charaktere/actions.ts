@@ -8,13 +8,18 @@ import {
   guarded,
   type ActionState,
 } from "@/lib/actions/action-state";
+import { idArg, keyListArg, parseArg } from "@/lib/actions/action-args";
 import { actorForAction } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { BUILD_STATUSES, type BuildStatus } from "@/lib/db/schema";
 import type { CharacterInput } from "@/lib/roster/character-rules";
 import { deleteBuild, saveBuild } from "@/lib/roster/builds";
 import { saveProfessionDetails } from "@/lib/roster/character-professions";
-import { deleteCharacter, saveCharacter } from "@/lib/roster/characters";
+import {
+  deleteCharacter,
+  saveCharacter,
+  setCharacterProfessions,
+} from "@/lib/roster/characters";
 import { de } from "@/i18n/de";
 
 function characterInputOf(formData: FormData): CharacterInput {
@@ -164,6 +169,37 @@ export async function saveProfessionDetailsAction(
   if (state.ok) {
     revalidatePath(`/charaktere/${characterId}`);
     revalidatePath("/roster");
+  }
+  return state;
+}
+
+/** Adds or removes professions from the "Berufe" tab; the rest of the character stays. */
+export async function setProfessionsAction(
+  characterId: number,
+  professionKeys: string[],
+): Promise<ActionState> {
+  const state = await guarded(async () => {
+    const result = setCharacterProfessions(
+      getDb(),
+      await actorForAction(),
+      parseArg(idArg, characterId),
+      parseArg(keyListArg, professionKeys),
+    );
+    if (!result.ok) {
+      return {
+        ok: false,
+        message:
+          result.errors.professionKeys ??
+          Object.values(result.errors).find(Boolean) ??
+          de.errors.text,
+      };
+    }
+    return { ok: true };
+  });
+  if (state.ok) {
+    revalidatePath(`/charaktere/${characterId}`);
+    revalidatePath("/roster");
+    revalidatePath("/charaktere");
   }
   return state;
 }

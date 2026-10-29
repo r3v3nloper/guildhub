@@ -95,6 +95,7 @@ export const requests = {
   close: "Schließen",
   optional: "optional",
   notePlaceholder: "z. B. Material bringe ich mit",
+  hasRecipe: "hat das Rezept",
 } as const;
 
 export const statPriorities = {

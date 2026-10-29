@@ -29,11 +29,13 @@ async function NewCharacterContent({
 
   const options = characterFormOptions(catalog);
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       <PageHeader
-        title={`${options.characterLabel}: ${localize(catalog.game.name)}`}
+        title={de.characters.newTitle}
+        eyebrow={localize(catalog.game.name)}
       />
       <CharacterForm
+        mode="new"
         action={saveCharacterAction.bind(null, gameId, undefined)}
         options={options}
         knownServers={listKnownServers(db, gameId)}

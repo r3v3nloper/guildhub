@@ -34,11 +34,13 @@ export function BuildForm({
   classes,
   values,
   onSaved,
+  onCancel,
 }: {
   action: (state: ActionState, formData: FormData) => Promise<ActionState>;
   classes: CatalogOption[];
   values?: BuildFormValues;
   onSaved?: () => void;
+  onCancel?: () => void;
 }) {
   const editing = values !== undefined;
   const initial = values ?? EMPTY_BUILD;
@@ -106,6 +108,15 @@ export function BuildForm({
         <Button disabled={pending}>
           {editing ? de.characters.saveBuild : de.characters.addBuild}
         </Button>
+        {onCancel && (
+          <Button
+            type="button"
+            variant="secondary"
+            text
+            label={de.common.cancel}
+            onClick={onCancel}
+          />
+        )}
         <FormMessage state={state} />
       </div>
     </form>

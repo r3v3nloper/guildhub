@@ -15,3 +15,5 @@ export function parseArg<T>(schema: z.ZodType<T>, value: unknown): T {
 
 export const idArg = z.number().int().positive();
 export const flagArg = z.boolean();
+/** Catalog keys, e.g. the professions of a character. */
+export const keyListArg = z.array(z.string().min(1).max(100)).max(50);

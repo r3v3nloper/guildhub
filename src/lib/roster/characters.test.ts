@@ -17,7 +17,13 @@ import {
   saveProfessionDetails,
   setProfessionSkill,
 } from "./character-professions";
-import { getCharacter, saveCharacter, setCharacterLevel } from "./characters";
+import {
+  getCharacter,
+  saveCharacter,
+  setCharacterLevel,
+  setCharacterProfessions,
+} from "./characters";
+import { createListFixture } from "../../../test/fixtures/lists";
 import { filterRoster, loadRosterMembers, OUTDATED_FILTER_KEY } from "./roster";
 
 const OWNER = "100000000000000001";
@@ -502,5 +508,53 @@ describe("characters and roster with the shipped packs", () => {
         setProfessionSkill(db, anna, character.id, 999999, 10),
       ).toThrow(NotFoundError);
     });
+  });
+});
+
+describe("setCharacterProfessions", () => {
+  it("adds and removes professions, keeping the rest and retained details", () => {
+    // Arrange
+    const { db, member, other } = createListFixture();
+    const saved = saveCharacter(
+      db,
+      member,
+      "game",
+      input({
+        name: "Gimli",
+        level: 42,
+        notes: "Tank",
+        professionKeys: ["mining"],
+      }),
+    );
+    const id = saved.ok ? saved.characterId : -1;
+    const mining = getCharacter(db, id)!.professionEntryIds[0];
+    saveProfessionDetails(db, member, id, mining, {
+      skillLevel: 150,
+      specialization: "",
+      notes: "",
+      recipes: "",
+    });
+
+    // Act
+    const added = setCharacterProfessions(db, member, id, [
+      "mining",
+      "leatherworking",
+    ]);
+    const afterAdd = getCharacter(db, id)!;
+    setCharacterProfessions(db, member, id, ["leatherworking"]);
+    const afterRemove = getCharacter(db, id)!;
+
+    // Assert
+    expect(added.ok).toBe(true);
+    expect(afterAdd).toMatchObject({ name: "Gimli", level: 42, notes: "Tank" });
+    expect(
+      afterAdd.professions.find((p) => p.professionEntryId === mining)
+        ?.skillLevel,
+    ).toBe(150);
+    expect(afterRemove.professionEntryIds).toHaveLength(1);
+    expect(afterRemove.professionEntryIds).not.toContain(mining);
+    expect(() => setCharacterProfessions(db, other, id, [])).toThrow(
+      ForbiddenError,
+    );
   });
 });

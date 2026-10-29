@@ -12,6 +12,7 @@ import {
   type FieldErrors,
   type PreviousSelection,
 } from "./character-rules";
+import { keyOfEntry } from "./form-options";
 import {
   isGameEnabled,
   loadGameCatalog,
@@ -225,6 +226,41 @@ export function saveCharacter(
   });
 
   return { ok: true, characterId: savedId };
+}
+
+/**
+ * Sets which professions the character has, keeping everything else as it is; details
+ * of retained professions stay. The same rules apply as for the whole form.
+ */
+export function setCharacterProfessions(
+  db: AppDatabase,
+  actor: Actor,
+  characterId: number,
+  professionKeys: string[],
+): SaveResult {
+  const character = ownedCharacter(db, actor, characterId);
+  const catalog = requireCatalog(db, character.gameId);
+  const key = (entryId: number | null) => keyOfEntry(catalog, entryId);
+  return saveCharacter(
+    db,
+    actor,
+    character.gameId,
+    {
+      name: character.name,
+      server: character.serverName ?? character.serverKey ?? "",
+      factionKey: key(character.factionEntryId),
+      raceKey: key(character.raceEntryId),
+      classKey: key(character.classEntryId),
+      specKey: key(character.specEntryId),
+      offSpecKey: key(character.offSpecEntryId),
+      spec: character.spec ?? "",
+      level: character.level,
+      isMain: character.isMain,
+      notes: character.notes ?? "",
+      professionKeys,
+    },
+    character.id,
+  );
 }
 
 /**
