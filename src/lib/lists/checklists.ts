@@ -3,6 +3,7 @@ import { assertAllowed, permissions, type Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
 import {
   checklistItems,
+  checklistPins,
   checklists,
   checklistTicks,
   users,
@@ -19,6 +20,8 @@ export interface ChecklistView extends ChecklistRow {
   ownerName: string | null;
   items: Array<{ id: number; label: string; ticked: boolean }>;
   canEdit: boolean;
+  /** Shown on the actor's "Heute" dashboard. */
+  pinned: boolean;
 }
 
 export interface ChecklistInput {
@@ -82,11 +85,20 @@ export function listChecklists(
       .all()
       .map((tick) => tick.itemId),
   );
+  const pinned = new Set(
+    db
+      .select({ checklistId: checklistPins.checklistId })
+      .from(checklistPins)
+      .where(eq(checklistPins.userId, actor.userId))
+      .all()
+      .map((pin) => pin.checklistId),
+  );
 
   return rows.map(({ checklist, ownerName }) => ({
     ...checklist,
     ownerName,
     canEdit: permissions.editSharedEntry(actor, checklist).allowed,
+    pinned: pinned.has(checklist.id),
     items: items
       .filter((item) => item.checklistId === checklist.id)
       .map((item) => ({
@@ -276,6 +288,43 @@ export function resetChecklistRun(
       and(
         inArray(checklistTicks.itemId, itemIds),
         eq(checklistTicks.userId, actor.userId),
+      ),
+    )
+    .run();
+}
+
+/** The checklists the actor pinned to "Heute", with their own ticks. */
+export function listPinnedChecklists(
+  db: AppDatabase,
+  actor: Actor,
+  gameIds: readonly string[],
+): ChecklistView[] {
+  return listChecklists(db, actor, gameIds).filter(
+    (checklist) => checklist.pinned,
+  );
+}
+
+/** Pins a checklist to the actor's dashboard, or takes it off again. */
+export function setChecklistPinned(
+  db: AppDatabase,
+  actor: Actor,
+  checklistId: number,
+  pinned: boolean,
+): void {
+  visibleChecklist(db, actor, checklistId);
+  assertAllowed(permissions.editOwnData(actor, actor.userId));
+  if (pinned) {
+    db.insert(checklistPins)
+      .values({ checklistId, userId: actor.userId })
+      .onConflictDoNothing()
+      .run();
+    return;
+  }
+  db.delete(checklistPins)
+    .where(
+      and(
+        eq(checklistPins.checklistId, checklistId),
+        eq(checklistPins.userId, actor.userId),
       ),
     )
     .run();

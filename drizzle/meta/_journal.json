@@ -36,6 +36,13 @@
       "when": 1793196053068,
       "tag": "0004_phase3_guild",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1793260269915,
+      "tag": "0005_checklist_pins",
+      "breakpoints": true
     }
   ]
 }

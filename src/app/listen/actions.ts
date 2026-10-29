@@ -15,7 +15,8 @@ import {
   setTodoItemDone,
 } from "@/lib/lists/todo-lists";
 
-const LISTS = ["/listen"];
+// "/" shows the open entries on the dashboard.
+const LISTS = ["/listen", "/"];
 
 function todoAction(change: (db: AppDatabase, actor: Actor) => void) {
   return runMutation(LISTS, change);

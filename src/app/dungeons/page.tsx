@@ -19,6 +19,7 @@ import { de } from "@/i18n/de";
 import {
   resetChecklistRunAction,
   setChecklistItemTickedAction,
+  setChecklistPinnedAction,
 } from "./actions";
 
 export const metadata: Metadata = { title: de.checklists.title };
@@ -109,15 +110,32 @@ function ChecklistCard({ checklist }: { checklist: ChecklistView }) {
             />
           ))}
         </ul>
-        {ticked > 0 && (
-          <ActionForm action={resetChecklistRunAction.bind(null, checklist.id)}>
+        <div className="flex flex-wrap gap-2">
+          <ActionForm
+            action={setChecklistPinnedAction.bind(
+              null,
+              checklist.id,
+              !checklist.pinned,
+            )}
+          >
             <Button
               variant="secondary"
-              icon="pi pi-refresh"
-              label={de.checklists.newRun}
+              icon="pi pi-thumbtack"
+              label={checklist.pinned ? de.checklists.unpin : de.checklists.pin}
             />
           </ActionForm>
-        )}
+          {ticked > 0 && (
+            <ActionForm
+              action={resetChecklistRunAction.bind(null, checklist.id)}
+            >
+              <Button
+                variant="secondary"
+                icon="pi pi-refresh"
+                label={de.checklists.newRun}
+              />
+            </ActionForm>
+          )}
+        </div>
       </div>
     </Card>
   );

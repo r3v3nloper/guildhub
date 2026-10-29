@@ -3,9 +3,11 @@ import { ForbiddenError, NotFoundError } from "@/lib/errors";
 import {
   deleteChecklist,
   listChecklists,
+  listPinnedChecklists,
   resetChecklistRun,
   saveChecklist,
   setChecklistItemTicked,
+  setChecklistPinned,
   type ChecklistInput,
 } from "./checklists";
 import {
@@ -109,5 +111,38 @@ describe("dungeon checklists", () => {
       ok: false,
       errors: { items: expect.any(String) },
     });
+  });
+
+  it("pins a checklist to the dashboard for the actor only", () => {
+    // Arrange
+    const { db, member, other } = fixture;
+    const checklistId = create();
+    create({ name: "Schwarzfels" });
+
+    // Act
+    setChecklistPinned(db, other, checklistId, true);
+
+    // Assert
+    expect(
+      listPinnedChecklists(db, other, ["game"]).map((list) => list.name),
+    ).toEqual(["Feuerschlund"]);
+    expect(listPinnedChecklists(db, member, ["game"])).toEqual([]);
+  });
+
+  it("unpins again and refuses private checklists of others", () => {
+    // Arrange
+    const { db, other } = fixture;
+    const shared = create();
+    const hidden = create({ name: "Privat", visibility: "private" });
+    setChecklistPinned(db, other, shared, true);
+
+    // Act
+    setChecklistPinned(db, other, shared, false);
+
+    // Assert
+    expect(listPinnedChecklists(db, other, ["game"])).toEqual([]);
+    expect(() => setChecklistPinned(db, other, hidden, true)).toThrow(
+      NotFoundError,
+    );
   });
 });

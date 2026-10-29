@@ -16,7 +16,11 @@ import {
   resetChecklistRun,
   saveChecklist,
   setChecklistItemTicked,
+  setChecklistPinned,
 } from "@/lib/lists/checklists";
+
+// "/" shows pinned checklists on the dashboard.
+const CHECKLISTS = ["/dungeons", "/"];
 
 export async function saveChecklistAction(
   checklistId: number | undefined,
@@ -58,10 +62,19 @@ export async function deleteChecklistAction(
   return state;
 }
 
+export async function setChecklistPinnedAction(
+  checklistId: number,
+  pinned: boolean,
+): Promise<ActionState> {
+  return runMutation(CHECKLISTS, (db, actor) =>
+    setChecklistPinned(db, actor, checklistId, pinned),
+  );
+}
+
 export async function resetChecklistRunAction(
   checklistId: number,
 ): Promise<ActionState> {
-  return runMutation(["/dungeons"], (db, actor) =>
+  return runMutation(CHECKLISTS, (db, actor) =>
     resetChecklistRun(db, actor, checklistId),
   );
 }
@@ -70,7 +83,7 @@ export async function setChecklistItemTickedAction(
   itemId: number,
   ticked: boolean,
 ): Promise<ActionState> {
-  return runMutation(["/dungeons"], (db, actor) =>
+  return runMutation(CHECKLISTS, (db, actor) =>
     setChecklistItemTicked(
       db,
       actor,

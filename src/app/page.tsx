@@ -5,6 +5,7 @@ import { signOutAction } from "@/components/auth/auth-actions";
 import { SignInButton } from "@/components/auth/SignInButton";
 import { CraftRequestsToday } from "@/components/today/CraftRequestsToday";
 import { TodayBoard } from "@/components/today/TodayBoard";
+import { TodayLists } from "@/components/today/TodayLists";
 import { TodaySummary } from "@/components/today/TodaySummary";
 import { PageSuspense } from "@/components/ui/PageSuspense";
 import { PageHeader } from "@/components/ui/ui";
@@ -12,6 +13,8 @@ import { currentActor, currentSession } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { selectedGames } from "@/lib/game-filter";
 import { listCraftRequestsForCrafter } from "@/lib/guild/craft-requests";
+import { listPinnedChecklists } from "@/lib/lists/checklists";
+import { listTodoLists } from "@/lib/lists/todo-lists";
 import { listCharactersOfUser } from "@/lib/roster/characters";
 import { buildDashboard } from "@/lib/tasks/dashboard";
 import { summarizeDashboard } from "@/lib/tasks/dashboard-summary";
@@ -41,6 +44,12 @@ async function HomeContent() {
   const dashboard = buildDashboard(db, actor.guildId, actor.userId, games, now);
   const summary = summarizeDashboard(dashboard);
   const requests = listCraftRequestsForCrafter(
+    db,
+    actor,
+    games.map((game) => game.id),
+  );
+  const todoLists = listTodoLists(db, actor);
+  const checklists = listPinnedChecklists(
     db,
     actor,
     games.map((game) => game.id),
@@ -81,6 +90,7 @@ async function HomeContent() {
       )}
       {!isEmpty && <TodaySummary summary={summary} />}
       <CraftRequestsToday requests={requests} />
+      <TodayLists todoLists={todoLists} checklists={checklists} />
       <TodayBoard dashboard={dashboard} now={nowIso} />
     </section>
   );

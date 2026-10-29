@@ -456,6 +456,20 @@ export const checklistTicks = sqliteTable(
   (tick) => [primaryKey({ columns: [tick.itemId, tick.userId] })],
 );
 
+/** Checklists a member pinned to their "Heute" dashboard; personal, like the ticks. */
+export const checklistPins = sqliteTable(
+  "checklist_pin",
+  {
+    checklistId: integer("checklist_id")
+      .notNull()
+      .references(() => checklists.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+  },
+  (pin) => [primaryKey({ columns: [pin.checklistId, pin.userId] })],
+);
+
 export const farmSpots = sqliteTable(
   "farm_spot",
   {
