@@ -1,4 +1,4 @@
-import { and, eq, ne } from "drizzle-orm";
+import { and, eq, notInArray } from "drizzle-orm";
 import type { AppDatabase } from "@/lib/db/client";
 import {
   gameCatalogEntries,
@@ -25,6 +25,9 @@ export interface GameCatalog {
   withRecipes?: boolean;
 }
 
+/** Gathering guides are large and read on their own (gathering-guide.ts), never here. */
+const NEVER_LOADED: CatalogKind[] = ["gathering"];
+
 export function catalogOfKind(
   catalog: GameCatalog,
   kind: CatalogKind,
@@ -32,6 +35,9 @@ export function catalogOfKind(
   // An empty recipe list would silently turn recipe lookups into free text.
   if (kind === "recipe" && catalog.withRecipes === false) {
     throw new Error("Katalog wurde ohne Rezepte geladen.");
+  }
+  if (NEVER_LOADED.includes(kind) && catalog.withRecipes !== undefined) {
+    throw new Error(`Katalogart ${kind} wird nicht mitgeladen.`);
   }
   return catalog.entries.filter((entry) => entry.kind === kind);
 }
@@ -69,7 +75,10 @@ export function loadGameCatalog(
       .where(
         and(
           eq(gameCatalogEntries.gameId, gameId),
-          withRecipes ? undefined : ne(gameCatalogEntries.kind, "recipe"),
+          notInArray(
+            gameCatalogEntries.kind,
+            withRecipes ? NEVER_LOADED : [...NEVER_LOADED, "recipe"],
+          ),
         ),
       )
       .orderBy(gameCatalogEntries.id)

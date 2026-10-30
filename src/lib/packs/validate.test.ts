@@ -218,6 +218,23 @@ describe("validatePack", () => {
     expect(errors.map((e) => e.path)).toEqual(["recipes[1].profession"]);
   });
 
+  it("checks that a gathering guide belongs to a known profession", () => {
+    // Act
+    const errors = errorsOf(
+      basePack({
+        capabilities: { classes: true, resets: true, professions: true },
+        professions: [{ id: "mining", name: "Bergbau", kind: "gathering" }],
+        gathering: [
+          { id: "mining", name: "Bergbau", profession: "mining" },
+          { id: "herbalism", name: "Kräuterkunde", profession: "herbalism" },
+        ],
+      }),
+    );
+
+    // Assert
+    expect(errors.map((e) => e.path)).toEqual(["gathering[1].profession"]);
+  });
+
   it("rejects replaces pointing at an ID that is still active", () => {
     const errors = errorsOf(
       basePack({

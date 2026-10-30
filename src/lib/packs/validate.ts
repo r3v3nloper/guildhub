@@ -174,6 +174,15 @@ function checkReferences(pack: Pack, error: Report) {
     }
   });
 
+  pack.gathering.forEach((entry, index) => {
+    if (!professionIds.has(entry.profession)) {
+      error(
+        `gathering[${index}].profession`,
+        `unbekannter Beruf '${entry.profession}'`,
+      );
+    }
+  });
+
   pack.tasks.forEach((task, index) => {
     if (task.reset_rule_id && !ruleIds.has(task.reset_rule_id)) {
       error(

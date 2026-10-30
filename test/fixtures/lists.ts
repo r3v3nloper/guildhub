@@ -11,6 +11,35 @@ const raw = {
     { id: "mining", name: "Bergbau", kind: "gathering" },
     { id: "leatherworking", name: "Lederverarbeitung", kind: "primary" },
   ],
+  gathering: [
+    {
+      id: "mining",
+      name: "Bergbau",
+      profession: "mining",
+      best_zones: [
+        {
+          from_skill: 1,
+          to_skill: 66,
+          zones: [{ map_id: 1436, name: { de: "Westfall", en: "Westfall" } }],
+        },
+        {
+          from_skill: 66,
+          to_skill: 126,
+          zones: [{ map_id: 1437, name: { de: "Sumpfland", en: "Wetlands" } }],
+        },
+      ],
+      zones: [
+        {
+          map_id: 1437,
+          name: { de: "Sumpfland", en: "Wetlands" },
+          nodes: [
+            { name: "Zinnerz", skill: 65 },
+            { name: "Kupfererz", skill: 1 },
+          ],
+        },
+      ],
+    },
+  ],
   instances: [
     {
       id: "deadmines",

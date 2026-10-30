@@ -22,6 +22,10 @@ describe("loadGameCatalog", () => {
       false,
     );
     expect(() => catalogOfKind(catalog, "recipe")).toThrow();
+    expect(catalog.entries.some((entry) => entry.kind === "gathering")).toBe(
+      false,
+    );
+    expect(() => catalogOfKind(catalog, "gathering")).toThrow();
   });
 
   it("includes recipes when asked for", () => {

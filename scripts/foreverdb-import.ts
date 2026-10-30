@@ -2,27 +2,25 @@ import fs from "node:fs";
 import path from "node:path";
 import { packsDirectory, PACK_FILE_NAME } from "../src/lib/packs/loader";
 import type { PackInstance, PackRecipe } from "../src/lib/packs/schema";
+import {
+  API,
+  apiKey,
+  fetchJson,
+  localized,
+  PAGE_SIZE,
+  type ApiName,
+} from "./foreverdb-api";
+import { gatheringOf } from "./foreverdb-gathering";
 
-// Pulls the recipes of the pack's professions and the dungeons and raids from the ForeverDB
-// API into pack.json, so the app itself never needs the API key or a connection to
-// ForeverDB at runtime.
+// Pulls the recipes and gathering guides of the pack's professions and the dungeons and
+// raids from the ForeverDB API into pack.json, so the app itself never needs the API key
+// or a connection to ForeverDB at runtime.
 // Usage: npm run packs:foreverdb [-- <pack-id>]   (needs FOREVERDB_API_KEY, e.g. in .env.local)
 
-const API = "https://foreverdb.net/api/v1";
 const CREDIT = {
   label: "Data from ForeverDB.net",
   url: "https://foreverdb.net",
 };
-const PAGE_SIZE = 100;
-// The API allows 60 requests a minute per key.
-const REQUEST_GAP_MS = 1100;
-
-interface ApiName {
-  /** Null for items the client keeps hidden until the game sends them. */
-  name: string | null;
-  nameEn?: string | null;
-}
-
 interface ApiRecipe extends ApiName {
   spellId: number;
   skill: { orange: number | null } | null;
@@ -53,37 +51,6 @@ interface ApiInstance extends ApiInstanceSummary {
 }
 
 const FOREVER_STATUSES = new Set(["classic", "forever"]);
-
-function apiKey(): string {
-  if (!process.env.FOREVERDB_API_KEY && fs.existsSync(".env.local")) {
-    process.loadEnvFile(".env.local");
-  }
-  const key = process.env.FOREVERDB_API_KEY;
-  if (!key) {
-    throw new Error("FOREVERDB_API_KEY fehlt (Umgebung oder .env.local).");
-  }
-  return key;
-}
-
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-async function fetchJson<T>(key: string, url: string): Promise<T> {
-  const response = await fetch(url, { headers: { "X-API-Key": key } });
-  if (!response.ok) {
-    throw new Error(`${response.status} bei ${url}: ${await response.text()}`);
-  }
-  await wait(REQUEST_GAP_MS);
-  return (await response.json()) as T;
-}
-
-const UNKNOWN_ITEM = { de: "Unbekannter Gegenstand", en: "Unknown item" };
-
-function localized({ name, nameEn }: ApiName) {
-  if (!name) {
-    return UNKNOWN_ITEM;
-  }
-  return { de: name, en: nameEn ?? name };
-}
 
 function toPackRecipe(professionId: string, recipe: ApiRecipe): PackRecipe {
   return {
@@ -250,7 +217,7 @@ async function main() {
     string,
     unknown
   > & {
-    professions: Array<{ id: string }>;
+    professions: Array<{ id: string; name: unknown }>;
     instances?: Array<{ id: string; name: unknown }>;
   };
   const key = apiKey();
@@ -273,9 +240,17 @@ async function main() {
     }),
   );
   console.log(`${instances.length} Dungeons und Raids`);
+  const gathering = (await gatheringOf(key, pack.professions)).map((guide) =>
+    compact({
+      ...guide,
+      zones: guide.zones.map((zone) => compact({ ...zone })),
+    }),
+  );
+  console.log(`${gathering.length} Sammel-Wegweiser`);
 
   let updated = withKeyAfter(pack, "professions", "recipes", recipes);
   updated = withKeyAfter(updated, "recipes", "instances", instances);
+  updated = withKeyAfter(updated, "instances", "gathering", gathering);
   updated = withKeyAfter(updated, "build_sources", "credits", [CREDIT]);
   fs.writeFileSync(file, `${JSON.stringify(updated, null, 2)}\n`);
   console.log(`Nach ${file} geschrieben.`);

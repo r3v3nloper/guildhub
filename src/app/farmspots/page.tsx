@@ -15,6 +15,12 @@ import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { selectedGames } from "@/lib/game-filter";
 import { listFarmSpots, type FarmSpotView } from "@/lib/lists/farm-spots";
+import {
+  gatheringTips,
+  loadGatheringGuides,
+} from "@/lib/lists/gathering-guide";
+import { loadRosterMembers } from "@/lib/roster/roster";
+import { GatheringGuideSection } from "@/components/lists/GatheringGuideSection";
 import { professionGameOptions } from "@/lib/roster/profession-options";
 import { textParam } from "@/lib/search-params";
 import { localize } from "@/i18n/localize";
@@ -45,6 +51,14 @@ async function FarmSpotsContent({ searchParams }: PageProps<"/farmspots">) {
     (a, b) => a.localeCompare(b),
   );
   const isFiltered = Boolean(filter.professionKey || filter.query);
+  const guides = loadGatheringGuides(db, gameIds).filter(
+    (guide) =>
+      !filter.professionKey || guide.professionKey === filter.professionKey,
+  );
+  const tips = gatheringTips(
+    guides,
+    loadRosterMembers(db, actor.guildId, actor.userId)[0]?.characters ?? [],
+  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -84,6 +98,14 @@ async function FarmSpotsContent({ searchParams }: PageProps<"/farmspots">) {
           </Card>
         );
       })}
+      {games.map((game) => (
+        <GatheringGuideSection
+          key={game.id}
+          guides={guides.filter((guide) => guide.gameId === game.id)}
+          tips={tips.filter((tip) => tip.gameId === game.id)}
+          meta={game.meta}
+        />
+      ))}
     </div>
   );
 }

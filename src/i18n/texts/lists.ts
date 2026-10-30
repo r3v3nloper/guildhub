@@ -108,6 +108,23 @@ export const farmSpots = {
   empty: "Noch keine Farmspots für dieses Spiel.",
   new: "Neuer Farmspot",
   editTitle: "Farmspot bearbeiten",
+  guideTitle: "Wo sammeln?",
+  guideHint:
+    "Die besten Zonen je Fertigkeit laut ForeverDB. Wo Vorkommen stehen, sind teils noch Classic-Daten.",
+  guideCredits: "Sammeldaten",
+  yourGatherers: "Deine Sammler",
+  enterSkill:
+    "Fertigkeit beim Charakter eintragen, dann gibt es hier eine Empfehlung.",
+  skillRange: (from: number, to: number) => `Fertigkeit ${from}–${to}`,
+  allZones: (count: number) => `Alle Zonen (${count})`,
+  zoneSkill: (skill: number | null, max: number | null) =>
+    skill === null || skill <= 0
+      ? "jede Fertigkeit"
+      : max !== null && max !== skill
+        ? `Fertigkeit ${skill}–${max}`
+        : `ab Fertigkeit ${skill}`,
+  chance: (percent: number) =>
+    `${percent.toLocaleString("de-DE", { maximumFractionDigits: 1 })} %`,
   profession: "Beruf",
   resource: "Was",
   zone: "Zone",

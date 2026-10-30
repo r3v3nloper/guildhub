@@ -1,7 +1,7 @@
 {
   "id": "wow-forever",
   "name": "WoW: Forever",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "type": "mmo",
   "server_label": "Realm",
   "capabilities": {
@@ -89817,6 +89817,6915 @@
         "High Priestess Arlokk",
         "Jin'do the Hexxer",
         "Hakkar"
+      ]
+    }
+  ],
+  "gathering": [
+    {
+      "id": "herbalism",
+      "name": {
+        "de": "Kräuterkunde",
+        "en": "Herbalism"
+      },
+      "profession": "herbalism",
+      "best_zones": [
+        {
+          "from_skill": 1,
+          "to_skill": 51,
+          "zones": [
+            {
+              "map_id": 1420,
+              "name": {
+                "de": "Tirisfal",
+                "en": "Tirisfal Glades"
+              }
+            },
+            {
+              "map_id": 1413,
+              "name": {
+                "de": "Das Brachland",
+                "en": "The Barrens"
+              }
+            },
+            {
+              "map_id": 1411,
+              "name": {
+                "de": "Durotar",
+                "en": "Durotar"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 51,
+          "to_skill": 166,
+          "zones": [
+            {
+              "map_id": 1413,
+              "name": {
+                "de": "Das Brachland",
+                "en": "The Barrens"
+              }
+            },
+            {
+              "map_id": 1420,
+              "name": {
+                "de": "Tirisfal",
+                "en": "Tirisfal Glades"
+              }
+            },
+            {
+              "map_id": 1411,
+              "name": {
+                "de": "Durotar",
+                "en": "Durotar"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 166,
+          "to_skill": 211,
+          "zones": [
+            {
+              "map_id": 1434,
+              "name": {
+                "de": "Schlingendorntal",
+                "en": "Stranglethorn Vale"
+              }
+            },
+            {
+              "map_id": 1413,
+              "name": {
+                "de": "Das Brachland",
+                "en": "The Barrens"
+              }
+            },
+            {
+              "map_id": 1437,
+              "name": {
+                "de": "Sumpfland",
+                "en": "Wetlands"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 211,
+          "to_skill": 251,
+          "zones": [
+            {
+              "map_id": 1444,
+              "name": {
+                "de": "Feralas",
+                "en": "Feralas"
+              }
+            },
+            {
+              "map_id": 1434,
+              "name": {
+                "de": "Schlingendorntal",
+                "en": "Stranglethorn Vale"
+              }
+            },
+            {
+              "map_id": 1446,
+              "name": {
+                "de": "Tanaris",
+                "en": "Tanaris"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 251,
+          "to_skill": 300,
+          "zones": [
+            {
+              "map_id": 1448,
+              "name": {
+                "de": "Teufelswald",
+                "en": "Felwood"
+              }
+            },
+            {
+              "map_id": 1444,
+              "name": {
+                "de": "Feralas",
+                "en": "Feralas"
+              }
+            },
+            {
+              "map_id": 1447,
+              "name": {
+                "de": "Azshara",
+                "en": "Azshara"
+              }
+            }
+          ]
+        }
+      ],
+      "zones": [
+        {
+          "map_id": 1416,
+          "name": {
+            "de": "Alteracgebirge",
+            "en": "Alterac Mountains"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Grabmoos",
+                "en": "Grave Moss"
+              },
+              "skill": 120
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            },
+            {
+              "name": {
+                "de": "Blassblatt",
+                "en": "Fadeleaf"
+              },
+              "skill": 160
+            },
+            {
+              "name": {
+                "de": "Golddorn",
+                "en": "Goldthorn"
+              },
+              "skill": 170
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            },
+            {
+              "name": {
+                "de": "Winterbiss",
+                "en": "Wintersbite"
+              },
+              "skill": 195
+            },
+            {
+              "name": {
+                "de": "Arthas' Tränen",
+                "en": "Arthas' Tears"
+              },
+              "skill": 220
+            }
+          ]
+        },
+        {
+          "map_id": 1417,
+          "name": {
+            "de": "Arathihochland",
+            "en": "Arathi Highlands"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Grabmoos",
+                "en": "Grave Moss"
+              },
+              "skill": 120
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            },
+            {
+              "name": {
+                "de": "Blassblatt",
+                "en": "Fadeleaf"
+              },
+              "skill": 160
+            },
+            {
+              "name": {
+                "de": "Golddorn",
+                "en": "Goldthorn"
+              },
+              "skill": 170
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            }
+          ]
+        },
+        {
+          "map_id": 1440,
+          "name": {
+            "de": "Ashenvale",
+            "en": "Ashenvale"
+          },
+          "nodes": [
+            {
+              "name": "Plant Bundle",
+              "skill": null
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            },
+            {
+              "name": {
+                "de": "Golddorn",
+                "en": "Goldthorn"
+              },
+              "skill": 170
+            },
+            {
+              "name": {
+                "de": "Wildranke",
+                "en": "Wildvine"
+              },
+              "skill": 210
+            },
+            {
+              "name": {
+                "de": "Fen Ring",
+                "en": "Fen Ring"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 1447,
+          "name": {
+            "de": "Azshara",
+            "en": "Azshara"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Golddorn",
+                "en": "Goldthorn"
+              },
+              "skill": 170
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            },
+            {
+              "name": {
+                "de": "Wildranke",
+                "en": "Wildvine"
+              },
+              "skill": 210
+            },
+            {
+              "name": {
+                "de": "Fen Ring",
+                "en": "Fen Ring"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Marsh Ring",
+                "en": "Marsh Ring"
+              },
+              "skill": 260
+            },
+            {
+              "name": {
+                "de": "Desert Ring",
+                "en": "Desert Ring"
+              },
+              "skill": 270
+            },
+            {
+              "name": {
+                "de": "Arctic Ring",
+                "en": "Arctic Ring"
+              },
+              "skill": 280
+            }
+          ]
+        },
+        {
+          "map_id": 1418,
+          "name": {
+            "de": "Ödland",
+            "en": "Badlands"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Blassblatt",
+                "en": "Fadeleaf"
+              },
+              "skill": 160
+            },
+            {
+              "name": {
+                "de": "Golddorn",
+                "en": "Goldthorn"
+              },
+              "skill": 170
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            },
+            {
+              "name": {
+                "de": "Feuerblüte",
+                "en": "Firebloom"
+              },
+              "skill": 205
+            },
+            {
+              "name": {
+                "de": "Wildranke",
+                "en": "Wildvine"
+              },
+              "skill": 210
+            }
+          ]
+        },
+        {
+          "map_id": 1428,
+          "name": {
+            "de": "Brennende Steppe",
+            "en": "Burning Steppes"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Fen Ring",
+                "en": "Fen Ring"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Marsh Ring",
+                "en": "Marsh Ring"
+              },
+              "skill": 260
+            },
+            {
+              "name": {
+                "de": "Desert Ring",
+                "en": "Desert Ring"
+              },
+              "skill": 270
+            },
+            {
+              "name": {
+                "de": "Arctic Ring",
+                "en": "Arctic Ring"
+              },
+              "skill": 280
+            },
+            {
+              "name": {
+                "de": "Schwarzer Lotus",
+                "en": "Black Lotus"
+              },
+              "skill": 300
+            }
+          ]
+        },
+        {
+          "map_id": 1439,
+          "name": {
+            "de": "Dunkelküste",
+            "en": "Darkshore"
+          },
+          "nodes": [
+            {
+              "name": "Beached Sea Creature",
+              "skill": null
+            },
+            {
+              "name": "Skeletal Sea Turtle",
+              "skill": null
+            },
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildranke",
+                "en": "Wildvine"
+              },
+              "skill": 210
+            }
+          ]
+        },
+        {
+          "map_id": 1457,
+          "name": {
+            "de": "Darnassus",
+            "en": "Darnassus"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            }
+          ]
+        },
+        {
+          "map_id": 1430,
+          "name": {
+            "de": "Gebirgspass der Totenwinde",
+            "en": "Deadwind Pass"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            }
+          ]
+        },
+        {
+          "map_id": 1443,
+          "name": {
+            "de": "Desolace",
+            "en": "Desolace"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Grabmoos",
+                "en": "Grave Moss"
+              },
+              "skill": 120
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            },
+            {
+              "name": {
+                "de": "Geisterpilz",
+                "en": "Ghost Mushroom"
+              },
+              "skill": 245
+            },
+            {
+              "name": {
+                "de": "Gromsblut",
+                "en": "Gromsblood"
+              },
+              "skill": 250
+            }
+          ]
+        },
+        {
+          "map_id": 1426,
+          "name": {
+            "de": "Dun Morogh",
+            "en": "Dun Morogh"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            }
+          ]
+        },
+        {
+          "map_id": 1411,
+          "name": {
+            "de": "Durotar",
+            "en": "Durotar"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            }
+          ]
+        },
+        {
+          "map_id": 1431,
+          "name": {
+            "de": "Dämmerwald",
+            "en": "Duskwood"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Grabmoos",
+                "en": "Grave Moss"
+              },
+              "skill": 120
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            }
+          ]
+        },
+        {
+          "map_id": 1445,
+          "name": {
+            "de": "Marschen von Dustwallow",
+            "en": "Dustwallow Marsh"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Grabmoos",
+                "en": "Grave Moss"
+              },
+              "skill": 120
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            },
+            {
+              "name": {
+                "de": "Blassblatt",
+                "en": "Fadeleaf"
+              },
+              "skill": 160
+            },
+            {
+              "name": {
+                "de": "Golddorn",
+                "en": "Goldthorn"
+              },
+              "skill": 170
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            }
+          ]
+        },
+        {
+          "map_id": 1423,
+          "name": {
+            "de": "Östliche Pestländer",
+            "en": "Eastern Plaguelands"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Grabmoos",
+                "en": "Grave Moss"
+              },
+              "skill": 120
+            },
+            {
+              "name": {
+                "de": "Arthas' Tränen",
+                "en": "Arthas' Tears"
+              },
+              "skill": 220
+            },
+            {
+              "name": {
+                "de": "Fen Ring",
+                "en": "Fen Ring"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Marsh Ring",
+                "en": "Marsh Ring"
+              },
+              "skill": 260
+            },
+            {
+              "name": {
+                "de": "Desert Ring",
+                "en": "Desert Ring"
+              },
+              "skill": 270
+            },
+            {
+              "name": {
+                "de": "Arctic Ring",
+                "en": "Arctic Ring"
+              },
+              "skill": 280
+            },
+            {
+              "name": {
+                "de": "Pestblüte",
+                "en": "Plaguebloom"
+              },
+              "skill": 285
+            },
+            {
+              "name": {
+                "de": "Schwarzer Lotus",
+                "en": "Black Lotus"
+              },
+              "skill": 300
+            }
+          ]
+        },
+        {
+          "map_id": 1429,
+          "name": {
+            "de": "Wald von Elwynn",
+            "en": "Elwynn Forest"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            }
+          ]
+        },
+        {
+          "map_id": 1448,
+          "name": {
+            "de": "Teufelswald",
+            "en": "Felwood"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Arthas' Tränen",
+                "en": "Arthas' Tears"
+              },
+              "skill": 220
+            },
+            {
+              "name": {
+                "de": "Fen Ring",
+                "en": "Fen Ring"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Gromsblut",
+                "en": "Gromsblood"
+              },
+              "skill": 250
+            },
+            {
+              "name": {
+                "de": "Marsh Ring",
+                "en": "Marsh Ring"
+              },
+              "skill": 260
+            },
+            {
+              "name": {
+                "de": "Desert Ring",
+                "en": "Desert Ring"
+              },
+              "skill": 270
+            },
+            {
+              "name": {
+                "de": "Arctic Ring",
+                "en": "Arctic Ring"
+              },
+              "skill": 280
+            },
+            {
+              "name": {
+                "de": "Eiskappe",
+                "en": "Icecap"
+              },
+              "skill": 290
+            }
+          ]
+        },
+        {
+          "map_id": 1444,
+          "name": {
+            "de": "Feralas",
+            "en": "Feralas"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            },
+            {
+              "name": {
+                "de": "Golddorn",
+                "en": "Goldthorn"
+              },
+              "skill": 170
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            },
+            {
+              "name": {
+                "de": "Wildranke",
+                "en": "Wildvine"
+              },
+              "skill": 210
+            },
+            {
+              "name": {
+                "de": "Fen Ring",
+                "en": "Fen Ring"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Marsh Ring",
+                "en": "Marsh Ring"
+              },
+              "skill": 260
+            },
+            {
+              "name": {
+                "de": "Schwarzer Lotus",
+                "en": "Black Lotus"
+              },
+              "skill": 300
+            }
+          ]
+        },
+        {
+          "map_id": 1424,
+          "name": {
+            "de": "Vorgebirge von Hillsbrad",
+            "en": "Hillsbrad Foothills"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            }
+          ]
+        },
+        {
+          "map_id": 1432,
+          "name": {
+            "de": "Loch Modan",
+            "en": "Loch Modan"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            }
+          ]
+        },
+        {
+          "map_id": 2482,
+          "name": {
+            "de": "Hyjal",
+            "en": "Mount Hyjal"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Arthas' Tränen",
+                "en": "Arthas' Tears"
+              },
+              "skill": 220
+            },
+            {
+              "name": {
+                "de": "Fen Ring",
+                "en": "Fen Ring"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Gromsblut",
+                "en": "Gromsblood"
+              },
+              "skill": 250
+            },
+            {
+              "name": {
+                "de": "Marsh Ring",
+                "en": "Marsh Ring"
+              },
+              "skill": 260
+            },
+            {
+              "name": {
+                "de": "Desert Ring",
+                "en": "Desert Ring"
+              },
+              "skill": 270
+            },
+            {
+              "name": {
+                "de": "Arctic Ring",
+                "en": "Arctic Ring"
+              },
+              "skill": 280
+            },
+            {
+              "name": {
+                "de": "Eiskappe",
+                "en": "Icecap"
+              },
+              "skill": 290
+            }
+          ]
+        },
+        {
+          "map_id": 1412,
+          "name": {
+            "de": "Mulgore",
+            "en": "Mulgore"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            }
+          ]
+        },
+        {
+          "map_id": 1454,
+          "name": {
+            "de": "Orgrimmar",
+            "en": "Orgrimmar"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            }
+          ]
+        },
+        {
+          "map_id": 1433,
+          "name": {
+            "de": "Rotkammgebirge",
+            "en": "Redridge Mountains"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            }
+          ]
+        },
+        {
+          "map_id": 2548,
+          "name": {
+            "de": "Flusslande",
+            "en": "Riverglades"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            }
+          ]
+        },
+        {
+          "map_id": 1427,
+          "name": {
+            "de": "Sengende Schlucht",
+            "en": "Searing Gorge"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Feuerblüte",
+                "en": "Firebloom"
+              },
+              "skill": 205
+            }
+          ]
+        },
+        {
+          "map_id": 2652,
+          "name": {
+            "de": "Shen'dralas",
+            "en": "Shen'dralas"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Grabmoos",
+                "en": "Grave Moss"
+              },
+              "skill": 120
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            },
+            {
+              "name": {
+                "de": "Wildranke",
+                "en": "Wildvine"
+              },
+              "skill": 210
+            },
+            {
+              "name": {
+                "de": "Gromsblut",
+                "en": "Gromsblood"
+              },
+              "skill": 250
+            }
+          ]
+        },
+        {
+          "map_id": 1451,
+          "name": {
+            "de": "Silithus",
+            "en": "Silithus"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Desert Ring",
+                "en": "Desert Ring"
+              },
+              "skill": 270
+            },
+            {
+              "name": {
+                "de": "Schwarzer Lotus",
+                "en": "Black Lotus"
+              },
+              "skill": 300
+            }
+          ]
+        },
+        {
+          "map_id": 1421,
+          "name": {
+            "de": "Silberwald",
+            "en": "Silverpine Forest"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            }
+          ]
+        },
+        {
+          "map_id": 1442,
+          "name": {
+            "de": "Steinkrallengebirge",
+            "en": "Stonetalon Mountains"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            }
+          ]
+        },
+        {
+          "map_id": 1453,
+          "name": {
+            "de": "Stormwind",
+            "en": "Stormwind City"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            }
+          ]
+        },
+        {
+          "map_id": 1434,
+          "name": {
+            "de": "Schlingendorntal",
+            "en": "Stranglethorn Vale"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            },
+            {
+              "name": {
+                "de": "Blassblatt",
+                "en": "Fadeleaf"
+              },
+              "skill": 160
+            },
+            {
+              "name": {
+                "de": "Golddorn",
+                "en": "Goldthorn"
+              },
+              "skill": 170
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            },
+            {
+              "name": {
+                "de": "Wildranke",
+                "en": "Wildvine"
+              },
+              "skill": 210
+            }
+          ]
+        },
+        {
+          "map_id": 1435,
+          "name": {
+            "de": "Sümpfe des Elends",
+            "en": "Swamp of Sorrows"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            },
+            {
+              "name": {
+                "de": "Blassblatt",
+                "en": "Fadeleaf"
+              },
+              "skill": 160
+            },
+            {
+              "name": {
+                "de": "Golddorn",
+                "en": "Goldthorn"
+              },
+              "skill": 170
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            },
+            {
+              "name": {
+                "de": "Forest Hoop",
+                "en": "Forest Hoop"
+              },
+              "skill": 235
+            }
+          ]
+        },
+        {
+          "map_id": 1446,
+          "name": {
+            "de": "Tanaris",
+            "en": "Tanaris"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Feuerblüte",
+                "en": "Firebloom"
+              },
+              "skill": 205
+            },
+            {
+              "name": {
+                "de": "Wildranke",
+                "en": "Wildvine"
+              },
+              "skill": 210
+            }
+          ]
+        },
+        {
+          "map_id": 1438,
+          "name": {
+            "de": "Teldrassil",
+            "en": "Teldrassil"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            }
+          ]
+        },
+        {
+          "map_id": 1413,
+          "name": {
+            "de": "Das Brachland",
+            "en": "The Barrens"
+          },
+          "nodes": [
+            {
+              "name": "Incendia Agave",
+              "skill": null
+            },
+            {
+              "name": {
+                "de": "Schlangenflaum",
+                "en": "Serpentbloom"
+              },
+              "skill": null
+            },
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Grabmoos",
+                "en": "Grave Moss"
+              },
+              "skill": 120
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            },
+            {
+              "name": {
+                "de": "Blassblatt",
+                "en": "Fadeleaf"
+              },
+              "skill": 160
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            }
+          ]
+        },
+        {
+          "map_id": 1425,
+          "name": {
+            "de": "Hinterland",
+            "en": "The Hinterlands"
+          },
+          "nodes": [
+            {
+              "name": "Violet Tragan",
+              "skill": null
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            },
+            {
+              "name": {
+                "de": "Blassblatt",
+                "en": "Fadeleaf"
+              },
+              "skill": 160
+            },
+            {
+              "name": {
+                "de": "Golddorn",
+                "en": "Goldthorn"
+              },
+              "skill": 170
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            },
+            {
+              "name": {
+                "de": "Wildranke",
+                "en": "Wildvine"
+              },
+              "skill": 210
+            },
+            {
+              "name": {
+                "de": "Fen Ring",
+                "en": "Fen Ring"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Geisterpilz",
+                "en": "Ghost Mushroom"
+              },
+              "skill": 245
+            },
+            {
+              "name": {
+                "de": "Marsh Ring",
+                "en": "Marsh Ring"
+              },
+              "skill": 260
+            }
+          ]
+        },
+        {
+          "map_id": 1441,
+          "name": {
+            "de": "Tausend Nadeln",
+            "en": "Thousand Needles"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            },
+            {
+              "name": {
+                "de": "Feuerblüte",
+                "en": "Firebloom"
+              },
+              "skill": 205
+            },
+            {
+              "name": {
+                "de": "Fen Ring",
+                "en": "Fen Ring"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Marsh Ring",
+                "en": "Marsh Ring"
+              },
+              "skill": 260
+            }
+          ]
+        },
+        {
+          "map_id": 1456,
+          "name": {
+            "de": "Thunder Bluff",
+            "en": "Thunder Bluff"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            }
+          ]
+        },
+        {
+          "map_id": 1420,
+          "name": {
+            "de": "Tirisfal",
+            "en": "Tirisfal Glades"
+          },
+          "nodes": [
+            {
+              "name": "Gloom Weed",
+              "skill": null
+            },
+            {
+              "name": "Doom Weed",
+              "skill": null
+            },
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Arthas' Tränen",
+                "en": "Arthas' Tears"
+              },
+              "skill": 220
+            }
+          ]
+        },
+        {
+          "map_id": 1449,
+          "name": {
+            "de": "Un'Goro-Krater",
+            "en": "Un'Goro Crater"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Feuerblüte",
+                "en": "Firebloom"
+              },
+              "skill": 205
+            },
+            {
+              "name": {
+                "de": "Fen Ring",
+                "en": "Fen Ring"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Forest Hoop",
+                "en": "Forest Hoop"
+              },
+              "skill": 235
+            },
+            {
+              "name": {
+                "de": "Marsh Ring",
+                "en": "Marsh Ring"
+              },
+              "skill": 260
+            },
+            {
+              "name": {
+                "de": "Desert Ring",
+                "en": "Desert Ring"
+              },
+              "skill": 270
+            },
+            {
+              "name": {
+                "de": "Arctic Ring",
+                "en": "Arctic Ring"
+              },
+              "skill": 280
+            }
+          ]
+        },
+        {
+          "map_id": 1458,
+          "name": {
+            "de": "Undercity",
+            "en": "Undercity"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            }
+          ]
+        },
+        {
+          "map_id": 1422,
+          "name": {
+            "de": "Westliche Pestländer",
+            "en": "Western Plaguelands"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Arthas' Tränen",
+                "en": "Arthas' Tears"
+              },
+              "skill": 220
+            },
+            {
+              "name": {
+                "de": "Fen Ring",
+                "en": "Fen Ring"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Desert Ring",
+                "en": "Desert Ring"
+              },
+              "skill": 270
+            }
+          ]
+        },
+        {
+          "map_id": 1436,
+          "name": {
+            "de": "Westfall",
+            "en": "Westfall"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silberblatt",
+                "en": "Silverleaf"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Friedensblume",
+                "en": "Peacebloom"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Erdwurzel",
+                "en": "Earthroot"
+              },
+              "skill": 15
+            },
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            },
+            {
+              "name": {
+                "de": "Blassblatt",
+                "en": "Fadeleaf"
+              },
+              "skill": 160
+            },
+            {
+              "name": {
+                "de": "Golddorn",
+                "en": "Goldthorn"
+              },
+              "skill": 170
+            },
+            {
+              "name": {
+                "de": "Khadgars Schnurrbart",
+                "en": "Khadgar's Whisker"
+              },
+              "skill": 185
+            },
+            {
+              "name": {
+                "de": "Wildranke",
+                "en": "Wildvine"
+              },
+              "skill": 210
+            }
+          ]
+        },
+        {
+          "map_id": 1437,
+          "name": {
+            "de": "Sumpfland",
+            "en": "Wetlands"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Maguskönigskraut",
+                "en": "Mageroyal"
+              },
+              "skill": 50
+            },
+            {
+              "name": {
+                "de": "Wilddornrose",
+                "en": "Briarthorn"
+              },
+              "skill": 70
+            },
+            {
+              "name": {
+                "de": "Würgetang",
+                "en": "Stranglekelp"
+              },
+              "skill": 85
+            },
+            {
+              "name": {
+                "de": "Beulengras",
+                "en": "Bruiseweed"
+              },
+              "skill": 100
+            },
+            {
+              "name": {
+                "de": "Wildstahlblume",
+                "en": "Wild Steelbloom"
+              },
+              "skill": 115
+            },
+            {
+              "name": {
+                "de": "Grabmoos",
+                "en": "Grave Moss"
+              },
+              "skill": 120
+            },
+            {
+              "name": {
+                "de": "Königsblut",
+                "en": "Kingsblood"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Lebenswurz",
+                "en": "Liferoot"
+              },
+              "skill": 150
+            }
+          ]
+        },
+        {
+          "map_id": 1452,
+          "name": {
+            "de": "Winterspring",
+            "en": "Winterspring"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Gromsblut",
+                "en": "Gromsblood"
+              },
+              "skill": 250
+            },
+            {
+              "name": {
+                "de": "Desert Ring",
+                "en": "Desert Ring"
+              },
+              "skill": 270
+            },
+            {
+              "name": {
+                "de": "Arctic Ring",
+                "en": "Arctic Ring"
+              },
+              "skill": 280
+            },
+            {
+              "name": {
+                "de": "Eiskappe",
+                "en": "Icecap"
+              },
+              "skill": 290
+            },
+            {
+              "name": {
+                "de": "Schwarzer Lotus",
+                "en": "Black Lotus"
+              },
+              "skill": 300
+            }
+          ]
+        },
+        {
+          "map_id": 2521,
+          "name": {
+            "de": "Insel Zephras",
+            "en": "Zephras Isle"
+          }
+        }
+      ]
+    },
+    {
+      "id": "mining",
+      "name": {
+        "de": "Bergbau",
+        "en": "Mining"
+      },
+      "profession": "mining",
+      "best_zones": [
+        {
+          "from_skill": 1,
+          "to_skill": 66,
+          "zones": [
+            {
+              "map_id": 1436,
+              "name": {
+                "de": "Westfall",
+                "en": "Westfall"
+              }
+            },
+            {
+              "map_id": 1432,
+              "name": {
+                "de": "Loch Modan",
+                "en": "Loch Modan"
+              }
+            },
+            {
+              "map_id": 1411,
+              "name": {
+                "de": "Durotar",
+                "en": "Durotar"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 66,
+          "to_skill": 126,
+          "zones": [
+            {
+              "map_id": 1437,
+              "name": {
+                "de": "Sumpfland",
+                "en": "Wetlands"
+              }
+            },
+            {
+              "map_id": 1432,
+              "name": {
+                "de": "Loch Modan",
+                "en": "Loch Modan"
+              }
+            },
+            {
+              "map_id": 1421,
+              "name": {
+                "de": "Silberwald",
+                "en": "Silverpine Forest"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 126,
+          "to_skill": 181,
+          "zones": [
+            {
+              "map_id": 1416,
+              "name": {
+                "de": "Alteracgebirge",
+                "en": "Alterac Mountains"
+              }
+            },
+            {
+              "map_id": 1417,
+              "name": {
+                "de": "Arathihochland",
+                "en": "Arathi Highlands"
+              }
+            },
+            {
+              "map_id": 1437,
+              "name": {
+                "de": "Sumpfland",
+                "en": "Wetlands"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 181,
+          "to_skill": 236,
+          "zones": [
+            {
+              "map_id": 1418,
+              "name": {
+                "de": "Ödland",
+                "en": "Badlands"
+              }
+            },
+            {
+              "map_id": 1416,
+              "name": {
+                "de": "Alteracgebirge",
+                "en": "Alterac Mountains"
+              }
+            },
+            {
+              "map_id": 1417,
+              "name": {
+                "de": "Arathihochland",
+                "en": "Arathi Highlands"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 236,
+          "to_skill": 300,
+          "zones": [
+            {
+              "map_id": 1427,
+              "name": {
+                "de": "Sengende Schlucht",
+                "en": "Searing Gorge"
+              }
+            },
+            {
+              "map_id": 1418,
+              "name": {
+                "de": "Ödland",
+                "en": "Badlands"
+              }
+            },
+            {
+              "map_id": 1416,
+              "name": {
+                "de": "Alteracgebirge",
+                "en": "Alterac Mountains"
+              }
+            }
+          ]
+        }
+      ],
+      "zones": [
+        {
+          "map_id": 1416,
+          "name": {
+            "de": "Alteracgebirge",
+            "en": "Alterac Mountains"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 1417,
+          "name": {
+            "de": "Arathihochland",
+            "en": "Arathi Highlands"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 1440,
+          "name": {
+            "de": "Ashenvale",
+            "en": "Ashenvale"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            }
+          ]
+        },
+        {
+          "map_id": 1447,
+          "name": {
+            "de": "Azshara",
+            "en": "Azshara"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Thoriumerz",
+                "en": "Thorium Ore"
+              },
+              "skill": 275
+            }
+          ]
+        },
+        {
+          "map_id": 1418,
+          "name": {
+            "de": "Ödland",
+            "en": "Badlands"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 1419,
+          "name": {
+            "de": "Verwüstete Lande",
+            "en": "Blasted Lands"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Thoriumerz",
+                "en": "Thorium Ore"
+              },
+              "skill": 245
+            }
+          ]
+        },
+        {
+          "map_id": 1428,
+          "name": {
+            "de": "Brennende Steppe",
+            "en": "Burning Steppes"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 1439,
+          "name": {
+            "de": "Dunkelküste",
+            "en": "Darkshore"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            }
+          ]
+        },
+        {
+          "map_id": 1430,
+          "name": {
+            "de": "Gebirgspass der Totenwinde",
+            "en": "Deadwind Pass"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            }
+          ]
+        },
+        {
+          "map_id": 1443,
+          "name": {
+            "de": "Desolace",
+            "en": "Desolace"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 1426,
+          "name": {
+            "de": "Dun Morogh",
+            "en": "Dun Morogh"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            }
+          ]
+        },
+        {
+          "map_id": 1411,
+          "name": {
+            "de": "Durotar",
+            "en": "Durotar"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            }
+          ]
+        },
+        {
+          "map_id": 1431,
+          "name": {
+            "de": "Dämmerwald",
+            "en": "Duskwood"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            }
+          ]
+        },
+        {
+          "map_id": 1445,
+          "name": {
+            "de": "Marschen von Dustwallow",
+            "en": "Dustwallow Marsh"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            }
+          ]
+        },
+        {
+          "map_id": 1429,
+          "name": {
+            "de": "Wald von Elwynn",
+            "en": "Elwynn Forest"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            }
+          ]
+        },
+        {
+          "map_id": 1448,
+          "name": {
+            "de": "Teufelswald",
+            "en": "Felwood"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Thoriumerz",
+                "en": "Thorium Ore"
+              },
+              "skill": 245
+            }
+          ]
+        },
+        {
+          "map_id": 1444,
+          "name": {
+            "de": "Feralas",
+            "en": "Feralas"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 1424,
+          "name": {
+            "de": "Vorgebirge von Hillsbrad",
+            "en": "Hillsbrad Foothills"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            }
+          ]
+        },
+        {
+          "map_id": 1432,
+          "name": {
+            "de": "Loch Modan",
+            "en": "Loch Modan"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            }
+          ]
+        },
+        {
+          "map_id": 2482,
+          "name": {
+            "de": "Hyjal",
+            "en": "Mount Hyjal"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Thoriumerz",
+                "en": "Thorium Ore"
+              },
+              "skill": 245
+            },
+            {
+              "name": {
+                "de": "Thoriumerz",
+                "en": "Thorium Ore"
+              },
+              "skill": 275
+            }
+          ]
+        },
+        {
+          "map_id": 1412,
+          "name": {
+            "de": "Mulgore",
+            "en": "Mulgore"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 1454,
+          "name": {
+            "de": "Orgrimmar",
+            "en": "Orgrimmar"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            }
+          ]
+        },
+        {
+          "map_id": 1433,
+          "name": {
+            "de": "Rotkammgebirge",
+            "en": "Redridge Mountains"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            }
+          ]
+        },
+        {
+          "map_id": 2548,
+          "name": {
+            "de": "Flusslande",
+            "en": "Riverglades"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            }
+          ]
+        },
+        {
+          "map_id": 1427,
+          "name": {
+            "de": "Sengende Schlucht",
+            "en": "Searing Gorge"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Dunkeleisenerz",
+                "en": "Dark Iron Ore"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 2652,
+          "name": {
+            "de": "Shen'dralas",
+            "en": "Shen'dralas"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 1421,
+          "name": {
+            "de": "Silberwald",
+            "en": "Silverpine Forest"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            }
+          ]
+        },
+        {
+          "map_id": 1442,
+          "name": {
+            "de": "Steinkrallengebirge",
+            "en": "Stonetalon Mountains"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            }
+          ]
+        },
+        {
+          "map_id": 1453,
+          "name": {
+            "de": "Stormwind",
+            "en": "Stormwind City"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            }
+          ]
+        },
+        {
+          "map_id": 1434,
+          "name": {
+            "de": "Schlingendorntal",
+            "en": "Stranglethorn Vale"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            }
+          ]
+        },
+        {
+          "map_id": 1435,
+          "name": {
+            "de": "Sümpfe des Elends",
+            "en": "Swamp of Sorrows"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Thoriumerz",
+                "en": "Thorium Ore"
+              },
+              "skill": 245
+            }
+          ]
+        },
+        {
+          "map_id": 1446,
+          "name": {
+            "de": "Tanaris",
+            "en": "Tanaris"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 1413,
+          "name": {
+            "de": "Das Brachland",
+            "en": "The Barrens"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            }
+          ]
+        },
+        {
+          "map_id": 1425,
+          "name": {
+            "de": "Hinterland",
+            "en": "The Hinterlands"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 1441,
+          "name": {
+            "de": "Tausend Nadeln",
+            "en": "Thousand Needles"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            }
+          ]
+        },
+        {
+          "map_id": 1456,
+          "name": {
+            "de": "Thunder Bluff",
+            "en": "Thunder Bluff"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            }
+          ]
+        },
+        {
+          "map_id": 1420,
+          "name": {
+            "de": "Tirisfal",
+            "en": "Tirisfal Glades"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            }
+          ]
+        },
+        {
+          "map_id": 1449,
+          "name": {
+            "de": "Un'Goro-Krater",
+            "en": "Un'Goro Crater"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            },
+            {
+              "name": {
+                "de": "Mithrilerz",
+                "en": "Mithril Ore"
+              },
+              "skill": 175
+            },
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            }
+          ]
+        },
+        {
+          "map_id": 1458,
+          "name": {
+            "de": "Undercity",
+            "en": "Undercity"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            }
+          ]
+        },
+        {
+          "map_id": 1422,
+          "name": {
+            "de": "Westliche Pestländer",
+            "en": "Western Plaguelands"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            }
+          ]
+        },
+        {
+          "map_id": 1436,
+          "name": {
+            "de": "Westfall",
+            "en": "Westfall"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            }
+          ]
+        },
+        {
+          "map_id": 1437,
+          "name": {
+            "de": "Sumpfland",
+            "en": "Wetlands"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Kupfererz",
+                "en": "Copper Ore"
+              },
+              "skill": 1
+            },
+            {
+              "name": {
+                "de": "Zinnerz",
+                "en": "Tin Ore"
+              },
+              "skill": 65
+            },
+            {
+              "name": {
+                "de": "Silbererz",
+                "en": "Silver Ore"
+              },
+              "skill": 75
+            },
+            {
+              "name": {
+                "de": "Eisenerz",
+                "en": "Iron Ore"
+              },
+              "skill": 125
+            },
+            {
+              "name": {
+                "de": "Golderz",
+                "en": "Gold Ore"
+              },
+              "skill": 155
+            }
+          ]
+        },
+        {
+          "map_id": 1452,
+          "name": {
+            "de": "Winterspring",
+            "en": "Winterspring"
+          },
+          "nodes": [
+            {
+              "name": {
+                "de": "Echtsilbererz",
+                "en": "Truesilver Ore"
+              },
+              "skill": 230
+            },
+            {
+              "name": {
+                "de": "Thoriumerz",
+                "en": "Thorium Ore"
+              },
+              "skill": 245
+            },
+            {
+              "name": {
+                "de": "Thoriumerz",
+                "en": "Thorium Ore"
+              },
+              "skill": 275
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "skinning",
+      "name": {
+        "de": "Kürschnerei",
+        "en": "Skinning"
+      },
+      "profession": "skinning",
+      "best_zones": [
+        {
+          "from_skill": 1,
+          "to_skill": 31,
+          "zones": [
+            {
+              "map_id": 1412,
+              "name": {
+                "de": "Mulgore",
+                "en": "Mulgore"
+              }
+            },
+            {
+              "map_id": 1411,
+              "name": {
+                "de": "Durotar",
+                "en": "Durotar"
+              }
+            },
+            {
+              "map_id": 1426,
+              "name": {
+                "de": "Dun Morogh",
+                "en": "Dun Morogh"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 31,
+          "to_skill": 61,
+          "zones": [
+            {
+              "map_id": 1411,
+              "name": {
+                "de": "Durotar",
+                "en": "Durotar"
+              }
+            },
+            {
+              "map_id": 1412,
+              "name": {
+                "de": "Mulgore",
+                "en": "Mulgore"
+              }
+            },
+            {
+              "map_id": 1426,
+              "name": {
+                "de": "Dun Morogh",
+                "en": "Dun Morogh"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 61,
+          "to_skill": 146,
+          "zones": [
+            {
+              "map_id": 1413,
+              "name": {
+                "de": "Das Brachland",
+                "en": "The Barrens"
+              }
+            },
+            {
+              "map_id": 1411,
+              "name": {
+                "de": "Durotar",
+                "en": "Durotar"
+              }
+            },
+            {
+              "map_id": 1412,
+              "name": {
+                "de": "Mulgore",
+                "en": "Mulgore"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 146,
+          "to_skill": 181,
+          "zones": [
+            {
+              "map_id": 1440,
+              "name": {
+                "de": "Ashenvale",
+                "en": "Ashenvale"
+              }
+            },
+            {
+              "map_id": 1413,
+              "name": {
+                "de": "Das Brachland",
+                "en": "The Barrens"
+              }
+            },
+            {
+              "map_id": 1437,
+              "name": {
+                "de": "Sumpfland",
+                "en": "Wetlands"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 181,
+          "to_skill": 206,
+          "zones": [
+            {
+              "map_id": 1443,
+              "name": {
+                "de": "Desolace",
+                "en": "Desolace"
+              }
+            },
+            {
+              "map_id": 1441,
+              "name": {
+                "de": "Tausend Nadeln",
+                "en": "Thousand Needles"
+              }
+            },
+            {
+              "map_id": 1417,
+              "name": {
+                "de": "Arathihochland",
+                "en": "Arathi Highlands"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 206,
+          "to_skill": 236,
+          "zones": [
+            {
+              "map_id": 1445,
+              "name": {
+                "de": "Marschen von Dustwallow",
+                "en": "Dustwallow Marsh"
+              }
+            },
+            {
+              "map_id": 1443,
+              "name": {
+                "de": "Desolace",
+                "en": "Desolace"
+              }
+            },
+            {
+              "map_id": 1434,
+              "name": {
+                "de": "Schlingendorntal",
+                "en": "Stranglethorn Vale"
+              }
+            }
+          ]
+        },
+        {
+          "from_skill": 236,
+          "to_skill": 300,
+          "zones": [
+            {
+              "map_id": 1446,
+              "name": {
+                "de": "Tanaris",
+                "en": "Tanaris"
+              }
+            },
+            {
+              "map_id": 1445,
+              "name": {
+                "de": "Marschen von Dustwallow",
+                "en": "Dustwallow Marsh"
+              }
+            },
+            {
+              "map_id": 1444,
+              "name": {
+                "de": "Feralas",
+                "en": "Feralas"
+              }
+            }
+          ]
+        }
+      ],
+      "zones": [
+        {
+          "map_id": 1416,
+          "name": {
+            "de": "Alteracgebirge",
+            "en": "Alterac Mountains"
+          },
+          "skill": 1,
+          "skill_max": 315
+        },
+        {
+          "map_id": 1417,
+          "name": {
+            "de": "Arathihochland",
+            "en": "Arathi Highlands"
+          },
+          "skill": 1,
+          "skill_max": 200
+        },
+        {
+          "map_id": 1440,
+          "name": {
+            "de": "Ashenvale",
+            "en": "Ashenvale"
+          },
+          "skill": 1,
+          "skill_max": 235
+        },
+        {
+          "map_id": 1447,
+          "name": {
+            "de": "Azshara",
+            "en": "Azshara"
+          },
+          "skill": 235,
+          "skill_max": 270
+        },
+        {
+          "map_id": 1418,
+          "name": {
+            "de": "Ödland",
+            "en": "Badlands"
+          },
+          "skill": 180,
+          "skill_max": 215
+        },
+        {
+          "map_id": 1419,
+          "name": {
+            "de": "Verwüstete Lande",
+            "en": "Blasted Lands"
+          },
+          "skill": 210,
+          "skill_max": 275
+        },
+        {
+          "map_id": 1428,
+          "name": {
+            "de": "Brennende Steppe",
+            "en": "Burning Steppes"
+          },
+          "skill": 200,
+          "skill_max": 285
+        },
+        {
+          "map_id": 1439,
+          "name": {
+            "de": "Dunkelküste",
+            "en": "Darkshore"
+          },
+          "skill": 1,
+          "skill_max": 100
+        },
+        {
+          "map_id": 1457,
+          "name": {
+            "de": "Darnassus",
+            "en": "Darnassus"
+          },
+          "skill": 1,
+          "skill_max": 250
+        },
+        {
+          "map_id": 1430,
+          "name": {
+            "de": "Gebirgspass der Totenwinde",
+            "en": "Deadwind Pass"
+          },
+          "skill": 280,
+          "skill_max": 280
+        },
+        {
+          "map_id": 1443,
+          "name": {
+            "de": "Desolace",
+            "en": "Desolace"
+          },
+          "skill": 155,
+          "skill_max": 195
+        },
+        {
+          "map_id": 1426,
+          "name": {
+            "de": "Dun Morogh",
+            "en": "Dun Morogh"
+          },
+          "skill": 1,
+          "skill_max": 20
+        },
+        {
+          "map_id": 1411,
+          "name": {
+            "de": "Durotar",
+            "en": "Durotar"
+          },
+          "skill": 1,
+          "skill_max": 80
+        },
+        {
+          "map_id": 1431,
+          "name": {
+            "de": "Dämmerwald",
+            "en": "Duskwood"
+          },
+          "skill": 100,
+          "skill_max": 175
+        },
+        {
+          "map_id": 1445,
+          "name": {
+            "de": "Marschen von Dustwallow",
+            "en": "Dustwallow Marsh"
+          },
+          "skill": 1,
+          "skill_max": 225
+        },
+        {
+          "map_id": 1423,
+          "name": {
+            "de": "Östliche Pestländer",
+            "en": "Eastern Plaguelands"
+          },
+          "skill": 270,
+          "skill_max": 300
+        },
+        {
+          "map_id": 1429,
+          "name": {
+            "de": "Wald von Elwynn",
+            "en": "Elwynn Forest"
+          },
+          "skill": 1,
+          "skill_max": 120
+        },
+        {
+          "map_id": 1448,
+          "name": {
+            "de": "Teufelswald",
+            "en": "Felwood"
+          },
+          "skill": 70,
+          "skill_max": 265
+        },
+        {
+          "map_id": 1444,
+          "name": {
+            "de": "Feralas",
+            "en": "Feralas"
+          },
+          "skill": 1,
+          "skill_max": 270
+        },
+        {
+          "map_id": 1424,
+          "name": {
+            "de": "Vorgebirge von Hillsbrad",
+            "en": "Hillsbrad Foothills"
+          },
+          "skill": 1,
+          "skill_max": 200
+        },
+        {
+          "map_id": 1432,
+          "name": {
+            "de": "Loch Modan",
+            "en": "Loch Modan"
+          },
+          "skill": 1,
+          "skill_max": 110
+        },
+        {
+          "map_id": 1450,
+          "name": {
+            "de": "Moonglade",
+            "en": "Moonglade"
+          },
+          "skill": 1,
+          "skill_max": 275
+        },
+        {
+          "map_id": 2482,
+          "name": {
+            "de": "Hyjal",
+            "en": "Mount Hyjal"
+          },
+          "skill": 240,
+          "skill_max": 300
+        },
+        {
+          "map_id": 1412,
+          "name": {
+            "de": "Mulgore",
+            "en": "Mulgore"
+          },
+          "skill": 1,
+          "skill_max": 200
+        },
+        {
+          "map_id": 1454,
+          "name": {
+            "de": "Orgrimmar",
+            "en": "Orgrimmar"
+          },
+          "skill": 1,
+          "skill_max": 1
+        },
+        {
+          "map_id": 1433,
+          "name": {
+            "de": "Rotkammgebirge",
+            "en": "Redridge Mountains"
+          },
+          "skill": 1,
+          "skill_max": 125
+        },
+        {
+          "map_id": 2548,
+          "name": {
+            "de": "Flusslande",
+            "en": "Riverglades"
+          },
+          "skill": 70,
+          "skill_max": 70
+        },
+        {
+          "map_id": 1427,
+          "name": {
+            "de": "Sengende Schlucht",
+            "en": "Searing Gorge"
+          },
+          "skill": 235,
+          "skill_max": 235
+        },
+        {
+          "map_id": 2652,
+          "name": {
+            "de": "Shen'dralas",
+            "en": "Shen'dralas"
+          },
+          "skill": 1,
+          "skill_max": 200
+        },
+        {
+          "map_id": 1451,
+          "name": {
+            "de": "Silithus",
+            "en": "Silithus"
+          },
+          "skill": 275,
+          "skill_max": 310
+        },
+        {
+          "map_id": 1421,
+          "name": {
+            "de": "Silberwald",
+            "en": "Silverpine Forest"
+          },
+          "skill": 1,
+          "skill_max": 110
+        },
+        {
+          "map_id": 1442,
+          "name": {
+            "de": "Steinkrallengebirge",
+            "en": "Stonetalon Mountains"
+          },
+          "skill": 1,
+          "skill_max": 140
+        },
+        {
+          "map_id": 1453,
+          "name": {
+            "de": "Stormwind",
+            "en": "Stormwind City"
+          },
+          "skill": 1,
+          "skill_max": 310
+        },
+        {
+          "map_id": 1434,
+          "name": {
+            "de": "Schlingendorntal",
+            "en": "Stranglethorn Vale"
+          },
+          "skill": 1,
+          "skill_max": 250
+        },
+        {
+          "map_id": 1435,
+          "name": {
+            "de": "Sümpfe des Elends",
+            "en": "Swamp of Sorrows"
+          },
+          "skill": 175,
+          "skill_max": 225
+        },
+        {
+          "map_id": 1446,
+          "name": {
+            "de": "Tanaris",
+            "en": "Tanaris"
+          },
+          "skill": 205,
+          "skill_max": 250
+        },
+        {
+          "map_id": 1438,
+          "name": {
+            "de": "Teldrassil",
+            "en": "Teldrassil"
+          },
+          "skill": 1,
+          "skill_max": 250
+        },
+        {
+          "map_id": 1413,
+          "name": {
+            "de": "Das Brachland",
+            "en": "The Barrens"
+          },
+          "skill": 1,
+          "skill_max": 205
+        },
+        {
+          "map_id": 1425,
+          "name": {
+            "de": "Hinterland",
+            "en": "The Hinterlands"
+          },
+          "skill": 1,
+          "skill_max": 255
+        },
+        {
+          "map_id": 1441,
+          "name": {
+            "de": "Tausend Nadeln",
+            "en": "Thousand Needles"
+          },
+          "skill": 120,
+          "skill_max": 215
+        },
+        {
+          "map_id": 1456,
+          "name": {
+            "de": "Thunder Bluff",
+            "en": "Thunder Bluff"
+          },
+          "skill": 1,
+          "skill_max": 20
+        },
+        {
+          "map_id": 1420,
+          "name": {
+            "de": "Tirisfal",
+            "en": "Tirisfal Glades"
+          },
+          "skill": 1,
+          "skill_max": 260
+        },
+        {
+          "map_id": 1449,
+          "name": {
+            "de": "Un'Goro-Krater",
+            "en": "Un'Goro Crater"
+          },
+          "skill": 210,
+          "skill_max": 275
+        },
+        {
+          "map_id": 1458,
+          "name": {
+            "de": "Undercity",
+            "en": "Undercity"
+          },
+          "skill": 1,
+          "skill_max": 155
+        },
+        {
+          "map_id": 1422,
+          "name": {
+            "de": "Westliche Pestländer",
+            "en": "Western Plaguelands"
+          },
+          "skill": 1,
+          "skill_max": 275
+        },
+        {
+          "map_id": 1436,
+          "name": {
+            "de": "Westfall",
+            "en": "Westfall"
+          },
+          "skill": 1,
+          "skill_max": 180
+        },
+        {
+          "map_id": 1437,
+          "name": {
+            "de": "Sumpfland",
+            "en": "Wetlands"
+          },
+          "skill": 1,
+          "skill_max": 155
+        },
+        {
+          "map_id": 1452,
+          "name": {
+            "de": "Winterspring",
+            "en": "Winterspring"
+          },
+          "skill": 1,
+          "skill_max": 300
+        }
+      ]
+    },
+    {
+      "id": "fishing",
+      "name": {
+        "de": "Angeln",
+        "en": "Fishing"
+      },
+      "profession": "fishing",
+      "zones": [
+        {
+          "map_id": 1416,
+          "name": {
+            "de": "Alteracgebirge",
+            "en": "Alterac Mountains"
+          },
+          "skill": 130,
+          "catches": [
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 58.4
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 40
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.7
+            },
+            {
+              "name": {
+                "de": "Großer Heiltrank",
+                "en": "Greater Healing Potion"
+              },
+              "chance": 0.3
+            },
+            {
+              "name": {
+                "de": "Aufgedunsene Mithrilkopfforelle",
+                "en": "Bloated Mithril Head Trout"
+              },
+              "chance": 0.3
+            }
+          ]
+        },
+        {
+          "map_id": 1417,
+          "name": {
+            "de": "Arathihochland",
+            "en": "Arathi Highlands"
+          },
+          "skill": 130,
+          "catches": [
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 58.4
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 40
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.7
+            },
+            {
+              "name": {
+                "de": "Großer Heiltrank",
+                "en": "Greater Healing Potion"
+              },
+              "chance": 0.3
+            },
+            {
+              "name": {
+                "de": "Aufgedunsene Mithrilkopfforelle",
+                "en": "Bloated Mithril Head Trout"
+              },
+              "chance": 0.3
+            }
+          ]
+        },
+        {
+          "map_id": 1440,
+          "name": {
+            "de": "Ashenvale",
+            "en": "Ashenvale"
+          },
+          "skill": 55,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 63.35
+            },
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 35
+            },
+            {
+              "name": {
+                "de": "Heiltrank",
+                "en": "Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Aufgedunsener Stoppelfühlerwels",
+                "en": "Bloated Bristle Whisker Catfish"
+              },
+              "chance": 0.3
+            }
+          ]
+        },
+        {
+          "map_id": 1447,
+          "name": {
+            "de": "Azshara",
+            "en": "Azshara"
+          },
+          "skill": 205,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Rotkiemen",
+                "en": "Raw Redgill"
+              },
+              "chance": 35.4
+            },
+            {
+              "name": {
+                "de": "Roher Nachtflossenschnapper",
+                "en": "Raw Nightfin Snapper"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Roher Sonnenschuppenlachs",
+                "en": "Raw Sunscale Salmon"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Öliges Schwarzmaul",
+                "en": "Oily Blackmouth"
+              },
+              "chance": 10
+            },
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 10
+            }
+          ]
+        },
+        {
+          "map_id": 1428,
+          "name": {
+            "de": "Brennende Steppe",
+            "en": "Burning Steppes"
+          },
+          "skill": 330,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Weißschuppenlachs",
+                "en": "Raw Whitescale Salmon"
+              },
+              "chance": 30.5
+            },
+            {
+              "name": {
+                "de": "Roher Nachtflossenschnapper",
+                "en": "Raw Nightfin Snapper"
+              },
+              "chance": 17
+            },
+            {
+              "name": {
+                "de": "Roher Sonnenschuppenlachs",
+                "en": "Raw Sunscale Salmon"
+              },
+              "chance": 17
+            },
+            {
+              "name": {
+                "de": "Roher Panzerfisch",
+                "en": "Raw Plated Armorfish"
+              },
+              "chance": 17
+            },
+            {
+              "name": {
+                "de": "Zitteraal",
+                "en": "Lightning Eel"
+              },
+              "chance": 12
+            }
+          ]
+        },
+        {
+          "map_id": 1439,
+          "name": {
+            "de": "Dunkelküste",
+            "en": "Darkshore"
+          },
+          "skill": -20,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Regenbogenflossenthunfisch",
+                "en": "Raw Rainbow Fin Albacore"
+              },
+              "chance": 30
+            },
+            {
+              "name": {
+                "de": "Dunkelküstenbarsch",
+                "en": "Darkshore Grouper"
+              },
+              "chance": 30
+            },
+            {
+              "name": {
+                "de": "Rohe Glitschhautmakrele",
+                "en": "Raw Slitherskin Mackerel"
+              },
+              "chance": 18.5
+            },
+            {
+              "name": {
+                "de": "Öliges Schwarzmaul",
+                "en": "Oily Blackmouth"
+              },
+              "chance": 10
+            },
+            {
+              "name": {
+                "de": "Klemm-Muffen",
+                "en": "Gaffer Jack"
+              },
+              "chance": 10
+            }
+          ]
+        },
+        {
+          "map_id": 1457,
+          "name": {
+            "de": "Darnassus",
+            "en": "Darnassus"
+          },
+          "skill": -20,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 49.95
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 30
+            },
+            {
+              "name": {
+                "de": "Roher glänzender Kleinfisch",
+                "en": "Raw Brilliant Smallfish"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Geringer Heiltrank",
+                "en": "Lesser Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Geringer Manatrank",
+                "en": "Lesser Mana Potion"
+              },
+              "chance": 0.5
+            }
+          ]
+        },
+        {
+          "map_id": 1430,
+          "name": {
+            "de": "Gebirgspass der Totenwinde",
+            "en": "Deadwind Pass"
+          },
+          "skill": 330,
+          "catches": [
+            {
+              "name": {
+                "de": "Zitteraal",
+                "en": "Lightning Eel"
+              },
+              "chance": 7
+            }
+          ]
+        },
+        {
+          "map_id": 1443,
+          "name": {
+            "de": "Desolace",
+            "en": "Desolace"
+          },
+          "skill": 130,
+          "catches": [
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 58.4
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 40
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.7
+            },
+            {
+              "name": {
+                "de": "Großer Heiltrank",
+                "en": "Greater Healing Potion"
+              },
+              "chance": 0.3
+            },
+            {
+              "name": {
+                "de": "Aufgedunsene Mithrilkopfforelle",
+                "en": "Bloated Mithril Head Trout"
+              },
+              "chance": 0.3
+            }
+          ]
+        },
+        {
+          "map_id": 1426,
+          "name": {
+            "de": "Dun Morogh",
+            "en": "Dun Morogh"
+          },
+          "skill": -70,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher glänzender Kleinfisch",
+                "en": "Raw Brilliant Smallfish"
+              },
+              "chance": 58.8
+            },
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 40
+            },
+            {
+              "name": {
+                "de": "Schwacher Heiltrank",
+                "en": "Minor Healing Potion"
+              },
+              "chance": 0.4
+            },
+            {
+              "name": {
+                "de": "Schwacher Manatrank",
+                "en": "Minor Mana Potion"
+              },
+              "chance": 0.4
+            },
+            {
+              "name": {
+                "de": "Aufgedunsener glänzender Kleinfisch",
+                "en": "Bloated Brilliant Smallfish"
+              },
+              "chance": 0.2
+            }
+          ]
+        },
+        {
+          "map_id": 1411,
+          "name": {
+            "de": "Durotar",
+            "en": "Durotar"
+          },
+          "skill": -70,
+          "catches": [
+            {
+              "name": {
+                "de": "Rohe Glitschhautmakrele",
+                "en": "Raw Slitherskin Mackerel"
+              },
+              "chance": 98
+            },
+            {
+              "name": {
+                "de": "Ramponierte Truhe",
+                "en": "Battered Chest"
+              },
+              "chance": 2
+            }
+          ]
+        },
+        {
+          "map_id": 1431,
+          "name": {
+            "de": "Dämmerwald",
+            "en": "Duskwood"
+          },
+          "skill": 55,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 63.35
+            },
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 35
+            },
+            {
+              "name": {
+                "de": "Heiltrank",
+                "en": "Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Aufgedunsener Stoppelfühlerwels",
+                "en": "Bloated Bristle Whisker Catfish"
+              },
+              "chance": 0.3
+            }
+          ]
+        },
+        {
+          "map_id": 1445,
+          "name": {
+            "de": "Marschen von Dustwallow",
+            "en": "Dustwallow Marsh"
+          },
+          "skill": 130,
+          "catches": [
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 58.4
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 40
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.7
+            },
+            {
+              "name": {
+                "de": "Großer Heiltrank",
+                "en": "Greater Healing Potion"
+              },
+              "chance": 0.3
+            },
+            {
+              "name": {
+                "de": "Aufgedunsene Mithrilkopfforelle",
+                "en": "Bloated Mithril Head Trout"
+              },
+              "chance": 0.3
+            }
+          ]
+        },
+        {
+          "map_id": 1423,
+          "name": {
+            "de": "Östliche Pestländer",
+            "en": "Eastern Plaguelands"
+          },
+          "skill": 330,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Weißschuppenlachs",
+                "en": "Raw Whitescale Salmon"
+              },
+              "chance": 30.5
+            },
+            {
+              "name": {
+                "de": "Roher Nachtflossenschnapper",
+                "en": "Raw Nightfin Snapper"
+              },
+              "chance": 17
+            },
+            {
+              "name": {
+                "de": "Roher Sonnenschuppenlachs",
+                "en": "Raw Sunscale Salmon"
+              },
+              "chance": 17
+            },
+            {
+              "name": {
+                "de": "Roher Panzerfisch",
+                "en": "Raw Plated Armorfish"
+              },
+              "chance": 17
+            },
+            {
+              "name": {
+                "de": "Zitteraal",
+                "en": "Lightning Eel"
+              },
+              "chance": 12
+            }
+          ]
+        },
+        {
+          "map_id": 1429,
+          "name": {
+            "de": "Wald von Elwynn",
+            "en": "Elwynn Forest"
+          },
+          "skill": -70,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher glänzender Kleinfisch",
+                "en": "Raw Brilliant Smallfish"
+              },
+              "chance": 58.8
+            },
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 40
+            },
+            {
+              "name": {
+                "de": "Schwacher Heiltrank",
+                "en": "Minor Healing Potion"
+              },
+              "chance": 0.4
+            },
+            {
+              "name": {
+                "de": "Schwacher Manatrank",
+                "en": "Minor Mana Potion"
+              },
+              "chance": 0.4
+            },
+            {
+              "name": {
+                "de": "Aufgedunsener glänzender Kleinfisch",
+                "en": "Bloated Brilliant Smallfish"
+              },
+              "chance": 0.2
+            }
+          ]
+        },
+        {
+          "map_id": 1448,
+          "name": {
+            "de": "Teufelswald",
+            "en": "Felwood"
+          },
+          "skill": 205,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Rotkiemen",
+                "en": "Raw Redgill"
+              },
+              "chance": 35.4
+            },
+            {
+              "name": {
+                "de": "Roher Nachtflossenschnapper",
+                "en": "Raw Nightfin Snapper"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Roher Sonnenschuppenlachs",
+                "en": "Raw Sunscale Salmon"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Öliges Schwarzmaul",
+                "en": "Oily Blackmouth"
+              },
+              "chance": 10
+            },
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 10
+            }
+          ]
+        },
+        {
+          "map_id": 1444,
+          "name": {
+            "de": "Feralas",
+            "en": "Feralas"
+          },
+          "skill": 205,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 40
+            },
+            {
+              "name": {
+                "de": "Großer Heiltrank",
+                "en": "Greater Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Aufgedunsene Mithrilkopfforelle",
+                "en": "Bloated Mithril Head Trout"
+              },
+              "chance": 0.2
+            },
+            {
+              "name": {
+                "de": "17-pfündiger Wels",
+                "en": "17 Pound Catfish"
+              },
+              "chance": 0.1
+            }
+          ]
+        },
+        {
+          "map_id": 1424,
+          "name": {
+            "de": "Vorgebirge von Hillsbrad",
+            "en": "Hillsbrad Foothills"
+          },
+          "skill": 55,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 63.35
+            },
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 35
+            },
+            {
+              "name": {
+                "de": "Heiltrank",
+                "en": "Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Aufgedunsener Stoppelfühlerwels",
+                "en": "Bloated Bristle Whisker Catfish"
+              },
+              "chance": 0.3
+            }
+          ]
+        },
+        {
+          "map_id": 1455,
+          "name": {
+            "de": "Ironforge",
+            "en": "Ironforge"
+          },
+          "skill": -20,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 49.95
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 30
+            },
+            {
+              "name": {
+                "de": "Roher glänzender Kleinfisch",
+                "en": "Raw Brilliant Smallfish"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Geringer Heiltrank",
+                "en": "Lesser Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Geringer Manatrank",
+                "en": "Lesser Mana Potion"
+              },
+              "chance": 0.5
+            }
+          ]
+        },
+        {
+          "map_id": 1432,
+          "name": {
+            "de": "Loch Modan",
+            "en": "Loch Modan"
+          },
+          "skill": -20,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Lochfrenzy",
+                "en": "Raw Loch Frenzy"
+              },
+              "chance": 25
+            }
+          ]
+        },
+        {
+          "map_id": 1450,
+          "name": {
+            "de": "Moonglade",
+            "en": "Moonglade"
+          },
+          "skill": 205,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Rotkiemen",
+                "en": "Raw Redgill"
+              },
+              "chance": 35.4
+            },
+            {
+              "name": {
+                "de": "Roher Nachtflossenschnapper",
+                "en": "Raw Nightfin Snapper"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Roher Sonnenschuppenlachs",
+                "en": "Raw Sunscale Salmon"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Öliges Schwarzmaul",
+                "en": "Oily Blackmouth"
+              },
+              "chance": 10
+            },
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 10
+            }
+          ]
+        },
+        {
+          "map_id": 1412,
+          "name": {
+            "de": "Mulgore",
+            "en": "Mulgore"
+          },
+          "skill": -70,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher glänzender Kleinfisch",
+                "en": "Raw Brilliant Smallfish"
+              },
+              "chance": 58.8
+            },
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 40
+            },
+            {
+              "name": {
+                "de": "Schwacher Heiltrank",
+                "en": "Minor Healing Potion"
+              },
+              "chance": 0.4
+            },
+            {
+              "name": {
+                "de": "Schwacher Manatrank",
+                "en": "Minor Mana Potion"
+              },
+              "chance": 0.4
+            },
+            {
+              "name": {
+                "de": "Aufgedunsener glänzender Kleinfisch",
+                "en": "Bloated Brilliant Smallfish"
+              },
+              "chance": 0.2
+            }
+          ]
+        },
+        {
+          "map_id": 1454,
+          "name": {
+            "de": "Orgrimmar",
+            "en": "Orgrimmar"
+          },
+          "skill": -20,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 49.95
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 30
+            },
+            {
+              "name": {
+                "de": "Roher glänzender Kleinfisch",
+                "en": "Raw Brilliant Smallfish"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Geringer Heiltrank",
+                "en": "Lesser Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Geringer Manatrank",
+                "en": "Lesser Mana Potion"
+              },
+              "chance": 0.5
+            }
+          ]
+        },
+        {
+          "map_id": 1433,
+          "name": {
+            "de": "Rotkammgebirge",
+            "en": "Redridge Mountains"
+          },
+          "skill": 55,
+          "catches": [
+            {
+              "name": {
+                "de": "Gefleckter Sonnenfisch",
+                "en": "Spotted Sunfish"
+              },
+              "chance": 100
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 63.35
+            },
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 35
+            },
+            {
+              "name": {
+                "de": "Heiltrank",
+                "en": "Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.5
+            }
+          ]
+        },
+        {
+          "map_id": 1451,
+          "name": {
+            "de": "Silithus",
+            "en": "Silithus"
+          },
+          "skill": 330,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Weißschuppenlachs",
+                "en": "Raw Whitescale Salmon"
+              },
+              "chance": 30.5
+            },
+            {
+              "name": {
+                "de": "Roher Nachtflossenschnapper",
+                "en": "Raw Nightfin Snapper"
+              },
+              "chance": 17
+            },
+            {
+              "name": {
+                "de": "Roher Sonnenschuppenlachs",
+                "en": "Raw Sunscale Salmon"
+              },
+              "chance": 17
+            },
+            {
+              "name": {
+                "de": "Roher Panzerfisch",
+                "en": "Raw Plated Armorfish"
+              },
+              "chance": 17
+            },
+            {
+              "name": {
+                "de": "Zitteraal",
+                "en": "Lightning Eel"
+              },
+              "chance": 12
+            }
+          ]
+        },
+        {
+          "map_id": 1421,
+          "name": {
+            "de": "Silberwald",
+            "en": "Silverpine Forest"
+          },
+          "skill": -20,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 30
+            },
+            {
+              "name": {
+                "de": "Krank aussehender Fisch",
+                "en": "Sickly Looking Fish"
+              },
+              "chance": 15
+            },
+            {
+              "name": {
+                "de": "Schwacher Heiltrank",
+                "en": "Minor Healing Potion"
+              },
+              "chance": 0.4
+            },
+            {
+              "name": {
+                "de": "Schwacher Manatrank",
+                "en": "Minor Mana Potion"
+              },
+              "chance": 0.4
+            }
+          ]
+        },
+        {
+          "map_id": 1442,
+          "name": {
+            "de": "Steinkrallengebirge",
+            "en": "Stonetalon Mountains"
+          },
+          "skill": 55,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 63.35
+            },
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 35
+            },
+            {
+              "name": {
+                "de": "Heiltrank",
+                "en": "Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Aufgedunsener Stoppelfühlerwels",
+                "en": "Bloated Bristle Whisker Catfish"
+              },
+              "chance": 0.3
+            }
+          ]
+        },
+        {
+          "map_id": 1453,
+          "name": {
+            "de": "Stormwind",
+            "en": "Stormwind City"
+          },
+          "skill": -20,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 49.95
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 30
+            },
+            {
+              "name": {
+                "de": "Roher glänzender Kleinfisch",
+                "en": "Raw Brilliant Smallfish"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Geringer Heiltrank",
+                "en": "Lesser Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Geringer Manatrank",
+                "en": "Lesser Mana Potion"
+              },
+              "chance": 0.5
+            }
+          ]
+        },
+        {
+          "map_id": 1434,
+          "name": {
+            "de": "Schlingendorntal",
+            "en": "Stranglethorn Vale"
+          },
+          "skill": 130,
+          "catches": [
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 58.4
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 40
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.7
+            },
+            {
+              "name": {
+                "de": "Großer Heiltrank",
+                "en": "Greater Healing Potion"
+              },
+              "chance": 0.3
+            },
+            {
+              "name": {
+                "de": "Aufgedunsene Mithrilkopfforelle",
+                "en": "Bloated Mithril Head Trout"
+              },
+              "chance": 0.3
+            }
+          ]
+        },
+        {
+          "map_id": 1435,
+          "name": {
+            "de": "Sümpfe des Elends",
+            "en": "Swamp of Sorrows"
+          },
+          "skill": 130,
+          "catches": [
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 58.4
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 40
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.7
+            },
+            {
+              "name": {
+                "de": "Großer Heiltrank",
+                "en": "Greater Healing Potion"
+              },
+              "chance": 0.3
+            },
+            {
+              "name": {
+                "de": "Aufgedunsene Mithrilkopfforelle",
+                "en": "Bloated Mithril Head Trout"
+              },
+              "chance": 0.3
+            }
+          ]
+        },
+        {
+          "map_id": 1446,
+          "name": {
+            "de": "Tanaris",
+            "en": "Tanaris"
+          },
+          "skill": 205,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Tüpfelgelbschwanz",
+                "en": "Raw Spotted Yellowtail"
+              },
+              "chance": 25.3
+            },
+            {
+              "name": {
+                "de": "Roher Sommerbarsch",
+                "en": "Raw Summer Bass"
+              },
+              "chance": 25
+            },
+            {
+              "name": {
+                "de": "Steinschuppenaal",
+                "en": "Stonescale Eel"
+              },
+              "chance": 15
+            },
+            {
+              "name": {
+                "de": "Roher glänzender Machtfisch",
+                "en": "Raw Glossy Mightfish"
+              },
+              "chance": 15
+            },
+            {
+              "name": {
+                "de": "Feuerflossenschnapper",
+                "en": "Firefin Snapper"
+              },
+              "chance": 10
+            }
+          ]
+        },
+        {
+          "map_id": 1438,
+          "name": {
+            "de": "Teldrassil",
+            "en": "Teldrassil"
+          },
+          "skill": -70,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher glänzender Kleinfisch",
+                "en": "Raw Brilliant Smallfish"
+              },
+              "chance": 58.8
+            },
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 40
+            },
+            {
+              "name": {
+                "de": "Schwacher Heiltrank",
+                "en": "Minor Healing Potion"
+              },
+              "chance": 0.4
+            },
+            {
+              "name": {
+                "de": "Schwacher Manatrank",
+                "en": "Minor Mana Potion"
+              },
+              "chance": 0.4
+            },
+            {
+              "name": {
+                "de": "Aufgedunsener glänzender Kleinfisch",
+                "en": "Bloated Brilliant Smallfish"
+              },
+              "chance": 0.2
+            }
+          ]
+        },
+        {
+          "map_id": 1413,
+          "name": {
+            "de": "Das Brachland",
+            "en": "The Barrens"
+          },
+          "skill": -20,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Regenbogenflossenthunfisch",
+                "en": "Raw Rainbow Fin Albacore"
+              },
+              "chance": 50
+            },
+            {
+              "name": {
+                "de": "Rohe Glitschhautmakrele",
+                "en": "Raw Slitherskin Mackerel"
+              },
+              "chance": 33.5
+            },
+            {
+              "name": {
+                "de": "Öliges Schwarzmaul",
+                "en": "Oily Blackmouth"
+              },
+              "chance": 15
+            },
+            {
+              "name": {
+                "de": "Flaschenpost",
+                "en": "Message in a Bottle"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Zerbeulte Kiste",
+                "en": "Dented Crate"
+              },
+              "chance": 0.5
+            }
+          ]
+        },
+        {
+          "map_id": 1425,
+          "name": {
+            "de": "Hinterland",
+            "en": "The Hinterlands"
+          },
+          "skill": 205,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Rotkiemen",
+                "en": "Raw Redgill"
+              },
+              "chance": 35.4
+            },
+            {
+              "name": {
+                "de": "Roher Nachtflossenschnapper",
+                "en": "Raw Nightfin Snapper"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Roher Sonnenschuppenlachs",
+                "en": "Raw Sunscale Salmon"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Öliges Schwarzmaul",
+                "en": "Oily Blackmouth"
+              },
+              "chance": 10
+            },
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 10
+            }
+          ]
+        },
+        {
+          "map_id": 1441,
+          "name": {
+            "de": "Tausend Nadeln",
+            "en": "Thousand Needles"
+          },
+          "skill": 130,
+          "catches": [
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 58.4
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 40
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.7
+            },
+            {
+              "name": {
+                "de": "Großer Heiltrank",
+                "en": "Greater Healing Potion"
+              },
+              "chance": 0.3
+            },
+            {
+              "name": {
+                "de": "Aufgedunsene Mithrilkopfforelle",
+                "en": "Bloated Mithril Head Trout"
+              },
+              "chance": 0.3
+            }
+          ]
+        },
+        {
+          "map_id": 1456,
+          "name": {
+            "de": "Thunder Bluff",
+            "en": "Thunder Bluff"
+          },
+          "skill": -20,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 49.95
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 30
+            },
+            {
+              "name": {
+                "de": "Roher glänzender Kleinfisch",
+                "en": "Raw Brilliant Smallfish"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Geringer Heiltrank",
+                "en": "Lesser Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Geringer Manatrank",
+                "en": "Lesser Mana Potion"
+              },
+              "chance": 0.5
+            }
+          ]
+        },
+        {
+          "map_id": 1420,
+          "name": {
+            "de": "Tirisfal",
+            "en": "Tirisfal Glades"
+          },
+          "skill": -70,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 30
+            },
+            {
+              "name": {
+                "de": "Krank aussehender Fisch",
+                "en": "Sickly Looking Fish"
+              },
+              "chance": 15
+            },
+            {
+              "name": {
+                "de": "Schwacher Heiltrank",
+                "en": "Minor Healing Potion"
+              },
+              "chance": 0.4
+            },
+            {
+              "name": {
+                "de": "Schwacher Manatrank",
+                "en": "Minor Mana Potion"
+              },
+              "chance": 0.4
+            }
+          ]
+        },
+        {
+          "map_id": 1449,
+          "name": {
+            "de": "Un'Goro-Krater",
+            "en": "Un'Goro Crater"
+          },
+          "skill": 205,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Rotkiemen",
+                "en": "Raw Redgill"
+              },
+              "chance": 35.4
+            },
+            {
+              "name": {
+                "de": "Roher Nachtflossenschnapper",
+                "en": "Raw Nightfin Snapper"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Roher Sonnenschuppenlachs",
+                "en": "Raw Sunscale Salmon"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Öliges Schwarzmaul",
+                "en": "Oily Blackmouth"
+              },
+              "chance": 10
+            },
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 10
+            }
+          ]
+        },
+        {
+          "map_id": 1458,
+          "name": {
+            "de": "Undercity",
+            "en": "Undercity"
+          },
+          "skill": -20,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 39.95
+            },
+            {
+              "name": {
+                "de": "Krank aussehender Fisch",
+                "en": "Sickly Looking Fish"
+              },
+              "chance": 15
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 15
+            },
+            {
+              "name": {
+                "de": "Roher glänzender Kleinfisch",
+                "en": "Raw Brilliant Smallfish"
+              },
+              "chance": 12.5
+            },
+            {
+              "name": {
+                "de": "Geringer Heiltrank",
+                "en": "Lesser Healing Potion"
+              },
+              "chance": 0.5
+            }
+          ]
+        },
+        {
+          "map_id": 1422,
+          "name": {
+            "de": "Westliche Pestländer",
+            "en": "Western Plaguelands"
+          },
+          "skill": 205,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Rotkiemen",
+                "en": "Raw Redgill"
+              },
+              "chance": 35.4
+            },
+            {
+              "name": {
+                "de": "Roher Nachtflossenschnapper",
+                "en": "Raw Nightfin Snapper"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Roher Sonnenschuppenlachs",
+                "en": "Raw Sunscale Salmon"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Öliges Schwarzmaul",
+                "en": "Oily Blackmouth"
+              },
+              "chance": 10
+            },
+            {
+              "name": {
+                "de": "Rohe Mithrilkopfforelle",
+                "en": "Raw Mithril Head Trout"
+              },
+              "chance": 10
+            }
+          ]
+        },
+        {
+          "map_id": 1436,
+          "name": {
+            "de": "Westfall",
+            "en": "Westfall"
+          },
+          "skill": -20,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 49.95
+            },
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 30
+            },
+            {
+              "name": {
+                "de": "Roher glänzender Kleinfisch",
+                "en": "Raw Brilliant Smallfish"
+              },
+              "chance": 18
+            },
+            {
+              "name": {
+                "de": "Geringer Heiltrank",
+                "en": "Lesser Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Geringer Manatrank",
+                "en": "Lesser Mana Potion"
+              },
+              "chance": 0.5
+            }
+          ]
+        },
+        {
+          "map_id": 1437,
+          "name": {
+            "de": "Sumpfland",
+            "en": "Wetlands"
+          },
+          "skill": 55,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Stoppelfühlerwels",
+                "en": "Raw Bristle Whisker Catfish"
+              },
+              "chance": 63.35
+            },
+            {
+              "name": {
+                "de": "Roher Langzahniger Matschschnapper",
+                "en": "Raw Longjaw Mud Snapper"
+              },
+              "chance": 35
+            },
+            {
+              "name": {
+                "de": "Heiltrank",
+                "en": "Healing Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Manatrank",
+                "en": "Mana Potion"
+              },
+              "chance": 0.5
+            },
+            {
+              "name": {
+                "de": "Aufgedunsener Stoppelfühlerwels",
+                "en": "Bloated Bristle Whisker Catfish"
+              },
+              "chance": 0.3
+            }
+          ]
+        },
+        {
+          "map_id": 1452,
+          "name": {
+            "de": "Winterspring",
+            "en": "Winterspring"
+          },
+          "skill": 330,
+          "catches": [
+            {
+              "name": {
+                "de": "Roher Weißschuppenlachs",
+                "en": "Raw Whitescale Salmon"
+              },
+              "chance": 30.5
+            },
+            {
+              "name": {
+                "de": "Roher Nachtflossenschnapper",
+                "en": "Raw Nightfin Snapper"
+              },
+              "chance": 17
+            },
+            {
+              "name": {
+                "de": "Roher Sonnenschuppenlachs",
+                "en": "Raw Sunscale Salmon"
+              },
+              "chance": 17
+            },
+            {
+              "name": {
+                "de": "Roher Panzerfisch",
+                "en": "Raw Plated Armorfish"
+              },
+              "chance": 17
+            },
+            {
+              "name": {
+                "de": "Zitteraal",
+                "en": "Lightning Eel"
+              },
+              "chance": 12
+            }
+          ]
+        }
       ]
     }
   ],

@@ -125,6 +125,8 @@ export const CATALOG_REFERENCES: Record<CatalogKind, CatalogReference[]> = {
       storedAs: "entryId",
     },
   ],
+  // Nothing references a gathering guide; it is read as a whole.
+  gathering: [],
   server: [
     {
       table: characters,
