@@ -59,6 +59,7 @@ export const common = {
   save: "Speichern",
   cancel: "Abbrechen",
   delete: "Löschen",
+  edit: "Bearbeiten",
   add: "Hinzufügen",
   saved: "Gespeichert.",
   none: "–",

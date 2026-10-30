@@ -1,7 +1,7 @@
 {
   "id": "wow-forever",
   "name": "WoW: Forever",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "type": "mmo",
   "server_label": "Realm",
   "capabilities": {
@@ -90179,10 +90179,6 @@
           "link": "https://foreverdb.net/maps/1440",
           "nodes": [
             {
-              "name": "Plant Bundle",
-              "skill": null
-            },
-            {
               "name": {
                 "de": "Maguskönigskraut",
                 "en": "Mageroyal"
@@ -90439,14 +90435,6 @@
           },
           "link": "https://foreverdb.net/maps/1439",
           "nodes": [
-            {
-              "name": "Beached Sea Creature",
-              "skill": null
-            },
-            {
-              "name": "Skeletal Sea Turtle",
-              "skill": null
-            },
             {
               "name": {
                 "de": "Silberblatt",
@@ -91935,10 +91923,6 @@
           "link": "https://foreverdb.net/maps/1413",
           "nodes": [
             {
-              "name": "Incendia Agave",
-              "skill": null
-            },
-            {
               "name": {
                 "de": "Schlangenflaum",
                 "en": "Serpentbloom"
@@ -92046,10 +92030,6 @@
           },
           "link": "https://foreverdb.net/maps/1425",
           "nodes": [
-            {
-              "name": "Violet Tragan",
-              "skill": null
-            },
             {
               "name": {
                 "de": "Wildstahlblume",
@@ -92213,14 +92193,6 @@
           },
           "link": "https://foreverdb.net/maps/1420",
           "nodes": [
-            {
-              "name": "Gloom Weed",
-              "skill": null
-            },
-            {
-              "name": "Doom Weed",
-              "skill": null
-            },
             {
               "name": {
                 "de": "Silberblatt",
@@ -93568,13 +93540,6 @@
                 "en": "Thorium Ore"
               },
               "skill": 245
-            },
-            {
-              "name": {
-                "de": "Thoriumerz",
-                "en": "Thorium Ore"
-              },
-              "skill": 275
             }
           ]
         },
@@ -94351,13 +94316,6 @@
                 "en": "Thorium Ore"
               },
               "skill": 245
-            },
-            {
-              "name": {
-                "de": "Thoriumerz",
-                "en": "Thorium Ore"
-              },
-              "skill": 275
             }
           ]
         }

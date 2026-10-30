@@ -40,6 +40,8 @@ const raw = {
           name: { de: "Sumpfland", en: "Wetlands" },
           nodes: [
             { name: "Zinnerz", skill: 65 },
+            // A rich vein that gives the same ore: shown once.
+            { name: "Kupfererz", skill: 30 },
             { name: "Kupfererz", skill: 1 },
           ],
         },

@@ -92,6 +92,30 @@ async function skinningBeasts(
   return beasts;
 }
 
+/**
+ * The zone's nodes by what they give. Objects without an item ("Plant Bundle", quest
+ * herbs like "Gloom Weed") are no gathering nodes and stay out; nodes giving the same
+ * item (a small and a rich thorium vein) count once, at the lowest skill.
+ */
+function gatheredNodes(
+  nodes: ApiGathering["zones"][number]["nodes"],
+  nodeItems: ReadonlyMap<string, Node["name"]>,
+): Node[] {
+  const byItem = new Map<string, Node>();
+  for (const node of nodes ?? []) {
+    const name = nodeItems.get(node.name);
+    if (!name) {
+      continue;
+    }
+    const key = typeof name === "string" ? name : JSON.stringify(name);
+    const known = byItem.get(key);
+    if (!known || (node.skill ?? 0) < (known.skill ?? 0)) {
+      byItem.set(key, { name, skill: node.skill });
+    }
+  }
+  return [...byItem.values()].sort((a, b) => (a.skill ?? 0) - (b.skill ?? 0));
+}
+
 function toGuide(
   profession: { id: string; name: unknown },
   data: ApiGathering,
@@ -124,12 +148,7 @@ function toGuide(
       ...zoneRef(zone),
       skill: typeof zone.skill === "number" ? zone.skill : zone.skill?.min,
       skill_max: typeof zone.skill === "object" ? zone.skill.max : undefined,
-      nodes:
-        beasts.get(zone.mapId) ??
-        (zone.nodes ?? []).map((node) => ({
-          name: nodeItems.get(node.name) ?? node.name,
-          skill: node.skill,
-        })),
+      nodes: beasts.get(zone.mapId) ?? gatheredNodes(zone.nodes, nodeItems),
       catches: [...(zone.loot ?? [])]
         .sort((a, b) => b.chance - a.chance)
         .slice(0, CATCHES_PER_ZONE)

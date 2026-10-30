@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { NewRequestPanel } from "@/components/guild/NewRequestPanel";
 import { RequestCard } from "@/components/guild/RequestCard";
 import { PackCredits } from "@/components/packs/PackCredits";
 import { PageSuspense } from "@/components/ui/PageSuspense";
 import { PageHeader } from "@/components/ui/ui";
+import { ViewTabs } from "@/components/ui/ViewTabs";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { selectedGames } from "@/lib/game-filter";
@@ -121,35 +121,16 @@ async function RequestsContent({ searchParams }: PageProps<"/antraege">) {
         <p className="text-muted">{de.directory.noProfessions}</p>
       )}
 
-      <nav
-        aria-label={de.requests.viewLabel}
-        className="-mx-4 flex gap-1 overflow-x-auto border-b border-border px-4 md:mx-0 md:px-0"
-      >
-        {(Object.keys(VIEWS) as ViewParam[]).map((key) => {
-          const active = key === view;
-          return (
-            <Link
-              key={key}
-              href={`/antraege?ansicht=${key}`}
-              aria-current={active ? "page" : undefined}
-              className={`flex min-h-12 shrink-0 items-center gap-2 px-3 text-sm sm:px-3.5 sm:text-[14.5px] ${
-                active
-                  ? "font-bold text-white shadow-[inset_0_-3px_0_var(--gh-accent)]"
-                  : "font-semibold text-muted hover:text-white"
-              }`}
-            >
-              {de.requests.views[VIEWS[key]]}
-              <span
-                className={`flex h-5.5 min-w-5.5 items-center justify-center rounded-full px-1.5 text-xs font-bold tabular-nums ${
-                  active ? "bg-accent text-on-accent" : "bg-chip text-soft"
-                }`}
-              >
-                {counts[key]}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
+      <ViewTabs
+        label={de.requests.viewLabel}
+        active={view}
+        tabs={(Object.keys(VIEWS) as ViewParam[]).map((key) => ({
+          key,
+          href: `/antraege?ansicht=${key}`,
+          label: de.requests.views[VIEWS[key]],
+          count: counts[key],
+        }))}
+      />
 
       {view === "fuer-dich" && (
         <>

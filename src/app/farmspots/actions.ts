@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { z } from "zod";
+import { idArg, parseArg } from "@/lib/actions/action-args";
 import {
   formText,
   guarded,
@@ -9,7 +11,18 @@ import {
 } from "@/lib/actions/action-state";
 import { actorForAction } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
+import { runMutation } from "@/lib/actions/mutation";
 import { deleteFarmSpot, saveFarmSpot } from "@/lib/lists/farm-spots";
+import { setProfessionSkill } from "@/lib/roster/character-professions";
+
+/** Pages that show a gatherer's skill. */
+const GATHERING_PAGES = [
+  "/farmspots",
+  "/",
+  "/roster",
+  "/berufe",
+  "/charaktere",
+];
 
 export async function saveFarmSpotAction(
   spotId: number | undefined,
@@ -52,4 +65,21 @@ export async function deleteFarmSpotAction(
     revalidatePath("/farmspots");
   }
   return state;
+}
+
+/** Saves a gatherer's skill right from its card, so the tips follow along while farming. */
+export async function setGatheringSkillAction(
+  characterId: number,
+  professionEntryId: number,
+  skillLevel: number,
+): Promise<ActionState> {
+  return runMutation(GATHERING_PAGES, (db, actor) =>
+    setProfessionSkill(
+      db,
+      actor,
+      parseArg(idArg, characterId),
+      parseArg(idArg, professionEntryId),
+      parseArg(z.number().int(), skillLevel),
+    ),
+  );
 }

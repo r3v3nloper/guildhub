@@ -104,22 +104,70 @@ export const checklists = {
 
 export const farmSpots = {
   title: "Farmspots",
-  hint: "Wo gibt es was? Zone und Koordinaten als Text, optional mit Link zu einer Karte.",
-  empty: "Noch keine Farmspots für dieses Spiel.",
+  intro:
+    "Wohin mit deiner Fertigkeit, wo es was gibt, und die Geheimtipps der Gilde.",
   new: "Neuer Farmspot",
+  share: "Farmspot teilen",
   editTitle: "Farmspot bearbeiten",
-  guideTitle: "Wo sammeln?",
-  guideHint:
-    "Die besten Zonen je Fertigkeit laut ForeverDB. Wo Vorkommen stehen, sind teils noch Classic-Daten.",
+  viewLabel: "Ansicht",
+  views: {
+    forYou: "Für dich",
+    material: "Material finden",
+    skill: "Nach Fertigkeit",
+    spots: "Gilden-Spots",
+  },
   guideCredits: "Sammeldaten",
   /** ForeverDB has maps with every spawn point on its herb and ore pages. */
   nodeMaps: "Karten mit allen Fundstellen",
   moreAtSource: "Mehr dazu",
-  yourGatherers: "Deine Sammler",
-  enterSkill:
-    "Fertigkeit beim Charakter eintragen, dann gibt es hier eine Empfehlung.",
-  skillRange: (from: number, to: number) => `Fertigkeit ${from}–${to}`,
-  allZones: (count: number) => `Alle Zonen (${count})`,
+  opensExternally: "öffnet die Karte bei der Datenquelle",
+  mapOf: (zone: string) => `Karte von ${zone} öffnen`,
+  // "Für dich"
+  skillOf: (character: string, profession: string) =>
+    `Fertigkeit ${profession} von ${character}`,
+  skillRange: (from: number, to: number) => `Stufe ${from}–${to}`,
+  goNow: "Jetzt hin",
+  offersIn: (zone: string) => `In ${zone} für dich`,
+  nextStep: (skill: number) => `Ab ${skill}:`,
+  moreOffers: (count: number) => `+ ${count} weitere`,
+  fewerOffers: "Weniger zeigen",
+  topRange: "Du bist in der höchsten Stufe – hier lohnt sich alles.",
+  skillMissing: "Fertigkeit fehlt",
+  enterSkill: "Trag deine Fertigkeit ein, dann zeigen wir dir, wohin es geht.",
+  guildSpotsFor: (count: number, profession: string) =>
+    count === 1
+      ? `1 Gilden-Spot für ${profession}`
+      : `${count} Gilden-Spots für ${profession}`,
+  latestSpots: "Neu von der Gilde",
+  allSpots: "Alle Gilden-Spots",
+  noGatherers: "Noch kein Sammelberuf bei deinen Charakteren",
+  noGatherersHint:
+    "Trag bei einem Charakter einen Sammelberuf ein, dann siehst du hier, wohin es für ihn geht. Bis dahin hilft „Nach Fertigkeit“.",
+  toCharacters: "Zu deinen Charakteren",
+  // "Material finden"
+  materialLabel: "Was suchst du?",
+  materialPlaceholder: "Kraut, Erz oder Fisch …",
+  fromSkill: (skill: number) => `ab Fertigkeit ${skill}`,
+  foundIn: (count: number) =>
+    count === 1 ? "Kommt in 1 Zone vor" : `Kommt in ${count} Zonen vor`,
+  recommendedFirst: "empfohlene zuerst",
+  recommendedZone: "Empfohlene Sammelzone",
+  otherMatches: "Meintest du",
+  guildTip: "Tipp der Gilde",
+  noMaterial:
+    "Nichts gefunden. Probier einen anderen Namen oder schau unter „Nach Fertigkeit“.",
+  // "Nach Fertigkeit"
+  skill: "Fertigkeit",
+  rangesLabel: "Fertigkeitsbereiche",
+  yourRange: "du",
+  bestZonesFor: (from: number, to: number) => `Beste Zonen für ${from}–${to}`,
+  gatherable: (ready: number, total: number) =>
+    `${ready} von ${total} sammelbar`,
+  legend:
+    "Grün: kannst du schon sammeln · Grau: braucht mehr Fertigkeit (Zahl = ab Fertigkeit).",
+  moreZones: (count: number) => `Weitere Zonen (${count})`,
+  waters: "Passende Gewässer",
+  nextWaters: "Als Nächstes",
   zoneSkill: (skill: number | null, max: number | null) =>
     skill === null || skill <= 0
       ? "jede Fertigkeit"
@@ -128,18 +176,22 @@ export const farmSpots = {
         : `ab Fertigkeit ${skill}`,
   chance: (percent: number) =>
     `${percent.toLocaleString("de-DE", { maximumFractionDigits: 1 })} %`,
+  // "Gilden-Spots" and the form
   profession: "Beruf",
   resource: "Was",
   zone: "Zone",
   coordinates: "Koordinaten",
   link: "Karte (Link)",
   notes: "Notiz",
-  openMap: "Karte öffnen",
+  openMap: "Karte",
   deleteConfirm: "Diesen Farmspot löschen?",
-  allProfessions: "Alle Berufe",
+  allProfessions: "Alle",
   search: "Material oder Zone suchen",
   searchPlaceholder: "Material oder Zone …",
+  empty: "Noch keine Gilden-Spots. Teil den ersten!",
   noMatches: "Keine Farmspots für diese Auswahl.",
+  by: (name: string) => `von ${name}`,
+  menuFor: (resource: string) => `Weitere Aktionen für ${resource}`,
 } as const;
 
 export const visibility = {
