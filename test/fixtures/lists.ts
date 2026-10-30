@@ -20,7 +20,13 @@ const raw = {
         {
           from_skill: 1,
           to_skill: 66,
-          zones: [{ map_id: 1436, name: { de: "Westfall", en: "Westfall" } }],
+          zones: [
+            {
+              map_id: 1436,
+              name: { de: "Westfall", en: "Westfall" },
+              link: "https://example.org/maps/1436",
+            },
+          ],
         },
         {
           from_skill: 66,

@@ -5,6 +5,7 @@ import type {
   GatheringGuide,
   GatheringTip,
   GuideZone,
+  ZoneLink,
 } from "@/lib/lists/gathering-guide";
 import { de } from "@/i18n/de";
 import { FoldCard } from "./FoldCard";
@@ -77,7 +78,15 @@ function GuideCard({ guide }: { guide: GatheringGuide }) {
               <span className="font-semibold text-white tabular-nums">
                 {de.farmSpots.skillRange(range.fromSkill, range.toSkill)}
               </span>
-              <span className="text-muted"> · {range.zones.join(", ")}</span>
+              <span className="text-muted">
+                {" · "}
+                {range.zones.map((zone, index) => (
+                  <span key={zone.name}>
+                    {index > 0 && ", "}
+                    <ZoneName zone={zone} />
+                  </span>
+                ))}
+              </span>
             </li>
           ))}
         </ul>
@@ -92,7 +101,37 @@ function GuideCard({ guide }: { guide: GatheringGuide }) {
           ))}
         </ul>
       </details>
+      {guide.link && (
+        <a
+          href={guide.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 inline-flex items-center gap-1.5 text-sm text-accent-strong hover:text-white"
+        >
+          {guide.link.endsWith("/nodes")
+            ? de.farmSpots.nodeMaps
+            : de.farmSpots.moreAtSource}
+          <i className="pi pi-external-link text-[10px]" aria-hidden />
+        </a>
+      )}
     </FoldCard>
+  );
+}
+
+/** The zone name, linking to its map at the data source where known. */
+function ZoneName({ zone }: { zone: ZoneLink }) {
+  if (!zone.link) {
+    return <>{zone.name}</>;
+  }
+  return (
+    <a
+      href={zone.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-accent-strong hover:text-white"
+    >
+      {zone.name}
+    </a>
   );
 }
 
@@ -108,7 +147,9 @@ function ZoneRow({ zone }: { zone: GuideZone }) {
   return (
     <li className="flex flex-col gap-0.5 py-1.5">
       <span>
-        <span className="font-medium">{zone.name}</span>
+        <span className="font-medium">
+          <ZoneName zone={zone} />
+        </span>
         {(zone.skill !== null || zone.nodes.length === 0) && (
           <span className="text-muted">
             {" "}

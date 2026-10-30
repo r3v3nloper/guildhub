@@ -131,6 +131,8 @@ export const instanceSchema = z.strictObject({
 const zoneRefSchema = z.strictObject({
   map_id: z.number().int().positive(),
   name: localizedStringSchema,
+  /** Map page of the zone at the data source. */
+  link: httpLink.optional(),
 });
 
 /**
@@ -140,6 +142,8 @@ const zoneRefSchema = z.strictObject({
 export const gatheringSchema = z.strictObject({
   ...catalogEntry,
   profession: slug,
+  /** Overview page of the profession's nodes at the data source. */
+  link: httpLink.optional(),
   best_zones: z
     .array(
       z.strictObject({
@@ -156,6 +160,7 @@ export const gatheringSchema = z.strictObject({
         /** Fishing: skill the water needs; skinning: lowest skill of its beasts. */
         skill: z.number().int().optional(),
         skill_max: z.number().int().optional(),
+        /** Herbs and ore; for skinning the beasts. */
         nodes: z
           .array(
             z.strictObject({

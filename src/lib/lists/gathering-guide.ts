@@ -5,18 +5,23 @@ import type { PackGathering } from "@/lib/packs/schema";
 import type { RosterCharacter } from "@/lib/roster/roster";
 import { localize } from "@/i18n/localize";
 
+export interface ZoneLink {
+  name: string;
+  /** Map page at the data source. */
+  link: string | null;
+}
+
 export interface SkillRange {
   fromSkill: number;
   toSkill: number;
-  zones: string[];
+  zones: ZoneLink[];
 }
 
-export interface GuideZone {
-  name: string;
+export interface GuideZone extends ZoneLink {
   /** Fishing: skill the water needs; skinning: lowest skill of its beasts. */
   skill: number | null;
   skillMax: number | null;
-  /** What grows or spawns there and from which skill, easiest first. */
+  /** What grows or spawns there (skinning: the beasts) and from which skill, easiest first. */
   nodes: Array<{ name: string; skill: number | null }>;
   /** Fishing: the most likely catches. */
   catches: Array<{ name: string; chance: number }>;
@@ -27,6 +32,8 @@ export interface GatheringGuide {
   gameId: string;
   professionKey: string;
   professionName: string;
+  /** Overview of the profession's nodes at the data source. */
+  link: string | null;
   /** Best zones per skill range; empty for fishing, which ranks zones by their skill. */
   ranges: SkillRange[];
   zones: GuideZone[];
@@ -75,20 +82,25 @@ function toGuide(
 ): GatheringGuide {
   const guide = data as Pick<
     PackGathering,
-    "profession" | "best_zones" | "zones"
+    "profession" | "link" | "best_zones" | "zones"
   >;
+  const zoneLink = (zone: { name: PackGathering["name"]; link?: string }) => ({
+    name: localize(zone.name),
+    link: zone.link ?? null,
+  });
   return {
     gameId,
     professionKey: guide.profession,
     professionName,
+    link: guide.link ?? null,
     ranges: (guide.best_zones ?? []).map((range) => ({
       fromSkill: range.from_skill,
       toSkill: range.to_skill,
-      zones: range.zones.map((zone) => localize(zone.name)),
+      zones: range.zones.map(zoneLink),
     })),
     zones: (guide.zones ?? [])
       .map((zone) => ({
-        name: localize(zone.name),
+        ...zoneLink(zone),
         skill: zone.skill ?? null,
         skillMax: zone.skill_max ?? null,
         nodes: (zone.nodes ?? [])
@@ -113,7 +125,7 @@ export function zonesForSkill(guide: GatheringGuide, skill: number): string[] {
     const range =
       guide.ranges.find((candidate) => skill < candidate.toSkill) ??
       guide.ranges.at(-1)!;
-    return range.zones;
+    return range.zones.map((zone) => zone.name);
   }
   return guide.zones
     .filter((zone) => (zone.skill ?? 0) <= skill)

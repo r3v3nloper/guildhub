@@ -12,12 +12,41 @@ const fishing: GatheringGuide = {
   gameId: "game",
   professionKey: "fishing",
   professionName: "Angeln",
+  link: null,
   ranges: [],
   zones: [
-    { name: "Durotar", skill: -20, skillMax: null, nodes: [], catches: [] },
-    { name: "Brachland", skill: 20, skillMax: null, nodes: [], catches: [] },
-    { name: "Sumpfland", skill: 55, skillMax: null, nodes: [], catches: [] },
-    { name: "Tanaris", skill: 330, skillMax: null, nodes: [], catches: [] },
+    {
+      name: "Durotar",
+      skill: -20,
+      skillMax: null,
+      link: null,
+      nodes: [],
+      catches: [],
+    },
+    {
+      name: "Brachland",
+      skill: 20,
+      skillMax: null,
+      link: null,
+      nodes: [],
+      catches: [],
+    },
+    {
+      name: "Sumpfland",
+      skill: 55,
+      skillMax: null,
+      link: null,
+      nodes: [],
+      catches: [],
+    },
+    {
+      name: "Tanaris",
+      skill: 330,
+      skillMax: null,
+      link: null,
+      nodes: [],
+      catches: [],
+    },
   ],
 };
 
@@ -28,6 +57,9 @@ function character(name: string, skillLevel: number | null): RosterCharacter {
     professions: [{ key: "mining", skillLevel }],
   } as unknown as RosterCharacter;
 }
+
+const westfall = { name: "Westfall", link: "https://example.org/maps/1436" };
+const wetlands = { name: "Sumpfland", link: null };
 
 describe("gathering guides", () => {
   it("loads the pack guides with zones and nodes, easiest first", () => {
@@ -42,8 +74,8 @@ describe("gathering guides", () => {
       professionKey: "mining",
       professionName: "Bergbau",
       ranges: [
-        { fromSkill: 1, toSkill: 66, zones: ["Westfall"] },
-        { fromSkill: 66, toSkill: 126, zones: ["Sumpfland"] },
+        { fromSkill: 1, toSkill: 66, zones: [westfall] },
+        { fromSkill: 66, toSkill: 126, zones: [wetlands] },
       ],
     });
     expect(guide.zones[0].nodes.map((node) => node.name)).toEqual([

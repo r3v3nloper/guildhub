@@ -1,7 +1,7 @@
 {
   "id": "wow-forever",
   "name": "WoW: Forever",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "type": "mmo",
   "server_label": "Realm",
   "capabilities": {
@@ -89828,6 +89828,7 @@
         "en": "Herbalism"
       },
       "profession": "herbalism",
+      "link": "https://foreverdb.net/profession/herbalism/nodes",
       "best_zones": [
         {
           "from_skill": 1,
@@ -89838,21 +89839,24 @@
               "name": {
                 "de": "Tirisfal",
                 "en": "Tirisfal Glades"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1420"
             },
             {
               "map_id": 1413,
               "name": {
                 "de": "Das Brachland",
                 "en": "The Barrens"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1413"
             },
             {
               "map_id": 1411,
               "name": {
                 "de": "Durotar",
                 "en": "Durotar"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1411"
             }
           ]
         },
@@ -89865,21 +89869,24 @@
               "name": {
                 "de": "Das Brachland",
                 "en": "The Barrens"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1413"
             },
             {
               "map_id": 1420,
               "name": {
                 "de": "Tirisfal",
                 "en": "Tirisfal Glades"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1420"
             },
             {
               "map_id": 1411,
               "name": {
                 "de": "Durotar",
                 "en": "Durotar"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1411"
             }
           ]
         },
@@ -89892,21 +89899,24 @@
               "name": {
                 "de": "Schlingendorntal",
                 "en": "Stranglethorn Vale"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1434"
             },
             {
               "map_id": 1413,
               "name": {
                 "de": "Das Brachland",
                 "en": "The Barrens"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1413"
             },
             {
               "map_id": 1437,
               "name": {
                 "de": "Sumpfland",
                 "en": "Wetlands"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1437"
             }
           ]
         },
@@ -89919,21 +89929,24 @@
               "name": {
                 "de": "Feralas",
                 "en": "Feralas"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1444"
             },
             {
               "map_id": 1434,
               "name": {
                 "de": "Schlingendorntal",
                 "en": "Stranglethorn Vale"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1434"
             },
             {
               "map_id": 1446,
               "name": {
                 "de": "Tanaris",
                 "en": "Tanaris"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1446"
             }
           ]
         },
@@ -89946,21 +89959,24 @@
               "name": {
                 "de": "Teufelswald",
                 "en": "Felwood"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1448"
             },
             {
               "map_id": 1444,
               "name": {
                 "de": "Feralas",
                 "en": "Feralas"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1444"
             },
             {
               "map_id": 1447,
               "name": {
                 "de": "Azshara",
                 "en": "Azshara"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1447"
             }
           ]
         }
@@ -89972,6 +89988,7 @@
             "de": "Alteracgebirge",
             "en": "Alterac Mountains"
           },
+          "link": "https://foreverdb.net/maps/1416",
           "nodes": [
             {
               "name": {
@@ -90079,6 +90096,7 @@
             "de": "Arathihochland",
             "en": "Arathi Highlands"
           },
+          "link": "https://foreverdb.net/maps/1417",
           "nodes": [
             {
               "name": {
@@ -90158,6 +90176,7 @@
             "de": "Ashenvale",
             "en": "Ashenvale"
           },
+          "link": "https://foreverdb.net/maps/1440",
           "nodes": [
             {
               "name": "Plant Bundle",
@@ -90241,6 +90260,7 @@
             "de": "Azshara",
             "en": "Azshara"
           },
+          "link": "https://foreverdb.net/maps/1447",
           "nodes": [
             {
               "name": {
@@ -90306,6 +90326,7 @@
             "de": "Ödland",
             "en": "Badlands"
           },
+          "link": "https://foreverdb.net/maps/1418",
           "nodes": [
             {
               "name": {
@@ -90371,6 +90392,7 @@
             "de": "Brennende Steppe",
             "en": "Burning Steppes"
           },
+          "link": "https://foreverdb.net/maps/1428",
           "nodes": [
             {
               "name": {
@@ -90415,6 +90437,7 @@
             "de": "Dunkelküste",
             "en": "Darkshore"
           },
+          "link": "https://foreverdb.net/maps/1439",
           "nodes": [
             {
               "name": "Beached Sea Creature",
@@ -90488,6 +90511,7 @@
             "de": "Darnassus",
             "en": "Darnassus"
           },
+          "link": "https://foreverdb.net/maps/1457",
           "nodes": [
             {
               "name": {
@@ -90504,6 +90528,7 @@
             "de": "Gebirgspass der Totenwinde",
             "en": "Deadwind Pass"
           },
+          "link": "https://foreverdb.net/maps/1430",
           "nodes": [
             {
               "name": {
@@ -90520,6 +90545,7 @@
             "de": "Desolace",
             "en": "Desolace"
           },
+          "link": "https://foreverdb.net/maps/1443",
           "nodes": [
             {
               "name": {
@@ -90585,6 +90611,7 @@
             "de": "Dun Morogh",
             "en": "Dun Morogh"
           },
+          "link": "https://foreverdb.net/maps/1426",
           "nodes": [
             {
               "name": {
@@ -90622,6 +90649,7 @@
             "de": "Durotar",
             "en": "Durotar"
           },
+          "link": "https://foreverdb.net/maps/1411",
           "nodes": [
             {
               "name": {
@@ -90680,6 +90708,7 @@
             "de": "Dämmerwald",
             "en": "Duskwood"
           },
+          "link": "https://foreverdb.net/maps/1431",
           "nodes": [
             {
               "name": {
@@ -90738,6 +90767,7 @@
             "de": "Marschen von Dustwallow",
             "en": "Dustwallow Marsh"
           },
+          "link": "https://foreverdb.net/maps/1445",
           "nodes": [
             {
               "name": {
@@ -90824,6 +90854,7 @@
             "de": "Östliche Pestländer",
             "en": "Eastern Plaguelands"
           },
+          "link": "https://foreverdb.net/maps/1423",
           "nodes": [
             {
               "name": {
@@ -90889,6 +90920,7 @@
             "de": "Wald von Elwynn",
             "en": "Elwynn Forest"
           },
+          "link": "https://foreverdb.net/maps/1429",
           "nodes": [
             {
               "name": {
@@ -90954,6 +90986,7 @@
             "de": "Teufelswald",
             "en": "Felwood"
           },
+          "link": "https://foreverdb.net/maps/1448",
           "nodes": [
             {
               "name": {
@@ -91033,6 +91066,7 @@
             "de": "Feralas",
             "en": "Feralas"
           },
+          "link": "https://foreverdb.net/maps/1444",
           "nodes": [
             {
               "name": {
@@ -91098,6 +91132,7 @@
             "de": "Vorgebirge von Hillsbrad",
             "en": "Hillsbrad Foothills"
           },
+          "link": "https://foreverdb.net/maps/1424",
           "nodes": [
             {
               "name": {
@@ -91156,6 +91191,7 @@
             "de": "Loch Modan",
             "en": "Loch Modan"
           },
+          "link": "https://foreverdb.net/maps/1432",
           "nodes": [
             {
               "name": {
@@ -91207,6 +91243,7 @@
             "de": "Hyjal",
             "en": "Mount Hyjal"
           },
+          "link": "https://foreverdb.net/maps/2482",
           "nodes": [
             {
               "name": {
@@ -91265,6 +91302,7 @@
             "de": "Mulgore",
             "en": "Mulgore"
           },
+          "link": "https://foreverdb.net/maps/1412",
           "nodes": [
             {
               "name": {
@@ -91330,6 +91368,7 @@
             "de": "Orgrimmar",
             "en": "Orgrimmar"
           },
+          "link": "https://foreverdb.net/maps/1454",
           "nodes": [
             {
               "name": {
@@ -91360,6 +91399,7 @@
             "de": "Rotkammgebirge",
             "en": "Redridge Mountains"
           },
+          "link": "https://foreverdb.net/maps/1433",
           "nodes": [
             {
               "name": {
@@ -91411,6 +91451,7 @@
             "de": "Flusslande",
             "en": "Riverglades"
           },
+          "link": "https://foreverdb.net/maps/2548",
           "nodes": [
             {
               "name": {
@@ -91441,6 +91482,7 @@
             "de": "Sengende Schlucht",
             "en": "Searing Gorge"
           },
+          "link": "https://foreverdb.net/maps/1427",
           "nodes": [
             {
               "name": {
@@ -91457,6 +91499,7 @@
             "de": "Shen'dralas",
             "en": "Shen'dralas"
           },
+          "link": "https://foreverdb.net/maps/2652",
           "nodes": [
             {
               "name": {
@@ -91529,6 +91572,7 @@
             "de": "Silithus",
             "en": "Silithus"
           },
+          "link": "https://foreverdb.net/maps/1451",
           "nodes": [
             {
               "name": {
@@ -91552,6 +91596,7 @@
             "de": "Silberwald",
             "en": "Silverpine Forest"
           },
+          "link": "https://foreverdb.net/maps/1421",
           "nodes": [
             {
               "name": {
@@ -91610,6 +91655,7 @@
             "de": "Steinkrallengebirge",
             "en": "Stonetalon Mountains"
           },
+          "link": "https://foreverdb.net/maps/1442",
           "nodes": [
             {
               "name": {
@@ -91668,6 +91714,7 @@
             "de": "Stormwind",
             "en": "Stormwind City"
           },
+          "link": "https://foreverdb.net/maps/1453",
           "nodes": [
             {
               "name": {
@@ -91691,6 +91738,7 @@
             "de": "Schlingendorntal",
             "en": "Stranglethorn Vale"
           },
+          "link": "https://foreverdb.net/maps/1434",
           "nodes": [
             {
               "name": {
@@ -91756,6 +91804,7 @@
             "de": "Sümpfe des Elends",
             "en": "Swamp of Sorrows"
           },
+          "link": "https://foreverdb.net/maps/1435",
           "nodes": [
             {
               "name": {
@@ -91814,6 +91863,7 @@
             "de": "Tanaris",
             "en": "Tanaris"
           },
+          "link": "https://foreverdb.net/maps/1446",
           "nodes": [
             {
               "name": {
@@ -91844,6 +91894,7 @@
             "de": "Teldrassil",
             "en": "Teldrassil"
           },
+          "link": "https://foreverdb.net/maps/1438",
           "nodes": [
             {
               "name": {
@@ -91881,6 +91932,7 @@
             "de": "Das Brachland",
             "en": "The Barrens"
           },
+          "link": "https://foreverdb.net/maps/1413",
           "nodes": [
             {
               "name": "Incendia Agave",
@@ -91992,6 +92044,7 @@
             "de": "Hinterland",
             "en": "The Hinterlands"
           },
+          "link": "https://foreverdb.net/maps/1425",
           "nodes": [
             {
               "name": "Violet Tragan",
@@ -92068,6 +92121,7 @@
             "de": "Tausend Nadeln",
             "en": "Thousand Needles"
           },
+          "link": "https://foreverdb.net/maps/1441",
           "nodes": [
             {
               "name": {
@@ -92126,6 +92180,7 @@
             "de": "Thunder Bluff",
             "en": "Thunder Bluff"
           },
+          "link": "https://foreverdb.net/maps/1456",
           "nodes": [
             {
               "name": {
@@ -92156,6 +92211,7 @@
             "de": "Tirisfal",
             "en": "Tirisfal Glades"
           },
+          "link": "https://foreverdb.net/maps/1420",
           "nodes": [
             {
               "name": "Gloom Weed",
@@ -92201,6 +92257,7 @@
             "de": "Un'Goro-Krater",
             "en": "Un'Goro Crater"
           },
+          "link": "https://foreverdb.net/maps/1449",
           "nodes": [
             {
               "name": {
@@ -92252,6 +92309,7 @@
             "de": "Undercity",
             "en": "Undercity"
           },
+          "link": "https://foreverdb.net/maps/1458",
           "nodes": [
             {
               "name": {
@@ -92303,6 +92361,7 @@
             "de": "Westliche Pestländer",
             "en": "Western Plaguelands"
           },
+          "link": "https://foreverdb.net/maps/1422",
           "nodes": [
             {
               "name": {
@@ -92333,6 +92392,7 @@
             "de": "Westfall",
             "en": "Westfall"
           },
+          "link": "https://foreverdb.net/maps/1436",
           "nodes": [
             {
               "name": {
@@ -92440,6 +92500,7 @@
             "de": "Sumpfland",
             "en": "Wetlands"
           },
+          "link": "https://foreverdb.net/maps/1437",
           "nodes": [
             {
               "name": {
@@ -92505,6 +92566,7 @@
             "de": "Winterspring",
             "en": "Winterspring"
           },
+          "link": "https://foreverdb.net/maps/1452",
           "nodes": [
             {
               "name": {
@@ -92548,7 +92610,8 @@
           "name": {
             "de": "Insel Zephras",
             "en": "Zephras Isle"
-          }
+          },
+          "link": "https://foreverdb.net/maps/2521"
         }
       ]
     },
@@ -92559,6 +92622,7 @@
         "en": "Mining"
       },
       "profession": "mining",
+      "link": "https://foreverdb.net/profession/mining/nodes",
       "best_zones": [
         {
           "from_skill": 1,
@@ -92569,21 +92633,24 @@
               "name": {
                 "de": "Westfall",
                 "en": "Westfall"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1436"
             },
             {
               "map_id": 1432,
               "name": {
                 "de": "Loch Modan",
                 "en": "Loch Modan"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1432"
             },
             {
               "map_id": 1411,
               "name": {
                 "de": "Durotar",
                 "en": "Durotar"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1411"
             }
           ]
         },
@@ -92596,21 +92663,24 @@
               "name": {
                 "de": "Sumpfland",
                 "en": "Wetlands"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1437"
             },
             {
               "map_id": 1432,
               "name": {
                 "de": "Loch Modan",
                 "en": "Loch Modan"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1432"
             },
             {
               "map_id": 1421,
               "name": {
                 "de": "Silberwald",
                 "en": "Silverpine Forest"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1421"
             }
           ]
         },
@@ -92623,21 +92693,24 @@
               "name": {
                 "de": "Alteracgebirge",
                 "en": "Alterac Mountains"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1416"
             },
             {
               "map_id": 1417,
               "name": {
                 "de": "Arathihochland",
                 "en": "Arathi Highlands"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1417"
             },
             {
               "map_id": 1437,
               "name": {
                 "de": "Sumpfland",
                 "en": "Wetlands"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1437"
             }
           ]
         },
@@ -92650,21 +92723,24 @@
               "name": {
                 "de": "Ödland",
                 "en": "Badlands"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1418"
             },
             {
               "map_id": 1416,
               "name": {
                 "de": "Alteracgebirge",
                 "en": "Alterac Mountains"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1416"
             },
             {
               "map_id": 1417,
               "name": {
                 "de": "Arathihochland",
                 "en": "Arathi Highlands"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1417"
             }
           ]
         },
@@ -92677,21 +92753,24 @@
               "name": {
                 "de": "Sengende Schlucht",
                 "en": "Searing Gorge"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1427"
             },
             {
               "map_id": 1418,
               "name": {
                 "de": "Ödland",
                 "en": "Badlands"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1418"
             },
             {
               "map_id": 1416,
               "name": {
                 "de": "Alteracgebirge",
                 "en": "Alterac Mountains"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1416"
             }
           ]
         }
@@ -92703,6 +92782,7 @@
             "de": "Alteracgebirge",
             "en": "Alterac Mountains"
           },
+          "link": "https://foreverdb.net/maps/1416",
           "nodes": [
             {
               "name": {
@@ -92761,6 +92841,7 @@
             "de": "Arathihochland",
             "en": "Arathi Highlands"
           },
+          "link": "https://foreverdb.net/maps/1417",
           "nodes": [
             {
               "name": {
@@ -92819,6 +92900,7 @@
             "de": "Ashenvale",
             "en": "Ashenvale"
           },
+          "link": "https://foreverdb.net/maps/1440",
           "nodes": [
             {
               "name": {
@@ -92863,6 +92945,7 @@
             "de": "Azshara",
             "en": "Azshara"
           },
+          "link": "https://foreverdb.net/maps/1447",
           "nodes": [
             {
               "name": {
@@ -92900,6 +92983,7 @@
             "de": "Ödland",
             "en": "Badlands"
           },
+          "link": "https://foreverdb.net/maps/1418",
           "nodes": [
             {
               "name": {
@@ -92951,6 +93035,7 @@
             "de": "Verwüstete Lande",
             "en": "Blasted Lands"
           },
+          "link": "https://foreverdb.net/maps/1419",
           "nodes": [
             {
               "name": {
@@ -92988,6 +93073,7 @@
             "de": "Brennende Steppe",
             "en": "Burning Steppes"
           },
+          "link": "https://foreverdb.net/maps/1428",
           "nodes": [
             {
               "name": {
@@ -93039,6 +93125,7 @@
             "de": "Dunkelküste",
             "en": "Darkshore"
           },
+          "link": "https://foreverdb.net/maps/1439",
           "nodes": [
             {
               "name": {
@@ -93069,6 +93156,7 @@
             "de": "Gebirgspass der Totenwinde",
             "en": "Deadwind Pass"
           },
+          "link": "https://foreverdb.net/maps/1430",
           "nodes": [
             {
               "name": {
@@ -93099,6 +93187,7 @@
             "de": "Desolace",
             "en": "Desolace"
           },
+          "link": "https://foreverdb.net/maps/1443",
           "nodes": [
             {
               "name": {
@@ -93157,6 +93246,7 @@
             "de": "Dun Morogh",
             "en": "Dun Morogh"
           },
+          "link": "https://foreverdb.net/maps/1426",
           "nodes": [
             {
               "name": {
@@ -93173,6 +93263,7 @@
             "de": "Durotar",
             "en": "Durotar"
           },
+          "link": "https://foreverdb.net/maps/1411",
           "nodes": [
             {
               "name": {
@@ -93203,6 +93294,7 @@
             "de": "Dämmerwald",
             "en": "Duskwood"
           },
+          "link": "https://foreverdb.net/maps/1431",
           "nodes": [
             {
               "name": {
@@ -93247,6 +93339,7 @@
             "de": "Marschen von Dustwallow",
             "en": "Dustwallow Marsh"
           },
+          "link": "https://foreverdb.net/maps/1445",
           "nodes": [
             {
               "name": {
@@ -93277,6 +93370,7 @@
             "de": "Wald von Elwynn",
             "en": "Elwynn Forest"
           },
+          "link": "https://foreverdb.net/maps/1429",
           "nodes": [
             {
               "name": {
@@ -93321,6 +93415,7 @@
             "de": "Teufelswald",
             "en": "Felwood"
           },
+          "link": "https://foreverdb.net/maps/1448",
           "nodes": [
             {
               "name": {
@@ -93358,6 +93453,7 @@
             "de": "Feralas",
             "en": "Feralas"
           },
+          "link": "https://foreverdb.net/maps/1444",
           "nodes": [
             {
               "name": {
@@ -93388,6 +93484,7 @@
             "de": "Vorgebirge von Hillsbrad",
             "en": "Hillsbrad Foothills"
           },
+          "link": "https://foreverdb.net/maps/1424",
           "nodes": [
             {
               "name": {
@@ -93432,6 +93529,7 @@
             "de": "Loch Modan",
             "en": "Loch Modan"
           },
+          "link": "https://foreverdb.net/maps/1432",
           "nodes": [
             {
               "name": {
@@ -93462,6 +93560,7 @@
             "de": "Hyjal",
             "en": "Mount Hyjal"
           },
+          "link": "https://foreverdb.net/maps/2482",
           "nodes": [
             {
               "name": {
@@ -93485,6 +93584,7 @@
             "de": "Mulgore",
             "en": "Mulgore"
           },
+          "link": "https://foreverdb.net/maps/1412",
           "nodes": [
             {
               "name": {
@@ -93522,6 +93622,7 @@
             "de": "Orgrimmar",
             "en": "Orgrimmar"
           },
+          "link": "https://foreverdb.net/maps/1454",
           "nodes": [
             {
               "name": {
@@ -93538,6 +93639,7 @@
             "de": "Rotkammgebirge",
             "en": "Redridge Mountains"
           },
+          "link": "https://foreverdb.net/maps/1433",
           "nodes": [
             {
               "name": {
@@ -93568,6 +93670,7 @@
             "de": "Flusslande",
             "en": "Riverglades"
           },
+          "link": "https://foreverdb.net/maps/2548",
           "nodes": [
             {
               "name": {
@@ -93598,6 +93701,7 @@
             "de": "Sengende Schlucht",
             "en": "Searing Gorge"
           },
+          "link": "https://foreverdb.net/maps/1427",
           "nodes": [
             {
               "name": {
@@ -93635,6 +93739,7 @@
             "de": "Shen'dralas",
             "en": "Shen'dralas"
           },
+          "link": "https://foreverdb.net/maps/2652",
           "nodes": [
             {
               "name": {
@@ -93679,6 +93784,7 @@
             "de": "Silberwald",
             "en": "Silverpine Forest"
           },
+          "link": "https://foreverdb.net/maps/1421",
           "nodes": [
             {
               "name": {
@@ -93709,6 +93815,7 @@
             "de": "Steinkrallengebirge",
             "en": "Stonetalon Mountains"
           },
+          "link": "https://foreverdb.net/maps/1442",
           "nodes": [
             {
               "name": {
@@ -93739,6 +93846,7 @@
             "de": "Stormwind",
             "en": "Stormwind City"
           },
+          "link": "https://foreverdb.net/maps/1453",
           "nodes": [
             {
               "name": {
@@ -93755,6 +93863,7 @@
             "de": "Schlingendorntal",
             "en": "Stranglethorn Vale"
           },
+          "link": "https://foreverdb.net/maps/1434",
           "nodes": [
             {
               "name": {
@@ -93799,6 +93908,7 @@
             "de": "Sümpfe des Elends",
             "en": "Swamp of Sorrows"
           },
+          "link": "https://foreverdb.net/maps/1435",
           "nodes": [
             {
               "name": {
@@ -93836,6 +93946,7 @@
             "de": "Tanaris",
             "en": "Tanaris"
           },
+          "link": "https://foreverdb.net/maps/1446",
           "nodes": [
             {
               "name": {
@@ -93866,6 +93977,7 @@
             "de": "Das Brachland",
             "en": "The Barrens"
           },
+          "link": "https://foreverdb.net/maps/1413",
           "nodes": [
             {
               "name": {
@@ -93910,6 +94022,7 @@
             "de": "Hinterland",
             "en": "The Hinterlands"
           },
+          "link": "https://foreverdb.net/maps/1425",
           "nodes": [
             {
               "name": {
@@ -93947,6 +94060,7 @@
             "de": "Tausend Nadeln",
             "en": "Thousand Needles"
           },
+          "link": "https://foreverdb.net/maps/1441",
           "nodes": [
             {
               "name": {
@@ -93991,6 +94105,7 @@
             "de": "Thunder Bluff",
             "en": "Thunder Bluff"
           },
+          "link": "https://foreverdb.net/maps/1456",
           "nodes": [
             {
               "name": {
@@ -94007,6 +94122,7 @@
             "de": "Tirisfal",
             "en": "Tirisfal Glades"
           },
+          "link": "https://foreverdb.net/maps/1420",
           "nodes": [
             {
               "name": {
@@ -94037,6 +94153,7 @@
             "de": "Un'Goro-Krater",
             "en": "Un'Goro Crater"
           },
+          "link": "https://foreverdb.net/maps/1449",
           "nodes": [
             {
               "name": {
@@ -94067,6 +94184,7 @@
             "de": "Undercity",
             "en": "Undercity"
           },
+          "link": "https://foreverdb.net/maps/1458",
           "nodes": [
             {
               "name": {
@@ -94097,6 +94215,7 @@
             "de": "Westliche Pestländer",
             "en": "Western Plaguelands"
           },
+          "link": "https://foreverdb.net/maps/1422",
           "nodes": [
             {
               "name": {
@@ -94127,6 +94246,7 @@
             "de": "Westfall",
             "en": "Westfall"
           },
+          "link": "https://foreverdb.net/maps/1436",
           "nodes": [
             {
               "name": {
@@ -94171,6 +94291,7 @@
             "de": "Sumpfland",
             "en": "Wetlands"
           },
+          "link": "https://foreverdb.net/maps/1437",
           "nodes": [
             {
               "name": {
@@ -94215,6 +94336,7 @@
             "de": "Winterspring",
             "en": "Winterspring"
           },
+          "link": "https://foreverdb.net/maps/1452",
           "nodes": [
             {
               "name": {
@@ -94248,6 +94370,7 @@
         "en": "Skinning"
       },
       "profession": "skinning",
+      "link": "https://foreverdb.net/profession/skinning",
       "best_zones": [
         {
           "from_skill": 1,
@@ -94258,21 +94381,24 @@
               "name": {
                 "de": "Mulgore",
                 "en": "Mulgore"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1412"
             },
             {
               "map_id": 1411,
               "name": {
                 "de": "Durotar",
                 "en": "Durotar"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1411"
             },
             {
               "map_id": 1426,
               "name": {
                 "de": "Dun Morogh",
                 "en": "Dun Morogh"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1426"
             }
           ]
         },
@@ -94285,21 +94411,24 @@
               "name": {
                 "de": "Durotar",
                 "en": "Durotar"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1411"
             },
             {
               "map_id": 1412,
               "name": {
                 "de": "Mulgore",
                 "en": "Mulgore"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1412"
             },
             {
               "map_id": 1426,
               "name": {
                 "de": "Dun Morogh",
                 "en": "Dun Morogh"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1426"
             }
           ]
         },
@@ -94312,21 +94441,24 @@
               "name": {
                 "de": "Das Brachland",
                 "en": "The Barrens"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1413"
             },
             {
               "map_id": 1411,
               "name": {
                 "de": "Durotar",
                 "en": "Durotar"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1411"
             },
             {
               "map_id": 1412,
               "name": {
                 "de": "Mulgore",
                 "en": "Mulgore"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1412"
             }
           ]
         },
@@ -94339,21 +94471,24 @@
               "name": {
                 "de": "Ashenvale",
                 "en": "Ashenvale"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1440"
             },
             {
               "map_id": 1413,
               "name": {
                 "de": "Das Brachland",
                 "en": "The Barrens"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1413"
             },
             {
               "map_id": 1437,
               "name": {
                 "de": "Sumpfland",
                 "en": "Wetlands"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1437"
             }
           ]
         },
@@ -94366,21 +94501,24 @@
               "name": {
                 "de": "Desolace",
                 "en": "Desolace"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1443"
             },
             {
               "map_id": 1441,
               "name": {
                 "de": "Tausend Nadeln",
                 "en": "Thousand Needles"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1441"
             },
             {
               "map_id": 1417,
               "name": {
                 "de": "Arathihochland",
                 "en": "Arathi Highlands"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1417"
             }
           ]
         },
@@ -94393,21 +94531,24 @@
               "name": {
                 "de": "Marschen von Dustwallow",
                 "en": "Dustwallow Marsh"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1445"
             },
             {
               "map_id": 1443,
               "name": {
                 "de": "Desolace",
                 "en": "Desolace"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1443"
             },
             {
               "map_id": 1434,
               "name": {
                 "de": "Schlingendorntal",
                 "en": "Stranglethorn Vale"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1434"
             }
           ]
         },
@@ -94420,21 +94561,24 @@
               "name": {
                 "de": "Tanaris",
                 "en": "Tanaris"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1446"
             },
             {
               "map_id": 1445,
               "name": {
                 "de": "Marschen von Dustwallow",
                 "en": "Dustwallow Marsh"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1445"
             },
             {
               "map_id": 1444,
               "name": {
                 "de": "Feralas",
                 "en": "Feralas"
-              }
+              },
+              "link": "https://foreverdb.net/maps/1444"
             }
           ]
         }
@@ -94446,8 +94590,103 @@
             "de": "Alteracgebirge",
             "en": "Alterac Mountains"
           },
+          "link": "https://foreverdb.net/maps/1416",
           "skill": 1,
-          "skill_max": 315
+          "skill_max": 315,
+          "nodes": [
+            {
+              "name": "Deer",
+              "skill": 1
+            },
+            {
+              "name": "Infected Deer",
+              "skill": 1
+            },
+            {
+              "name": "Ram",
+              "skill": 1
+            },
+            {
+              "name": "Sheep",
+              "skill": 1
+            },
+            {
+              "name": "Lake Frenzy",
+              "skill": 60
+            },
+            {
+              "name": "Gray Bear",
+              "skill": 110
+            },
+            {
+              "name": "Vicious Gray Bear",
+              "skill": 115
+            },
+            {
+              "name": "Starving Mountain Lion",
+              "skill": 120
+            },
+            {
+              "name": "Elder Gray Bear",
+              "skill": 130
+            },
+            {
+              "name": "Cave Yeti",
+              "skill": 155
+            },
+            {
+              "name": "Snapjaw",
+              "skill": 155
+            },
+            {
+              "name": "Cranky Benj",
+              "skill": 160
+            },
+            {
+              "name": "Ferocious Yeti",
+              "skill": 160
+            },
+            {
+              "name": "Mountain Lion",
+              "skill": 165
+            },
+            {
+              "name": "Mountain Yeti",
+              "skill": 165
+            },
+            {
+              "name": "Giant Yeti",
+              "skill": 170
+            },
+            {
+              "name": "Hulking Mountain Lion",
+              "skill": 170
+            },
+            {
+              "name": "Araga",
+              "skill": 175
+            },
+            {
+              "name": "Skhowl",
+              "skill": 180
+            },
+            {
+              "name": "The Abominable Greench",
+              "skill": 180
+            },
+            {
+              "name": "Narillasanz",
+              "skill": 220
+            },
+            {
+              "name": "Diseased Black Bear",
+              "skill": 260
+            },
+            {
+              "name": "Chromie",
+              "skill": 315
+            }
+          ]
         },
         {
           "map_id": 1417,
@@ -94455,8 +94694,51 @@
             "de": "Arathihochland",
             "en": "Arathi Highlands"
           },
+          "link": "https://foreverdb.net/maps/1417",
           "skill": 1,
-          "skill_max": 200
+          "skill_max": 200,
+          "nodes": [
+            {
+              "name": "Cow",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Dog",
+              "skill": 1
+            },
+            {
+              "name": "Ram",
+              "skill": 1
+            },
+            {
+              "name": "Elder Gray Bear",
+              "skill": 130
+            },
+            {
+              "name": "Big Samras",
+              "skill": 135
+            },
+            {
+              "name": "Highland Strider",
+              "skill": 155
+            },
+            {
+              "name": "Highland Thrasher",
+              "skill": 170
+            },
+            {
+              "name": "Giant Plains Creeper",
+              "skill": 180
+            },
+            {
+              "name": "Highland Fleshstalker",
+              "skill": 185
+            },
+            {
+              "name": "Wild Gryphon",
+              "skill": 200
+            }
+          ]
         },
         {
           "map_id": 1440,
@@ -94464,8 +94746,127 @@
             "de": "Ashenvale",
             "en": "Ashenvale"
           },
+          "link": "https://foreverdb.net/maps/1440",
           "skill": 1,
-          "skill_max": 235
+          "skill_max": 235,
+          "nodes": [
+            {
+              "name": "Deer",
+              "skill": 1
+            },
+            {
+              "name": "Wild Buck",
+              "skill": 90
+            },
+            {
+              "name": "Ghostpaw Runner",
+              "skill": 100
+            },
+            {
+              "name": "Korra",
+              "skill": 100
+            },
+            {
+              "name": "Mystlash Hydra",
+              "skill": 100
+            },
+            {
+              "name": "Ashenvale Bear",
+              "skill": 110
+            },
+            {
+              "name": "Mist Howler",
+              "skill": 110
+            },
+            {
+              "name": "Dagri",
+              "skill": 115
+            },
+            {
+              "name": "Felslayer",
+              "skill": 115
+            },
+            {
+              "name": "Shadowhorn Stag",
+              "skill": 115
+            },
+            {
+              "name": "Ghostpaw Howler",
+              "skill": 120
+            },
+            {
+              "name": "Ursangous",
+              "skill": 125
+            },
+            {
+              "name": "Elder Ashenvale Bear",
+              "skill": 130
+            },
+            {
+              "name": "Blink Dragon",
+              "skill": 135
+            },
+            {
+              "name": "Elder Shadowhorn Stag",
+              "skill": 135
+            },
+            {
+              "name": "Ghostpaw Alpha",
+              "skill": 140
+            },
+            {
+              "name": "Shadumbra",
+              "skill": 140
+            },
+            {
+              "name": "Terrowulf Fleshripper",
+              "skill": 145
+            },
+            {
+              "name": "Giant Ashenvale Bear",
+              "skill": 150
+            },
+            {
+              "name": "Terrowulf Shadow Weaver",
+              "skill": 150
+            },
+            {
+              "name": "Sharptalon",
+              "skill": 155
+            },
+            {
+              "name": "Ursol'lok",
+              "skill": 155
+            },
+            {
+              "name": "Terrowulf Packlord",
+              "skill": 160
+            },
+            {
+              "name": "Mosshoof Runner",
+              "skill": 235
+            },
+            {
+              "name": "Emeraldon Tree Warder",
+              "skill": 300
+            },
+            {
+              "name": "Emeraldon Oracle",
+              "skill": 305
+            },
+            {
+              "name": "Dreamstalker",
+              "skill": 310
+            },
+            {
+              "name": "Emeraldon Boughguard",
+              "skill": 310
+            },
+            {
+              "name": "Phantim",
+              "skill": 310
+            }
+          ]
         },
         {
           "map_id": 1447,
@@ -94473,8 +94874,103 @@
             "de": "Azshara",
             "en": "Azshara"
           },
+          "link": "https://foreverdb.net/maps/1447",
           "skill": 235,
-          "skill_max": 270
+          "skill_max": 270,
+          "nodes": [
+            {
+              "name": "Mosshoof Runner",
+              "skill": 235
+            },
+            {
+              "name": "The Evalcharr",
+              "skill": 240
+            },
+            {
+              "name": "Thunderhead Hippogryph",
+              "skill": 240
+            },
+            {
+              "name": "Antilos",
+              "skill": 250
+            },
+            {
+              "name": "Mistwing Rogue",
+              "skill": 250
+            },
+            {
+              "name": "Mosshoof Stag",
+              "skill": 250
+            },
+            {
+              "name": "Thunderhead Stagwing",
+              "skill": 250
+            },
+            {
+              "name": "Blue Dragonspawn",
+              "skill": 255
+            },
+            {
+              "name": "Coralshell Tortoise",
+              "skill": 260
+            },
+            {
+              "name": "Draconic Mageweaver",
+              "skill": 260
+            },
+            {
+              "name": "Scalebeard",
+              "skill": 260
+            },
+            {
+              "name": "Thunderhead Skystormer",
+              "skill": 260
+            },
+            {
+              "name": "Young Wavethrasher",
+              "skill": 260
+            },
+            {
+              "name": "Blue Scalebane",
+              "skill": 265
+            },
+            {
+              "name": "Mistwing Ravager",
+              "skill": 265
+            },
+            {
+              "name": "Mosshoof Courser",
+              "skill": 265
+            },
+            {
+              "name": "Wavethrasher",
+              "skill": 265
+            },
+            {
+              "name": "Coralshell Lurker",
+              "skill": 270
+            },
+            {
+              "name": "Draconic Magelord",
+              "skill": 270
+            },
+            {
+              "name": "Great Wavethrasher",
+              "skill": 270
+            },
+            {
+              "name": "Thunderhead Consort",
+              "skill": 270
+            },
+            {
+              "name": "Thunderhead Patriarch",
+              "skill": 270
+            },
+            {
+              "name": "Hetaera",
+              "skill": 275
+            }
+          ]
         },
         {
           "map_id": 1418,
@@ -94482,8 +94978,59 @@
             "de": "Ödland",
             "en": "Badlands"
           },
+          "link": "https://foreverdb.net/maps/1418",
           "skill": 180,
-          "skill_max": 215
+          "skill_max": 215,
+          "nodes": [
+            {
+              "name": "Crag Coyote",
+              "skill": 180
+            },
+            {
+              "name": "Broken Tooth",
+              "skill": 185
+            },
+            {
+              "name": "Ridge Stalker",
+              "skill": 185
+            },
+            {
+              "name": "Barnabus",
+              "skill": 190
+            },
+            {
+              "name": "Feral Crag Coyote",
+              "skill": 190
+            },
+            {
+              "name": "Ridge Huntress",
+              "skill": 195
+            },
+            {
+              "name": "Elder Crag Coyote",
+              "skill": 200
+            },
+            {
+              "name": "Giant Buzzard",
+              "skill": 205
+            },
+            {
+              "name": "Ridge Stalker Patriarch",
+              "skill": 205
+            },
+            {
+              "name": "Rabid Crag Coyote",
+              "skill": 215
+            },
+            {
+              "name": "Scalding Whelp",
+              "skill": 215
+            },
+            {
+              "name": "Scorched Guardian",
+              "skill": 225
+            }
+          ]
         },
         {
           "map_id": 1419,
@@ -94491,8 +95038,47 @@
             "de": "Verwüstete Lande",
             "en": "Blasted Lands"
           },
+          "link": "https://foreverdb.net/maps/1419",
           "skill": 210,
-          "skill_max": 275
+          "skill_max": 275,
+          "nodes": [
+            {
+              "name": "Sawtooth Snapper",
+              "skill": 210
+            },
+            {
+              "name": "Grunter",
+              "skill": 250
+            },
+            {
+              "name": "Snickerfang Hyena",
+              "skill": 250
+            },
+            {
+              "name": "Felbeast",
+              "skill": 255
+            },
+            {
+              "name": "Ravage",
+              "skill": 255
+            },
+            {
+              "name": "Redstone Crystalhide",
+              "skill": 260
+            },
+            {
+              "name": "Helboar",
+              "skill": 265
+            },
+            {
+              "name": "Felhound",
+              "skill": 275
+            },
+            {
+              "name": "Manahound",
+              "skill": 300
+            }
+          ]
         },
         {
           "map_id": 1428,
@@ -94500,8 +95086,99 @@
             "de": "Brennende Steppe",
             "en": "Burning Steppes"
           },
+          "link": "https://foreverdb.net/maps/1428",
           "skill": 200,
-          "skill_max": 285
+          "skill_max": 285,
+          "nodes": [
+            {
+              "name": "Opus",
+              "skill": 200
+            },
+            {
+              "name": "Black Broodling",
+              "skill": 260
+            },
+            {
+              "name": "Black Drake",
+              "skill": 260
+            },
+            {
+              "name": "Blackrock Drake",
+              "skill": 260
+            },
+            {
+              "name": "Ember Worg",
+              "skill": 260
+            },
+            {
+              "name": "Rogue Black Drake",
+              "skill": 260
+            },
+            {
+              "name": "Black Dragonspawn",
+              "skill": 265
+            },
+            {
+              "name": "Deathmaw",
+              "skill": 265
+            },
+            {
+              "name": "Venomtip Scorpid",
+              "skill": 265
+            },
+            {
+              "name": "Black Wyrmkin",
+              "skill": 270
+            },
+            {
+              "name": "Scalding Broodling",
+              "skill": 270
+            },
+            {
+              "name": "Slavering Ember Worg",
+              "skill": 270
+            },
+            {
+              "name": "Blackrock Worg",
+              "skill": 275
+            },
+            {
+              "name": "Deathlash Scorpid",
+              "skill": 275
+            },
+            {
+              "name": "Scalding Drake",
+              "skill": 275
+            },
+            {
+              "name": "Flamescale Broodling",
+              "skill": 280
+            },
+            {
+              "name": "Giant Ember Worg",
+              "skill": 280
+            },
+            {
+              "name": "Firetail Scorpid",
+              "skill": 285
+            },
+            {
+              "name": "Flamescale Dragonspawn",
+              "skill": 285
+            },
+            {
+              "name": "Flamescale Wyrmkin",
+              "skill": 290
+            },
+            {
+              "name": "Searscale Drake",
+              "skill": 290
+            },
+            {
+              "name": "Hematos",
+              "skill": 300
+            }
+          ]
         },
         {
           "map_id": 1439,
@@ -94509,8 +95186,107 @@
             "de": "Dunkelküste",
             "en": "Darkshore"
           },
+          "link": "https://foreverdb.net/maps/1439",
           "skill": 1,
-          "skill_max": 100
+          "skill_max": 100,
+          "nodes": [
+            {
+              "name": "Deer",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Sickly Deer",
+              "skill": 1
+            },
+            {
+              "name": "Thistle Cub",
+              "skill": 1
+            },
+            {
+              "name": "Moonstalker Runt",
+              "skill": 10
+            },
+            {
+              "name": "Thistle Bear",
+              "skill": 20
+            },
+            {
+              "name": "Foreststrider Fledgling",
+              "skill": 30
+            },
+            {
+              "name": "Grimclaw",
+              "skill": 30
+            },
+            {
+              "name": "Shadowclaw",
+              "skill": 30
+            },
+            {
+              "name": "Darkshore Thresher",
+              "skill": 40
+            },
+            {
+              "name": "Rabid Thistle Bear",
+              "skill": 40
+            },
+            {
+              "name": "Moonstalker",
+              "skill": 50
+            },
+            {
+              "name": "Coastal Frenzy",
+              "skill": 60
+            },
+            {
+              "name": "Foreststrider",
+              "skill": 60
+            },
+            {
+              "name": "Grizzled Thistle Bear",
+              "skill": 70
+            },
+            {
+              "name": "Elder Darkshore Thresher",
+              "skill": 80
+            },
+            {
+              "name": "Moonstalker Sire",
+              "skill": 80
+            },
+            {
+              "name": "Den Mother",
+              "skill": 90
+            },
+            {
+              "name": "Giant Foreststrider",
+              "skill": 90
+            },
+            {
+              "name": "Wild Buck",
+              "skill": 90
+            },
+            {
+              "name": "Ghostpaw Runner",
+              "skill": 100
+            },
+            {
+              "name": "Moonstalker Matriarch",
+              "skill": 100
+            },
+            {
+              "name": "Mystlash Hydra",
+              "skill": 100
+            },
+            {
+              "name": "Strider Clutchmother",
+              "skill": 100
+            }
+          ]
         },
         {
           "map_id": 1457,
@@ -94518,8 +95294,43 @@
             "de": "Darnassus",
             "en": "Darnassus"
           },
+          "link": "https://foreverdb.net/maps/1457",
           "skill": 1,
-          "skill_max": 250
+          "skill_max": 250,
+          "nodes": [
+            {
+              "name": "Deer",
+              "skill": 1
+            },
+            {
+              "name": "Great Horned Owl",
+              "skill": 1
+            },
+            {
+              "name": "Hawk Owl",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Swift Stormsaber",
+              "skill": 1
+            },
+            {
+              "name": "Shadow",
+              "skill": 150
+            },
+            {
+              "name": "Frostsaber Companion",
+              "skill": 250
+            },
+            {
+              "name": "Nightshade",
+              "skill": 250
+            }
+          ]
         },
         {
           "map_id": 1430,
@@ -94527,8 +95338,15 @@
             "de": "Gebirgspass der Totenwinde",
             "en": "Deadwind Pass"
           },
+          "link": "https://foreverdb.net/maps/1430",
           "skill": 280,
-          "skill_max": 280
+          "skill_max": 280,
+          "nodes": [
+            {
+              "name": "Sky Shadow",
+              "skill": 280
+            }
+          ]
         },
         {
           "map_id": 1443,
@@ -94536,8 +95354,103 @@
             "de": "Desolace",
             "en": "Desolace"
           },
+          "link": "https://foreverdb.net/maps/1443",
           "skill": 155,
-          "skill_max": 195
+          "skill_max": 195,
+          "nodes": [
+            {
+              "name": "Scorpashi Snapper",
+              "skill": 155
+            },
+            {
+              "name": "Gritjaw Basilisk",
+              "skill": 160
+            },
+            {
+              "name": "Starving Bonepaw",
+              "skill": 160
+            },
+            {
+              "name": "Giggler",
+              "skill": 170
+            },
+            {
+              "name": "Raging Thunder Lizard",
+              "skill": 170
+            },
+            {
+              "name": "Aged Kodo",
+              "skill": 175
+            },
+            {
+              "name": "Bonepaw Hyena",
+              "skill": 175
+            },
+            {
+              "name": "Gizelton Caravan Kodo",
+              "skill": 175
+            },
+            {
+              "name": "Scorpashi Lasher",
+              "skill": 175
+            },
+            {
+              "name": "Dying Kodo",
+              "skill": 180
+            },
+            {
+              "name": "Hulking Gritjaw Basilisk",
+              "skill": 180
+            },
+            {
+              "name": "Ancient Kodo",
+              "skill": 185
+            },
+            {
+              "name": "Hissperak",
+              "skill": 185
+            },
+            {
+              "name": "Elder Thunder Lizard",
+              "skill": 190
+            },
+            {
+              "name": "Magram Bonepaw",
+              "skill": 190
+            },
+            {
+              "name": "Mana Eater",
+              "skill": 190
+            },
+            {
+              "name": "Rabid Bonepaw",
+              "skill": 190
+            },
+            {
+              "name": "Mage Hunter",
+              "skill": 195
+            },
+            {
+              "name": "Scorpashi Venomlash",
+              "skill": 195
+            },
+            {
+              "name": "Ambereye Basilisk",
+              "skill": 205
+            },
+            {
+              "name": "Rock Borer",
+              "skill": 205
+            },
+            {
+              "name": "Ambereye Reaver",
+              "skill": 210
+            },
+            {
+              "name": "Rock Worm",
+              "skill": 210
+            }
+          ]
         },
         {
           "map_id": 1426,
@@ -94545,8 +95458,103 @@
             "de": "Dun Morogh",
             "en": "Dun Morogh"
           },
+          "link": "https://foreverdb.net/maps/1426",
           "skill": 1,
-          "skill_max": 20
+          "skill_max": 20,
+          "nodes": [
+            {
+              "name": "Brown Ram",
+              "skill": 1
+            },
+            {
+              "name": "Crag Boar",
+              "skill": 1
+            },
+            {
+              "name": "Edan the Howler",
+              "skill": 1
+            },
+            {
+              "name": "Elder Crag Boar",
+              "skill": 1
+            },
+            {
+              "name": "Gray Ram",
+              "skill": 1
+            },
+            {
+              "name": "Ice Claw Bear",
+              "skill": 1
+            },
+            {
+              "name": "Juvenile Snow Leopard",
+              "skill": 1
+            },
+            {
+              "name": "Large Crag Boar",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Scarred Crag Boar",
+              "skill": 1
+            },
+            {
+              "name": "Small Crag Boar",
+              "skill": 1
+            },
+            {
+              "name": "Snow Leopard",
+              "skill": 1
+            },
+            {
+              "name": "Snow Tracker Wolf",
+              "skill": 1
+            },
+            {
+              "name": "Starving Winter Wolf",
+              "skill": 1
+            },
+            {
+              "name": "Timber",
+              "skill": 1
+            },
+            {
+              "name": "Wendigo",
+              "skill": 1
+            },
+            {
+              "name": "White Riding Ram",
+              "skill": 1
+            },
+            {
+              "name": "Winter Wolf",
+              "skill": 1
+            },
+            {
+              "name": "Young Black Bear",
+              "skill": 1
+            },
+            {
+              "name": "Young Wendigo",
+              "skill": 1
+            },
+            {
+              "name": "Old Icebeard",
+              "skill": 10
+            },
+            {
+              "name": "Vagash",
+              "skill": 10
+            },
+            {
+              "name": "Bjarn",
+              "skill": 20
+            }
+          ]
         },
         {
           "map_id": 1411,
@@ -94554,8 +95562,171 @@
             "de": "Durotar",
             "en": "Durotar"
           },
+          "link": "https://foreverdb.net/maps/1411",
           "skill": 1,
-          "skill_max": 80
+          "skill_max": 80,
+          "nodes": [
+            {
+              "name": "Armored Scorpid",
+              "skill": 1
+            },
+            {
+              "name": "Bloodtalon Scythemaw",
+              "skill": 1
+            },
+            {
+              "name": "Bloodtalon Taillasher",
+              "skill": 1
+            },
+            {
+              "name": "Clattering Scorpid",
+              "skill": 1
+            },
+            {
+              "name": "Dire Mottled Boar",
+              "skill": 1
+            },
+            {
+              "name": "Durotar Tiger",
+              "skill": 1
+            },
+            {
+              "name": "Elder Mottled Boar",
+              "skill": 1
+            },
+            {
+              "name": "Hare",
+              "skill": 1
+            },
+            {
+              "name": "Mottled Boar",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Dog",
+              "skill": 1
+            },
+            {
+              "name": "Sarkoth",
+              "skill": 1
+            },
+            {
+              "name": "Scorpid Worker",
+              "skill": 1
+            },
+            {
+              "name": "Sickly Gazelle",
+              "skill": 1
+            },
+            {
+              "name": "Thunder Lizard",
+              "skill": 1
+            },
+            {
+              "name": "Venomtail Scorpid",
+              "skill": 1
+            },
+            {
+              "name": "Corrupted Bloodtalon Scythemaw",
+              "skill": 10
+            },
+            {
+              "name": "Corrupted Mottled Boar",
+              "skill": 10
+            },
+            {
+              "name": "Corrupted Scorpid",
+              "skill": 10
+            },
+            {
+              "name": "Death Flayer",
+              "skill": 10
+            },
+            {
+              "name": "Dreadmaw Crocolisk",
+              "skill": 10
+            },
+            {
+              "name": "Lightning Hide",
+              "skill": 10
+            },
+            {
+              "name": "Corrupted Dreadmaw Crocolisk",
+              "skill": 20
+            },
+            {
+              "name": "Greater Plainstrider",
+              "skill": 20
+            },
+            {
+              "name": "Savannah Huntress",
+              "skill": 20
+            },
+            {
+              "name": "Dishu",
+              "skill": 30
+            },
+            {
+              "name": "Fleeting Plainstrider",
+              "skill": 30
+            },
+            {
+              "name": "Savannah Highmane",
+              "skill": 30
+            },
+            {
+              "name": "Sunscale Lashtail",
+              "skill": 30
+            },
+            {
+              "name": "Zhevra Runner",
+              "skill": 40
+            },
+            {
+              "name": "Lost Barrens Kodo",
+              "skill": 50
+            },
+            {
+              "name": "Muck Frenzy",
+              "skill": 50
+            },
+            {
+              "name": "Savannah Prowler",
+              "skill": 50
+            },
+            {
+              "name": "Sunscale Screecher",
+              "skill": 50
+            },
+            {
+              "name": "Barrens Giraffe",
+              "skill": 60
+            },
+            {
+              "name": "Hecklefang Hyena",
+              "skill": 60
+            },
+            {
+              "name": "Savannah Patriarch",
+              "skill": 60
+            },
+            {
+              "name": "Ornery Plainstrider",
+              "skill": 70
+            },
+            {
+              "name": "Savannah Matriarch",
+              "skill": 80
+            },
+            {
+              "name": "Sunscale Scytheclaw",
+              "skill": 80
+            },
+            {
+              "name": "Zhevra Charger",
+              "skill": 80
+            }
+          ]
         },
         {
           "map_id": 1431,
@@ -94563,8 +95734,71 @@
             "de": "Dämmerwald",
             "en": "Duskwood"
           },
+          "link": "https://foreverdb.net/maps/1431",
           "skill": 100,
-          "skill_max": 175
+          "skill_max": 175,
+          "nodes": [
+            {
+              "name": "Starving Dire Wolf",
+              "skill": 100
+            },
+            {
+              "name": "Rabid Dire Wolf",
+              "skill": 105
+            },
+            {
+              "name": "Lupos",
+              "skill": 115
+            },
+            {
+              "name": "Young Black Ravager",
+              "skill": 120
+            },
+            {
+              "name": "Black Ravager",
+              "skill": 125
+            },
+            {
+              "name": "Black Ravager Mastiff",
+              "skill": 130
+            },
+            {
+              "name": "Nightbane Worgen",
+              "skill": 135
+            },
+            {
+              "name": "Nightbane Shadow Weaver",
+              "skill": 140
+            },
+            {
+              "name": "Nightbane Dark Runner",
+              "skill": 145
+            },
+            {
+              "name": "Nightbane Vile Fang",
+              "skill": 150
+            },
+            {
+              "name": "Nightbane Tainted One",
+              "skill": 155
+            },
+            {
+              "name": "Fenros",
+              "skill": 160
+            },
+            {
+              "name": "Gutspill",
+              "skill": 160
+            },
+            {
+              "name": "Nefaru",
+              "skill": 170
+            },
+            {
+              "name": "Crystal Spine Basilisk",
+              "skill": 175
+            }
+          ]
         },
         {
           "map_id": 1445,
@@ -94572,8 +95806,139 @@
             "de": "Marschen von Dustwallow",
             "en": "Dustwallow Marsh"
           },
+          "link": "https://foreverdb.net/maps/1445",
           "skill": 1,
-          "skill_max": 225
+          "skill_max": 225,
+          "nodes": [
+            {
+              "name": "Prairie Dog",
+              "skill": 1
+            },
+            {
+              "name": "Hecklefang Stalker",
+              "skill": 115
+            },
+            {
+              "name": "Stormhide",
+              "skill": 115
+            },
+            {
+              "name": "Greater Thunderhawk",
+              "skill": 120
+            },
+            {
+              "name": "Washte Pawne",
+              "skill": 125
+            },
+            {
+              "name": "Spot",
+              "skill": 175
+            },
+            {
+              "name": "Bloodfen Raptor",
+              "skill": 180
+            },
+            {
+              "name": "Drywallow Crocolisk",
+              "skill": 180
+            },
+            {
+              "name": "Noxious Flayer",
+              "skill": 180
+            },
+            {
+              "name": "Bloodfen Screecher",
+              "skill": 185
+            },
+            {
+              "name": "Drywallow Snapper",
+              "skill": 190
+            },
+            {
+              "name": "Mudrock Spikeshell",
+              "skill": 190
+            },
+            {
+              "name": "Noxious Reaver",
+              "skill": 190
+            },
+            {
+              "name": "Mottled Drywallow Crocolisk",
+              "skill": 195
+            },
+            {
+              "name": "Noxious Shredder",
+              "skill": 195
+            },
+            {
+              "name": "Bloodfen Razormaw",
+              "skill": 200
+            },
+            {
+              "name": "Bloodfen Lashtail",
+              "skill": 205
+            },
+            {
+              "name": "Drywallow Daggermaw",
+              "skill": 205
+            },
+            {
+              "name": "Hayoc",
+              "skill": 205
+            },
+            {
+              "name": "Young Murk Thresher",
+              "skill": 205
+            },
+            {
+              "name": "Firemane Scout",
+              "skill": 210
+            },
+            {
+              "name": "Searing Hatchling",
+              "skill": 210
+            },
+            {
+              "name": "Firemane Ash Tail",
+              "skill": 215
+            },
+            {
+              "name": "Murk Thresher",
+              "skill": 215
+            },
+            {
+              "name": "Searing Whelp",
+              "skill": 215
+            },
+            {
+              "name": "Firemane Flamecaller",
+              "skill": 220
+            },
+            {
+              "name": "Firemane Scalebane",
+              "skill": 220
+            },
+            {
+              "name": "Brimgore",
+              "skill": 225
+            },
+            {
+              "name": "Deadmire",
+              "skill": 225
+            },
+            {
+              "name": "Elder Murk Thresher",
+              "skill": 225
+            },
+            {
+              "name": "Emberstrife",
+              "skill": 305
+            },
+            {
+              "name": "Strashaz Hydra",
+              "skill": 305
+            }
+          ]
         },
         {
           "map_id": 1423,
@@ -94581,8 +95946,51 @@
             "de": "Östliche Pestländer",
             "en": "Eastern Plaguelands"
           },
+          "link": "https://foreverdb.net/maps/1423",
           "skill": 270,
-          "skill_max": 300
+          "skill_max": 300,
+          "nodes": [
+            {
+              "name": "Plaguehound Runt",
+              "skill": 270
+            },
+            {
+              "name": "Plaguebat",
+              "skill": 275
+            },
+            {
+              "name": "Noxious Plaguebat",
+              "skill": 280
+            },
+            {
+              "name": "Plaguehound",
+              "skill": 280
+            },
+            {
+              "name": "Frenzied Plaguehound",
+              "skill": 290
+            },
+            {
+              "name": "Monstrous Plaguebat",
+              "skill": 290
+            },
+            {
+              "name": "Blighthound",
+              "skill": 295
+            },
+            {
+              "name": "Duskwing",
+              "skill": 300
+            },
+            {
+              "name": "Plagued Swine",
+              "skill": 300
+            },
+            {
+              "name": "Borelgore",
+              "skill": 305
+            }
+          ]
         },
         {
           "map_id": 1429,
@@ -94590,8 +95998,119 @@
             "de": "Wald von Elwynn",
             "en": "Elwynn Forest"
           },
+          "link": "https://foreverdb.net/maps/1429",
           "skill": 1,
-          "skill_max": 120
+          "skill_max": 120,
+          "nodes": [
+            {
+              "name": "Bombay",
+              "skill": 1
+            },
+            {
+              "name": "Cornish Rex",
+              "skill": 1
+            },
+            {
+              "name": "Cow",
+              "skill": 1
+            },
+            {
+              "name": "Deer",
+              "skill": 1
+            },
+            {
+              "name": "Fawn",
+              "skill": 1
+            },
+            {
+              "name": "Flik's Frog",
+              "skill": 1
+            },
+            {
+              "name": "Gray Forest Wolf",
+              "skill": 1
+            },
+            {
+              "name": "Hornsley",
+              "skill": 1
+            },
+            {
+              "name": "Khaz Modan Ram",
+              "skill": 1
+            },
+            {
+              "name": "Mangy Wolf",
+              "skill": 1
+            },
+            {
+              "name": "Orange Tabby",
+              "skill": 1
+            },
+            {
+              "name": "Porcine Entourage",
+              "skill": 1
+            },
+            {
+              "name": "Princess",
+              "skill": 1
+            },
+            {
+              "name": "Prowler",
+              "skill": 1
+            },
+            {
+              "name": "Pygmy Cockatrice",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Rockhide Boar",
+              "skill": 1
+            },
+            {
+              "name": "Sheep",
+              "skill": 1
+            },
+            {
+              "name": "Silver Tabby",
+              "skill": 1
+            },
+            {
+              "name": "Stonetusk Boar",
+              "skill": 1
+            },
+            {
+              "name": "Young Forest Bear",
+              "skill": 1
+            },
+            {
+              "name": "Longsnout",
+              "skill": 10
+            },
+            {
+              "name": "Starving Dire Wolf",
+              "skill": 100
+            },
+            {
+              "name": "Rabid Dire Wolf",
+              "skill": 105
+            },
+            {
+              "name": "Lupos",
+              "skill": 115
+            },
+            {
+              "name": "Young Black Ravager",
+              "skill": 120
+            },
+            {
+              "name": "Rogue Black Drake",
+              "skill": 260
+            }
+          ]
         },
         {
           "map_id": 1448,
@@ -94599,8 +96118,63 @@
             "de": "Teufelswald",
             "en": "Felwood"
           },
+          "link": "https://foreverdb.net/maps/1448",
           "skill": 70,
-          "skill_max": 265
+          "skill_max": 265,
+          "nodes": [
+            {
+              "name": "Grizzled Thistle Bear",
+              "skill": 70
+            },
+            {
+              "name": "Elder Shadowhorn Stag",
+              "skill": 135
+            },
+            {
+              "name": "Terrowulf Fleshripper",
+              "skill": 145
+            },
+            {
+              "name": "Angerclaw Bear",
+              "skill": 240
+            },
+            {
+              "name": "Felpaw Wolf",
+              "skill": 240
+            },
+            {
+              "name": "Death Howl",
+              "skill": 245
+            },
+            {
+              "name": "Angerclaw Mauler",
+              "skill": 250
+            },
+            {
+              "name": "Felpaw Scavenger",
+              "skill": 250
+            },
+            {
+              "name": "Mongress",
+              "skill": 250
+            },
+            {
+              "name": "Jaedenar Hound",
+              "skill": 255
+            },
+            {
+              "name": "Angerclaw Grizzly",
+              "skill": 260
+            },
+            {
+              "name": "Felpaw Ravager",
+              "skill": 260
+            },
+            {
+              "name": "Jaedenar Hunter",
+              "skill": 265
+            }
+          ]
         },
         {
           "map_id": 1444,
@@ -94608,8 +96182,175 @@
             "de": "Feralas",
             "en": "Feralas"
           },
+          "link": "https://foreverdb.net/maps/1444",
           "skill": 1,
-          "skill_max": 270
+          "skill_max": 270,
+          "nodes": [
+            {
+              "name": "Deer",
+              "skill": 1
+            },
+            {
+              "name": "Jacob",
+              "skill": 1
+            },
+            {
+              "name": "Jewel",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Longtooth Runner",
+              "skill": 205
+            },
+            {
+              "name": "Ironfur Bear",
+              "skill": 210
+            },
+            {
+              "name": "Snarler",
+              "skill": 210
+            },
+            {
+              "name": "Captured Sprite Darter",
+              "skill": 215
+            },
+            {
+              "name": "Groddoc Ape",
+              "skill": 215
+            },
+            {
+              "name": "Old Grizzlegut",
+              "skill": 215
+            },
+            {
+              "name": "Vale Screecher",
+              "skill": 215
+            },
+            {
+              "name": "Feral Scar Yeti",
+              "skill": 220
+            },
+            {
+              "name": "Frayfeather Hippogryph",
+              "skill": 220
+            },
+            {
+              "name": "Longtooth Howler",
+              "skill": 220
+            },
+            {
+              "name": "Enraged Feral Scar",
+              "skill": 225
+            },
+            {
+              "name": "Frayfeather Stagwing",
+              "skill": 225
+            },
+            {
+              "name": "Grizzled Ironfur Bear",
+              "skill": 225
+            },
+            {
+              "name": "Sprite Darter",
+              "skill": 225
+            },
+            {
+              "name": "Frayfeather Skystormer",
+              "skill": 230
+            },
+            {
+              "name": "Hulking Feral Scar",
+              "skill": 230
+            },
+            {
+              "name": "Rogue Vale Screecher",
+              "skill": 230
+            },
+            {
+              "name": "Frayfeather Patriarch",
+              "skill": 235
+            },
+            {
+              "name": "Rage Scar Yeti",
+              "skill": 235
+            },
+            {
+              "name": "Antilus the Soarer",
+              "skill": 240
+            },
+            {
+              "name": "Bloodroar the Stalker",
+              "skill": 240
+            },
+            {
+              "name": "Ferocious Rage Scar",
+              "skill": 240
+            },
+            {
+              "name": "Rabid Longtooth",
+              "skill": 240
+            },
+            {
+              "name": "Arash-ethis",
+              "skill": 245
+            },
+            {
+              "name": "Elder Rage Scar",
+              "skill": 245
+            },
+            {
+              "name": "Ironfur Patriarch",
+              "skill": 245
+            },
+            {
+              "name": "Groddoc Thunderer",
+              "skill": 250
+            },
+            {
+              "name": "Sprite Dragon",
+              "skill": 250
+            },
+            {
+              "name": "Gordok Hyena",
+              "skill": 270
+            },
+            {
+              "name": "Jademir Tree Warder",
+              "skill": 300
+            },
+            {
+              "name": "Chimaerok",
+              "skill": 305
+            },
+            {
+              "name": "Jademir Oracle",
+              "skill": 305
+            },
+            {
+              "name": "Arcane Chimaerok",
+              "skill": 310
+            },
+            {
+              "name": "Brood of Nozdormu",
+              "skill": 310
+            },
+            {
+              "name": "Chimaerok Devourer",
+              "skill": 310
+            },
+            {
+              "name": "Jademir Boughguard",
+              "skill": 310
+            },
+            {
+              "name": "Lord Lakmaeran",
+              "skill": 310
+            }
+          ]
         },
         {
           "map_id": 1424,
@@ -94617,8 +96358,63 @@
             "de": "Vorgebirge von Hillsbrad",
             "en": "Hillsbrad Foothills"
           },
+          "link": "https://foreverdb.net/maps/1424",
           "skill": 1,
-          "skill_max": 200
+          "skill_max": 200,
+          "nodes": [
+            {
+              "name": "Cow",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Sheep",
+              "skill": 1
+            },
+            {
+              "name": "Gray Bear",
+              "skill": 110
+            },
+            {
+              "name": "Vicious Gray Bear",
+              "skill": 115
+            },
+            {
+              "name": "Stanley",
+              "skill": 120
+            },
+            {
+              "name": "Starving Mountain Lion",
+              "skill": 120
+            },
+            {
+              "name": "Elder Gray Bear",
+              "skill": 130
+            },
+            {
+              "name": "Feral Mountain Lion",
+              "skill": 140
+            },
+            {
+              "name": "Snapjaw",
+              "skill": 155
+            },
+            {
+              "name": "Granistad",
+              "skill": 200
+            },
+            {
+              "name": "Kurdros",
+              "skill": 200
+            },
+            {
+              "name": "Wild Gryphon",
+              "skill": 200
+            }
+          ]
         },
         {
           "map_id": 1432,
@@ -94626,8 +96422,87 @@
             "de": "Loch Modan",
             "en": "Loch Modan"
           },
+          "link": "https://foreverdb.net/maps/1432",
           "skill": 1,
-          "skill_max": 110
+          "skill_max": 110,
+          "nodes": [
+            {
+              "name": "Elder Crag Boar",
+              "skill": 1
+            },
+            {
+              "name": "Ice Claw Bear",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Ram",
+              "skill": 1
+            },
+            {
+              "name": "Scarred Crag Boar",
+              "skill": 1
+            },
+            {
+              "name": "Sheep",
+              "skill": 1
+            },
+            {
+              "name": "Snow Leopard",
+              "skill": 1
+            },
+            {
+              "name": "Mangeclaw",
+              "skill": 10
+            },
+            {
+              "name": "Mountain Boar",
+              "skill": 10
+            },
+            {
+              "name": "Elder Black Bear",
+              "skill": 20
+            },
+            {
+              "name": "Loch Frenzy",
+              "skill": 30
+            },
+            {
+              "name": "Grizzled Black Bear",
+              "skill": 40
+            },
+            {
+              "name": "Loch Crocolisk",
+              "skill": 50
+            },
+            {
+              "name": "Mangy Mountain Boar",
+              "skill": 50
+            },
+            {
+              "name": "Black Bear Patriarch",
+              "skill": 70
+            },
+            {
+              "name": "Elder Mountain Boar",
+              "skill": 70
+            },
+            {
+              "name": "Ol' Sooty",
+              "skill": 100
+            },
+            {
+              "name": "Young Threshadon",
+              "skill": 100
+            },
+            {
+              "name": "Large Loch Crocolisk",
+              "skill": 110
+            }
+          ]
         },
         {
           "map_id": 1450,
@@ -94635,8 +96510,23 @@
             "de": "Moonglade",
             "en": "Moonglade"
           },
+          "link": "https://foreverdb.net/maps/1450",
           "skill": 1,
-          "skill_max": 275
+          "skill_max": 275,
+          "nodes": [
+            {
+              "name": "Deer",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Rogue Ice Thistle",
+              "skill": 275
+            }
+          ]
         },
         {
           "map_id": 2482,
@@ -94644,8 +96534,111 @@
             "de": "Hyjal",
             "en": "Mount Hyjal"
           },
+          "link": "https://foreverdb.net/maps/2482",
           "skill": 240,
-          "skill_max": 300
+          "skill_max": 300,
+          "nodes": [
+            {
+              "name": "Angerclaw Bear",
+              "skill": 240
+            },
+            {
+              "name": "Felpaw Wolf",
+              "skill": 240
+            },
+            {
+              "name": "Death Howl",
+              "skill": 245
+            },
+            {
+              "name": "Della",
+              "skill": 245
+            },
+            {
+              "name": "Angerclaw Mauler",
+              "skill": 250
+            },
+            {
+              "name": "Felpaw Scavenger",
+              "skill": 250
+            },
+            {
+              "name": "Angerclaw Grizzly",
+              "skill": 260
+            },
+            {
+              "name": "Felpaw Ravager",
+              "skill": 260
+            },
+            {
+              "name": "Shardtooth Bear",
+              "skill": 270
+            },
+            {
+              "name": "Cobalt Whelp",
+              "skill": 275
+            },
+            {
+              "name": "Fledgling Chillwind",
+              "skill": 275
+            },
+            {
+              "name": "Cobalt Broodling",
+              "skill": 280
+            },
+            {
+              "name": "Cobalt Wyrmkin",
+              "skill": 280
+            },
+            {
+              "name": "Shardtooth Mauler",
+              "skill": 280
+            },
+            {
+              "name": "Shi'alune",
+              "skill": 280
+            },
+            {
+              "name": "Spell Eater",
+              "skill": 280
+            },
+            {
+              "name": "Chillwind Chimaera",
+              "skill": 285
+            },
+            {
+              "name": "Cobalt Scalebane",
+              "skill": 285
+            },
+            {
+              "name": "General Colbatann",
+              "skill": 285
+            },
+            {
+              "name": "Cobalt Mageweaver",
+              "skill": 290
+            },
+            {
+              "name": "Manaclaw",
+              "skill": 290
+            },
+            {
+              "name": "Hederine Manastalker",
+              "skill": 300
+            },
+            {
+              "name": "Rabid Shardtooth",
+              "skill": 300
+            },
+            {
+              "name": "Scryer",
+              "skill": 300
+            },
+            {
+              "name": "Haleh",
+              "skill": 310
+            }
+          ]
         },
         {
           "map_id": 1412,
@@ -94653,8 +96646,199 @@
             "de": "Mulgore",
             "en": "Mulgore"
           },
+          "link": "https://foreverdb.net/maps/1412",
           "skill": 1,
-          "skill_max": 200
+          "skill_max": 200,
+          "nodes": [
+            {
+              "name": "Adult Plainstrider",
+              "skill": 1
+            },
+            {
+              "name": "Battleboar",
+              "skill": 1
+            },
+            {
+              "name": "Bristleback Battleboar",
+              "skill": 1
+            },
+            {
+              "name": "Elder Plainstrider",
+              "skill": 1
+            },
+            {
+              "name": "Flatland Cougar",
+              "skill": 1
+            },
+            {
+              "name": "Flatland Prowler",
+              "skill": 1
+            },
+            {
+              "name": "Gazelle",
+              "skill": 1
+            },
+            {
+              "name": "Hornsley",
+              "skill": 1
+            },
+            {
+              "name": "Jubjub",
+              "skill": 1
+            },
+            {
+              "name": "Khaz Modan Ram",
+              "skill": 1
+            },
+            {
+              "name": "Mazzranache",
+              "skill": 1
+            },
+            {
+              "name": "Mountain Cougar",
+              "skill": 1
+            },
+            {
+              "name": "Plainstrider",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Dog",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Stalker",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Wolf",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Wolf Alpha",
+              "skill": 1
+            },
+            {
+              "name": "Pygmy Cockatrice",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Sickly Gazelle",
+              "skill": 1
+            },
+            {
+              "name": "The Rake",
+              "skill": 1
+            },
+            {
+              "name": "Arra'chea",
+              "skill": 10
+            },
+            {
+              "name": "Brown Riding Kodo",
+              "skill": 20
+            },
+            {
+              "name": "Ghost Howl",
+              "skill": 20
+            },
+            {
+              "name": "Gray Riding Kodo",
+              "skill": 20
+            },
+            {
+              "name": "Fleeting Plainstrider",
+              "skill": 30
+            },
+            {
+              "name": "Kolkar Packhound",
+              "skill": 30
+            },
+            {
+              "name": "Zhevra Runner",
+              "skill": 40
+            },
+            {
+              "name": "Lost Barrens Kodo",
+              "skill": 50
+            },
+            {
+              "name": "Savannah Prowler",
+              "skill": 50
+            },
+            {
+              "name": "Sunscale Screecher",
+              "skill": 50
+            },
+            {
+              "name": "Barrens Giraffe",
+              "skill": 60
+            },
+            {
+              "name": "Hecklefang Hyena",
+              "skill": 60
+            },
+            {
+              "name": "Ornery Plainstrider",
+              "skill": 70
+            },
+            {
+              "name": "Sunscale Scytheclaw",
+              "skill": 80
+            },
+            {
+              "name": "Zhevra Charger",
+              "skill": 80
+            },
+            {
+              "name": "Hecklefang Snarler",
+              "skill": 90
+            },
+            {
+              "name": "Stormsnout",
+              "skill": 90
+            },
+            {
+              "name": "Wandering Barrens Giraffe",
+              "skill": 90
+            },
+            {
+              "name": "Thunderhawk Hatchling",
+              "skill": 100
+            },
+            {
+              "name": "Lakota'mani",
+              "skill": 110
+            },
+            {
+              "name": "Scorpashi Snapper",
+              "skill": 155
+            },
+            {
+              "name": "Gritjaw Basilisk",
+              "skill": 160
+            },
+            {
+              "name": "Raging Thunder Lizard",
+              "skill": 170
+            },
+            {
+              "name": "Hulking Gritjaw Basilisk",
+              "skill": 180
+            },
+            {
+              "name": "Elder Thunder Lizard",
+              "skill": 190
+            },
+            {
+              "name": "Ley Hunter",
+              "skill": 200
+            }
+          ]
         },
         {
           "map_id": 1454,
@@ -94662,8 +96846,55 @@
             "de": "Orgrimmar",
             "en": "Orgrimmar"
           },
+          "link": "https://foreverdb.net/maps/1454",
           "skill": 1,
-          "skill_max": 1
+          "skill_max": 1,
+          "nodes": [
+            {
+              "name": "Black Kingsnake",
+              "skill": 1
+            },
+            {
+              "name": "Bloodtalon Scythemaw",
+              "skill": 1
+            },
+            {
+              "name": "Brown Riding Wolf",
+              "skill": 1
+            },
+            {
+              "name": "Brown Snake",
+              "skill": 1
+            },
+            {
+              "name": "Crimson Snake",
+              "skill": 1
+            },
+            {
+              "name": "Dire Riding Wolf",
+              "skill": 1
+            },
+            {
+              "name": "Elder Mottled Boar",
+              "skill": 1
+            },
+            {
+              "name": "Hare",
+              "skill": 1
+            },
+            {
+              "name": "Timber Riding Wolf",
+              "skill": 1
+            },
+            {
+              "name": "Venomtail Scorpid",
+              "skill": 1
+            },
+            {
+              "name": "Grinning Dog",
+              "skill": 240
+            }
+          ]
         },
         {
           "map_id": 1433,
@@ -94671,8 +96902,55 @@
             "de": "Rotkammgebirge",
             "en": "Redridge Mountains"
           },
+          "link": "https://foreverdb.net/maps/1433",
           "skill": 1,
-          "skill_max": 125
+          "skill_max": 125,
+          "nodes": [
+            {
+              "name": "Cow",
+              "skill": 1
+            },
+            {
+              "name": "Narnie",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Sheep",
+              "skill": 1
+            },
+            {
+              "name": "Great Goretusk",
+              "skill": 70
+            },
+            {
+              "name": "Black Dragon Whelp",
+              "skill": 80
+            },
+            {
+              "name": "Snarlflare",
+              "skill": 80
+            },
+            {
+              "name": "Bellygrub",
+              "skill": 120
+            },
+            {
+              "name": "Singe",
+              "skill": 120
+            },
+            {
+              "name": "Lake Thresher",
+              "skill": 125
+            },
+            {
+              "name": "Servant of Ilgalar",
+              "skill": 125
+            }
+          ]
         },
         {
           "map_id": 2548,
@@ -94680,8 +96958,15 @@
             "de": "Flusslande",
             "en": "Riverglades"
           },
+          "link": "https://foreverdb.net/maps/2548",
           "skill": 70,
-          "skill_max": 70
+          "skill_max": 70,
+          "nodes": [
+            {
+              "name": "Great Goretusk",
+              "skill": 70
+            }
+          ]
         },
         {
           "map_id": 1427,
@@ -94689,8 +96974,23 @@
             "de": "Sengende Schlucht",
             "en": "Searing Gorge"
           },
+          "link": "https://foreverdb.net/maps/1427",
           "skill": 235,
-          "skill_max": 235
+          "skill_max": 235,
+          "nodes": [
+            {
+              "name": "Shleipnarr",
+              "skill": 235
+            },
+            {
+              "name": "Margol the Rager",
+              "skill": 240
+            },
+            {
+              "name": "Kalaran Windblade",
+              "skill": 275
+            }
+          ]
         },
         {
           "map_id": 2652,
@@ -94698,8 +96998,83 @@
             "de": "Shen'dralas",
             "en": "Shen'dralas"
           },
+          "link": "https://foreverdb.net/maps/2652",
           "skill": 1,
-          "skill_max": 200
+          "skill_max": 200,
+          "nodes": [
+            {
+              "name": "Adult Plainstrider",
+              "skill": 1
+            },
+            {
+              "name": "Flatland Cougar",
+              "skill": 1
+            },
+            {
+              "name": "Mountain Cougar",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Dog",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Stalker",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Wolf",
+              "skill": 1
+            },
+            {
+              "name": "Aged Kodo",
+              "skill": 175
+            },
+            {
+              "name": "Dying Kodo",
+              "skill": 180
+            },
+            {
+              "name": "Elder Thunder Lizard",
+              "skill": 190
+            },
+            {
+              "name": "Mage Hunter",
+              "skill": 195
+            },
+            {
+              "name": "Scorpashi Venomlash",
+              "skill": 195
+            },
+            {
+              "name": "Captured Stallion",
+              "skill": 200
+            },
+            {
+              "name": "Ley Hunter",
+              "skill": 200
+            },
+            {
+              "name": "Jademir Tree Warder",
+              "skill": 300
+            },
+            {
+              "name": "Jademir Oracle",
+              "skill": 305
+            },
+            {
+              "name": "Dreamroarer",
+              "skill": 310
+            },
+            {
+              "name": "Jademir Boughguard",
+              "skill": 310
+            },
+            {
+              "name": "Lethlas",
+              "skill": 310
+            }
+          ]
         },
         {
           "map_id": 1451,
@@ -94707,8 +97082,59 @@
             "de": "Silithus",
             "en": "Silithus"
           },
+          "link": "https://foreverdb.net/maps/1451",
           "skill": 275,
-          "skill_max": 310
+          "skill_max": 310,
+          "nodes": [
+            {
+              "name": "Stonelash Scorpid",
+              "skill": 275
+            },
+            {
+              "name": "Dredge Striker",
+              "skill": 280
+            },
+            {
+              "name": "Krellack",
+              "skill": 280
+            },
+            {
+              "name": "Stonelash Pincer",
+              "skill": 280
+            },
+            {
+              "name": "Rex Ashil",
+              "skill": 285
+            },
+            {
+              "name": "Dredge Crusher",
+              "skill": 290
+            },
+            {
+              "name": "Grubthor",
+              "skill": 290
+            },
+            {
+              "name": "Stonelash Flayer",
+              "skill": 290
+            },
+            {
+              "name": "Zora",
+              "skill": 295
+            },
+            {
+              "name": "Lapress",
+              "skill": 300
+            },
+            {
+              "name": "Brood of Nozdormu",
+              "skill": 310
+            },
+            {
+              "name": "Glibb",
+              "skill": 310
+            }
+          ]
         },
         {
           "map_id": 1421,
@@ -94716,8 +97142,91 @@
             "de": "Silberwald",
             "en": "Silverpine Forest"
           },
+          "link": "https://foreverdb.net/maps/1421",
           "skill": 1,
-          "skill_max": 110
+          "skill_max": 110,
+          "nodes": [
+            {
+              "name": "Deer",
+              "skill": 1
+            },
+            {
+              "name": "Infected Deer",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Moonrage Whitescalp",
+              "skill": 10
+            },
+            {
+              "name": "Worg",
+              "skill": 10
+            },
+            {
+              "name": "Ferocious Grizzled Bear",
+              "skill": 20
+            },
+            {
+              "name": "Moonrage Darkrunner",
+              "skill": 20
+            },
+            {
+              "name": "Mottled Worg",
+              "skill": 20
+            },
+            {
+              "name": "Giant Grizzled Bear",
+              "skill": 30
+            },
+            {
+              "name": "Gorefang",
+              "skill": 30
+            },
+            {
+              "name": "Moonrage Glutton",
+              "skill": 30
+            },
+            {
+              "name": "Moonrage Darksoul",
+              "skill": 40
+            },
+            {
+              "name": "Old Vicejaw",
+              "skill": 40
+            },
+            {
+              "name": "Grimson the Pale",
+              "skill": 50
+            },
+            {
+              "name": "Reef Frenzy",
+              "skill": 50
+            },
+            {
+              "name": "Lake Frenzy",
+              "skill": 60
+            },
+            {
+              "name": "Moonrage Bloodhowler",
+              "skill": 60
+            },
+            {
+              "name": "Bloodsnout Worg",
+              "skill": 70
+            },
+            {
+              "name": "Gray Bear",
+              "skill": 110
+            },
+            {
+              "name": "Son of Arugal",
+              "skill": 125
+            }
+          ]
         },
         {
           "map_id": 1442,
@@ -94725,8 +97234,99 @@
             "de": "Steinkrallengebirge",
             "en": "Stonetalon Mountains"
           },
+          "link": "https://foreverdb.net/maps/1442",
           "skill": 1,
-          "skill_max": 140
+          "skill_max": 140,
+          "nodes": [
+            {
+              "name": "Deer",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Dog",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Cliff Stormer",
+              "skill": 70
+            },
+            {
+              "name": "Raging Cliff Stormer",
+              "skill": 90
+            },
+            {
+              "name": "Young Pridewing",
+              "skill": 100
+            },
+            {
+              "name": "Pridewing Wyvern",
+              "skill": 110
+            },
+            {
+              "name": "Antlered Courser",
+              "skill": 115
+            },
+            {
+              "name": "Pridewing Consort",
+              "skill": 115
+            },
+            {
+              "name": "Blackened Basilisk",
+              "skill": 120
+            },
+            {
+              "name": "Pridewing Skyhunter",
+              "skill": 120
+            },
+            {
+              "name": "Twilight Runner",
+              "skill": 120
+            },
+            {
+              "name": "Fey Dragon",
+              "skill": 125
+            },
+            {
+              "name": "Great Courser",
+              "skill": 125
+            },
+            {
+              "name": "Pridewing Patriarch",
+              "skill": 125
+            },
+            {
+              "name": "Young Chimaera",
+              "skill": 125
+            },
+            {
+              "name": "Singed Basilisk",
+              "skill": 130
+            },
+            {
+              "name": "Fledgling Chimaera",
+              "skill": 135
+            },
+            {
+              "name": "Wily Fey Dragon",
+              "skill": 135
+            },
+            {
+              "name": "Chimaera Matriarch",
+              "skill": 140
+            },
+            {
+              "name": "Scorched Basilisk",
+              "skill": 140
+            },
+            {
+              "name": "Nal'taszar",
+              "skill": 150
+            }
+          ]
         },
         {
           "map_id": 1453,
@@ -94734,8 +97334,31 @@
             "de": "Stormwind",
             "en": "Stormwind City"
           },
+          "link": "https://foreverdb.net/maps/1453",
           "skill": 1,
-          "skill_max": 310
+          "skill_max": 310,
+          "nodes": [
+            {
+              "name": "Deer",
+              "skill": 1
+            },
+            {
+              "name": "Fawn",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Sewer Beast",
+              "skill": 250
+            },
+            {
+              "name": "Lady Katrana Prestor",
+              "skill": 310
+            }
+          ]
         },
         {
           "map_id": 1434,
@@ -94743,8 +97366,163 @@
             "de": "Schlingendorntal",
             "en": "Stranglethorn Vale"
           },
+          "link": "https://foreverdb.net/maps/1434",
           "skill": 1,
-          "skill_max": 250
+          "skill_max": 250,
+          "nodes": [
+            {
+              "name": "Cockatiel",
+              "skill": 1
+            },
+            {
+              "name": "Senegal",
+              "skill": 1
+            },
+            {
+              "name": "River Crocolisk",
+              "skill": 155
+            },
+            {
+              "name": "Young Panther",
+              "skill": 155
+            },
+            {
+              "name": "Young Stranglethorn Raptor",
+              "skill": 155
+            },
+            {
+              "name": "Young Stranglethorn Tiger",
+              "skill": 155
+            },
+            {
+              "name": "Sharptooth Frenzy",
+              "skill": 160
+            },
+            {
+              "name": "Stone Maw Basilisk",
+              "skill": 160
+            },
+            {
+              "name": "Kurzen War Panther",
+              "skill": 165
+            },
+            {
+              "name": "Kurzen War Tiger",
+              "skill": 165
+            },
+            {
+              "name": "Mistvale Gorilla",
+              "skill": 165
+            },
+            {
+              "name": "Stranglethorn Raptor",
+              "skill": 170
+            },
+            {
+              "name": "Young Lashtail Raptor",
+              "skill": 170
+            },
+            {
+              "name": "Crystal Spine Basilisk",
+              "skill": 175
+            },
+            {
+              "name": "Elder Stranglethorn Tiger",
+              "skill": 175
+            },
+            {
+              "name": "Lashtail Raptor",
+              "skill": 180
+            },
+            {
+              "name": "Saltwater Crocolisk",
+              "skill": 180
+            },
+            {
+              "name": "Snapjaw Crocolisk",
+              "skill": 180
+            },
+            {
+              "name": "Sin'Dall",
+              "skill": 185
+            },
+            {
+              "name": "Young Jungle Stalker",
+              "skill": 185
+            },
+            {
+              "name": "Elder Saltwater Crocolisk",
+              "skill": 190
+            },
+            {
+              "name": "Jungle Thunderer",
+              "skill": 190
+            },
+            {
+              "name": "Bhag'thera",
+              "skill": 200
+            },
+            {
+              "name": "Cold Eye Basilisk",
+              "skill": 200
+            },
+            {
+              "name": "Elder Mistvale Gorilla",
+              "skill": 205
+            },
+            {
+              "name": "Jungle Stalker",
+              "skill": 205
+            },
+            {
+              "name": "Kurmokk",
+              "skill": 210
+            },
+            {
+              "name": "Thrashtail Basilisk",
+              "skill": 210
+            },
+            {
+              "name": "Elder Shadowmaw Panther",
+              "skill": 215
+            },
+            {
+              "name": "King Bangalash",
+              "skill": 215
+            },
+            {
+              "name": "Silverback Patriarch",
+              "skill": 215
+            },
+            {
+              "name": "Tethis",
+              "skill": 215
+            },
+            {
+              "name": "Ironjaw Basilisk",
+              "skill": 220
+            },
+            {
+              "name": "Rippa",
+              "skill": 220
+            },
+            {
+              "name": "Scale Belly",
+              "skill": 225
+            },
+            {
+              "name": "Jaguero Stalker",
+              "skill": 250
+            },
+            {
+              "name": "Skymane Gorilla",
+              "skill": 250
+            },
+            {
+              "name": "King Mukla",
+              "skill": 255
+            }
+          ]
         },
         {
           "map_id": 1435,
@@ -94752,8 +97530,75 @@
             "de": "Sümpfe des Elends",
             "en": "Swamp of Sorrows"
           },
+          "link": "https://foreverdb.net/maps/1435",
           "skill": 175,
-          "skill_max": 225
+          "skill_max": 225,
+          "nodes": [
+            {
+              "name": "Adolescent Whelp",
+              "skill": 175
+            },
+            {
+              "name": "Dreaming Whelp",
+              "skill": 180
+            },
+            {
+              "name": "Young Sawtooth Crocolisk",
+              "skill": 180
+            },
+            {
+              "name": "Swamp Jaguar",
+              "skill": 185
+            },
+            {
+              "name": "Sawtooth Crocolisk",
+              "skill": 195
+            },
+            {
+              "name": "Sawfin Frenzy",
+              "skill": 200
+            },
+            {
+              "name": "Shadow Panther",
+              "skill": 200
+            },
+            {
+              "name": "Green Wyrmkin",
+              "skill": 210
+            },
+            {
+              "name": "Sawtooth Snapper",
+              "skill": 210
+            },
+            {
+              "name": "Green Scalebane",
+              "skill": 215
+            },
+            {
+              "name": "Wyrmkin Dreamwalker",
+              "skill": 215
+            },
+            {
+              "name": "Scalebane Captain",
+              "skill": 220
+            },
+            {
+              "name": "Elder Dragonkin",
+              "skill": 225
+            },
+            {
+              "name": "Lord Captain Wyrmak",
+              "skill": 225
+            },
+            {
+              "name": "Murk Slitherer",
+              "skill": 230
+            },
+            {
+              "name": "Murk Spitter",
+              "skill": 235
+            }
+          ]
         },
         {
           "map_id": 1446,
@@ -94761,8 +97606,75 @@
             "de": "Tanaris",
             "en": "Tanaris"
           },
+          "link": "https://foreverdb.net/maps/1446",
           "skill": 205,
-          "skill_max": 250
+          "skill_max": 250,
+          "nodes": [
+            {
+              "name": "Scorpid Hunter",
+              "skill": 205
+            },
+            {
+              "name": "Starving Blisterpaw",
+              "skill": 210
+            },
+            {
+              "name": "Glasshide Basilisk",
+              "skill": 215
+            },
+            {
+              "name": "Murderous Blisterpaw",
+              "skill": 215
+            },
+            {
+              "name": "Steeljaw Snapper",
+              "skill": 215
+            },
+            {
+              "name": "Scorpid Tail Lasher",
+              "skill": 220
+            },
+            {
+              "name": "Blisterpaw Hyena",
+              "skill": 225
+            },
+            {
+              "name": "Torta",
+              "skill": 225
+            },
+            {
+              "name": "Glasshide Gazer",
+              "skill": 230
+            },
+            {
+              "name": "Scorpid Dunestalker",
+              "skill": 235
+            },
+            {
+              "name": "Rabid Blisterpaw",
+              "skill": 240
+            },
+            {
+              "name": "Glasshide Petrifier",
+              "skill": 245
+            },
+            {
+              "name": "Occulus",
+              "skill": 250
+            },
+            {
+              "name": "Surf Glider",
+              "skill": 250
+            },
+            {
+              "name": "Tick",
+              "skill": 260
+            },
+            {
+              "name": "Chronalis",
+              "skill": 305
+            }
+          ]
         },
         {
           "map_id": 1438,
@@ -94770,8 +97682,59 @@
             "de": "Teldrassil",
             "en": "Teldrassil"
           },
+          "link": "https://foreverdb.net/maps/1438",
           "skill": 1,
-          "skill_max": 250
+          "skill_max": 250,
+          "nodes": [
+            {
+              "name": "Deer",
+              "skill": 1
+            },
+            {
+              "name": "Duskstalker",
+              "skill": 1
+            },
+            {
+              "name": "Elder Nightsaber",
+              "skill": 1
+            },
+            {
+              "name": "Mangy Nightsaber",
+              "skill": 1
+            },
+            {
+              "name": "Mist",
+              "skill": 1
+            },
+            {
+              "name": "Nightsaber",
+              "skill": 1
+            },
+            {
+              "name": "Nightsaber Stalker",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Thistle Boar",
+              "skill": 1
+            },
+            {
+              "name": "Young Thistle Boar",
+              "skill": 1
+            },
+            {
+              "name": "Feral Nightsaber",
+              "skill": 10
+            },
+            {
+              "name": "Frostsaber Companion",
+              "skill": 250
+            }
+          ]
         },
         {
           "map_id": 1413,
@@ -94779,8 +97742,347 @@
             "de": "Das Brachland",
             "en": "The Barrens"
           },
+          "link": "https://foreverdb.net/maps/1413",
           "skill": 1,
-          "skill_max": 205
+          "skill_max": 205,
+          "nodes": [
+            {
+              "name": "Arctic Riding Wolf",
+              "skill": 1
+            },
+            {
+              "name": "Bloodtalon Scythemaw",
+              "skill": 1
+            },
+            {
+              "name": "Bristleback Battleboar",
+              "skill": 1
+            },
+            {
+              "name": "Elder Mottled Boar",
+              "skill": 1
+            },
+            {
+              "name": "Elder Plainstrider",
+              "skill": 1
+            },
+            {
+              "name": "Gazelle",
+              "skill": 1
+            },
+            {
+              "name": "Hare",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Dog",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Wolf Alpha",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Sickly Gazelle",
+              "skill": 1
+            },
+            {
+              "name": "Venomtail Scorpid",
+              "skill": 1
+            },
+            {
+              "name": "Corrupted Bloodtalon Scythemaw",
+              "skill": 10
+            },
+            {
+              "name": "Dreadmaw Crocolisk",
+              "skill": 10
+            },
+            {
+              "name": "Corrupted Dreadmaw Crocolisk",
+              "skill": 20
+            },
+            {
+              "name": "Greater Plainstrider",
+              "skill": 20
+            },
+            {
+              "name": "Savannah Huntress",
+              "skill": 20
+            },
+            {
+              "name": "Fleeting Plainstrider",
+              "skill": 30
+            },
+            {
+              "name": "Kolkar Packhound",
+              "skill": 30
+            },
+            {
+              "name": "Savannah Highmane",
+              "skill": 30
+            },
+            {
+              "name": "Sunscale Lashtail",
+              "skill": 30
+            },
+            {
+              "name": "Zhevra Runner",
+              "skill": 40
+            },
+            {
+              "name": "Lost Barrens Kodo",
+              "skill": 50
+            },
+            {
+              "name": "Savannah Prowler",
+              "skill": 50
+            },
+            {
+              "name": "Sunscale Screecher",
+              "skill": 50
+            },
+            {
+              "name": "Barrens Giraffe",
+              "skill": 60
+            },
+            {
+              "name": "Deviate Coiler",
+              "skill": 60
+            },
+            {
+              "name": "Deviate Creeper",
+              "skill": 60
+            },
+            {
+              "name": "Hecklefang Hyena",
+              "skill": 60
+            },
+            {
+              "name": "Oasis Snapjaw",
+              "skill": 60
+            },
+            {
+              "name": "Savannah Patriarch",
+              "skill": 60
+            },
+            {
+              "name": "Cliff Stormer",
+              "skill": 70
+            },
+            {
+              "name": "Deviate Lurker",
+              "skill": 70
+            },
+            {
+              "name": "Deviate Slayer",
+              "skill": 70
+            },
+            {
+              "name": "Deviate Stalker",
+              "skill": 70
+            },
+            {
+              "name": "Deviate Stinglash",
+              "skill": 70
+            },
+            {
+              "name": "Ornery Plainstrider",
+              "skill": 70
+            },
+            {
+              "name": "Snort the Heckler",
+              "skill": 70
+            },
+            {
+              "name": "Savannah Matriarch",
+              "skill": 80
+            },
+            {
+              "name": "Sunscale Scytheclaw",
+              "skill": 80
+            },
+            {
+              "name": "Zhevra Charger",
+              "skill": 80
+            },
+            {
+              "name": "Hecklefang Snarler",
+              "skill": 90
+            },
+            {
+              "name": "Stormsnout",
+              "skill": 90
+            },
+            {
+              "name": "Takk the Leaper",
+              "skill": 90
+            },
+            {
+              "name": "Wandering Barrens Giraffe",
+              "skill": 90
+            },
+            {
+              "name": "Barrens Kodo",
+              "skill": 100
+            },
+            {
+              "name": "Gesharahan",
+              "skill": 100
+            },
+            {
+              "name": "Ghostpaw Runner",
+              "skill": 100
+            },
+            {
+              "name": "Silithid Grub",
+              "skill": 100
+            },
+            {
+              "name": "Thunderhawk Hatchling",
+              "skill": 100
+            },
+            {
+              "name": "Silithid Creeper",
+              "skill": 105
+            },
+            {
+              "name": "Swiftmane",
+              "skill": 105
+            },
+            {
+              "name": "Thunderhead",
+              "skill": 105
+            },
+            {
+              "name": "Zhevra Courser",
+              "skill": 105
+            },
+            {
+              "name": "Ashenvale Bear",
+              "skill": 110
+            },
+            {
+              "name": "Silithid Swarmer",
+              "skill": 110
+            },
+            {
+              "name": "Thunderhawk Cloudscraper",
+              "skill": 110
+            },
+            {
+              "name": "Hecklefang Stalker",
+              "skill": 115
+            },
+            {
+              "name": "Humar the Pridelord",
+              "skill": 115
+            },
+            {
+              "name": "Stormhide",
+              "skill": 115
+            },
+            {
+              "name": "Greater Thunderhawk",
+              "skill": 120
+            },
+            {
+              "name": "Owatanka",
+              "skill": 120
+            },
+            {
+              "name": "Thunderstomp",
+              "skill": 120
+            },
+            {
+              "name": "Azzere the Skyblade",
+              "skill": 125
+            },
+            {
+              "name": "Washte Pawne",
+              "skill": 125
+            },
+            {
+              "name": "Cloud Serpent",
+              "skill": 130
+            },
+            {
+              "name": "Crag Stalker",
+              "skill": 130
+            },
+            {
+              "name": "Brontus",
+              "skill": 135
+            },
+            {
+              "name": "Isha Awak",
+              "skill": 135
+            },
+            {
+              "name": "Pesterhide Hyena",
+              "skill": 135
+            },
+            {
+              "name": "Needles Cougar",
+              "skill": 140
+            },
+            {
+              "name": "Venomous Cloud Serpent",
+              "skill": 140
+            },
+            {
+              "name": "Elder Cloud Serpent",
+              "skill": 145
+            },
+            {
+              "name": "Pesterhide Snarler",
+              "skill": 145
+            },
+            {
+              "name": "Enraged Panther",
+              "skill": 150
+            },
+            {
+              "name": "Pack Kodo",
+              "skill": 150
+            },
+            {
+              "name": "Bloodfen Raptor",
+              "skill": 180
+            },
+            {
+              "name": "Drywallow Crocolisk",
+              "skill": 180
+            },
+            {
+              "name": "Drywallow Snapper",
+              "skill": 190
+            },
+            {
+              "name": "Noxious Reaver",
+              "skill": 190
+            },
+            {
+              "name": "Mottled Drywallow Crocolisk",
+              "skill": 195
+            },
+            {
+              "name": "Noxious Shredder",
+              "skill": 195
+            },
+            {
+              "name": "Bloodfen Razormaw",
+              "skill": 200
+            },
+            {
+              "name": "Bloodfen Lashtail",
+              "skill": 205
+            }
+          ]
         },
         {
           "map_id": 1425,
@@ -94788,8 +98090,91 @@
             "de": "Hinterland",
             "en": "The Hinterlands"
           },
+          "link": "https://foreverdb.net/maps/1425",
           "skill": 1,
-          "skill_max": 255
+          "skill_max": 255,
+          "nodes": [
+            {
+              "name": "Sharpbeak",
+              "skill": 1
+            },
+            {
+              "name": "Mangy Silvermane",
+              "skill": 210
+            },
+            {
+              "name": "Old Cliff Jumper",
+              "skill": 210
+            },
+            {
+              "name": "Soaring Razorbeak",
+              "skill": 210
+            },
+            {
+              "name": "Trained Razorbeak",
+              "skill": 210
+            },
+            {
+              "name": "Silvermane Wolf",
+              "skill": 220
+            },
+            {
+              "name": "Razorbeak Gryphon",
+              "skill": 225
+            },
+            {
+              "name": "Silvermane Howler",
+              "skill": 230
+            },
+            {
+              "name": "Vilebranch Wolf Pup",
+              "skill": 235
+            },
+            {
+              "name": "Gammerita",
+              "skill": 240
+            },
+            {
+              "name": "Razorbeak Skylord",
+              "skill": 240
+            },
+            {
+              "name": "Silvermane Stalker",
+              "skill": 240
+            },
+            {
+              "name": "Saltwater Snapjaw",
+              "skill": 250
+            },
+            {
+              "name": "Ironback",
+              "skill": 255
+            },
+            {
+              "name": "Vilebranch Raiding Wolf",
+              "skill": 255
+            },
+            {
+              "name": "Verdantine Tree Warder",
+              "skill": 300
+            },
+            {
+              "name": "Verdantine Oracle",
+              "skill": 305
+            },
+            {
+              "name": "Dreamtracker",
+              "skill": 310
+            },
+            {
+              "name": "Rothos",
+              "skill": 310
+            },
+            {
+              "name": "Verdantine Boughguard",
+              "skill": 310
+            }
+          ]
         },
         {
           "map_id": 1441,
@@ -94797,8 +98182,131 @@
             "de": "Tausend Nadeln",
             "en": "Thousand Needles"
           },
+          "link": "https://foreverdb.net/maps/1441",
           "skill": 120,
-          "skill_max": 215
+          "skill_max": 215,
+          "nodes": [
+            {
+              "name": "Galak Packhound",
+              "skill": 120
+            },
+            {
+              "name": "Cloud Serpent",
+              "skill": 130
+            },
+            {
+              "name": "Crag Stalker",
+              "skill": 130
+            },
+            {
+              "name": "Pesterhide Hyena",
+              "skill": 135
+            },
+            {
+              "name": "Needles Cougar",
+              "skill": 140
+            },
+            {
+              "name": "Venomous Cloud Serpent",
+              "skill": 140
+            },
+            {
+              "name": "Elder Cloud Serpent",
+              "skill": 145
+            },
+            {
+              "name": "Highperch Consort",
+              "skill": 145
+            },
+            {
+              "name": "Highperch Soarer",
+              "skill": 145
+            },
+            {
+              "name": "Highperch Wyvern",
+              "skill": 145
+            },
+            {
+              "name": "Pesterhide Snarler",
+              "skill": 145
+            },
+            {
+              "name": "War Party Kodo",
+              "skill": 150
+            },
+            {
+              "name": "Highperch Patriarch",
+              "skill": 155
+            },
+            {
+              "name": "Saltstone Basilisk",
+              "skill": 155
+            },
+            {
+              "name": "Sparkleshell Tortoise",
+              "skill": 155
+            },
+            {
+              "name": "Heartrazor",
+              "skill": 160
+            },
+            {
+              "name": "Scorpid Reaver",
+              "skill": 160
+            },
+            {
+              "name": "Saltstone Crystalhide",
+              "skill": 165
+            },
+            {
+              "name": "Sparkleshell Borer",
+              "skill": 165
+            },
+            {
+              "name": "Scorpid Terror",
+              "skill": 170
+            },
+            {
+              "name": "Saltstone Gazer",
+              "skill": 175
+            },
+            {
+              "name": "Sparkleshell Snapper",
+              "skill": 175
+            },
+            {
+              "name": "Vile Sting",
+              "skill": 175
+            },
+            {
+              "name": "Ironeye the Invincible",
+              "skill": 185
+            },
+            {
+              "name": "Longtooth Runner",
+              "skill": 205
+            },
+            {
+              "name": "Scorpid Hunter",
+              "skill": 205
+            },
+            {
+              "name": "Ironfur Bear",
+              "skill": 210
+            },
+            {
+              "name": "Starving Blisterpaw",
+              "skill": 210
+            },
+            {
+              "name": "Glasshide Basilisk",
+              "skill": 215
+            },
+            {
+              "name": "Steeljaw Snapper",
+              "skill": 215
+            }
+          ]
         },
         {
           "map_id": 1456,
@@ -94806,8 +98314,47 @@
             "de": "Thunder Bluff",
             "en": "Thunder Bluff"
           },
+          "link": "https://foreverdb.net/maps/1456",
           "skill": 1,
-          "skill_max": 20
+          "skill_max": 20,
+          "nodes": [
+            {
+              "name": "Adult Plainstrider",
+              "skill": 1
+            },
+            {
+              "name": "Elder Plainstrider",
+              "skill": 1
+            },
+            {
+              "name": "Flatland Cougar",
+              "skill": 1
+            },
+            {
+              "name": "Flatland Prowler",
+              "skill": 1
+            },
+            {
+              "name": "Flik's Frog",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Dog",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Stalker",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Wolf Alpha",
+              "skill": 1
+            },
+            {
+              "name": "Ghost Howl",
+              "skill": 20
+            }
+          ]
         },
         {
           "map_id": 1420,
@@ -94815,8 +98362,55 @@
             "de": "Tirisfal",
             "en": "Tirisfal Glades"
           },
+          "link": "https://foreverdb.net/maps/1420",
           "skill": 1,
-          "skill_max": 260
+          "skill_max": 260,
+          "nodes": [
+            {
+              "name": "Bayne",
+              "skill": 1
+            },
+            {
+              "name": "Cursed Darkhound",
+              "skill": 1
+            },
+            {
+              "name": "Decrepit Darkhound",
+              "skill": 1
+            },
+            {
+              "name": "Duskbat",
+              "skill": 1
+            },
+            {
+              "name": "Greater Duskbat",
+              "skill": 1
+            },
+            {
+              "name": "Mangy Duskbat",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Ravenous Darkhound",
+              "skill": 1
+            },
+            {
+              "name": "Vampiric Duskbat",
+              "skill": 1
+            },
+            {
+              "name": "Ressan the Needler",
+              "skill": 10
+            },
+            {
+              "name": "Diseased Black Bear",
+              "skill": 260
+            }
+          ]
         },
         {
           "map_id": 1449,
@@ -94824,8 +98418,147 @@
             "de": "Un'Goro-Krater",
             "en": "Un'Goro Crater"
           },
+          "link": "https://foreverdb.net/maps/1449",
           "skill": 210,
-          "skill_max": 275
+          "skill_max": 275,
+          "nodes": [
+            {
+              "name": "Starving Blisterpaw",
+              "skill": 210
+            },
+            {
+              "name": "Glasshide Basilisk",
+              "skill": 215
+            },
+            {
+              "name": "Scorpid Tail Lasher",
+              "skill": 220
+            },
+            {
+              "name": "Blisterpaw Hyena",
+              "skill": 225
+            },
+            {
+              "name": "Dadanga",
+              "skill": 225
+            },
+            {
+              "name": "Glasshide Gazer",
+              "skill": 230
+            },
+            {
+              "name": "Scorpid Dunestalker",
+              "skill": 235
+            },
+            {
+              "name": "Rabid Blisterpaw",
+              "skill": 240
+            },
+            {
+              "name": "Glasshide Petrifier",
+              "skill": 245
+            },
+            {
+              "name": "Ravasaur",
+              "skill": 245
+            },
+            {
+              "name": "Fledgling Pterrordax",
+              "skill": 250
+            },
+            {
+              "name": "Ravasaur Hunter",
+              "skill": 250
+            },
+            {
+              "name": "Ravasaur Matriarch",
+              "skill": 250
+            },
+            {
+              "name": "Ravasaur Runner",
+              "skill": 250
+            },
+            {
+              "name": "Soriid the Devourer",
+              "skill": 250
+            },
+            {
+              "name": "Young Diemetradon",
+              "skill": 250
+            },
+            {
+              "name": "Venomhide Ravasaur",
+              "skill": 255
+            },
+            {
+              "name": "Diemetradon",
+              "skill": 260
+            },
+            {
+              "name": "Pterrordax",
+              "skill": 260
+            },
+            {
+              "name": "Stegodon",
+              "skill": 265
+            },
+            {
+              "name": "Uhk'loc",
+              "skill": 265
+            },
+            {
+              "name": "Clutchmother Zavas",
+              "skill": 270
+            },
+            {
+              "name": "Frenzied Pterrordax",
+              "skill": 270
+            },
+            {
+              "name": "Plated Stegodon",
+              "skill": 270
+            },
+            {
+              "name": "Spiked Stegodon",
+              "skill": 270
+            },
+            {
+              "name": "Devilsaur",
+              "skill": 275
+            },
+            {
+              "name": "Elder Diemetradon",
+              "skill": 275
+            },
+            {
+              "name": "Stonelash Scorpid",
+              "skill": 275
+            },
+            {
+              "name": "Thunderstomp Stegodon",
+              "skill": 275
+            },
+            {
+              "name": "Tyrant Devilsaur",
+              "skill": 275
+            },
+            {
+              "name": "U'cha",
+              "skill": 275
+            },
+            {
+              "name": "Ironhide Devilsaur",
+              "skill": 280
+            },
+            {
+              "name": "Gruff",
+              "skill": 285
+            },
+            {
+              "name": "King Mosh",
+              "skill": 300
+            }
+          ]
         },
         {
           "map_id": 1458,
@@ -94833,8 +98566,39 @@
             "de": "Undercity",
             "en": "Undercity"
           },
+          "link": "https://foreverdb.net/maps/1458",
           "skill": 1,
-          "skill_max": 155
+          "skill_max": 155,
+          "nodes": [
+            {
+              "name": "Cursed Darkhound",
+              "skill": 1
+            },
+            {
+              "name": "Greater Duskbat",
+              "skill": 1
+            },
+            {
+              "name": "Vampiric Duskbat",
+              "skill": 1
+            },
+            {
+              "name": "Worg",
+              "skill": 10
+            },
+            {
+              "name": "Mottled Worg",
+              "skill": 20
+            },
+            {
+              "name": "Lake Frenzy",
+              "skill": 60
+            },
+            {
+              "name": "Snapjaw",
+              "skill": 155
+            }
+          ]
         },
         {
           "map_id": 1422,
@@ -94842,8 +98606,35 @@
             "de": "Westliche Pestländer",
             "en": "Western Plaguelands"
           },
+          "link": "https://foreverdb.net/maps/1422",
           "skill": 1,
-          "skill_max": 275
+          "skill_max": 275,
+          "nodes": [
+            {
+              "name": "Infected Deer",
+              "skill": 1
+            },
+            {
+              "name": "Snapjaw",
+              "skill": 155
+            },
+            {
+              "name": "Mirador",
+              "skill": 250
+            },
+            {
+              "name": "Diseased Black Bear",
+              "skill": 260
+            },
+            {
+              "name": "Plaguehound Runt",
+              "skill": 270
+            },
+            {
+              "name": "Plaguebat",
+              "skill": 275
+            }
+          ]
         },
         {
           "map_id": 1436,
@@ -94851,8 +98642,67 @@
             "de": "Westfall",
             "en": "Westfall"
           },
+          "link": "https://foreverdb.net/maps/1436",
           "skill": 1,
-          "skill_max": 180
+          "skill_max": 180,
+          "nodes": [
+            {
+              "name": "Cow",
+              "skill": 1
+            },
+            {
+              "name": "Deer",
+              "skill": 1
+            },
+            {
+              "name": "Prairie Dog",
+              "skill": 1
+            },
+            {
+              "name": "Coyote",
+              "skill": 10
+            },
+            {
+              "name": "Coyote Packleader",
+              "skill": 20
+            },
+            {
+              "name": "Young Goretusk",
+              "skill": 30
+            },
+            {
+              "name": "Goretusk",
+              "skill": 50
+            },
+            {
+              "name": "Great Goretusk",
+              "skill": 70
+            },
+            {
+              "name": "River Crocolisk",
+              "skill": 155
+            },
+            {
+              "name": "Young Panther",
+              "skill": 155
+            },
+            {
+              "name": "Young Stranglethorn Tiger",
+              "skill": 155
+            },
+            {
+              "name": "Sharptooth Frenzy",
+              "skill": 160
+            },
+            {
+              "name": "Stone Maw Basilisk",
+              "skill": 160
+            },
+            {
+              "name": "Saltwater Crocolisk",
+              "skill": 180
+            }
+          ]
         },
         {
           "map_id": 1437,
@@ -94860,8 +98710,127 @@
             "de": "Sumpfland",
             "en": "Wetlands"
           },
+          "link": "https://foreverdb.net/maps/1437",
           "skill": 1,
-          "skill_max": 155
+          "skill_max": 155,
+          "nodes": [
+            {
+              "name": "Cow",
+              "skill": 1
+            },
+            {
+              "name": "Rabbit",
+              "skill": 1
+            },
+            {
+              "name": "Ram",
+              "skill": 1
+            },
+            {
+              "name": "Young Black Bear",
+              "skill": 1
+            },
+            {
+              "name": "Young Wetlands Crocolisk",
+              "skill": 110
+            },
+            {
+              "name": "Mottled Raptor",
+              "skill": 115
+            },
+            {
+              "name": "Highland Raptor",
+              "skill": 120
+            },
+            {
+              "name": "Red Whelp",
+              "skill": 120
+            },
+            {
+              "name": "Wetlands Crocolisk",
+              "skill": 120
+            },
+            {
+              "name": "Highland Lashtail",
+              "skill": 125
+            },
+            {
+              "name": "Lost Whelp",
+              "skill": 125
+            },
+            {
+              "name": "Mottled Screecher",
+              "skill": 125
+            },
+            {
+              "name": "Crimson Whelp",
+              "skill": 130
+            },
+            {
+              "name": "Giant Wetlands Crocolisk",
+              "skill": 130
+            },
+            {
+              "name": "Highland Scytheclaw",
+              "skill": 130
+            },
+            {
+              "name": "Mottled Scytheclaw",
+              "skill": 130
+            },
+            {
+              "name": "Flamesnorting Whelp",
+              "skill": 135
+            },
+            {
+              "name": "Mottled Razormaw",
+              "skill": 135
+            },
+            {
+              "name": "Highland Razormaw",
+              "skill": 140
+            },
+            {
+              "name": "Elder Razormaw",
+              "skill": 145
+            },
+            {
+              "name": "Sarltooth",
+              "skill": 145
+            },
+            {
+              "name": "Razormaw Matriarch",
+              "skill": 155
+            },
+            {
+              "name": "Red Dragonspawn",
+              "skill": 290
+            },
+            {
+              "name": "Red Wyrmkin",
+              "skill": 295
+            },
+            {
+              "name": "Red Scalebane",
+              "skill": 300
+            },
+            {
+              "name": "Scalebane Lieutenant",
+              "skill": 305
+            },
+            {
+              "name": "Axtroz",
+              "skill": 310
+            },
+            {
+              "name": "Scalebane Royal Guard",
+              "skill": 310
+            },
+            {
+              "name": "Wyrmkin Firebrand",
+              "skill": 310
+            }
+          ]
         },
         {
           "map_id": 1452,
@@ -94869,8 +98838,151 @@
             "de": "Winterspring",
             "en": "Winterspring"
           },
+          "link": "https://foreverdb.net/maps/1452",
           "skill": 1,
-          "skill_max": 300
+          "skill_max": 300,
+          "nodes": [
+            {
+              "name": "Arctic Riding Wolf",
+              "skill": 1
+            },
+            {
+              "name": "Riding Kodo (Purple)",
+              "skill": 1
+            },
+            {
+              "name": "Glacier",
+              "skill": 250
+            },
+            {
+              "name": "Angerclaw Grizzly",
+              "skill": 260
+            },
+            {
+              "name": "Felpaw Ravager",
+              "skill": 260
+            },
+            {
+              "name": "Shardtooth Bear",
+              "skill": 270
+            },
+            {
+              "name": "Cobalt Whelp",
+              "skill": 275
+            },
+            {
+              "name": "Fledgling Chillwind",
+              "skill": 275
+            },
+            {
+              "name": "Mezzir the Howler",
+              "skill": 275
+            },
+            {
+              "name": "Rogue Ice Thistle",
+              "skill": 275
+            },
+            {
+              "name": "Cobalt Broodling",
+              "skill": 280
+            },
+            {
+              "name": "Cobalt Wyrmkin",
+              "skill": 280
+            },
+            {
+              "name": "Frostsaber Cub",
+              "skill": 280
+            },
+            {
+              "name": "Ice Thistle Yeti",
+              "skill": 280
+            },
+            {
+              "name": "Shardtooth Mauler",
+              "skill": 280
+            },
+            {
+              "name": "Spell Eater",
+              "skill": 280
+            },
+            {
+              "name": "Spellmaw",
+              "skill": 280
+            },
+            {
+              "name": "Ursius",
+              "skill": 280
+            },
+            {
+              "name": "Chillwind Chimaera",
+              "skill": 285
+            },
+            {
+              "name": "Cobalt Scalebane",
+              "skill": 285
+            },
+            {
+              "name": "Frostsaber",
+              "skill": 285
+            },
+            {
+              "name": "General Colbatann",
+              "skill": 285
+            },
+            {
+              "name": "Ice Thistle Matriarch",
+              "skill": 285
+            },
+            {
+              "name": "Rak'shiri",
+              "skill": 285
+            },
+            {
+              "name": "Brumeran",
+              "skill": 290
+            },
+            {
+              "name": "Cobalt Mageweaver",
+              "skill": 290
+            },
+            {
+              "name": "Elder Shardtooth",
+              "skill": 290
+            },
+            {
+              "name": "Ice Thistle Patriarch",
+              "skill": 290
+            },
+            {
+              "name": "Azurous",
+              "skill": 295
+            },
+            {
+              "name": "Chillwind Ravager",
+              "skill": 295
+            },
+            {
+              "name": "Frostsaber Huntress",
+              "skill": 295
+            },
+            {
+              "name": "Frostsaber Pride Watcher",
+              "skill": 300
+            },
+            {
+              "name": "Frostsaber Stalker",
+              "skill": 300
+            },
+            {
+              "name": "Hederine Manastalker",
+              "skill": 300
+            },
+            {
+              "name": "Rabid Shardtooth",
+              "skill": 300
+            }
+          ]
         }
       ]
     },
@@ -94881,6 +98993,7 @@
         "en": "Fishing"
       },
       "profession": "fishing",
+      "link": "https://foreverdb.net/profession/fishing",
       "zones": [
         {
           "map_id": 1416,
@@ -94888,6 +99001,7 @@
             "de": "Alteracgebirge",
             "en": "Alterac Mountains"
           },
+          "link": "https://foreverdb.net/maps/1416",
           "skill": 130,
           "catches": [
             {
@@ -94933,6 +99047,7 @@
             "de": "Arathihochland",
             "en": "Arathi Highlands"
           },
+          "link": "https://foreverdb.net/maps/1417",
           "skill": 130,
           "catches": [
             {
@@ -94978,6 +99093,7 @@
             "de": "Ashenvale",
             "en": "Ashenvale"
           },
+          "link": "https://foreverdb.net/maps/1440",
           "skill": 55,
           "catches": [
             {
@@ -95023,6 +99139,7 @@
             "de": "Azshara",
             "en": "Azshara"
           },
+          "link": "https://foreverdb.net/maps/1447",
           "skill": 205,
           "catches": [
             {
@@ -95068,6 +99185,7 @@
             "de": "Brennende Steppe",
             "en": "Burning Steppes"
           },
+          "link": "https://foreverdb.net/maps/1428",
           "skill": 330,
           "catches": [
             {
@@ -95113,6 +99231,7 @@
             "de": "Dunkelküste",
             "en": "Darkshore"
           },
+          "link": "https://foreverdb.net/maps/1439",
           "skill": -20,
           "catches": [
             {
@@ -95158,6 +99277,7 @@
             "de": "Darnassus",
             "en": "Darnassus"
           },
+          "link": "https://foreverdb.net/maps/1457",
           "skill": -20,
           "catches": [
             {
@@ -95203,6 +99323,7 @@
             "de": "Gebirgspass der Totenwinde",
             "en": "Deadwind Pass"
           },
+          "link": "https://foreverdb.net/maps/1430",
           "skill": 330,
           "catches": [
             {
@@ -95220,6 +99341,7 @@
             "de": "Desolace",
             "en": "Desolace"
           },
+          "link": "https://foreverdb.net/maps/1443",
           "skill": 130,
           "catches": [
             {
@@ -95265,6 +99387,7 @@
             "de": "Dun Morogh",
             "en": "Dun Morogh"
           },
+          "link": "https://foreverdb.net/maps/1426",
           "skill": -70,
           "catches": [
             {
@@ -95310,6 +99433,7 @@
             "de": "Durotar",
             "en": "Durotar"
           },
+          "link": "https://foreverdb.net/maps/1411",
           "skill": -70,
           "catches": [
             {
@@ -95334,6 +99458,7 @@
             "de": "Dämmerwald",
             "en": "Duskwood"
           },
+          "link": "https://foreverdb.net/maps/1431",
           "skill": 55,
           "catches": [
             {
@@ -95379,6 +99504,7 @@
             "de": "Marschen von Dustwallow",
             "en": "Dustwallow Marsh"
           },
+          "link": "https://foreverdb.net/maps/1445",
           "skill": 130,
           "catches": [
             {
@@ -95424,6 +99550,7 @@
             "de": "Östliche Pestländer",
             "en": "Eastern Plaguelands"
           },
+          "link": "https://foreverdb.net/maps/1423",
           "skill": 330,
           "catches": [
             {
@@ -95469,6 +99596,7 @@
             "de": "Wald von Elwynn",
             "en": "Elwynn Forest"
           },
+          "link": "https://foreverdb.net/maps/1429",
           "skill": -70,
           "catches": [
             {
@@ -95514,6 +99642,7 @@
             "de": "Teufelswald",
             "en": "Felwood"
           },
+          "link": "https://foreverdb.net/maps/1448",
           "skill": 205,
           "catches": [
             {
@@ -95559,6 +99688,7 @@
             "de": "Feralas",
             "en": "Feralas"
           },
+          "link": "https://foreverdb.net/maps/1444",
           "skill": 205,
           "catches": [
             {
@@ -95604,6 +99734,7 @@
             "de": "Vorgebirge von Hillsbrad",
             "en": "Hillsbrad Foothills"
           },
+          "link": "https://foreverdb.net/maps/1424",
           "skill": 55,
           "catches": [
             {
@@ -95649,6 +99780,7 @@
             "de": "Ironforge",
             "en": "Ironforge"
           },
+          "link": "https://foreverdb.net/maps/1455",
           "skill": -20,
           "catches": [
             {
@@ -95694,6 +99826,7 @@
             "de": "Loch Modan",
             "en": "Loch Modan"
           },
+          "link": "https://foreverdb.net/maps/1432",
           "skill": -20,
           "catches": [
             {
@@ -95711,6 +99844,7 @@
             "de": "Moonglade",
             "en": "Moonglade"
           },
+          "link": "https://foreverdb.net/maps/1450",
           "skill": 205,
           "catches": [
             {
@@ -95756,6 +99890,7 @@
             "de": "Mulgore",
             "en": "Mulgore"
           },
+          "link": "https://foreverdb.net/maps/1412",
           "skill": -70,
           "catches": [
             {
@@ -95801,6 +99936,7 @@
             "de": "Orgrimmar",
             "en": "Orgrimmar"
           },
+          "link": "https://foreverdb.net/maps/1454",
           "skill": -20,
           "catches": [
             {
@@ -95846,6 +99982,7 @@
             "de": "Rotkammgebirge",
             "en": "Redridge Mountains"
           },
+          "link": "https://foreverdb.net/maps/1433",
           "skill": 55,
           "catches": [
             {
@@ -95891,6 +100028,7 @@
             "de": "Silithus",
             "en": "Silithus"
           },
+          "link": "https://foreverdb.net/maps/1451",
           "skill": 330,
           "catches": [
             {
@@ -95936,6 +100074,7 @@
             "de": "Silberwald",
             "en": "Silverpine Forest"
           },
+          "link": "https://foreverdb.net/maps/1421",
           "skill": -20,
           "catches": [
             {
@@ -95974,6 +100113,7 @@
             "de": "Steinkrallengebirge",
             "en": "Stonetalon Mountains"
           },
+          "link": "https://foreverdb.net/maps/1442",
           "skill": 55,
           "catches": [
             {
@@ -96019,6 +100159,7 @@
             "de": "Stormwind",
             "en": "Stormwind City"
           },
+          "link": "https://foreverdb.net/maps/1453",
           "skill": -20,
           "catches": [
             {
@@ -96064,6 +100205,7 @@
             "de": "Schlingendorntal",
             "en": "Stranglethorn Vale"
           },
+          "link": "https://foreverdb.net/maps/1434",
           "skill": 130,
           "catches": [
             {
@@ -96109,6 +100251,7 @@
             "de": "Sümpfe des Elends",
             "en": "Swamp of Sorrows"
           },
+          "link": "https://foreverdb.net/maps/1435",
           "skill": 130,
           "catches": [
             {
@@ -96154,6 +100297,7 @@
             "de": "Tanaris",
             "en": "Tanaris"
           },
+          "link": "https://foreverdb.net/maps/1446",
           "skill": 205,
           "catches": [
             {
@@ -96199,6 +100343,7 @@
             "de": "Teldrassil",
             "en": "Teldrassil"
           },
+          "link": "https://foreverdb.net/maps/1438",
           "skill": -70,
           "catches": [
             {
@@ -96244,6 +100389,7 @@
             "de": "Das Brachland",
             "en": "The Barrens"
           },
+          "link": "https://foreverdb.net/maps/1413",
           "skill": -20,
           "catches": [
             {
@@ -96289,6 +100435,7 @@
             "de": "Hinterland",
             "en": "The Hinterlands"
           },
+          "link": "https://foreverdb.net/maps/1425",
           "skill": 205,
           "catches": [
             {
@@ -96334,6 +100481,7 @@
             "de": "Tausend Nadeln",
             "en": "Thousand Needles"
           },
+          "link": "https://foreverdb.net/maps/1441",
           "skill": 130,
           "catches": [
             {
@@ -96379,6 +100527,7 @@
             "de": "Thunder Bluff",
             "en": "Thunder Bluff"
           },
+          "link": "https://foreverdb.net/maps/1456",
           "skill": -20,
           "catches": [
             {
@@ -96424,6 +100573,7 @@
             "de": "Tirisfal",
             "en": "Tirisfal Glades"
           },
+          "link": "https://foreverdb.net/maps/1420",
           "skill": -70,
           "catches": [
             {
@@ -96462,6 +100612,7 @@
             "de": "Un'Goro-Krater",
             "en": "Un'Goro Crater"
           },
+          "link": "https://foreverdb.net/maps/1449",
           "skill": 205,
           "catches": [
             {
@@ -96507,6 +100658,7 @@
             "de": "Undercity",
             "en": "Undercity"
           },
+          "link": "https://foreverdb.net/maps/1458",
           "skill": -20,
           "catches": [
             {
@@ -96552,6 +100704,7 @@
             "de": "Westliche Pestländer",
             "en": "Western Plaguelands"
           },
+          "link": "https://foreverdb.net/maps/1422",
           "skill": 205,
           "catches": [
             {
@@ -96597,6 +100750,7 @@
             "de": "Westfall",
             "en": "Westfall"
           },
+          "link": "https://foreverdb.net/maps/1436",
           "skill": -20,
           "catches": [
             {
@@ -96642,6 +100796,7 @@
             "de": "Sumpfland",
             "en": "Wetlands"
           },
+          "link": "https://foreverdb.net/maps/1437",
           "skill": 55,
           "catches": [
             {
@@ -96687,6 +100842,7 @@
             "de": "Winterspring",
             "en": "Winterspring"
           },
+          "link": "https://foreverdb.net/maps/1452",
           "skill": 330,
           "catches": [
             {

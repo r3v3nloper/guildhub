@@ -112,6 +112,9 @@ export const farmSpots = {
   guideHint:
     "Die besten Zonen je Fertigkeit laut ForeverDB. Wo Vorkommen stehen, sind teils noch Classic-Daten.",
   guideCredits: "Sammeldaten",
+  /** ForeverDB has maps with every spawn point on its herb and ore pages. */
+  nodeMaps: "Karten mit allen Fundstellen",
+  moreAtSource: "Mehr dazu",
   yourGatherers: "Deine Sammler",
   enterSkill:
     "Fertigkeit beim Charakter eintragen, dann gibt es hier eine Empfehlung.",

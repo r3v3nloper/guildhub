@@ -8,7 +8,8 @@ import {
 } from "./foreverdb-api";
 
 // Gathering guides from ForeverDB's /gathering: the best zones per skill range and what
-// each zone offers. Zone names come from /zones, which knows the German ones.
+// each zone offers. Zone names and map links come from /zones, which knows the German
+// names. Skinning lists its beasts only per zone, which costs one request per zone.
 
 const GATHERING_SLUGS = new Set(["herbalism", "mining", "skinning", "fishing"]);
 /** Fishing lists every catch; the most likely ones are enough to choose a zone. */
@@ -16,6 +17,13 @@ const CATCHES_PER_ZONE = 5;
 
 interface ApiZoneName extends ApiName {
   id: number;
+  url: string;
+}
+
+interface ApiBeast {
+  /** Creature names stay English in the API. */
+  name: string;
+  skill: number;
 }
 
 interface ApiZoneRef {
@@ -24,12 +32,14 @@ interface ApiZoneRef {
 }
 
 interface ApiGathering {
+  url: string;
   nodes?: Array<{ name: string; item: (ApiName & { itemId: number }) | null }>;
   zones: Array<
     ApiZoneRef & {
       nodes?: Array<{ name: string; skill: number | null }>;
       skill?: number | { min: number; max: number };
       loot?: Array<ApiName & { chance: number }>;
+      beasts?: ApiBeast[];
     }
   >;
   bestZones?: Array<{
@@ -39,24 +49,59 @@ interface ApiGathering {
   }>;
 }
 
-type LocalizedName = PackGathering["zones"][number]["name"];
+type GuideZone = PackGathering["zones"][number];
+type ZoneInfo = Pick<GuideZone, "name" | "link">;
+type Node = GuideZone["nodes"][number];
 
-async function zoneNames(key: string): Promise<Map<number, LocalizedName>> {
+async function zoneInfo(key: string): Promise<Map<number, ZoneInfo>> {
   const { data } = await fetchJson<{ data: ApiZoneName[] }>(
     key,
     `${API}/zones?lang=de&limit=${PAGE_SIZE}`,
   );
-  return new Map(data.map((zone) => [zone.id, localized(zone)]));
+  return new Map(
+    data.map((zone) => [zone.id, { name: localized(zone), link: zone.url }]),
+  );
+}
+
+/** Each beast kind once, with the lowest skill any of them needs, easiest first. */
+function beastNodes(beasts: readonly ApiBeast[]): Node[] {
+  const skills = new Map<string, number>();
+  for (const beast of beasts) {
+    skills.set(
+      beast.name,
+      Math.min(skills.get(beast.name) ?? Infinity, beast.skill),
+    );
+  }
+  return [...skills]
+    .map(([name, skill]) => ({ name, skill }))
+    .sort((a, b) => a.skill - b.skill || a.name.localeCompare(b.name));
+}
+
+async function skinningBeasts(
+  key: string,
+  mapIds: readonly number[],
+): Promise<Map<number, Node[]>> {
+  const beasts = new Map<number, Node[]>();
+  for (const mapId of mapIds) {
+    const { data } = await fetchJson<{ data: ApiGathering }>(
+      key,
+      `${API}/gathering/skinning?zone=${mapId}`,
+    );
+    beasts.set(mapId, beastNodes(data.zones[0]?.beasts ?? []));
+  }
+  return beasts;
 }
 
 function toGuide(
   profession: { id: string; name: unknown },
   data: ApiGathering,
-  zones: ReadonlyMap<number, LocalizedName>,
+  zones: ReadonlyMap<number, ZoneInfo>,
+  beasts: ReadonlyMap<number, Node[]> = new Map(),
 ): PackGathering {
   const zoneRef = (ref: ApiZoneRef) => ({
     map_id: ref.mapId,
-    name: zones.get(ref.mapId) ?? ref.name,
+    name: zones.get(ref.mapId)?.name ?? ref.name,
+    link: zones.get(ref.mapId)?.link,
   });
   // Nodes ("Copper Vein") are named after what they give ("Kupfererz"), which ForeverDB
   // has in German.
@@ -69,6 +114,7 @@ function toGuide(
     id: profession.id,
     name: profession.name as PackGathering["name"],
     profession: profession.id,
+    link: data.url,
     best_zones: (data.bestZones ?? []).map((range) => ({
       from_skill: range.fromSkill,
       to_skill: range.toSkill,
@@ -78,10 +124,12 @@ function toGuide(
       ...zoneRef(zone),
       skill: typeof zone.skill === "number" ? zone.skill : zone.skill?.min,
       skill_max: typeof zone.skill === "object" ? zone.skill.max : undefined,
-      nodes: (zone.nodes ?? []).map((node) => ({
-        name: nodeItems.get(node.name) ?? node.name,
-        skill: node.skill,
-      })),
+      nodes:
+        beasts.get(zone.mapId) ??
+        (zone.nodes ?? []).map((node) => ({
+          name: nodeItems.get(node.name) ?? node.name,
+          skill: node.skill,
+        })),
       catches: [...(zone.loot ?? [])]
         .sort((a, b) => b.chance - a.chance)
         .slice(0, CATCHES_PER_ZONE)
@@ -102,14 +150,21 @@ export async function gatheringOf(
   if (gathering.length === 0) {
     return [];
   }
-  const zones = await zoneNames(key);
+  const zones = await zoneInfo(key);
   const guides: PackGathering[] = [];
   for (const profession of gathering) {
     const { data } = await fetchJson<{ data: ApiGathering }>(
       key,
       `${API}/gathering/${profession.id}?lang=de`,
     );
-    guides.push(toGuide(profession, data, zones));
+    const beasts =
+      profession.id === "skinning"
+        ? await skinningBeasts(
+            key,
+            data.zones.map((zone) => zone.mapId),
+          )
+        : undefined;
+    guides.push(toGuide(profession, data, zones, beasts));
   }
   return guides;
 }
