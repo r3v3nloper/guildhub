@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { SelectField, type SelectOption } from "@/components/ui/SelectField";
 import { Button, Field, FormMessage, TextInput } from "@/components/ui/ui";
 import { useFormAction } from "@/components/ui/use-form-action";
@@ -28,6 +28,7 @@ export function CraftRequestForm({
   loadRecipes,
   games,
   defaultGame,
+  initial,
   onCreated,
 }: {
   action: (state: ActionState, formData: FormData) => Promise<ActionState>;
@@ -38,16 +39,33 @@ export function CraftRequestForm({
   ) => Promise<RequestRecipeChoice[] | null>;
   games: CraftRequestGame[];
   defaultGame: string;
+  /** Profession and recipe key to start with, e.g. from "Wer kann … bauen?". */
+  initial?: { profession: string; recipe: string };
   onCreated?: () => void;
 }) {
   const [gameId, setGameId] = useState(defaultGame);
-  const [profession, setProfession] = useState("");
-  const [recipe, setRecipe] = useState("");
+  const [profession, setProfession] = useState(initial?.profession ?? "");
+  const [recipe, setRecipe] = useState(initial?.recipe ?? "");
   const [quantity, setQuantity] = useState(1);
   const [recipes, setRecipes] = useState<RequestRecipeChoice[] | null>(null);
   const [loadingRecipes, startLoading] = useTransition();
   // Only the answer for the latest choice counts when the user switches quickly.
-  const latestChoice = useRef("");
+  const latestChoice = useRef(initial?.profession ?? "");
+  // A preset profession needs its recipes once, as if it had been clicked.
+  useEffect(() => {
+    const preset = latestChoice.current;
+    if (!preset) {
+      return;
+    }
+    startLoading(async () => {
+      const choices = await loadRecipes(defaultGame, preset);
+      if (latestChoice.current === preset) {
+        setRecipes(choices);
+      }
+    });
+    // Only on mount: later choices load in chooseProfession.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const { state, pending, formRef, onSubmit } = useFormAction(action, {
     resetOnSuccess: true,
     onSuccess: () => {

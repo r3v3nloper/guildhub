@@ -35,10 +35,19 @@ async function RequestsContent({ searchParams }: PageProps<"/antraege">) {
   const actor = await requireActor();
   const db = getDb();
   const now = new Date();
-  const requested = textParam((await searchParams).ansicht);
+  const params = await searchParams;
+  const requested = textParam(params.ansicht);
   const view: ViewParam =
     requested && requested in VIEWS ? (requested as ViewParam) : "fuer-dich";
   const { games, selectedId } = await selectedGames(db, actor.guildId);
+  // "?neu=1&spiel=…&beruf=…&rezept=…" opens the form with that recipe (from Berufe).
+  const preset = textParam(params.neu)
+    ? {
+        gameId: textParam(params.spiel),
+        profession: textParam(params.beruf) ?? "",
+        recipe: textParam(params.rezept) ?? "",
+      }
+    : undefined;
   const shownIds = new Set(games.map((game) => game.id));
   // Only games with professions can take requests.
   const professionGames = professionGameOptions(db, actor.guildId, true).filter(
@@ -103,7 +112,19 @@ async function RequestsContent({ searchParams }: PageProps<"/antraege">) {
               action={createCraftRequestAction}
               loadRecipes={requestRecipeChoicesAction}
               games={formGames}
-              defaultGame={selectedId ?? formGames[0].value}
+              defaultGame={
+                formGames.find((game) => game.value === preset?.gameId)
+                  ?.value ??
+                selectedId ??
+                formGames[0].value
+              }
+              initialOpen={preset !== undefined}
+              initial={
+                preset && {
+                  profession: preset.profession,
+                  recipe: preset.recipe,
+                }
+              }
               credits={games
                 .filter((game) => gameIds.includes(game.id))
                 .map((game) => (

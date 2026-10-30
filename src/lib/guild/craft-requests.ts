@@ -26,7 +26,7 @@ import { recipeChoices } from "@/lib/roster/form-options";
 import { reagentsOf, type Reagent } from "@/lib/roster/recipe-reagents";
 import { requestRecipesOf } from "@/lib/roster/request-recipes";
 import { de } from "@/i18n/de";
-import { localize } from "@/i18n/localize";
+import { allTranslations, localize } from "@/i18n/localize";
 
 export type CraftRequestRow = typeof craftRequests.$inferSelect;
 
@@ -688,4 +688,183 @@ export function requestRecipeChoices(
       };
     },
   );
+}
+
+/** A pack recipe found by name, for "Wer kann … bauen?". */
+export interface RecipeMatch {
+  id: number;
+  gameId: string;
+  key: string;
+  name: string;
+  professionKey: string;
+  professionName: string;
+  skill: number | null;
+}
+
+/**
+ * A character with the recipe's profession and whether it can craft it: entered the
+ * recipe, skilled enough, skill not entered (might be able), or skill too low.
+ */
+export interface RecipeCrafter extends CrafterView {
+  characterId: number;
+  ability: "recipe" | "skill" | "unknown" | "tooLow";
+}
+
+export interface RecipeLookup extends RecipeMatch {
+  link: string | null;
+  reagents: Reagent[];
+  /** Able ones first (recipe, then highest skill), then unknown skill, then too low. */
+  crafters: RecipeCrafter[];
+}
+
+const RECIPE_MATCHES = 8;
+
+/** Lower case without accents, so "lederrustung" finds "Lederrüstung". */
+function searchable(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .trim();
+}
+
+function recipeEntriesOf(db: AppDatabase, gameIds: readonly string[]) {
+  return db
+    .select()
+    .from(gameCatalogEntries)
+    .where(
+      and(
+        inArray(gameCatalogEntries.gameId, [...gameIds]),
+        inArray(gameCatalogEntries.kind, ["recipe", "profession"]),
+        eq(gameCatalogEntries.status, "active"),
+      ),
+    )
+    .all();
+}
+
+function toMatch(
+  entry: CatalogEntry,
+  professions: ReadonlyMap<string, CatalogEntry>,
+): RecipeMatch {
+  const professionKey = String(entry.data.profession ?? "");
+  return {
+    id: entry.id,
+    gameId: entry.gameId,
+    key: entry.key,
+    name: localize(entry.name),
+    professionKey,
+    professionName: localize(
+      professions.get(`${entry.gameId}:${professionKey}`)?.name ??
+        professionKey,
+    ),
+    skill: recipeInfo(entry).skill,
+  };
+}
+
+/**
+ * Pack recipes whose name (in any language) contains the query: exact names first,
+ * then names starting with it, then the rest; a handful at most.
+ */
+export function findRecipes(
+  db: AppDatabase,
+  actor: Actor,
+  gameIds: readonly string[],
+  query: string,
+): RecipeMatch[] {
+  assertAllowed(permissions.viewGuild(actor));
+  const wanted = searchable(query);
+  if (!wanted || gameIds.length === 0) {
+    return [];
+  }
+  const entries = recipeEntriesOf(db, gameIds);
+  const professions = new Map(
+    entries
+      .filter((entry) => entry.kind === "profession")
+      .map((entry) => [`${entry.gameId}:${entry.key}`, entry]),
+  );
+  const rank = (names: string[]) =>
+    Math.min(
+      ...names.map((name) =>
+        name === wanted ? 0 : name.startsWith(wanted) ? 1 : 2,
+      ),
+    );
+  return entries
+    .filter((entry) => entry.kind === "recipe")
+    .map((entry) => ({
+      entry,
+      names: allTranslations(entry.name)
+        .map(searchable)
+        .filter((name) => name.includes(wanted)),
+    }))
+    .filter(({ names }) => names.length > 0)
+    .map(({ entry, names }) => ({
+      match: toMatch(entry, professions),
+      rank: rank(names),
+    }))
+    .sort((a, b) => a.rank - b.rank || a.match.name.localeCompare(b.match.name))
+    .slice(0, RECIPE_MATCHES)
+    .map(({ match }) => match);
+}
+
+/** One recipe with everyone in the guild who has its profession, able ones first. */
+export function lookupRecipe(
+  db: AppDatabase,
+  actor: Actor,
+  gameIds: readonly string[],
+  recipeEntryId: number,
+): RecipeLookup | null {
+  assertAllowed(permissions.viewGuild(actor));
+  const entries = gameIds.length === 0 ? [] : recipeEntriesOf(db, gameIds);
+  const entry = entries.find(
+    (candidate) =>
+      candidate.id === recipeEntryId && candidate.kind === "recipe",
+  );
+  if (!entry) {
+    return null;
+  }
+  const professions = new Map(
+    entries
+      .filter((candidate) => candidate.kind === "profession")
+      .map((candidate) => [`${candidate.gameId}:${candidate.key}`, candidate]),
+  );
+  const match = toMatch(entry, professions);
+  const profession = professions.get(`${entry.gameId}:${match.professionKey}`);
+  const info = recipeInfo(entry);
+  const knows = knowsRecipe(recipeKnowledge(db, [entry.id]), entry.id);
+  const order: Record<RecipeCrafter["ability"], number> = {
+    recipe: 0,
+    skill: 1,
+    unknown: 2,
+    tooLow: 3,
+  };
+  const crafters = (
+    profession ? professionHolders(db, actor.guildId, [profession.id]) : []
+  )
+    .map((holder): RecipeCrafter => {
+      const hasRecipe = knows(holder.characterId);
+      return {
+        userId: holder.userId,
+        userName: holder.userName,
+        characterId: holder.characterId,
+        characterName: holder.characterName,
+        skill: holder.skill,
+        hasRecipe,
+        ability: hasRecipe
+          ? "recipe"
+          : holder.skill === null
+            ? info.skill === null
+              ? "skill"
+              : "unknown"
+            : hasSkillFor(holder.skill, info.skill)
+              ? "skill"
+              : "tooLow",
+      };
+    })
+    .sort(
+      (a, b) =>
+        order[a.ability] - order[b.ability] ||
+        (b.skill ?? -1) - (a.skill ?? -1) ||
+        a.characterName.localeCompare(b.characterName),
+    );
+  return { ...match, link: info.link, reagents: info.reagents, crafters };
 }

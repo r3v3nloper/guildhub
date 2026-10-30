@@ -10,10 +10,47 @@ export const matrix = {
 
 export const directory = {
   title: "Berufe",
-  reagents: "Reagenzien",
+  intro: "Wer in der Gilde was herstellen kann – nach Rezept oder Beruf.",
+  reagents: "Benötigt",
   credits: "Rezeptdaten",
   search: "Suchen",
-  searchPlaceholder: "Wer kann … (Rezept, Beruf)",
+  searchLabel: "Wer kann … bauen?",
+  searchPlaceholder: "Rezept, z. B. Stiefel oder Elixier …",
+  recipeCount: (count: number) =>
+    `${count.toLocaleString("de-DE")} Rezepte aus dem Pack`,
+  noRecipe:
+    "Kein Rezept gefunden. Probier einen anderen Namen – oder frag per Crafting-Antrag mit freiem Text.",
+  fromSkill: (skill: number) => `ab Fertigkeit ${skill}`,
+  openSource: "Details",
+  canCraft: (count: number) => `Können es bauen · ${count}`,
+  maybe: (count: number) => `Fertigkeit nicht eingetragen · ${count}`,
+  tooLow: (count: number) => `Noch zu niedrig · ${count}`,
+  nobodyCan: "Noch kann es niemand in der Gilde.",
+  hasRecipe: "hat das Rezept",
+  can: "kann es",
+  needs: (skill: number) => `braucht ${skill}`,
+  skillMissing: "Fertigkeit fehlt",
+  you: "Du",
+  request: "Crafting-Antrag stellen",
+  requestHint: "Das Rezept ist im Antrag schon ausgewählt.",
+  groups: {
+    primary: "Herstellen",
+    secondary: "Nebenberufe",
+    gathering: "Sammeln",
+  } as Record<string, string>,
+  gatheringHint: "Wo es was gibt, steht bei",
+  toFarmspots: "Farmspots",
+  holders: (count: number, top: number | null) =>
+    count === 0
+      ? "Niemand in der Gilde"
+      : `${count} ${count === 1 ? "Charakter" : "Charaktere"}${top === null ? "" : ` · bis ${top}`}`,
+  youHaveIt: "Du hast diesen Beruf",
+  packRecipes: (count: number) =>
+    count === 0 ? "" : ` · ${count.toLocaleString("de-DE")} Rezepte im Pack`,
+  nobodyHasIt: (profession: string) =>
+    `Noch hat niemand in der Gilde ${profession}. Vielleicht ein Plan für einen Twink?`,
+  rareRecipes: "Seltene Rezepte",
+  toCharacter: "eintragen",
   allProfessions: "Alle Berufe",
   empty: "Keine Treffer.",
   noProfessions: "In den gewählten Spielen gibt es keine Berufe.",

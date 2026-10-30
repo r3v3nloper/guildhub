@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, asc, eq, inArray, sql } from "drizzle-orm";
 import type { AppDatabase } from "@/lib/db/client";
 import {
   characterProfessions,
@@ -27,6 +27,8 @@ interface PackRecipeData {
 
 export interface Crafter {
   characterId: number;
+  userId: string;
+  classColor: string | null;
   characterName: string;
   memberName: string;
   skillLevel: number | null;
@@ -130,6 +132,24 @@ export function loadProfessionDirectory(
     };
   };
 
+  const classIds = [
+    ...new Set(
+      rows
+        .map((row) => row.character.classEntryId)
+        .filter((id): id is number => id !== null),
+    ),
+  ];
+  const classColors = new Map(
+    classIds.length === 0
+      ? []
+      : db
+          .select()
+          .from(gameCatalogEntries)
+          .where(inArray(gameCatalogEntries.id, classIds))
+          .all()
+          .map((entry) => [entry.id, (entry.data.color as string) ?? null]),
+  );
+
   const query = search.query?.trim().toLowerCase() ?? "";
   const professions = new Map<number, DirectoryProfession>();
   for (const { profession, details, character, memberName } of rows) {
@@ -167,6 +187,11 @@ export function loadProfessionDirectory(
     };
     entry.crafters.push({
       characterId: character.id,
+      userId: character.userId,
+      classColor:
+        character.classEntryId === null
+          ? null
+          : (classColors.get(character.classEntryId) ?? null),
       characterName: character.name,
       memberName: memberName ?? "?",
       skillLevel: details.skillLevel,
@@ -193,4 +218,72 @@ function matchingFirst(
       recipe.notes?.toLowerCase().includes(query),
   );
   return matching.length > 0 ? matching : recipes;
+}
+
+/** A profession of a game, whether anyone has it or not. */
+export interface ProfessionSummary {
+  id: number;
+  gameId: string;
+  key: string;
+  name: LocalizedString;
+  /** "primary", "secondary" or "gathering". */
+  kind: string;
+  /** Recipes the pack knows for it. */
+  recipeCount: number;
+  /** The highest skill any of its recipes needs; null without recipes. */
+  topRecipeSkill: number | null;
+}
+
+/** Every active profession of the games, in pack order, with its recipe count. */
+export function listProfessions(
+  db: AppDatabase,
+  gameIds: readonly string[],
+): ProfessionSummary[] {
+  if (gameIds.length === 0) {
+    return [];
+  }
+  const ofProfession = sql<string>`json_extract(${gameCatalogEntries.data}, '$.profession')`;
+  const counts = new Map(
+    db
+      .select({
+        gameId: gameCatalogEntries.gameId,
+        profession: ofProfession,
+        count: sql<number>`count(*)`,
+        top: sql<
+          number | null
+        >`max(json_extract(${gameCatalogEntries.data}, '$.skill'))`,
+      })
+      .from(gameCatalogEntries)
+      .where(
+        and(
+          inArray(gameCatalogEntries.gameId, [...gameIds]),
+          eq(gameCatalogEntries.kind, "recipe"),
+          eq(gameCatalogEntries.status, "active"),
+        ),
+      )
+      .groupBy(gameCatalogEntries.gameId, ofProfession)
+      .all()
+      .map((row) => [`${row.gameId}:${row.profession}`, row]),
+  );
+  return db
+    .select()
+    .from(gameCatalogEntries)
+    .where(
+      and(
+        inArray(gameCatalogEntries.gameId, [...gameIds]),
+        eq(gameCatalogEntries.kind, "profession"),
+        eq(gameCatalogEntries.status, "active"),
+      ),
+    )
+    .orderBy(asc(gameCatalogEntries.id))
+    .all()
+    .map((entry) => ({
+      id: entry.id,
+      gameId: entry.gameId,
+      key: entry.key,
+      name: entry.name,
+      kind: String(entry.data.kind ?? "primary"),
+      recipeCount: counts.get(`${entry.gameId}:${entry.key}`)?.count ?? 0,
+      topRecipeSkill: counts.get(`${entry.gameId}:${entry.key}`)?.top ?? null,
+    }));
 }

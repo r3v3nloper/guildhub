@@ -6,7 +6,10 @@ import {
 import { saveProfessionDetails } from "./character-professions";
 import { getCharacter, saveCharacter } from "./characters";
 import { characterInput } from "../../../test/fixtures/characters";
-import { loadProfessionDirectory } from "./profession-directory";
+import {
+  listProfessions,
+  loadProfessionDirectory,
+} from "./profession-directory";
 
 const input = characterInput({ name: "Gimli", professionKeys: ["mining"] });
 
@@ -96,5 +99,28 @@ describe("loadProfessionDirectory", () => {
     expect(search("bergbau")[0].crafters[0].recipes).toHaveLength(2);
     expect(search("schneiderei")).toEqual([]);
     expect(search(undefined, "alchemy")).toEqual([]);
+  });
+});
+
+describe("listProfessions", () => {
+  it("lists every profession of the game with its recipe count", () => {
+    // Arrange
+    const fixture = createListFixture();
+
+    // Act
+    const professions = listProfessions(fixture.db, ["game"]);
+
+    // Assert
+    expect(
+      professions.map(({ key, kind, recipeCount, topRecipeSkill }) => [
+        key,
+        kind,
+        recipeCount,
+        topRecipeSkill,
+      ]),
+    ).toEqual([
+      ["mining", "gathering", 1, 250],
+      ["leatherworking", "primary", 2, 200],
+    ]);
   });
 });

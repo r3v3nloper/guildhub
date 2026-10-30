@@ -14,12 +14,15 @@ type FormProps = Omit<Parameters<typeof CraftRequestForm>[0], "onCreated">;
  */
 export function NewRequestPanel({
   credits,
+  initialOpen = false,
   ...form
 }: FormProps & {
   /** Data credits the pack requires next to its recipes. */
   credits?: ReactNode;
+  /** Open right away, e.g. when a link asks for a request for a recipe. */
+  initialOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(initialOpen);
   const router = useRouter();
 
   if (!open) {

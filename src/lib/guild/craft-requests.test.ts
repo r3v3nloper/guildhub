@@ -13,9 +13,11 @@ import {
   acceptCraftRequest,
   createCraftRequest,
   deleteCraftRequest,
+  findRecipes,
   finishCraftRequest,
   listCraftRequests,
   listCraftRequestsForCrafter,
+  lookupRecipe,
   requestRecipeChoices,
   professionCrafters,
   returnCraftRequest,
@@ -438,5 +440,114 @@ describe("skill check", () => {
       recipes.find((recipe) => recipe.value === "leatherworking-boots")
         ?.crafters,
     ).toEqual(["User 2222 (Brakka, 210)"]);
+  });
+});
+
+describe("recipe lookup", () => {
+  let fixture: ListFixture;
+
+  const leatherworker = (actor: Actor, name: string, skill: number | null) => {
+    const saved = saveCharacter(
+      fixture.db,
+      actor,
+      "game",
+      characterInput({ name, professionKeys: ["leatherworking"] }),
+    );
+    const character = getCharacter(
+      fixture.db,
+      saved.ok ? saved.characterId : -1,
+    )!;
+    saveProfessionDetails(
+      fixture.db,
+      actor,
+      character.id,
+      character.professionEntryIds[0],
+      { skillLevel: skill, specialization: "", notes: "", recipes: "" },
+    );
+  };
+
+  beforeEach(() => {
+    fixture = createListFixture();
+    leatherworker(fixture.member, "Brakka", 210);
+    leatherworker(fixture.other, "Lowa", 150);
+    leatherworker(fixture.officer, "Neu", null);
+  });
+
+  it("finds recipes by any of their names, without minding accents", () => {
+    // Act
+    const byGerman = findRecipes(
+      fixture.db,
+      fixture.member,
+      ["game"],
+      "stiefel",
+    );
+    const byEnglish = findRecipes(
+      fixture.db,
+      fixture.member,
+      ["game"],
+      "boots",
+    );
+    const byAccent = findRecipes(
+      fixture.db,
+      fixture.member,
+      ["game"],
+      "rustungsset",
+    );
+
+    // Assert
+    expect(byGerman).toEqual([
+      expect.objectContaining({
+        name: "Wildlederstiefel",
+        professionName: "Lederverarbeitung",
+        skill: 200,
+      }),
+    ]);
+    expect(byEnglish.map((match) => match.name)).toEqual(["Wildlederstiefel"]);
+    expect(byAccent.map((match) => match.name)).toEqual([
+      "Leichtes Rüstungsset",
+    ]);
+    expect(findRecipes(fixture.db, fixture.member, ["game"], " ")).toEqual([]);
+  });
+
+  it("sorts who can craft it: skilled, unknown skill, then too low", () => {
+    // Arrange
+    const [boots] = findRecipes(
+      fixture.db,
+      fixture.member,
+      ["game"],
+      "stiefel",
+    );
+
+    // Act
+    const lookup = lookupRecipe(fixture.db, fixture.member, ["game"], boots.id);
+
+    // Assert
+    expect(lookup).toMatchObject({
+      link: "https://example.org/boots",
+      reagents: [{ name: "Dickes Leder", count: 4 }],
+    });
+    expect(
+      lookup!.crafters.map((crafter) => [
+        crafter.characterName,
+        crafter.ability,
+      ]),
+    ).toEqual([
+      ["Brakka", "skill"],
+      ["Neu", "unknown"],
+      ["Lowa", "tooLow"],
+    ]);
+  });
+
+  it("knows nothing about recipes of other games", () => {
+    // Arrange
+    const [boots] = findRecipes(
+      fixture.db,
+      fixture.member,
+      ["game"],
+      "stiefel",
+    );
+
+    // Act & Assert
+    expect(lookupRecipe(fixture.db, fixture.member, [], boots.id)).toBeNull();
   });
 });
