@@ -114,3 +114,19 @@ export const statPriorities = {
   deleteConfirm: "Diese Stat-Priorität löschen?",
   ofClass: "Stat-Prioritäten der Klasse",
 } as const;
+
+export const specBuilds = {
+  title: "Build-Empfehlungen",
+  hint: "Von den Officers pro Spezialisierung empfohlen, z. B. als Link zum Talentrechner.",
+  ofCharacter: "Build-Empfehlungen der Gilde",
+  empty: "Noch keine Build-Empfehlung.",
+  add: "Build-Empfehlung hinzufügen",
+  spec: "Spezialisierung",
+  buildTitle: "Titel",
+  titleHint: "Zum Beispiel „Leveln“, „Dungeon“ oder „Raid“.",
+  url: "Link",
+  notes: "Notiz",
+  open: "Build öffnen",
+  deleteConfirm: "Diese Build-Empfehlung löschen?",
+  offSpec: "Off-Spec",
+} as const;

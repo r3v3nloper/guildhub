@@ -7,6 +7,7 @@ import {
   craftRequests,
   farmSpots,
   recipeEntries,
+  specBuilds,
   statPriorities,
   taskDefinitions,
 } from "@/lib/db/schema";
@@ -53,6 +54,11 @@ export const CATALOG_REFERENCES: Record<CatalogKind, CatalogReference[]> = {
     },
   ],
   spec: [
+    {
+      table: specBuilds,
+      column: specBuilds.specEntryId,
+      storedAs: "entryId",
+    },
     {
       table: characters,
       column: characters.specEntryId,
@@ -127,6 +133,8 @@ export const CATALOG_REFERENCES: Record<CatalogKind, CatalogReference[]> = {
   ],
   // Nothing references a gathering guide; it is read as a whole.
   gathering: [],
+  // Read per class as a whole, like the gathering guides.
+  abilities: [],
   server: [
     {
       table: characters,

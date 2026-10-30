@@ -182,6 +182,27 @@ export const gatheringSchema = z.strictObject({
     .default([]),
 });
 
+/** What a class learns at which level, from the trainer or a quest. One entry per class. */
+export const classAbilitiesSchema = z.strictObject({
+  ...catalogEntry,
+  class: slug,
+  abilities: z
+    .array(
+      z.strictObject({
+        name: localizedStringSchema,
+        learned: z.enum(["trainer", "quest"]).default("trainer"),
+        ranks: z.array(
+          z.strictObject({
+            /** Null for abilities without ranks. */
+            rank: z.number().int().positive().nullable(),
+            level: z.number().int().positive(),
+          }),
+        ),
+      }),
+    )
+    .default([]),
+});
+
 /** Where pack data comes from; shown wherever the app displays that data. */
 export const creditSchema = z.strictObject({
   label: z.string().min(1),
@@ -276,6 +297,7 @@ export const packSchema = z.strictObject({
   recipes: z.array(recipeSchema).default([]),
   instances: z.array(instanceSchema).default([]),
   gathering: z.array(gatheringSchema).default([]),
+  abilities: z.array(classAbilitiesSchema).default([]),
   bosses: z.array(bossSchema).default([]),
   servers: z.array(serverSchema).default([]),
   build_sources: z.array(buildSourceSchema).default([]),
@@ -290,6 +312,7 @@ export type PackSpec = z.infer<typeof specSchema>;
 export type PackRecipe = z.infer<typeof recipeSchema>;
 export type PackInstance = z.infer<typeof instanceSchema>;
 export type PackGathering = z.infer<typeof gatheringSchema>;
+export type PackClassAbilities = z.infer<typeof classAbilitiesSchema>;
 export type PackRace = z.infer<typeof raceSchema>;
 export type PackTask = z.infer<typeof taskSchema>;
 export type PackResetRule = z.infer<typeof resetRuleSchema>;

@@ -25,8 +25,11 @@ export interface GameCatalog {
   withRecipes?: boolean;
 }
 
-/** Gathering guides are large and read on their own (gathering-guide.ts), never here. */
-const NEVER_LOADED: CatalogKind[] = ["gathering"];
+/**
+ * Gathering guides and class abilities are large and read on their own
+ * (gathering-guide.ts, class-abilities.ts), never here.
+ */
+const NEVER_LOADED: CatalogKind[] = ["gathering", "abilities"];
 
 export function catalogOfKind(
   catalog: GameCatalog,

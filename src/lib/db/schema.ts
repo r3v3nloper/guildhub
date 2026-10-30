@@ -622,6 +622,31 @@ export const statPriorities = sqliteTable(
   (priority) => [index("stat_priority_class").on(priority.classEntryId)],
 );
 
+/** A build the officers recommend for a spec, as a link (e.g. a talent calculator). */
+export const specBuilds = sqliteTable(
+  "spec_build",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    gameId: text("game_id")
+      .notNull()
+      .references(() => games.id),
+    specEntryId: integer("spec_entry_id")
+      .notNull()
+      .references(() => gameCatalogEntries.id),
+    title: text("title").notNull(),
+    url: text("url").notNull(),
+    notes: text("notes"),
+    updatedBy: text("updated_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+      .notNull()
+      .$defaultFn(() => new Date())
+      .$onUpdateFn(() => new Date()),
+  },
+  (build) => [index("spec_build_spec").on(build.specEntryId)],
+);
+
 // --- Logs (SPEC 4.1) ---
 
 export interface SyncSummary {

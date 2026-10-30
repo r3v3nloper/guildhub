@@ -235,6 +235,21 @@ describe("validatePack", () => {
     expect(errors.map((e) => e.path)).toEqual(["gathering[1].profession"]);
   });
 
+  it("checks that class abilities belong to a known class", () => {
+    // Act
+    const errors = errorsOf(
+      basePack({
+        abilities: [
+          { id: "warrior", name: "Krieger", class: "warrior" },
+          { id: "mage", name: "Magier", class: "mage" },
+        ],
+      }),
+    );
+
+    // Assert
+    expect(errors.map((e) => e.path)).toEqual(["abilities[1].class"]);
+  });
+
   it("rejects replaces pointing at an ID that is still active", () => {
     const errors = errorsOf(
       basePack({

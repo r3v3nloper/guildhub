@@ -174,6 +174,12 @@ function checkReferences(pack: Pack, error: Report) {
     }
   });
 
+  pack.abilities.forEach((entry, index) => {
+    if (!classIds.has(entry.class)) {
+      error(`abilities[${index}].class`, `unbekannte Klasse '${entry.class}'`);
+    }
+  });
+
   pack.gathering.forEach((entry, index) => {
     if (!professionIds.has(entry.profession)) {
       error(

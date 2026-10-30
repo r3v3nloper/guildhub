@@ -14,13 +14,20 @@ import { checklists, farmSpots, todos, visibility } from "./texts/lists";
 import {
   badges,
   characters,
+  learnings,
   memberRoles,
   professionKinds,
   roles,
   roster,
 } from "./texts/roster";
 import { admin, auditActions, catalogKinds } from "./texts/admin";
-import { directory, matrix, requests, statPriorities } from "./texts/guild";
+import {
+  directory,
+  matrix,
+  requests,
+  specBuilds,
+  statPriorities,
+} from "./texts/guild";
 
 /** All UI texts. Each feature keeps its own file under texts/; callers use `de.<group>`. */
 export const de = {
@@ -41,6 +48,7 @@ export const de = {
   common,
   stepper,
   characters,
+  learnings,
   roster,
   admin,
   catalogKinds,
@@ -51,4 +59,5 @@ export const de = {
   directory,
   requests,
   statPriorities,
+  specBuilds,
 } as const;

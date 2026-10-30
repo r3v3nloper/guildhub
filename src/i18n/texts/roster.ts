@@ -28,6 +28,16 @@ export const badges = {
   former: "ehemalig",
 } as const;
 
+export const learnings = {
+  title: "Als Nächstes lernen",
+  atLevel: (level: number, isNow: boolean) =>
+    isNow ? `Stufe ${level} · jetzt` : `Stufe ${level}`,
+  rank: (rank: number) => `Rang ${rank}`,
+  fromQuest: "Quest",
+  noLevel: "Stufe eintragen, dann steht hier, was als Nächstes kommt.",
+  allLearned: "Mehr hat der Lehrer nicht.",
+} as const;
+
 export const characters = {
   title: "Meine Charaktere",
   empty: "Du hast noch keine Charaktere angelegt.",

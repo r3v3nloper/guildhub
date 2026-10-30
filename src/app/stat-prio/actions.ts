@@ -17,6 +17,9 @@ import {
   type StatPriorityInput,
   type StatPriorityResult,
 } from "@/lib/guild/stat-priorities";
+import { createSpecBuild, deleteSpecBuild } from "@/lib/guild/spec-builds";
+import { idArg, parseArg } from "@/lib/actions/action-args";
+import { de } from "@/i18n/de";
 
 function inputOf(formData: FormData): StatPriorityInput {
   return {
@@ -72,5 +75,44 @@ export async function deleteStatPriorityAction(
     revalidatePath("/stat-prio");
     redirect("/stat-prio");
   }
+  return state;
+}
+
+/** The stat page lists the recommendations; every character page shows those of its specs. */
+function revalidateSpecBuildPages(): void {
+  revalidatePath("/stat-prio");
+  revalidatePath("/charaktere", "layout");
+}
+
+export async function createSpecBuildAction(
+  gameId: string,
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const state = await guarded(async () => {
+    const result = createSpecBuild(getDb(), await actorForAction(), gameId, {
+      specKey: formText(formData, "spec"),
+      title: formText(formData, "title"),
+      url: formText(formData, "url"),
+      notes: formText(formData, "notes"),
+    });
+    return result.ok
+      ? { ok: true, message: de.common.saved }
+      : { ok: false, errors: result.errors };
+  });
+  if (state.ok) {
+    revalidateSpecBuildPages();
+  }
+  return state;
+}
+
+export async function deleteSpecBuildAction(
+  buildId: number,
+): Promise<ActionState> {
+  const state = await guarded(async () => {
+    deleteSpecBuild(getDb(), await actorForAction(), parseArg(idArg, buildId));
+    return { ok: true };
+  });
+  revalidateSpecBuildPages();
   return state;
 }

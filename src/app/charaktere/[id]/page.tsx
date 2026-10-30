@@ -20,6 +20,13 @@ import { requireActor } from "@/lib/auth/current-actor";
 import { permissions } from "@/lib/auth/guards";
 import { getDb } from "@/lib/db/client";
 import { statPrioritiesOfClass } from "@/lib/guild/stat-priorities";
+import { specBuildsOf } from "@/lib/guild/spec-builds";
+import {
+  loadClassLearnings,
+  upcomingLearnings,
+} from "@/lib/roster/class-abilities";
+import { NextLearningsCard } from "@/components/characters/NextLearningsCard";
+import { SpecBuildList } from "@/components/guild/SpecBuildList";
 import { idParam } from "@/lib/not-found";
 import { characterHints } from "@/lib/roster/character-rules";
 import {
@@ -78,6 +85,15 @@ async function EditCharacterContent({
     character.classEntryId === null
       ? []
       : statPrioritiesOfClass(db, character.classEntryId);
+  const classLearnings = loadClassLearnings(
+    db,
+    character.gameId,
+    keyOfEntry(catalog, character.classEntryId),
+  );
+  const specBuilds = specBuildsOf(db, [
+    character.specEntryId,
+    character.offSpecEntryId,
+  ]);
 
   const selection = selectionOf(character);
   const selectedIds = [
@@ -240,6 +256,29 @@ async function EditCharacterContent({
           }}
           aside={
             <>
+              {classLearnings.length > 0 && (
+                <NextLearningsCard
+                  upcoming={
+                    character.level === null
+                      ? []
+                      : upcomingLearnings(classLearnings, character.level)
+                  }
+                  level={character.level}
+                  meta={catalog.game.meta}
+                />
+              )}
+              {specBuilds.length > 0 && (
+                <FoldCard title={de.specBuilds.ofCharacter} defaultOpen>
+                  <SpecBuildList
+                    builds={specBuilds}
+                    labelFor={(build) =>
+                      build.specEntryId === character.offSpecEntryId
+                        ? de.specBuilds.offSpec
+                        : undefined
+                    }
+                  />
+                </FoldCard>
+              )}
               {statPriorities.length > 0 && (
                 <FoldCard
                   title={de.statPriorities.ofClass}

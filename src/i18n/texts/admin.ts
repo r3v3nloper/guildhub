@@ -83,4 +83,6 @@ export const auditActions = {
   "statPriority.create": "hat Stat-Priorität angelegt",
   "statPriority.update": "hat Stat-Priorität geändert",
   "statPriority.delete": "hat Stat-Priorität gelöscht",
+  "specBuild.create": "hat Build-Empfehlung angelegt",
+  "specBuild.delete": "hat Build-Empfehlung gelöscht",
 } as Record<string, string>;

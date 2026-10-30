@@ -21,6 +21,8 @@ export const AUDIT_ACTIONS = [
   "statPriority.create",
   "statPriority.update",
   "statPriority.delete",
+  "specBuild.create",
+  "specBuild.delete",
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 

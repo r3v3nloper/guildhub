@@ -11,9 +11,10 @@ import {
   type ApiName,
 } from "./foreverdb-api";
 import { gatheringOf } from "./foreverdb-gathering";
+import { abilitiesOf, knownAbilityNames } from "./foreverdb-abilities";
 
-// Pulls the recipes and gathering guides of the pack's professions and the dungeons and
-// raids from the ForeverDB API into pack.json, so the app itself never needs the API key
+// Pulls the recipes and gathering guides of the pack's professions, the abilities of its
+// classes and the dungeons and raids from the ForeverDB API into pack.json, so the app itself never needs the API key
 // or a connection to ForeverDB at runtime.
 // Usage: npm run packs:foreverdb [-- <pack-id>]   (needs FOREVERDB_API_KEY, e.g. in .env.local)
 
@@ -219,6 +220,8 @@ async function main() {
   > & {
     professions: Array<{ id: string; name: unknown }>;
     instances?: Array<{ id: string; name: unknown }>;
+    classes: Array<{ id: string; name: unknown }>;
+    abilities?: Array<{ abilities?: Array<{ name: unknown }> }>;
   };
   const key = apiKey();
 
@@ -240,6 +243,10 @@ async function main() {
     }),
   );
   console.log(`${instances.length} Dungeons und Raids`);
+  const abilities = (
+    await abilitiesOf(key, pack.classes, knownAbilityNames(pack.abilities))
+  ).map((entry) => compact({ ...entry }));
+  console.log(`Fähigkeiten für ${abilities.length} Klassen`);
   const gathering = (await gatheringOf(key, pack.professions)).map((guide) =>
     compact({
       ...guide,
@@ -251,6 +258,7 @@ async function main() {
   let updated = withKeyAfter(pack, "professions", "recipes", recipes);
   updated = withKeyAfter(updated, "recipes", "instances", instances);
   updated = withKeyAfter(updated, "instances", "gathering", gathering);
+  updated = withKeyAfter(updated, "gathering", "abilities", abilities);
   updated = withKeyAfter(updated, "build_sources", "credits", [CREDIT]);
   fs.writeFileSync(file, `${JSON.stringify(updated, null, 2)}\n`);
   console.log(`Nach ${file} geschrieben.`);
