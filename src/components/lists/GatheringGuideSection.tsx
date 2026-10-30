@@ -46,7 +46,10 @@ export function GatheringGuideSection({
                   {tip.skill !== null && ` ${tip.skill}`}
                 </span>
                 {tip.zones.length > 0 ? (
-                  <span> → {tip.zones.join(", ")}</span>
+                  <span>
+                    {" → "}
+                    <ZoneList zones={tip.zones} />
+                  </span>
                 ) : (
                   <span className="block text-xs text-muted">
                     {de.farmSpots.enterSkill}
@@ -80,12 +83,7 @@ function GuideCard({ guide }: { guide: GatheringGuide }) {
               </span>
               <span className="text-muted">
                 {" · "}
-                {range.zones.map((zone, index) => (
-                  <span key={zone.name}>
-                    {index > 0 && ", "}
-                    <ZoneName zone={zone} />
-                  </span>
-                ))}
+                <ZoneList zones={range.zones} />
               </span>
             </li>
           ))}
@@ -116,6 +114,15 @@ function GuideCard({ guide }: { guide: GatheringGuide }) {
       )}
     </FoldCard>
   );
+}
+
+function ZoneList({ zones }: { zones: ZoneLink[] }) {
+  return zones.map((zone, index) => (
+    <span key={zone.name}>
+      {index > 0 && ", "}
+      <ZoneName zone={zone} />
+    </span>
+  ));
 }
 
 /** The zone name, linking to its map at the data source where known. */

@@ -47,7 +47,7 @@ export interface GatheringTip {
   professionName: string;
   skill: number | null;
   /** Empty while no skill is entered. */
-  zones: string[];
+  zones: ZoneLink[];
 }
 
 const ZONES_PER_TIP = 3;
@@ -119,19 +119,22 @@ function toGuide(
  * The zones that suit a skill: the guide's range containing it (the top range beyond
  * its end), or for fishing the zones closest below the skill.
  */
-export function zonesForSkill(guide: GatheringGuide, skill: number): string[] {
+export function zonesForSkill(
+  guide: GatheringGuide,
+  skill: number,
+): ZoneLink[] {
   if (guide.ranges.length > 0) {
     // Ranges follow one another, lowest first.
     const range =
       guide.ranges.find((candidate) => skill < candidate.toSkill) ??
       guide.ranges.at(-1)!;
-    return range.zones.map((zone) => zone.name);
+    return range.zones;
   }
   return guide.zones
     .filter((zone) => (zone.skill ?? 0) <= skill)
     .sort((a, b) => (b.skill ?? 0) - (a.skill ?? 0))
     .slice(0, ZONES_PER_TIP)
-    .map((zone) => zone.name);
+    .map(({ name, link }) => ({ name, link }));
 }
 
 /** One tip per gathering profession of the member's characters that a guide covers. */

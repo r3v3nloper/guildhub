@@ -89,19 +89,21 @@ describe("gathering guides", () => {
     const [guide] = loadGatheringGuides(createListFixture().db, ["game"]);
 
     // Act & Assert
-    expect(zonesForSkill(guide, 1)).toEqual(["Westfall"]);
-    expect(zonesForSkill(guide, 66)).toEqual(["Sumpfland"]);
-    expect(zonesForSkill(guide, 300)).toEqual(["Sumpfland"]);
+    expect(zonesForSkill(guide, 1)).toEqual([westfall]);
+    expect(zonesForSkill(guide, 66)).toEqual([wetlands]);
+    expect(zonesForSkill(guide, 300)).toEqual([wetlands]);
   });
 
   it("ranks fishing zones by the highest skill still within reach", () => {
     // Act & Assert
-    expect(zonesForSkill(fishing, 60)).toEqual([
+    expect(zonesForSkill(fishing, 60).map((zone) => zone.name)).toEqual([
       "Sumpfland",
       "Brachland",
       "Durotar",
     ]);
-    expect(zonesForSkill(fishing, 1)).toEqual(["Durotar"]);
+    expect(zonesForSkill(fishing, 1)).toEqual([
+      { name: "Durotar", link: null },
+    ]);
   });
 
   it("tips each gatherer, and asks for a skill where none is entered", () => {
@@ -119,7 +121,7 @@ describe("gathering guides", () => {
       expect.objectContaining({
         characterName: "Gimli",
         skill: 80,
-        zones: ["Sumpfland"],
+        zones: [wetlands],
       }),
       expect.objectContaining({ characterName: "Thorin", zones: [] }),
     ]);
