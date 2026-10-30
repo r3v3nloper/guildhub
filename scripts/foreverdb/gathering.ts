@@ -1,11 +1,5 @@
-import type { PackGathering } from "../src/lib/packs/schema";
-import {
-  API,
-  fetchJson,
-  localized,
-  PAGE_SIZE,
-  type ApiName,
-} from "./foreverdb-api";
+import type { PackGathering } from "../../src/lib/packs/schema";
+import { API, fetchJson, localized, PAGE_SIZE, type ApiName } from "./api";
 
 // Gathering guides from ForeverDB's /gathering: the best zones per skill range and what
 // each zone offers. Zone names and map links come from /zones, which knows the German
@@ -20,7 +14,7 @@ interface ApiZoneName extends ApiName {
   url: string;
 }
 
-interface ApiBeast {
+export interface ApiBeast {
   /** Creature names stay English in the API. */
   name: string;
   skill: number;
@@ -31,7 +25,7 @@ interface ApiZoneRef {
   name: string;
 }
 
-interface ApiGathering {
+export interface ApiGathering {
   url: string;
   nodes?: Array<{ name: string; item: (ApiName & { itemId: number }) | null }>;
   zones: Array<
@@ -64,7 +58,7 @@ async function zoneInfo(key: string): Promise<Map<number, ZoneInfo>> {
 }
 
 /** Each beast kind once, with the lowest skill any of them needs, easiest first. */
-function beastNodes(beasts: readonly ApiBeast[]): Node[] {
+export function beastNodes(beasts: readonly ApiBeast[]): Node[] {
   const skills = new Map<string, number>();
   for (const beast of beasts) {
     skills.set(
@@ -97,7 +91,7 @@ async function skinningBeasts(
  * herbs like "Gloom Weed") are no gathering nodes and stay out; nodes giving the same
  * item (a small and a rich thorium vein) count once, at the lowest skill.
  */
-function gatheredNodes(
+export function gatheredNodes(
   nodes: ApiGathering["zones"][number]["nodes"],
   nodeItems: ReadonlyMap<string, Node["name"]>,
 ): Node[] {

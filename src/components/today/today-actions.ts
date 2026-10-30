@@ -4,6 +4,7 @@ import { z } from "zod";
 import { flagArg, idArg, parseArg } from "@/lib/actions/action-args";
 import type { ActionState } from "@/lib/actions/action-state";
 import { runMutation } from "@/lib/actions/mutation";
+import { PAGE_GROUPS } from "@/lib/actions/page-groups";
 import { setProfessionSkill } from "@/lib/roster/character-professions";
 import { setCharacterLevel } from "@/lib/roster/characters";
 import {
@@ -88,14 +89,11 @@ export async function consumeStackingAction(
   );
 }
 
-/** Pages that show a character's level or profession skill. */
-const CHARACTER_PAGES = ["/", "/roster", "/berufe", "/charaktere"];
-
 export async function setCharacterLevelAction(
   characterId: number,
   level: number,
 ): Promise<ActionState> {
-  return runMutation(CHARACTER_PAGES, (db, actor) =>
+  return runMutation(PAGE_GROUPS.characterStats, (db, actor) =>
     setCharacterLevel(
       db,
       actor,
@@ -110,7 +108,7 @@ export async function setProfessionSkillAction(
   professionEntryId: number,
   skillLevel: number,
 ): Promise<ActionState> {
-  return runMutation(CHARACTER_PAGES, (db, actor) =>
+  return runMutation(PAGE_GROUPS.characterStats, (db, actor) =>
     setProfessionSkill(
       db,
       actor,

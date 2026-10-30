@@ -1,5 +1,5 @@
-import type { PackClassAbilities } from "../src/lib/packs/schema";
-import { API, fetchJson } from "./foreverdb-api";
+import type { PackClassAbilities } from "../../src/lib/packs/schema";
+import { API, fetchJson } from "./api";
 
 // What each class learns at which level, from ForeverDB's /classes/{name}. Its ability
 // names are English; the German ones come from /spells/{id}, one request per spell, so
@@ -8,7 +8,7 @@ import { API, fetchJson } from "./foreverdb-api";
 /** Season of Discovery runes and the like never reach a Forever trainer. */
 const LEARNED = new Set(["trainer", "quest"]);
 
-interface ApiAbility {
+export interface ApiAbility {
   name: string;
   learned: string;
   ranks: Array<{ spellId: number; rank: string; level: number }>;
@@ -75,7 +75,7 @@ function isTalentOrPetSkill(ability: ApiAbility): boolean {
   );
 }
 
-function uniqueRanks(ranks: Ability["ranks"]): Ability["ranks"] {
+export function uniqueRanks(ranks: Ability["ranks"]): Ability["ranks"] {
   const seen = new Set<string>();
   return ranks.filter((rank) => {
     const key = `${rank.rank}@${rank.level}`;
@@ -92,6 +92,15 @@ function rankNumber(rank: string): number | null {
   return match ? Number(match[1]) : null;
 }
 
+/** Whether a listed ability belongs in the pack: trainer or quest, and no talent. */
+export function isTrainerAbility(ability: ApiAbility): boolean {
+  return (
+    LEARNED.has(ability.learned) &&
+    ability.ranks.length > 0 &&
+    !isTalentOrPetSkill(ability)
+  );
+}
+
 /** One entry per class the pack lists, in the pack's order. */
 export async function abilitiesOf(
   key: string,
@@ -106,11 +115,7 @@ export async function abilitiesOf(
     );
     const abilities: Ability[] = [];
     for (const ability of data.abilities) {
-      if (
-        !LEARNED.has(ability.learned) ||
-        ability.ranks.length === 0 ||
-        isTalentOrPetSkill(ability)
-      ) {
+      if (!isTrainerAbility(ability)) {
         continue;
       }
       abilities.push({

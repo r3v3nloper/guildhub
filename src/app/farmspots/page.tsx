@@ -26,7 +26,8 @@ import { loadRosterMembers } from "@/lib/roster/roster";
 import { textParam } from "@/lib/search-params";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
-import { deleteFarmSpotAction, setGatheringSkillAction } from "./actions";
+import { setProfessionSkillAction } from "@/components/today/today-actions";
+import { deleteFarmSpotAction } from "./actions";
 
 export const metadata: Metadata = { title: de.farmSpots.title };
 
@@ -188,7 +189,7 @@ function ForYou({
         <GathererCard
           key={`${tip.characterId}-${tip.professionKey}`}
           tip={tip}
-          saveSkill={setGatheringSkillAction.bind(
+          saveSkill={setProfessionSkillAction.bind(
             null,
             tip.characterId,
             tip.professionEntryId,

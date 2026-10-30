@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
   formText,
@@ -20,6 +19,8 @@ import {
 } from "@/lib/guild/stat-priorities";
 import { createSpecBuild, deleteSpecBuild } from "@/lib/guild/spec-builds";
 import { idArg, parseArg } from "@/lib/actions/action-args";
+import { revalidatePages } from "@/lib/actions/mutation";
+import { PAGE_GROUPS } from "@/lib/actions/page-groups";
 import { de } from "@/i18n/de";
 
 function inputOf(formData: FormData): StatPriorityInput {
@@ -49,7 +50,7 @@ async function saveAction(
     return result.ok ? { ok: true } : { ok: false, errors: result.errors };
   });
   if (state.ok) {
-    revalidatePath("/stat-prio");
+    revalidatePages(PAGE_GROUPS.statPriorities);
     redirect(target);
   }
   return state;
@@ -77,28 +78,39 @@ export async function updateStatPriorityAction(
   }));
 }
 
-export async function deleteStatPriorityAction(
+/** Deletes a ranking; the class it belonged to is where the edit page goes back to. */
+async function removePriority(
   priorityId: number,
-): Promise<ActionState> {
-  let target = "/stat-prio";
+): Promise<{ state: ActionState; classEntryId: number | null }> {
+  let classEntryId: number | null = null;
   const state = await guarded(async () => {
     const db = getDb();
     const actor = await actorForAction();
-    target = classPage(getStatPriority(db, actor, priorityId).classEntryId);
-    deleteStatPriority(db, actor, priorityId);
+    const id = parseArg(idArg, priorityId);
+    classEntryId = getStatPriority(db, actor, id).classEntryId;
+    deleteStatPriority(db, actor, id);
     return { ok: true };
   });
-  if (state.ok) {
-    revalidatePath("/stat-prio");
-    redirect(target);
+  revalidatePages(PAGE_GROUPS.statPriorities);
+  return { state, classEntryId };
+}
+
+/** Delete from the edit page, then back to the class on the overview. */
+export async function deleteStatPriorityAction(
+  priorityId: number,
+): Promise<ActionState> {
+  const { state, classEntryId } = await removePriority(priorityId);
+  if (state.ok && classEntryId !== null) {
+    redirect(classPage(classEntryId));
   }
   return state;
 }
 
-/** The stat page lists the recommendations; every character page shows those of its specs. */
-function revalidateSpecBuildPages(): void {
-  revalidatePath("/stat-prio");
-  revalidatePath("/charaktere", "layout");
+/** Delete from the overview's menu: the page stays where it is. */
+export async function removeStatPriorityAction(
+  priorityId: number,
+): Promise<ActionState> {
+  return (await removePriority(priorityId)).state;
 }
 
 export async function createSpecBuildAction(
@@ -118,7 +130,7 @@ export async function createSpecBuildAction(
       : { ok: false, errors: result.errors };
   });
   if (state.ok) {
-    revalidateSpecBuildPages();
+    revalidatePages(PAGE_GROUPS.specBuilds);
   }
   return state;
 }
@@ -130,22 +142,6 @@ export async function deleteSpecBuildAction(
     deleteSpecBuild(getDb(), await actorForAction(), parseArg(idArg, buildId));
     return { ok: true };
   });
-  revalidateSpecBuildPages();
-  return state;
-}
-
-/** Delete from the overview's menu: the page stays where it is. */
-export async function removeStatPriorityAction(
-  priorityId: number,
-): Promise<ActionState> {
-  const state = await guarded(async () => {
-    deleteStatPriority(
-      getDb(),
-      await actorForAction(),
-      parseArg(idArg, priorityId),
-    );
-    return { ok: true };
-  });
-  revalidatePath("/stat-prio");
+  revalidatePages(PAGE_GROUPS.specBuilds);
   return state;
 }
