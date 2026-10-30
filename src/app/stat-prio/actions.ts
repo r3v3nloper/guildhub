@@ -13,6 +13,7 @@ import { getDb, type AppDatabase } from "@/lib/db/client";
 import {
   createStatPriority,
   deleteStatPriority,
+  getStatPriority,
   updateStatPriority,
   type StatPriorityInput,
   type StatPriorityResult,
@@ -30,16 +31,26 @@ function inputOf(formData: FormData): StatPriorityInput {
   };
 }
 
+/** The overview with the class picked, where officers came from. */
+function classPage(classEntryId: number): string {
+  return `/stat-prio?klasse=${classEntryId}`;
+}
+
 async function saveAction(
-  save: (db: AppDatabase, actor: Actor) => StatPriorityResult,
+  save: (
+    db: AppDatabase,
+    actor: Actor,
+  ) => { result: StatPriorityResult; classEntryId: number },
 ): Promise<ActionState> {
+  let target = "/stat-prio";
   const state = await guarded(async () => {
-    const result = save(getDb(), await actorForAction());
+    const { result, classEntryId } = save(getDb(), await actorForAction());
+    target = classPage(classEntryId);
     return result.ok ? { ok: true } : { ok: false, errors: result.errors };
   });
   if (state.ok) {
     revalidatePath("/stat-prio");
-    redirect("/stat-prio");
+    redirect(target);
   }
   return state;
 }
@@ -49,9 +60,10 @@ export async function createStatPriorityAction(
   _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  return saveAction((db, actor) =>
-    createStatPriority(db, actor, classEntryId, inputOf(formData)),
-  );
+  return saveAction((db, actor) => ({
+    result: createStatPriority(db, actor, classEntryId, inputOf(formData)),
+    classEntryId,
+  }));
 }
 
 export async function updateStatPriorityAction(
@@ -59,21 +71,26 @@ export async function updateStatPriorityAction(
   _previous: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  return saveAction((db, actor) =>
-    updateStatPriority(db, actor, priorityId, inputOf(formData)),
-  );
+  return saveAction((db, actor) => ({
+    classEntryId: getStatPriority(db, actor, priorityId).classEntryId,
+    result: updateStatPriority(db, actor, priorityId, inputOf(formData)),
+  }));
 }
 
 export async function deleteStatPriorityAction(
   priorityId: number,
 ): Promise<ActionState> {
+  let target = "/stat-prio";
   const state = await guarded(async () => {
-    deleteStatPriority(getDb(), await actorForAction(), priorityId);
+    const db = getDb();
+    const actor = await actorForAction();
+    target = classPage(getStatPriority(db, actor, priorityId).classEntryId);
+    deleteStatPriority(db, actor, priorityId);
     return { ok: true };
   });
   if (state.ok) {
     revalidatePath("/stat-prio");
-    redirect("/stat-prio");
+    redirect(target);
   }
   return state;
 }
@@ -114,5 +131,21 @@ export async function deleteSpecBuildAction(
     return { ok: true };
   });
   revalidateSpecBuildPages();
+  return state;
+}
+
+/** Delete from the overview's menu: the page stays where it is. */
+export async function removeStatPriorityAction(
+  priorityId: number,
+): Promise<ActionState> {
+  const state = await guarded(async () => {
+    deleteStatPriority(
+      getDb(),
+      await actorForAction(),
+      parseArg(idArg, priorityId),
+    );
+    return { ok: true };
+  });
+  revalidatePath("/stat-prio");
   return state;
 }

@@ -1,4 +1,4 @@
-import { DeleteForm } from "@/components/ui/DeleteForm";
+import { RequestMenu } from "@/components/guild/RequestMenu";
 import type { SpecBuildView } from "@/lib/guild/spec-builds";
 import { de } from "@/i18n/de";
 import { deleteSpecBuildAction } from "@/app/stat-prio/actions";
@@ -28,42 +28,52 @@ export function SpecBuildList({
             </span>
             <ul className="flex flex-col gap-1.5">
               {ofSpec.map((build) => (
-                <li
-                  key={build.id}
-                  className="flex items-start justify-between gap-2 text-sm"
-                >
-                  <span className="flex flex-col gap-0.5">
-                    <a
-                      href={build.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 font-semibold text-accent-strong hover:text-white"
-                    >
-                      {build.title}
-                      <i
-                        className="pi pi-external-link text-[10px]"
-                        aria-hidden
-                      />
-                      <span className="sr-only">{de.specBuilds.open}</span>
-                    </a>
-                    {build.notes && (
-                      <span className="text-xs whitespace-pre-line text-muted">
-                        {build.notes}
-                      </span>
-                    )}
-                  </span>
-                  {canEdit && (
-                    <DeleteForm
-                      action={deleteSpecBuildAction.bind(null, build.id)}
-                      question={de.specBuilds.deleteConfirm}
-                    />
-                  )}
-                </li>
+                <BuildRow key={build.id} build={build} canEdit={canEdit} />
               ))}
             </ul>
           </div>
         );
       })}
     </div>
+  );
+}
+
+/** One recommendation: the link to the build, its note, and delete for officers. */
+export function BuildRow({
+  build,
+  canEdit,
+}: {
+  build: SpecBuildView;
+  canEdit: boolean;
+}) {
+  return (
+    <li className="flex items-start justify-between gap-2 text-sm">
+      <span className="flex min-w-0 flex-col gap-0.5 py-1">
+        <a
+          href={build.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 font-semibold text-accent-strong hover:text-white"
+        >
+          {build.title}
+          <i className="pi pi-external-link text-[10px]" aria-hidden />
+          <span className="sr-only">{de.specBuilds.open}</span>
+        </a>
+        {build.notes && (
+          <span className="text-xs whitespace-pre-line text-muted">
+            {build.notes}
+          </span>
+        )}
+      </span>
+      {canEdit && (
+        <span className="-my-1 -mr-2">
+          <RequestMenu
+            label={de.specBuilds.menuFor(build.title)}
+            question={de.specBuilds.deleteConfirm}
+            onDelete={deleteSpecBuildAction.bind(null, build.id)}
+          />
+        </span>
+      )}
+    </li>
   );
 }

@@ -100,17 +100,49 @@ export const requests = {
 
 export const statPriorities = {
   title: "Stat-Prioritäten",
+  intro:
+    "Welche Stats zählen und welche Builds die Officers empfehlen – pro Klasse.",
   hint: "Welche Stats für welche Klasse in welcher Reihenfolge zählen. Officers pflegen sie.",
+  classPicker: "Klasse",
+  counts: (priorities: number, builds: number) =>
+    priorities + builds === 0
+      ? "noch leer"
+      : [
+          priorities > 0 &&
+            `${priorities} ${priorities === 1 ? "Priorität" : "Prioritäten"}`,
+          builds > 0 && `${builds} ${builds === 1 ? "Build" : "Builds"}`,
+        ]
+          .filter(Boolean)
+          .join(" · "),
+  yourClass: "Deine Klasse",
+  yourCharacters: (names: string) => `Deine Charaktere: ${names}`,
   empty: "Noch keine Stat-Priorität.",
+  emptyMember: (className: string) =>
+    `Für ${className} haben die Officers noch keine Stat-Priorität hinterlegt.`,
+  emptyOfficer:
+    "Noch keine Stat-Priorität. Leg die erste an, zum Beispiel für PvE oder Tank.",
   add: "Stat-Priorität hinzufügen",
+  addShort: "Stat-Priorität",
   edit: "Stat-Priorität bearbeiten",
+  menuFor: (title: string) => `Weitere Aktionen für ${title}`,
   variant: "Variante",
   variantHint: "Zum Beispiel „PvE“, „PvP“ oder „Tank“.",
   stats: "Stats",
-  statsHint: "Einer pro Zeile, der wichtigste zuerst.",
+  statsHint:
+    "Der wichtigste zuerst. Mit den Pfeilen sortierst du um, Enter fügt hinzu.",
+  addStat: "Stat hinzufügen",
+  addStatPlaceholder: "z. B. Stärke oder Trefferwertung bis 9 %",
+  statsEmpty: "Noch keine Stats. Füg den wichtigsten zuerst hinzu.",
+  usedElsewhere: "Schon verwendet",
+  moveUp: (stat: string) => `${stat} nach oben`,
+  moveDown: (stat: string) => `${stat} nach unten`,
+  removeStat: (stat: string) => `${stat} entfernen`,
   notes: "Notiz",
   source: "Quelle (Link)",
-  sourceLink: "Quelle öffnen",
+  sourceLink: "Quelle",
+  backTo: (className: string) => `Zurück zu ${className}`,
+  deleteTitle: "Stat-Priorität löschen",
+  deleteHint: "Weg ist weg: Die Gilde sieht diese Rangfolge danach nicht mehr.",
   deleteConfirm: "Diese Stat-Priorität löschen?",
   ofClass: "Stat-Prioritäten der Klasse",
 } as const;
@@ -120,13 +152,18 @@ export const specBuilds = {
   hint: "Von den Officers pro Spezialisierung empfohlen, z. B. als Link zum Talentrechner.",
   ofCharacter: "Build-Empfehlungen der Gilde",
   empty: "Noch keine Build-Empfehlung.",
+  emptyMember: "Für diese Klasse gibt es noch keine Build-Empfehlungen.",
+  noneForSpec: "Noch kein Build für diese Spezialisierung.",
   add: "Build-Empfehlung hinzufügen",
+  addFor: (spec: string) => `Build für ${spec}`,
+  yourSpec: "Deine Spec",
   spec: "Spezialisierung",
   buildTitle: "Titel",
   titleHint: "Zum Beispiel „Leveln“, „Dungeon“ oder „Raid“.",
   url: "Link",
   notes: "Notiz",
   open: "Build öffnen",
+  menuFor: (title: string) => `Weitere Aktionen für ${title}`,
   deleteConfirm: "Diese Build-Empfehlung löschen?",
   offSpec: "Off-Spec",
 } as const;

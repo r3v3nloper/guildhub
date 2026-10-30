@@ -11,8 +11,11 @@ import {
   deleteStatPriority,
   listStatPriorities,
   createStatPriority,
+  statsInUse,
   updateStatPriority,
+  type ClassStatPriorities,
   type StatPriorityInput,
+  type StatPriorityRow,
 } from "./stat-priorities";
 
 const input: StatPriorityInput = {
@@ -119,5 +122,20 @@ describe("stat priorities", () => {
     expect(() =>
       deleteStatPriority(fixture.db, fixture.officer, priority.id),
     ).toThrow(NotFoundError);
+  });
+});
+
+describe("stats in use", () => {
+  it("lists every stat once, the most used first", () => {
+    // Arrange
+    const ranking = (stats: string[]) =>
+      ({ stats }) as unknown as StatPriorityRow;
+    const classes = [
+      { priorities: [ranking(["Tempo", "Stärke"]), ranking(["Stärke"])] },
+      { priorities: [ranking(["Ausdauer"])] },
+    ] as unknown as ClassStatPriorities[];
+
+    // Act & Assert
+    expect(statsInUse(classes)).toEqual(["Stärke", "Ausdauer", "Tempo"]);
   });
 });

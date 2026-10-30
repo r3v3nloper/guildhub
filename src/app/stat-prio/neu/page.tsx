@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { StatPriorityForm } from "@/components/guild/StatPriorityForm";
+import { StatPriorityHeader } from "@/components/guild/StatPriorityHeader";
 import { PageSuspense } from "@/components/ui/PageSuspense";
-import { PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
-import { getClassForPriority } from "@/lib/guild/stat-priorities";
+import {
+  getClassForPriority,
+  listStatPriorities,
+  statsInUse,
+} from "@/lib/guild/stat-priorities";
 import { orNotFound } from "@/lib/not-found";
-import { localize } from "@/i18n/localize";
 import { idSearchParam } from "@/lib/search-params";
 import { de } from "@/i18n/de";
 import { createStatPriorityAction } from "../actions";
@@ -18,20 +21,21 @@ async function NewStatPriorityContent({
   searchParams,
 }: PageProps<"/stat-prio/neu">) {
   const actor = await requireActor();
+  const db = getDb();
   const classEntryId = idSearchParam((await searchParams).klasse);
   if (classEntryId === undefined) {
     notFound();
   }
-  const entry = orNotFound(() =>
-    getClassForPriority(getDb(), actor, classEntryId),
-  );
+  const entry = orNotFound(() => getClassForPriority(db, actor, classEntryId));
 
   return (
-    <div className="flex flex-col gap-4">
-      <PageHeader title={`${de.statPriorities.add}: ${localize(entry.name)}`} />
+    <div className="flex max-w-2xl flex-col gap-4">
+      <StatPriorityHeader classEntry={entry} title={de.statPriorities.add} />
       <StatPriorityForm
         action={createStatPriorityAction.bind(null, entry.id)}
-        values={{ title: "", stats: "", notes: "", source: "" }}
+        values={{ title: "", stats: [], notes: "", source: "" }}
+        suggestions={statsInUse(listStatPriorities(db, [entry.gameId]))}
+        cancelHref={`/stat-prio?klasse=${entry.id}`}
       />
     </div>
   );

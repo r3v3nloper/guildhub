@@ -258,3 +258,19 @@ function auditPriority(
 ): void {
   recordAudit(db, actor.userId, action, title, { classEntryId });
 }
+
+/**
+ * Every stat the rankings use, the most used first, so a new ranking can pick the same
+ * names ("Trefferwertung", not "Hit" in one and "Treffer" in the other).
+ */
+export function statsInUse(classes: readonly ClassStatPriorities[]): string[] {
+  const counts = new Map<string, number>();
+  for (const stat of classes.flatMap((entry) =>
+    entry.priorities.flatMap((priority) => priority.stats),
+  )) {
+    counts.set(stat, (counts.get(stat) ?? 0) + 1);
+  }
+  return [...counts]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([stat]) => stat);
+}
