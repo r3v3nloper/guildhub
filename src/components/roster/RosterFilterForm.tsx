@@ -1,5 +1,9 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
 import { CheckboxField, SelectField } from "@/components/ui/SelectField";
-import { Button, ButtonLink, Field } from "@/components/ui/ui";
+import { Field } from "@/components/ui/ui";
 import type { CatalogOption } from "@/lib/roster/form-options";
 import { OUTDATED_FILTER_KEY, type RosterFilters } from "@/lib/roster/roster";
 import { de } from "@/i18n/de";
@@ -16,18 +20,21 @@ function FilterSelect({
   value,
   options,
   withOutdated,
+  onChange,
 }: {
   name: string;
   label: string;
   value: string | undefined;
   options: Array<{ key: string; label: string }>;
   withOutdated: boolean;
+  onChange: () => void;
 }) {
   return (
     <Field label={label}>
       <SelectField
         name={name}
         defaultValue={value ?? ""}
+        onChange={onChange}
         emptyLabel={de.common.all}
         options={[
           ...options.map((option) => ({
@@ -43,7 +50,10 @@ function FilterSelect({
   );
 }
 
-/** A plain GET form, so filters live in the URL and survive reloads and sharing. */
+/**
+ * Filters in the URL, so they survive reloads and sharing. Every change applies at
+ * once; without JavaScript it is a plain GET form (Enter submits).
+ */
 export function RosterFilterForm({
   filters,
   choices,
@@ -56,9 +66,36 @@ export function RosterFilterForm({
     key,
     label,
   }));
+  const router = useRouter();
+  const form = useRef<HTMLFormElement>(null);
+  const isFiltered = Boolean(
+    filters.role ||
+    filters.classKey ||
+    filters.professionKey ||
+    filters.factionKey ||
+    filters.showFormer,
+  );
+  // The hidden inputs follow the choice on the next render, so read the form then.
+  const apply = () =>
+    setTimeout(() => {
+      if (!form.current) {
+        return;
+      }
+      const params = new URLSearchParams();
+      for (const [name, value] of new FormData(form.current)) {
+        if (typeof value === "string" && value) {
+          params.set(name, value);
+        }
+      }
+      const search = params.toString();
+      router.replace(search ? `/roster?${search}` : "/roster", {
+        scroll: false,
+      });
+    }, 0);
 
   return (
     <form
+      ref={form}
       method="get"
       className="flex flex-col gap-3 rounded-[20px] border border-border bg-surface p-4"
     >
@@ -69,6 +106,7 @@ export function RosterFilterForm({
           value={filters.role}
           options={roles}
           withOutdated={false}
+          onChange={apply}
         />
         {choices && (
           <>
@@ -78,6 +116,7 @@ export function RosterFilterForm({
               value={filters.classKey}
               options={choices.classes}
               withOutdated
+              onChange={apply}
             />
             {choices.professions.length > 0 && (
               <FilterSelect
@@ -86,6 +125,7 @@ export function RosterFilterForm({
                 value={filters.professionKey}
                 options={choices.professions}
                 withOutdated
+                onChange={apply}
               />
             )}
             {choices.factions.length > 0 && (
@@ -95,6 +135,7 @@ export function RosterFilterForm({
                 value={filters.factionKey}
                 options={choices.factions}
                 withOutdated={false}
+                onChange={apply}
               />
             )}
           </>
@@ -109,11 +150,17 @@ export function RosterFilterForm({
           value="1"
           label={de.roster.showFormer}
           defaultChecked={filters.showFormer}
+          onChange={apply}
         />
-        <Button>{de.common.filter}</Button>
-        <ButtonLink href="/roster" variant="secondary">
-          {de.common.reset}
-        </ButtonLink>
+        {isFiltered && (
+          <a
+            href="/roster"
+            className="flex min-h-10 items-center gap-1.5 rounded-xl px-3 text-sm font-semibold text-soft hover:bg-raised hover:text-white"
+          >
+            <i className="pi pi-times text-xs" aria-hidden />
+            {de.common.reset}
+          </a>
+        )}
       </div>
     </form>
   );

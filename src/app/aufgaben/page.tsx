@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { DeleteForm } from "@/components/ui/DeleteForm";
+import { RequestMenu } from "@/components/guild/RequestMenu";
 import { PageSuspense } from "@/components/ui/PageSuspense";
-import { Badge, ButtonLink, Card, PageHeader } from "@/components/ui/ui";
+import { ButtonLink, PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { listGuildGames } from "@/lib/roster/game-catalog";
@@ -28,10 +28,12 @@ async function TasksContent() {
   const sections = [
     {
       title: de.tasks.guildTasks,
+      empty: de.tasks.emptyGuild,
       tasks: tasks.filter((task) => task.source === "guild"),
     },
     {
       title: de.tasks.ownTasks,
+      empty: de.tasks.emptyOwn,
       tasks: tasks.filter((task) => task.source === "private"),
     },
   ];
@@ -40,15 +42,21 @@ async function TasksContent() {
     <div className="flex flex-col gap-4">
       <PageHeader
         title={de.tasks.title}
+        meta={<p className="max-w-3xl text-sm text-muted">{de.tasks.hint}</p>}
         actions={<ButtonLink href="/aufgaben/neu">+ {de.tasks.new}</ButtonLink>}
       />
-      <p className="text-sm text-muted">{de.tasks.hint}</p>
       {sections.map((section) => (
-        <Card key={section.title} title={section.title}>
+        <section key={section.title} className="flex flex-col gap-2.5">
+          <h2 className="text-[13px] font-bold tracking-[0.1em] text-muted uppercase">
+            {section.title}
+            {section.tasks.length > 0 && ` · ${section.tasks.length}`}
+          </h2>
           {section.tasks.length === 0 ? (
-            <p className="text-sm text-muted">{de.tasks.empty}</p>
+            <p className="rounded-[18px] border border-dashed border-[#2c2645] px-4.5 py-4 text-sm text-muted">
+              {section.empty}
+            </p>
           ) : (
-            <ul className="divide-y divide-border">
+            <ul className="flex flex-col divide-y divide-border rounded-[20px] border border-border bg-surface px-4.5">
               {section.tasks.map((task) => (
                 <TaskRow
                   key={task.id}
@@ -63,7 +71,7 @@ async function TasksContent() {
               ))}
             </ul>
           )}
-        </Card>
+        </section>
       ))}
     </div>
   );
@@ -78,38 +86,49 @@ function TaskRow({
   gameName: string;
   canEdit: boolean;
 }) {
+  const title = localize(task.title);
+  const chip =
+    "rounded-full bg-chip px-2.5 py-0.5 text-[11.5px] font-semibold text-soft";
   const details = (
     <>
-      <span className="font-medium">{localize(task.title)}</span>
-      <span className="flex flex-wrap gap-x-2 text-xs text-muted">
-        <span>{gameName}</span>
-        <span>{de.tasks.kinds[task.kind]}</span>
-        <span>{de.tasks.scopes[task.scope]}</span>
-        {task.rule && <span>{describeResetRule(task.rule)}</span>}
+      <span className="text-[15px] font-bold text-white">{title}</span>
+      <span className="flex flex-wrap items-center gap-1.5">
+        <span className={chip}>{de.tasks.kinds[task.kind]}</span>
+        <span className={chip}>{de.tasks.scopes[task.scope]}</span>
+        {task.category && (
+          <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-[11.5px] font-bold text-[#d9ccff]">
+            {task.category}
+          </span>
+        )}
+        <span className="text-xs text-muted">
+          {gameName}
+          {task.rule && ` · ${describeResetRule(task.rule)}`}
+        </span>
       </span>
     </>
   );
   return (
-    <li className="flex flex-wrap items-center justify-between gap-2 py-2">
+    <li className="flex items-center justify-between gap-2 py-3">
       {canEdit ? (
         <Link
           href={`/aufgaben/${task.id}`}
-          className="flex flex-col hover:text-accent"
+          className="flex min-w-0 flex-col gap-1.5 hover:[&>span:first-child]:text-accent-strong"
         >
           {details}
         </Link>
       ) : (
-        <span className="flex flex-col">{details}</span>
+        <span className="flex min-w-0 flex-col gap-1.5">{details}</span>
       )}
-      <span className="flex items-center gap-2">
-        {task.category && <Badge>{task.category}</Badge>}
-        {canEdit && (
-          <DeleteForm
-            action={deleteCustomTaskAction.bind(null, task.id)}
+      {canEdit && (
+        <span className="-mr-2 shrink-0">
+          <RequestMenu
+            label={de.tasks.menuFor(title)}
             question={de.tasks.deleteConfirm}
+            editHref={`/aufgaben/${task.id}`}
+            onDelete={deleteCustomTaskAction.bind(null, task.id)}
           />
-        )}
-      </span>
+        </span>
+      )}
     </li>
   );
 }

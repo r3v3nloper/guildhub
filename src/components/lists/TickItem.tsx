@@ -3,7 +3,6 @@
 import { Checkbox } from "primereact/checkbox";
 import { useOptimistic } from "react";
 import { useOptimisticAction } from "@/components/ui/use-optimistic-action";
-import { Button } from "@/components/ui/ui";
 import type { ActionState } from "@/lib/actions/action-state";
 import { de } from "@/i18n/de";
 
@@ -49,14 +48,15 @@ export function TickItem({
         </label>
         {meta && <span className="text-xs text-muted">{meta}</span>}
         {onDelete && (
-          <Button
+          <button
             type="button"
-            variant="secondary"
-            icon="pi pi-times"
-            text
             aria-label={`${de.common.delete}: ${label}`}
+            title={de.common.delete}
             onClick={() => run(onDelete)}
-          />
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-[#8f88aa] hover:bg-raised hover:text-danger"
+          >
+            <i className="pi pi-times text-xs" aria-hidden />
+          </button>
         )}
       </div>
       {error && (

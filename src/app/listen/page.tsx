@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { TickItem } from "@/components/lists/TickItem";
 import { VisibilityField } from "@/components/lists/VisibilityField";
 import { ActionForm } from "@/components/ui/ActionForm";
-import { DeleteForm } from "@/components/ui/DeleteForm";
+import { RequestMenu } from "@/components/guild/RequestMenu";
 import { PageSuspense } from "@/components/ui/PageSuspense";
 import { Badge, Button, Card, PageHeader, TextInput } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
@@ -37,27 +37,43 @@ async function TodoListsContent() {
 
   return (
     <div className="flex flex-col gap-4">
-      <PageHeader title={de.todos.title} />
-      <p className="text-sm text-muted">{de.todos.hint}</p>
-      <ActionForm action={createTodoListAction}>
-        <TextInput
-          name="name"
-          aria-label={de.todos.listName}
-          placeholder={de.todos.listName}
-          required
-          maxLength={60}
-          className="max-w-xs"
-        />
-        <div className="w-40">
-          <VisibilityField defaultValue="private" />
-        </div>
-        <Button icon="pi pi-plus" label={de.todos.newList} />
-      </ActionForm>
-      {lists.length === 0 && <p className="text-muted">{de.todos.empty}</p>}
+      <PageHeader
+        title={de.todos.title}
+        meta={<p className="max-w-3xl text-sm text-muted">{de.todos.hint}</p>}
+      />
+      <section
+        aria-label={de.todos.newList}
+        className="rounded-[20px] border border-border bg-surface p-4"
+      >
+        <ActionForm
+          action={createTodoListAction}
+          className="flex flex-wrap items-center gap-2"
+        >
+          <TextInput
+            name="name"
+            aria-label={de.todos.listName}
+            placeholder={de.todos.listName}
+            required
+            maxLength={60}
+            className="min-w-48 flex-1"
+          />
+          <div className="w-40">
+            <VisibilityField defaultValue="private" />
+          </div>
+          <Button icon="pi pi-plus" label={de.todos.newList} />
+        </ActionForm>
+      </section>
+      {lists.length === 0 && (
+        <p className="rounded-[18px] border border-dashed border-[#2c2645] px-4.5 py-4 text-sm text-muted">
+          {de.todos.empty}
+        </p>
+      )}
       {sections.map((section) => (
-        <section key={section.title} className="flex flex-col gap-3">
-          <h2 className="text-lg font-semibold">{section.title}</h2>
-          <div className="grid gap-4 md:grid-cols-2">
+        <section key={section.title} className="flex flex-col gap-2.5">
+          <h2 className="text-[13px] font-bold tracking-[0.1em] text-muted uppercase">
+            {section.title} · {section.lists.length}
+          </h2>
+          <div className="grid items-start gap-4 md:grid-cols-2">
             {section.lists.map((list) => (
               <TodoListCard key={list.id} list={list} />
             ))}
@@ -77,10 +93,13 @@ function TodoListCard({ list }: { list: TodoListView }) {
         <span className="flex items-center justify-between gap-2">
           {list.name}
           {list.canManage && (
-            <DeleteForm
-              action={deleteTodoListAction.bind(null, list.id)}
-              question={de.todos.deleteListConfirm}
-            />
+            <span className="-my-2 -mr-2">
+              <RequestMenu
+                label={de.todos.menuFor(list.name)}
+                question={de.todos.deleteListConfirm}
+                onDelete={deleteTodoListAction.bind(null, list.id)}
+              />
+            </span>
           )}
         </span>
       }

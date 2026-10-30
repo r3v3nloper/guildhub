@@ -68,6 +68,7 @@ export const common = {
   filter: "Filtern",
   reset: "Zurücksetzen",
   back: "Zurück",
+  backTo: (target: string) => `Zurück zu ${target}`,
 } as const;
 
 export const errors = {

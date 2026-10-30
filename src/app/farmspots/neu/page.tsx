@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { FarmSpotForm } from "@/components/lists/FarmSpotForm";
 import { PageSuspense } from "@/components/ui/PageSuspense";
-import { PageHeader } from "@/components/ui/ui";
+import { FormPage } from "@/components/ui/FormPage";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { readGameFilter } from "@/lib/game-filter";
@@ -17,13 +17,20 @@ async function NewFarmSpotContent() {
   const selected = await readGameFilter(games.map((game) => game.value));
 
   return (
-    <div className="flex flex-col gap-4">
-      <PageHeader title={de.farmSpots.new} />
+    <FormPage
+      backHref="/farmspots?ansicht=spots"
+      backLabel={de.common.backTo(de.farmSpots.views.spots)}
+      title={de.farmSpots.new}
+    >
       <FarmSpotForm
         action={saveFarmSpotAction.bind(null, undefined)}
         games={games}
         values={{
-          game: selected ?? games[0]?.value ?? "",
+          game:
+            selected ??
+            games.find((game) => game.professions.length > 0)?.value ??
+            games[0]?.value ??
+            "",
           profession: "",
           resource: "",
           zone: "",
@@ -34,7 +41,7 @@ async function NewFarmSpotContent() {
         }}
         isNew
       />
-    </div>
+    </FormPage>
   );
 }
 

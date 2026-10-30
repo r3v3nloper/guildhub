@@ -5,7 +5,9 @@ export const todos = {
   ownLists: "Meine Listen",
   rename: "Umbenennen",
   doneBy: (name: string) => `✓ ${name}`,
-  empty: "Noch keine Listen.",
+  empty:
+    "Noch keine Listen. Leg oben deine erste an – zum Beispiel für den nächsten Raid-Abend.",
+  menuFor: (name: string) => `Weitere Aktionen für ${name}`,
   newList: "Neue Liste",
   listName: "Name der Liste",
   newItem: "Neuer Eintrag",
@@ -69,6 +71,9 @@ export const checklists = {
   pin: "An die Übersicht anheften",
   unpin: "Von der Übersicht lösen",
   deleteConfirm: "Diese Checkliste löschen?",
+  deleteTitle: "Checkliste löschen",
+  deleteText:
+    "Entfernt die Checkliste mit allen Häkchen. Das lässt sich nicht rückgängig machen.",
   progress: (ticked: number, total: number) => `${ticked}/${total}`,
   preparation: "Vorbereitung",
   newRunHint: "Setzt nur deine Haken zurück.",

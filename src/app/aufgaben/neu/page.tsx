@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { CustomTaskForm } from "@/components/tasks/CustomTaskForm";
 import { PageSuspense } from "@/components/ui/PageSuspense";
-import { PageHeader } from "@/components/ui/ui";
+import { FormPage } from "@/components/ui/FormPage";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import {
@@ -18,15 +18,18 @@ async function NewTaskContent() {
   const games = taskFormGames(getDb(), actor, de.tasks.crossGame);
 
   return (
-    <div className="flex flex-col gap-4">
-      <PageHeader title={de.tasks.new} />
+    <FormPage
+      backHref="/aufgaben"
+      backLabel={de.common.backTo(de.tasks.title)}
+      title={de.tasks.new}
+    >
       <CustomTaskForm
         action={saveCustomTaskAction.bind(null, undefined)}
         games={games}
         values={newTaskFormValues(games)}
         isNew
       />
-    </div>
+    </FormPage>
   );
 }
 

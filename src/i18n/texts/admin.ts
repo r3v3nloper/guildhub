@@ -1,5 +1,12 @@
 export const admin = {
   title: "Admin",
+  sectionsLabel: "Bereiche",
+  syncStatus: {
+    success: "aktualisiert",
+    skipped: "aktuell",
+    error: "Fehler",
+  } as Record<string, string>,
+  olderAudit: (count: number) => `Ältere Einträge (${count})`,
   guild: "Gilde",
   guildName: "Gildenname",
   games: "Spiele",

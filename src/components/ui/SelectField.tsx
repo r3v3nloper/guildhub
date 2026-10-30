@@ -139,6 +139,7 @@ interface CheckboxFieldProps {
   defaultChecked?: boolean;
   /** Submitted value when checked; GET forms use it, e.g. "1". */
   value?: string;
+  onChange?: (checked: boolean) => void;
 }
 
 /** A labelled checkbox that submits like a native one ("on" or the given value). */
@@ -147,6 +148,7 @@ export function CheckboxField({
   label,
   defaultChecked = false,
   value = "on",
+  onChange,
 }: CheckboxFieldProps) {
   const [checked, setChecked] = useState(defaultChecked);
   const id = `check-${name}`;
@@ -156,7 +158,10 @@ export function CheckboxField({
       <PrimeCheckbox
         inputId={id}
         checked={checked}
-        onChange={(event) => setChecked(Boolean(event.checked))}
+        onChange={(event) => {
+          setChecked(Boolean(event.checked));
+          onChange?.(Boolean(event.checked));
+        }}
       />
       <label htmlFor={id}>{label}</label>
       {checked && <input type="hidden" name={name} value={value} />}

@@ -44,7 +44,10 @@ export function MembersSection({
           const canPurge = permissions.purgeMemberData(actor, member).allowed;
 
           return (
-            <li key={member.userId} className="flex flex-col gap-2 py-3">
+            <li
+              key={member.userId}
+              className="flex flex-col gap-2 py-3 md:flex-row md:items-center md:justify-between"
+            >
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-medium">{member.name}</span>
                 <Badge tone={member.role === "member" ? "neutral" : "accent"}>
@@ -53,9 +56,11 @@ export function MembersSection({
                 {member.status === "disabled" && (
                   <Badge tone="danger">{de.badges.former}</Badge>
                 )}
-                <span className="text-xs text-muted">{member.discordId}</span>
+                <span className="text-xs text-[#8f88aa] tabular-nums">
+                  {member.discordId}
+                </span>
               </div>
-              <div className="flex flex-wrap items-start gap-3">
+              <div className="flex flex-wrap items-start gap-2 md:justify-end">
                 {canChangeRole && (
                   <ActionForm
                     action={changeRoleAction.bind(null, member.userId)}

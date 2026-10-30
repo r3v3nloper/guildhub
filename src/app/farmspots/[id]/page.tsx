@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { FarmSpotForm } from "@/components/lists/FarmSpotForm";
 import { PageSuspense } from "@/components/ui/PageSuspense";
-import { PageHeader } from "@/components/ui/ui";
+import { FormPage } from "@/components/ui/FormPage";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { professionGameOptions } from "@/lib/roster/profession-options";
@@ -19,8 +19,11 @@ async function EditFarmSpotContent({ params }: PageProps<"/farmspots/[id]">) {
   const spot = orNotFound(() => getEditableFarmSpot(db, actor, spotId));
 
   return (
-    <div className="flex flex-col gap-4">
-      <PageHeader title={de.farmSpots.editTitle} />
+    <FormPage
+      backHref="/farmspots?ansicht=spots"
+      backLabel={de.common.backTo(de.farmSpots.views.spots)}
+      title={de.farmSpots.editTitle}
+    >
       <FarmSpotForm
         action={saveFarmSpotAction.bind(null, spot.id)}
         games={professionGameOptions(db, actor.guildId, false)}
@@ -36,7 +39,7 @@ async function EditFarmSpotContent({ params }: PageProps<"/farmspots/[id]">) {
         }}
         isNew={false}
       />
-    </div>
+    </FormPage>
   );
 }
 

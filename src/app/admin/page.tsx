@@ -47,6 +47,30 @@ async function AdminContent() {
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={de.admin.title} />
+      <nav
+        aria-label={de.admin.sectionsLabel}
+        className="-mx-4 -mt-4 flex gap-1.5 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0"
+      >
+        {[
+          ["gilde", de.admin.guild],
+          ["spiele", de.admin.games],
+          ["mitglieder", de.admin.members],
+          ["allowlist", de.admin.allowlist],
+          ["packs", de.admin.packs],
+          ...(permissions.downloadBackup(actor).allowed
+            ? [["backup", de.admin.backup]]
+            : []),
+          ["protokoll", de.admin.audit],
+        ].map(([id, label]) => (
+          <a
+            key={id}
+            href={`#${id}`}
+            className="flex min-h-9 shrink-0 items-center rounded-full border border-[#2c2645] bg-raised px-3.5 text-[13px] font-semibold text-foreground hover:border-[#3a3358] hover:text-white"
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
 
       {failing.length > 0 && (
         <div
@@ -62,43 +86,57 @@ async function AdminContent() {
         </div>
       )}
 
-      <Card title={de.admin.guild}>
-        <ActionForm action={renameGuildAction}>
-          <label className="flex flex-1 flex-col gap-1 text-sm">
-            <span className="font-medium">{de.admin.guildName}</span>
-            <TextInput
-              name="name"
-              defaultValue={guild.name}
-              required
-              maxLength={60}
-            />
-          </label>
-          <Button>{de.common.save}</Button>
-        </ActionForm>
-      </Card>
-
-      <GamesSection games={listGuildGames(db, actor.guildId)} />
-      <MembersSection actor={actor} members={members} />
-      <AllowlistSection pending={listPendingAllowlist(db)} />
-      <PacksSection
-        latest={latestSyncPerGame(db)}
-        history={listSyncLog(db)}
-        todoEntries={listTodoEntries(db)}
-      />
-      {permissions.downloadBackup(actor).allowed && (
-        <Card title={de.admin.backup}>
-          <p className="mb-3 text-sm text-muted">{de.admin.backupHint}</p>
-          <ButtonLink href="/admin/backup" variant="secondary">
-            {de.admin.backupDownload}
-          </ButtonLink>
+      <div id="gilde" className="scroll-mt-6">
+        <Card title={de.admin.guild}>
+          <ActionForm action={renameGuildAction}>
+            <label className="flex flex-1 flex-col gap-1 text-sm">
+              <span className="font-medium">{de.admin.guildName}</span>
+              <TextInput
+                name="name"
+                defaultValue={guild.name}
+                required
+                maxLength={60}
+              />
+            </label>
+            <Button>{de.common.save}</Button>
+          </ActionForm>
         </Card>
+      </div>
+
+      <div id="spiele" className="scroll-mt-6">
+        <GamesSection games={listGuildGames(db, actor.guildId)} />
+      </div>
+      <div id="mitglieder" className="scroll-mt-6">
+        <MembersSection actor={actor} members={members} />
+      </div>
+      <div id="allowlist" className="scroll-mt-6">
+        <AllowlistSection pending={listPendingAllowlist(db)} />
+      </div>
+      <div id="packs" className="scroll-mt-6">
+        <PacksSection
+          latest={latestSyncPerGame(db)}
+          history={listSyncLog(db)}
+          todoEntries={listTodoEntries(db)}
+        />
+      </div>
+      {permissions.downloadBackup(actor).allowed && (
+        <div id="backup" className="scroll-mt-6">
+          <Card title={de.admin.backup}>
+            <p className="mb-3 text-sm text-muted">{de.admin.backupHint}</p>
+            <ButtonLink href="/admin/backup" variant="secondary">
+              {de.admin.backupDownload}
+            </ButtonLink>
+          </Card>
+        </div>
       )}
-      <AuditSection
-        entries={listAudit(db)}
-        memberNames={
-          new Map(members.map((member) => [member.userId, member.name]))
-        }
-      />
+      <div id="protokoll" className="scroll-mt-6">
+        <AuditSection
+          entries={listAudit(db)}
+          memberNames={
+            new Map(members.map((member) => [member.userId, member.name]))
+          }
+        />
+      </div>
     </div>
   );
 }

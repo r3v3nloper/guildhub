@@ -3,7 +3,7 @@ import { ChecklistForm } from "@/components/lists/ChecklistForm";
 import { ActionForm } from "@/components/ui/ActionForm";
 import { ConfirmButton } from "@/components/ui/ConfirmButton";
 import { PageSuspense } from "@/components/ui/PageSuspense";
-import { PageHeader } from "@/components/ui/ui";
+import { FormPage } from "@/components/ui/FormPage";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { getEditableChecklist } from "@/lib/lists/checklists";
@@ -26,8 +26,26 @@ async function EditChecklistContent({
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      <PageHeader title={de.checklists.editTitle} />
+    <FormPage
+      backHref={`/dungeons/${checklist.id}`}
+      backLabel={de.common.backTo(checklist.name)}
+      title={de.checklists.editTitle}
+      danger={{
+        title: de.checklists.deleteTitle,
+        text: de.checklists.deleteText,
+        action: (
+          <ActionForm action={deleteChecklistAction.bind(null, checklist.id)}>
+            <ConfirmButton
+              question={de.checklists.deleteConfirm}
+              variant="danger"
+              text
+            >
+              {de.common.delete}
+            </ConfirmButton>
+          </ActionForm>
+        ),
+      }}
+    >
       <ChecklistForm
         action={saveChecklistAction.bind(null, checklist.id)}
         games={listGuildGames(db, actor.guildId).map((game) => ({
@@ -43,12 +61,7 @@ async function EditChecklistContent({
         }}
         isNew={false}
       />
-      <ActionForm action={deleteChecklistAction.bind(null, checklist.id)}>
-        <ConfirmButton question={de.checklists.deleteConfirm}>
-          {de.common.delete}
-        </ConfirmButton>
-      </ActionForm>
-    </div>
+    </FormPage>
   );
 }
 

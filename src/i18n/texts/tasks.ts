@@ -2,6 +2,11 @@ export const tasks = {
   title: "Aufgaben",
   hint: "Eigene Aufgaben siehst nur du. Gildenaufgaben legen Officers an; sie gelten für alle und sind erledigt, sobald jemand sie abhakt. Beide erscheinen in der Übersicht.",
   empty: "Keine Aufgaben.",
+  emptyGuild:
+    "Noch keine Gildenaufgaben. Officers legen sie für alle an, z. B. einen wöchentlichen Raid.",
+  emptyOwn:
+    "Noch keine eigenen Aufgaben. Leg eine an, wenn dir in der Übersicht etwas fehlt.",
+  menuFor: (title: string) => `Weitere Aktionen für ${title}`,
   guildTasks: "Gildenaufgaben",
   ownTasks: "Meine Aufgaben",
   new: "Neue Aufgabe",

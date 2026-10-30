@@ -69,7 +69,7 @@ export function PacksSection({
             <span className="flex items-center gap-2">
               <span className="font-medium">{entry.gameId}</span>
               <Badge tone={entry.status === "error" ? "danger" : "neutral"}>
-                {entry.status}
+                {de.admin.syncStatus[entry.status] ?? entry.status}
               </Badge>
               <span className="text-xs text-muted">
                 {formatDateTime(entry.startedAt)}
@@ -112,7 +112,7 @@ export function PacksSection({
             <li key={entry.id} className="flex flex-col">
               <span className="text-xs text-muted">
                 {formatDateTime(entry.startedAt)} · {entry.gameId} ·{" "}
-                {entry.status}
+                {de.admin.syncStatus[entry.status] ?? entry.status}
               </span>
               <SyncSummaryLine entry={entry} />
             </li>

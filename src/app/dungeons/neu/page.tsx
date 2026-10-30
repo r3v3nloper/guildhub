@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ChecklistForm } from "@/components/lists/ChecklistForm";
 import { PageSuspense } from "@/components/ui/PageSuspense";
-import { PageHeader } from "@/components/ui/ui";
+import { FormPage } from "@/components/ui/FormPage";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { readGameFilter } from "@/lib/game-filter";
@@ -37,8 +37,11 @@ async function NewChecklistContent() {
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      <PageHeader title={de.checklists.new} />
+    <FormPage
+      backHref="/dungeons"
+      backLabel={de.common.backTo(de.checklists.title)}
+      title={de.checklists.new}
+    >
       <ChecklistForm
         action={saveChecklistAction.bind(null, undefined)}
         games={games.map((game) => ({
@@ -55,7 +58,7 @@ async function NewChecklistContent() {
         }}
         isNew
       />
-    </div>
+    </FormPage>
   );
 }
 
