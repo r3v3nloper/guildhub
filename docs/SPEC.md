@@ -412,7 +412,8 @@ Pflichtfelder sind markiert, alle anderen sind optional mit dem genannten Defaul
   "capabilities": {                   // jeder Schalter Default false, außer characters (true)
     "characters": true, "classes": true, "races": false, "professions": true,
     "builds": true, "resets": true, "lockouts": false, "factions": true,
-    "servers": true, "guild_overview": true, "progress_tracking": true
+    "servers": true, "guild_overview": true, "progress_tracking": true,
+    "addon_import": false             // Abgleich per Spiel-Addon (7.3); braucht game_ref
   },
   "regions": [ { "id": "eu", "name": "Europa", "timezone": "Europe/Berlin" } ],
                                       // PFLICHT, wenn capabilities.resets = true
@@ -448,6 +449,8 @@ Pflichtfelder sind markiert, alle anderen sind optional mit dem genannten Defaul
 
 Gemeinsame optionale Felder **aller** Katalogeinträge, Reset-Regeln und Aufgaben:
 `deprecated` (Default false), `replaces` (Default []), `todo` (Default false).
+Klassen, Rassen, Fraktionen und Berufe haben zusätzlich `game_ref` (optional): die ID
+bzw. das Token, unter dem das Spiel selbst den Eintrag führt, für den Addon-Abgleich (7.3).
 `todo: true` bedeutet „Annahme, noch nicht im Spiel geprüft“. Die UI zeigt
 dafür ein kleines Badge „ungeprüft“, und der Admin-Bereich listet alle offenen
 `todo`-Einträge je Pack.
@@ -681,6 +684,66 @@ Fehler mitten im Sync.
 - **Endgültig löschen:** Nur ein Owner kann die Daten einer deaktivierten Person
   komplett löschen (mit Bestätigung durch Eingabe des Namens).
 
+### 7.3 Addon-Abgleich (Roster und Rezepte aus dem Spiel)
+
+Ziel: Stufe, Berufe und gelernte Rezepte müssen nicht mehr von Hand gepflegt werden.
+Ein Spiel-Addon sammelt sie, das Mitglied überträgt sie per Kopieren/Einfügen in
+GuildHub. Zuerst nur für WoW Forever, angelegt als Fähigkeit, die jedes Pack
+einschalten kann (Leitprinzip 2).
+
+**Warum Kopieren/Einfügen:** WoW-Addons haben keinen Netzwerkzugriff und schreiben
+nur in ihre SavedVariables (erst beim Ausloggen bzw. `/reload`). Ein Begleitprogramm,
+das diese Datei automatisch hochlädt, wäre bequemer, aber jedes Mitglied müsste es
+installieren. Es bleibt als spätere Ausbaustufe möglich (Phase 5), weil es denselben
+Export-String und denselben Import nutzen kann.
+
+**Im Spiel (Addon `GuildHub`, Lua, unter `addons/wow-forever/`):**
+- Merkt sich beim Einloggen pro Charakter Name, Realm, Fraktion, Rasse, Klasse und
+  Stufe, außerdem Berufe mit Fertigkeit aus dem Fertigkeitenfenster.
+- Rezepte kennt das Spiel nur, wenn das Berufsfenster offen ist. Das Addon liest sie
+  deshalb beim Öffnen jedes Berufsfensters aus. Jeder Beruf muss also einmal geöffnet
+  werden, danach nur noch bei neuen Rezepten.
+- Speichert die Daten **accountweit**, damit ein Export alle Charaktere dieses
+  WoW-Accounts enthält, die seit der Installation eingeloggt waren.
+- `/guildhub` öffnet ein Fenster mit dem Export-String (vorausgewählt, Strg+C),
+  dem Stand je Charakter („Rezepte zuletzt gelesen am …“) und den Berufen, deren
+  Fenster noch nie offen war.
+- Liest nichts über andere Spieler aus und sendet nichts in Chat- oder Addon-Kanäle.
+
+**Export-String:** `GH<Formatversion>:<game_id>:<Nutzdaten>` mit Prüfsumme, damit
+abgeschnittene Kopien auffallen. Die Nutzdaten verwenden die IDs des Spiels
+(Klassen- und Rassen-Token, Berufs-IDs, Spell-IDs der Rezepte). Die Formatversion
+wird nur bei inkompatiblen Änderungen erhöht. GuildHub nimmt die aktuelle und die
+vorherige Version an, damit nicht alle das Addon am selben Tag aktualisieren müssen.
+
+**Zuordnung im Pack:** Katalogeinträge bekommen ein optionales Feld `game_ref`
+(z. B. Klasse `"WARRIOR"`, Beruf `171`). Rezepte brauchen keins, ihre ID enthält die
+Spell-ID bereits (`<beruf>-<spellId>`, siehe Umsetzungsnotizen Phase 1). Ein Wert
+ohne passenden Katalogeintrag wird übersprungen und in der Vorschau genannt, nie
+geraten. Die Capability heißt `addon_import`.
+
+**In GuildHub (Seite „Aus dem Spiel übernehmen“, beim eigenen Charakter-Bereich):**
+1. Export-String einfügen. Der Server prüft Format, Prüfsumme, Größe und Spiel.
+2. **Vorschau** je Charakter, vor jeder Änderung: neu anlegen / ändern / unverändert,
+   mit den Feldern, die sich ändern, und den neuen Rezepten.
+3. Charaktere werden über Spiel + Realm + Name den **eigenen** Charakteren zugeordnet.
+   Unbekannte bietet die Vorschau zum Anlegen an (abwählbar). Ein Name, der in der
+   Gilde schon einem anderen Mitglied gehört, wird nie übernommen.
+4. Übernehmen schreibt für jeden gewählten Charakter in einer Transaktion.
+
+**Was übernommen wird und was nicht:**
+- Stufe, Klasse, Rasse, Fraktion, Berufe mit Fertigkeit: Das Spiel gewinnt.
+- Rezepte aus dem Pack: werden **ergänzt**, nie entfernt. Ein im Spiel vergessener Beruf
+  (z. B. Beruf gewechselt) wird in der Vorschau als „im Spiel nicht mehr vorhanden“
+  gezeigt und nur auf ausdrücklichen Haken entfernt, mitsamt Rezepten.
+- Rezept-Notizen, Freitext-Rezepte, Spezialisierung, Spec, Main-Markierung, Builds
+  und Notizen bleiben unangetastet. Das Addon kennt sie nicht.
+
+**Vertrauen:** Der String kommt vom Mitglied und kann bearbeitet sein. Das ist
+gleichwertig zur Handeingabe, mit denselben Grenzen und Rechten (8): Ein Import ändert
+nur eigene Charaktere. Ein Import landet nicht im `AuditLog` (keine Admin-Aktion),
+der Charakter zeigt aber „Zuletzt aus dem Spiel übernommen am …“.
+
 ---
 
 ## 8. Berechtigungen (serverseitig im App-Code)
@@ -720,8 +783,9 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
 
 - Eigene Talent- oder Skillrechner, Item-Datenbanken, interaktive Karten
 - Scraping fremder Seiten
-- Automatisches Auslesen des Spielstands (Ausnahme: späterer optionaler
-  API-Adapter, siehe Phase 5)
+- Automatisches Auslesen des Spielstands (Ausnahmen: der vom Mitglied angestoßene
+  Addon-Abgleich, siehe 7.3, und ein späterer optionaler API-Adapter, siehe Phase 5)
+- Positionen von Gildenmitgliedern auf der Karte. Dafür gibt es Addons im Spiel selbst
 - Monetarisierung, öffentliche Registrierung, mehrere Gilden-Features über das Datenmodell hinaus
 
 ---
@@ -783,6 +847,26 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
 - Raidplanung: Termine, Anmeldungen, Rollen-Check gegen Roster
 - API-Adapter-Interface (`src/lib/adapters/`) für offizielle APIs, falls verfügbar
   (z. B. Battle.net). Nur offizielle APIs, nur mit Zustimmung des Nutzers.
+- Begleitprogramm für den Addon-Abgleich (7.3): beobachtet die SavedVariables und
+  überträgt den Export-String automatisch, mit persönlichem Token statt Discord-Login
+
+### Phase 6: Addon-Abgleich WoW Forever (7.3)
+- Addon unter `addons/wow-forever/GuildHub/` (TOC + Lua), Export-String mit Formatversion
+  und Prüfsumme
+- `game_ref` im Pack-Schema und im WoW-Pack für Klassen, Rassen, Fraktionen und Berufe;
+  Capability `addon_import`
+- Import-Seite mit Vorschau; Parser und Zuordnung als reine Funktionen mit Vitest
+- ✅ Ein Export mit zwei Charakteren (einer vorhanden, einer neu) zeigt die richtige
+  Vorschau; nach dem Übernehmen stimmen Stufe, Berufe und Fertigkeit, neue Pack-Rezepte
+  sind ergänzt, Freitext-Rezepte und Notizen unverändert
+- ✅ Ein abgeschnittener oder veränderter String wird mit verständlicher Meldung
+  abgelehnt, ohne dass sich etwas ändert
+- ✅ Ein Charakter, dessen Name in der Gilde einem anderen Mitglied gehört, wird nicht
+  übernommen
+- ✅ Ein Pack ohne `addon_import` zeigt die Seite nicht an; ein String für ein anderes
+  Spiel wird abgelehnt
+- ✅ Das Addon funktioniert im Live-Client von WoW Forever (Handtest, Schritte in
+  `addons/wow-forever/README.md`)
 
 ---
 
@@ -926,6 +1010,8 @@ packs/
   wow-forever/pack.json
   _examples/beispiel-rpg/pack.json   # nicht geladen, aber validiert
 test/fixtures/packs/   # Packs für den Erweiterbarkeits-Test (6.4)
+addons/
+  wow-forever/GuildHub/  # Spiel-Addon für den Abgleich (7.3), nicht Teil des Containers
 src/
   app/                 # Routen: /, /roster, /matrix, /berufe, /charaktere, /admin
   components/
@@ -968,6 +1054,10 @@ docker-compose.yml
 - [x] WoW Forever: Berufe gegen ForeverDB-API geprüft (IDs, Art, englische Namen; Build 1.60.1)
 - [ ] WoW Forever: Raid-IDs und Reset-Tage (ab 04.11.)
 - [ ] Gewünschte Akzentfarbe/Logo der Gilde (optional)
+- [ ] Addon-Abgleich (7.3), im Live-Client von WoW Forever prüfen: Interface-Version für
+  die TOC; ob Rezepte über die Classic-Schnittstellen (`GetTradeSkill…`, für
+  Verzauberkunst `GetCraft…`) mit Spell-ID lesbar sind; Token und IDs für die
+  Himmelsgeborenen und für neue Forever-Berufe, falls es welche gibt
 - [x] WoW Forever: neue Rasse **Himmelsgeborene** im Pack (`todo`)
 - [x] WoW Forever: Himmelsgeborene je Fraktion getrennt – „Hoher Orden“ (Allianz) und „Windformer“ (Horde) mit eigenen Klassen; englischer Name noch offen
 
