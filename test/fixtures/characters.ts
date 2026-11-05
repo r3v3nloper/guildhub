@@ -14,6 +14,7 @@ export function characterInput(
     offSpecKey: "",
     spec: "",
     level: null,
+    deathCount: null,
     isMain: false,
     notes: "",
     professionKeys: [],

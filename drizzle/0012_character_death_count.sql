@@ -1,0 +1,1 @@
+ALTER TABLE `character` ADD `death_count` integer DEFAULT 0 NOT NULL;

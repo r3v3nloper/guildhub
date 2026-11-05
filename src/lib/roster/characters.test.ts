@@ -126,6 +126,45 @@ describe("characters and roster with the shipped packs", () => {
     );
   });
 
+  it("shows deaths only for games that count them and ranks them", () => {
+    // Arrange
+    const anna = member(OWNER, "Anna");
+    saveCharacter(
+      db,
+      anna,
+      "wow-forever",
+      input({
+        name: "Jaina",
+        raceKey: "human",
+        classKey: "mage",
+        deathCount: 3,
+      }),
+    );
+    saveCharacter(
+      db,
+      anna,
+      "aion2",
+      input({
+        name: "Lyra",
+        factionKey: "elyos",
+        classKey: "cleric",
+        deathCount: 7,
+      }),
+    );
+
+    // Act
+    const roster = filterRoster(loadRosterMembers(db, guildId), {});
+
+    // Assert
+    const deaths = Object.fromEntries(
+      roster.members[0].characters.map((c) => [c.name, c.deathCount]),
+    );
+    expect(deaths).toEqual({ Jaina: 3, Lyra: null });
+    expect(roster.mostDeaths).toEqual([
+      expect.objectContaining({ characterName: "Jaina", deathCount: 3 }),
+    ]);
+  });
+
   it("filters the roster by game, role and class", () => {
     const anna = member(OWNER, "Anna");
     saveCharacter(

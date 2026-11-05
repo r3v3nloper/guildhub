@@ -32,6 +32,7 @@ export interface CharacterFormValues {
   offSpecKey: string;
   spec: string;
   level: string;
+  deathCount: string;
   isMain: boolean;
   notes: string;
   professions: string[];
@@ -269,6 +270,23 @@ export function CharacterForm({
               </div>
               {problem(errors.level)}
             </div>
+            {capabilities.death_count && (
+              <Field
+                label={de.characters.deathCount}
+                hint={de.characters.deathCountHint}
+                error={errors.deathCount}
+              >
+                <TextInput
+                  name="deathCount"
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  defaultValue={values.deathCount}
+                  placeholder="0"
+                  className="max-w-24"
+                />
+              </Field>
+            )}
           </div>
           <button
             type="button"

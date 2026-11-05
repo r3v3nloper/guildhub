@@ -255,6 +255,7 @@ export function setCharacterProfessions(
       offSpecKey: key(character.offSpecEntryId),
       spec: character.spec ?? "",
       level: character.level,
+      deathCount: character.deathCount,
       isMain: character.isMain,
       notes: character.notes ?? "",
       professionKeys,

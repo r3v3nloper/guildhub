@@ -219,6 +219,7 @@ export const characters = sqliteTable(
     offSpecEntryId: catalogReference("off_spec_entry_id"),
     spec: text("spec"),
     level: integer("level"),
+    deathCount: integer("death_count").notNull().default(0),
     isMain: integer("is_main", { mode: "boolean" }).notNull().default(false),
     notes: text("notes"),
     createdAt: createdAt(),

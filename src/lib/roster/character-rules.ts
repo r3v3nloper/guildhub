@@ -19,6 +19,8 @@ export interface CharacterInput {
   offSpecKey: string;
   spec: string;
   level: number | null;
+  /** Empty counts as no deaths. */
+  deathCount: number | null;
   isMain: boolean;
   notes: string;
   professionKeys: string[];
@@ -46,6 +48,8 @@ export interface ResolvedCharacter {
   offSpecEntryId: number | null;
   spec: string | null;
   level: number | null;
+  /** Left out for games without the capability, so their stored value stays. */
+  deathCount?: number;
   isMain: boolean;
   notes: string | null;
   professionEntryIds: number[];
@@ -58,6 +62,7 @@ export type ResolveResult =
 
 const NAME_MAX_LENGTH = 40;
 export const LEVEL_MAX = 1000;
+export const DEATH_COUNT_MAX = 100_000;
 
 const NO_PREVIOUS: PreviousSelection = {
   factionEntryId: null,
@@ -95,6 +100,16 @@ export function resolveCharacter(
       input.level > LEVEL_MAX)
   ) {
     errors.level = `Stufe zwischen 1 und ${LEVEL_MAX}.`;
+  }
+
+  if (
+    capabilities.death_count &&
+    input.deathCount !== null &&
+    (!Number.isInteger(input.deathCount) ||
+      input.deathCount < 0 ||
+      input.deathCount > DEATH_COUNT_MAX)
+  ) {
+    errors.deathCount = `Tode zwischen 0 und ${DEATH_COUNT_MAX}.`;
   }
 
   const pick = (
@@ -233,6 +248,9 @@ export function resolveCharacter(
       // A game with a spec catalog keeps no free-text spec beside it.
       spec: usesSpecCatalog ? null : optionalText(input.spec),
       level: input.level,
+      deathCount: capabilities.death_count
+        ? (input.deathCount ?? 0)
+        : undefined,
       isMain: input.isMain,
       notes: optionalText(input.notes),
       professionEntryIds,

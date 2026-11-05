@@ -250,6 +250,7 @@ async function EditCharacterContent({
             offSpecKey: key(character.offSpecEntryId),
             spec: character.spec ?? "",
             level: character.level?.toString() ?? "",
+            deathCount: character.deathCount.toString(),
             isMain: character.isMain,
             notes: character.notes ?? "",
             professions: professionKeys,

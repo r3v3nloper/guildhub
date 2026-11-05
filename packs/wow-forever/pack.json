@@ -1,7 +1,7 @@
 {
   "id": "wow-forever",
   "name": "WoW: Forever",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "type": "mmo",
   "server_label": "Realm",
   "capabilities": {
@@ -15,7 +15,8 @@
     "factions": true,
     "servers": true,
     "guild_overview": true,
-    "progress_tracking": true
+    "progress_tracking": true,
+    "death_count": true
   },
   "regions": [
     {

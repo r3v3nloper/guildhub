@@ -51,6 +51,8 @@ export const characters = {
   spec: "Spezialisierung",
   offSpec: "Off-Spec",
   level: "Stufe",
+  deathCount: "Tode",
+  deathCountHint: "Bisher gestorben, auch vor dem Addon.",
   isMain: "Main-Charakter",
   notes: "Notizen",
   professions: "Berufe",
@@ -163,4 +165,6 @@ export const roster = {
   roleFilter: "Rolle",
   professionFilter: "Beruf",
   levelShort: "Lvl",
+  deaths: (count: number) => (count === 1 ? "1 Tod" : `${count} Tode`),
+  mostDeaths: "Die meisten Tode",
 } as const;

@@ -70,6 +70,11 @@ export function MemberCard({
                     {de.roster.levelShort} {character.level}
                   </span>
                 )}
+                {Boolean(character.deathCount) && (
+                  <span className="text-muted">
+                    {de.roster.deaths(character.deathCount ?? 0)}
+                  </span>
+                )}
                 {gameNames && (
                   <span className="text-muted">
                     {gameNames.get(character.gameId)}

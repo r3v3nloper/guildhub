@@ -114,7 +114,8 @@ GameCatalogEntry  game_id, kind: class | race | profession | faction | reset_rul
                 status: active | deprecated | removed, last_seen_pack_version, todo (bool)
                 -- DB-Kopie der Pack-Kataloge, wird beim Sync gepflegt, nie gelöscht
 Character       id, user_id, game_id, name, server?, faction_id?, race_id?, class_id?,
-                spec?, level?, is_main (bool), notes?
+                spec?, level?, death_count (int, Default 0), is_main (bool), notes?
+                -- death_count nur bei Capability `death_count` (7.4)
                 -- *_id sind Fremdschlüssel auf GameCatalogEntry, nicht direkt aufs Pack.
                 -- So bleibt die DB konsistent, auch wenn ein Pack-Update etwas entfernt (6.5)
                 -- server: Katalog-ID, falls das Pack `servers` listet, sonst normalisierter
@@ -413,7 +414,8 @@ Pflichtfelder sind markiert, alle anderen sind optional mit dem genannten Defaul
     "characters": true, "classes": true, "races": false, "professions": true,
     "builds": true, "resets": true, "lockouts": false, "factions": true,
     "servers": true, "guild_overview": true, "progress_tracking": true,
-    "addon_import": false             // Abgleich per Spiel-Addon (7.3); braucht game_ref
+    "addon_import": false,            // Abgleich per Spiel-Addon (7.3); braucht game_ref
+    "death_count": false              // Tode je Charakter zählen (7.4)
   },
   "regions": [ { "id": "eu", "name": "Europa", "timezone": "Europe/Berlin" } ],
                                       // PFLICHT, wenn capabilities.resets = true
@@ -618,7 +620,7 @@ Fehler mitten im Sync.
      unabhängig vom Spiel-Filter
 4. **Roster** (Gilde): Tabelle bzw. Karten pro Mitglied mit Charakteren, Klasse
    (farbig), Rasse/Fraktion (falls im Pack), Rolle, Berufen, aktuellem Build (Link)
-   und geplanter nächster Klasse. Filter: Spiel, Klasse, Rolle, Beruf, Fraktion.
+   und geplanter nächster Klasse, bei Capability `death_count` auch den Toden (7.4). Filter: Spiel, Klasse, Rolle, Beruf, Fraktion.
    Zusätzlich eine Zusammenfassung der Klassen- und Rollenverteilung (wichtig für
    die Raidplanung). Deaktivierte Mitglieder sind standardmäßig ausgeblendet
    (Schalter „Ehemalige anzeigen“).
@@ -739,10 +741,31 @@ geraten. Die Capability heißt `addon_import`.
 - Rezept-Notizen, Freitext-Rezepte, Spezialisierung, Spec, Main-Markierung, Builds
   und Notizen bleiben unangetastet. Das Addon kennt sie nicht.
 
+**Tode** (nur bei Capability `death_count`, 7.4): Das Addon zählt jeden Tod des
+eingeloggten Charakters ab seiner Installation hoch. Das Spiel kennt in der Classic-Basis
+keine Gesamtzahl, ältere Tode trägt das Mitglied deshalb einmal von Hand nach. Damit
+Handeingabe und Addon sich nicht überschreiben, merkt sich GuildHub je Charakter den
+zuletzt übernommenen Addon-Stand und **addiert nur die Differenz** zum Deathcount.
+Ist der neue Addon-Stand kleiner als der gemerkte (Addon neu installiert, SavedVariables
+gelöscht), zählt er als Neubeginn: addiert wird der ganze neue Stand. Die Vorschau zeigt
+„+3 Tode“.
+
 **Vertrauen:** Der String kommt vom Mitglied und kann bearbeitet sein. Das ist
 gleichwertig zur Handeingabe, mit denselben Grenzen und Rechten (8): Ein Import ändert
 nur eigene Charaktere. Ein Import landet nicht im `AuditLog` (keine Admin-Aktion),
 der Charakter zeigt aber „Zuletzt aus dem Spiel übernommen am …“.
+
+### 7.4 Deathcount
+
+Ein reiner Zähler zum Spaß, ohne Folgen für den Charakter (kein Hardcore-Status).
+Spiele schalten ihn über die Capability `death_count` ein; zuerst WoW Forever.
+
+- **Charakter-Editor:** Feld „Tode“ (ganze Zahl ab 0) bei den Grunddaten. Darüber
+  korrigiert das Mitglied den Stand oder trägt die Tode vor dem Addon nach (7.3).
+- **Roster:** Die Charakterzeile zeigt die Tode, sobald es mindestens einen gibt.
+- **Gilden-Rangliste** in der Roster-Zusammenfassung: „Die meisten Tode“, die Charaktere
+  der aktuellen Auswahl mit mindestens einem Tod, absteigend, höchstens zehn. Bei
+  Gleichstand alphabetisch nach Name. Ohne Tode entfällt der Block.
 
 ---
 
@@ -867,6 +890,18 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
   Spiel wird abgelehnt
 - ✅ Das Addon funktioniert im Live-Client von WoW Forever (Handtest, Schritte in
   `addons/wow-forever/README.md`)
+- ✅ Tode (7.3): Charakter mit 5 Toden von Hand, Addon meldet 2 → 7. Nächster Import
+  meldet 3 → 8. Addon neu installiert und meldet 1 → 9.
+
+### Phase 7: Deathcount (7.4)
+- Capability `death_count` im Pack-Schema, im WoW-Forever-Pack eingeschaltet
+- Feld `death_count` am Charakter, Editor, Roster-Anzeige und Rangliste
+- Die Übernahme aus dem Addon folgt mit Phase 6
+- ✅ Ein Charakter mit 3 Toden zeigt sie im Roster; einer mit 0 zeigt nichts
+- ✅ Die Rangliste ordnet nach Toden absteigend, bei Gleichstand nach Name, höchstens zehn,
+  und folgt den Roster-Filtern
+- ✅ Negative oder nicht ganzzahlige Tode lehnt der Editor ab
+- ✅ Ein Spiel ohne `death_count` zeigt weder Feld noch Anzeige noch Rangliste
 
 ---
 
@@ -1058,6 +1093,8 @@ docker-compose.yml
   die TOC; ob Rezepte über die Classic-Schnittstellen (`GetTradeSkill…`, für
   Verzauberkunst `GetCraft…`) mit Spell-ID lesbar sind; Token und IDs für die
   Himmelsgeborenen und für neue Forever-Berufe, falls es welche gibt
+- [ ] Deathcount per Addon (7.3, 7.4): ob `PLAYER_DEAD` in WoW Forever zuverlässig je Tod
+  feuert und Totstellen (Jäger) nicht mitzählt
 - [x] WoW Forever: neue Rasse **Himmelsgeborene** im Pack (`todo`)
 - [x] WoW Forever: Himmelsgeborene je Fraktion getrennt – „Hoher Orden“ (Allianz) und „Windformer“ (Horde) mit eigenen Klassen; englischer Name noch offen
 
