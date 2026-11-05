@@ -42,11 +42,13 @@ export const today = {
   level: (level: number) => `Stufe ${level}`,
   quickCharacters: "Meine Charaktere",
   quickHint:
-    "Stufe und Fertigkeit mit −/+ oder direkt eintippen, speichert sich selbst.",
+    "Stufe, Tode und Fertigkeit mit −/+ oder direkt eintippen, speichert sich selbst.",
   quickLevel: "Stufe",
   quickSkill: (character: string, profession: string) =>
     `Fertigkeit ${profession} von ${character}`,
   quickLevelOf: (character: string) => `Stufe von ${character}`,
+  quickDeaths: "Tode",
+  quickDeathsOf: (character: string) => `Tode von ${character}`,
   showQuick: "Charaktere einblenden",
   hideQuick: "Charaktere ausblenden",
 } as const;

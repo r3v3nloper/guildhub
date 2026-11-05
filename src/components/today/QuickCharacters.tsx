@@ -7,6 +7,7 @@ import type { RosterCharacter } from "@/lib/roster/roster";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
 import {
+  setCharacterDeathCountAction,
   setCharacterLevelAction,
   setProfessionSkillAction,
 } from "./today-actions";
@@ -55,10 +56,12 @@ export function QuickCharacters({
   characters,
   levelMax,
   skillMax,
+  deathCountMax,
 }: {
   characters: RosterCharacter[];
   levelMax: number;
   skillMax: number;
+  deathCountMax: number;
 }) {
   const [collapsed, setCollapsed] = useRememberedCollapsed();
   if (characters.length === 0) {
@@ -101,6 +104,7 @@ export function QuickCharacters({
                 character={character}
                 levelMax={levelMax}
                 skillMax={skillMax}
+                deathCountMax={deathCountMax}
               />
             ))}
           </ul>
@@ -114,10 +118,12 @@ function QuickCharacterRow({
   character,
   levelMax,
   skillMax,
+  deathCountMax,
 }: {
   character: RosterCharacter;
   levelMax: number;
   skillMax: number;
+  deathCountMax: number;
 }) {
   return (
     <li className="flex flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl bg-raised px-4 py-3">
@@ -136,6 +142,19 @@ function QuickCharacterRow({
           onSave={(level) => setCharacterLevelAction(character.id, level)}
         />
       </QuickValue>
+      {character.deathCount !== null && (
+        <QuickValue label={de.today.quickDeaths}>
+          <Stepper
+            label={de.today.quickDeathsOf(character.name)}
+            value={character.deathCount}
+            min={0}
+            max={deathCountMax}
+            onSave={(deathCount) =>
+              setCharacterDeathCountAction(character.id, deathCount)
+            }
+          />
+        </QuickValue>
+      )}
       {character.professions.map((profession) => (
         <QuickValue key={profession.entryId} label={localize(profession.name)}>
           <Stepper

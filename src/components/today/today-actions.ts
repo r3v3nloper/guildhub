@@ -6,7 +6,10 @@ import type { ActionState } from "@/lib/actions/action-state";
 import { runMutation } from "@/lib/actions/mutation";
 import { PAGE_GROUPS } from "@/lib/actions/page-groups";
 import { setProfessionSkill } from "@/lib/roster/character-professions";
-import { setCharacterLevel } from "@/lib/roster/characters";
+import {
+  setCharacterDeathCount,
+  setCharacterLevel,
+} from "@/lib/roster/characters";
 import {
   adjustCounter,
   consumeStacking,
@@ -115,6 +118,20 @@ export async function setProfessionSkillAction(
       parseArg(idArg, characterId),
       parseArg(idArg, professionEntryId),
       parseArg(z.number().int(), skillLevel),
+    ),
+  );
+}
+
+export async function setCharacterDeathCountAction(
+  characterId: number,
+  deathCount: number,
+): Promise<ActionState> {
+  return runMutation(PAGE_GROUPS.characterStats, (db, actor) =>
+    setCharacterDeathCount(
+      db,
+      actor,
+      parseArg(idArg, characterId),
+      parseArg(z.number().int(), deathCount),
     ),
   );
 }

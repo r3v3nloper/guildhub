@@ -762,6 +762,8 @@ Spiele schalten ihn über die Capability `death_count` ein; zuerst WoW Forever.
 
 - **Charakter-Editor:** Feld „Tode“ (ganze Zahl ab 0) bei den Grunddaten. Darüber
   korrigiert das Mitglied den Stand oder trägt die Tode vor dem Addon nach (7.3).
+- **Übersicht** („Meine Charaktere“): −/+ für die Tode neben Stufe und Fertigkeit,
+  speichert sich selbst.
 - **Roster:** Die Charakterzeile zeigt die Tode, sobald es mindestens einen gibt.
 - **Gilden-Rangliste** in der Roster-Zusammenfassung: „Die meisten Tode“, die Charaktere
   der aktuellen Auswahl mit mindestens einem Tod, absteigend, höchstens zehn. Bei

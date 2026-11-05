@@ -20,6 +20,7 @@ import {
 import {
   getCharacter,
   saveCharacter,
+  setCharacterDeathCount,
   setCharacterLevel,
   setCharacterProfessions,
 } from "./characters";
@@ -546,6 +547,47 @@ describe("characters and roster with the shipped packs", () => {
       expect(() =>
         setProfessionSkill(db, anna, character.id, 999999, 10),
       ).toThrow(NotFoundError);
+    });
+
+    it("counts deaths within bounds and only for the owner", () => {
+      // Arrange
+      const anna = member(OWNER, "Anna");
+      const ben = memberAllowed("100000000000000002", "Ben");
+      const character = tailor(anna);
+
+      // Act
+      setCharacterDeathCount(db, anna, character.id, 4);
+
+      // Assert
+      expect(getCharacter(db, character.id)).toMatchObject({
+        deathCount: 4,
+        level: 10,
+      });
+      expect(() => setCharacterDeathCount(db, anna, character.id, -1)).toThrow(
+        DomainError,
+      );
+      expect(() => setCharacterDeathCount(db, ben, character.id, 5)).toThrow(
+        ForbiddenError,
+      );
+      expect(getCharacter(db, character.id)!.deathCount).toBe(4);
+    });
+
+    it("refuses deaths for a game that does not count them", () => {
+      // Arrange
+      const anna = member(OWNER, "Anna");
+      const saved = saveCharacter(
+        db,
+        anna,
+        "aion2",
+        input({ name: "Lyra", factionKey: "elyos", classKey: "cleric" }),
+      );
+      const id = saved.ok ? saved.characterId : -1;
+
+      // Act & Assert
+      expect(() => setCharacterDeathCount(db, anna, id, 1)).toThrow(
+        DomainError,
+      );
+      expect(getCharacter(db, id)!.deathCount).toBe(0);
     });
   });
 });

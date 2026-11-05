@@ -16,7 +16,7 @@ import { selectedGames } from "@/lib/game-filter";
 import { listCraftRequestsForCrafter } from "@/lib/guild/craft-requests";
 import { listPinnedChecklists } from "@/lib/lists/checklists";
 import { listTodoLists } from "@/lib/lists/todo-lists";
-import { LEVEL_MAX } from "@/lib/roster/character-rules";
+import { DEATH_COUNT_MAX, LEVEL_MAX } from "@/lib/roster/character-rules";
 import { SKILL_LEVEL_MAX } from "@/lib/roster/character-professions";
 import { listCharactersOfUser } from "@/lib/roster/characters";
 import { loadRosterMembers } from "@/lib/roster/roster";
@@ -86,6 +86,7 @@ async function HomeContent() {
         characters={ownCharacters}
         levelMax={LEVEL_MAX}
         skillMax={SKILL_LEVEL_MAX}
+        deathCountMax={DEATH_COUNT_MAX}
       />
       {enabledGames.length === 0 && (
         <p className="text-warning">{de.home.noGames}</p>

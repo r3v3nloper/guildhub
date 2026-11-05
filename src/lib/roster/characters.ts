@@ -6,6 +6,7 @@ import { builds, characterProfessions, characters } from "@/lib/db/schema";
 import { deleteCharacterProgress } from "@/lib/tasks/progress";
 import { deleteRecipes, formatRecipeLines, listRecipes } from "./recipes";
 import {
+  DEATH_COUNT_MAX,
   LEVEL_MAX,
   resolveCharacter,
   type CharacterInput,
@@ -318,6 +319,32 @@ export function setCharacterLevel(
   }
   db.update(characters)
     .set({ level })
+    .where(eq(characters.id, characterId))
+    .run();
+}
+
+/** Quick death count from the overview (SPEC 7.4), only where the game counts deaths. */
+export function setCharacterDeathCount(
+  db: AppDatabase,
+  actor: Actor,
+  characterId: number,
+  deathCount: number,
+): void {
+  const character = ownedCharacter(db, actor, characterId);
+  if (
+    !requireCatalog(db, character.gameId).game.meta.capabilities.death_count
+  ) {
+    throw new DomainError("Dieses Spiel zählt keine Tode.");
+  }
+  if (
+    !Number.isInteger(deathCount) ||
+    deathCount < 0 ||
+    deathCount > DEATH_COUNT_MAX
+  ) {
+    throw new DomainError(`Tode zwischen 0 und ${DEATH_COUNT_MAX}.`);
+  }
+  db.update(characters)
+    .set({ deathCount })
     .where(eq(characters.id, characterId))
     .run();
 }
