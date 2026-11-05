@@ -143,6 +143,8 @@ SyncLog         id, game_id, started_at, finished_at,
                 error?
                 -- Verlauf aller Syncs. Game.last_sync_at/last_sync_error bleiben als
                 -- schneller Status für Banner und Health-Check. Kein Aufräumen nötig.
+GuildNote       id, game_id?, title, body, pinned (bool), updated_by?, updated_at, created_at
+                -- ohne game_id für alle Spiele; pinned = auf der Übersicht (7.5)
 AuditLog        id, actor_user_id, action, target, details (JSON), at
                 -- Admin-Aktionen: Allowlist-Änderungen, Rollenwechsel, Deaktivieren,
                 -- endgültiges Löschen, Backup-Downloads, Gilde umbenennen
@@ -772,6 +774,22 @@ Spiele schalten ihn über die Capability `death_count` ein; zuerst WoW Forever.
   der aktuellen Auswahl mit mindestens einem Tod, absteigend, höchstens zehn. Bei
   Gleichstand alphabetisch nach Name. Ohne Tode entfällt der Block.
 
+### 7.5 Gildennotizen
+
+Notizen für die ganze Gilde, etwa Regeln oder Raid-Absprachen. Officer und Owner legen
+sie an, bearbeiten, pinnen und löschen sie (8, Audit-Log); alle Mitglieder lesen sie.
+
+- **Inhalt:** Titel (höchstens 80 Zeichen), Text (höchstens 4.000 Zeichen) als reiner
+  Text: Zeilenumbrüche bleiben erhalten, http(s)-Links werden anklickbar, sonst kein
+  Markup. Optional ein Spiel: ohne Spiel gilt die Notiz für alle Spiele, mit Spiel nur,
+  solange es im Spiel-Umschalter gezeigt wird (bei „Alle Spiele“ also immer).
+- **Seite „Gildennotizen“** (`/notizen`, Navigation unter „Gilde“): alle Notizen der
+  gezeigten Spiele, angepinnte zuerst, dann die zuletzt geänderten. Jede Notiz nennt,
+  wer sie zuletzt geändert hat und wann.
+- **Übersicht:** Angepinnte Notizen stehen für alle direkt unter „Meine Charaktere“.
+  Ohne angepinnte Notiz entfällt der Block.
+- Anpinnen und Lösen ändert nur den Status; „zuletzt geändert“ bleibt beim Text.
+
 ---
 
 ## 8. Berechtigungen (serverseitig im App-Code)
@@ -787,6 +805,7 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
 | Gildendaten sehen (Roster, Matrix, Berufe) | ✓ | ✓ | ✓ |
 | Eigene Charaktere, Builds, Fortschritt, private Aufgaben | ✓ | ✓ | ✓ |
 | Gildenweite Aufgaben anlegen/ändern | | ✓ | ✓ |
+| Gildennotizen anlegen, ändern, anpinnen, löschen (7.5) | | ✓ | ✓ |
 | Spiele aktivieren, Region wählen | | ✓ | ✓ |
 | Mitglieder freischalten (Allowlist hinzufügen) | | ✓ | ✓ |
 | **member** deaktivieren | | ✓ | ✓ |
@@ -907,6 +926,14 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
   und folgt den Roster-Filtern
 - ✅ Negative oder nicht ganzzahlige Tode lehnt der Editor ab
 - ✅ Ein Spiel ohne `death_count` zeigt weder Feld noch Anzeige noch Rangliste
+
+### Phase 8: Gildennotizen (7.5)
+- Tabelle `guild_note`, Seite „Gildennotizen“, angepinnte Notizen auf der Übersicht
+- ✅ Ein Mitglied sieht die Notizen, kann aber weder anlegen noch anpinnen noch löschen
+- ✅ Eine angepinnte Notiz erscheint bei allen auf der Übersicht unter „Meine Charaktere“;
+  nach dem Lösen nur noch auf der Notizen-Seite
+- ✅ Eine Notiz mit Spiel verschwindet, wenn im Spiel-Umschalter ein anderes Spiel gewählt ist
+- ✅ Leerer Titel oder Text und ein nicht aktiviertes Spiel werden abgelehnt
 
 ---
 

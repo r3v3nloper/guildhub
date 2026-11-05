@@ -23,6 +23,7 @@ import {
 import { admin, auditActions, catalogKinds } from "./texts/admin";
 import {
   directory,
+  guildNotes,
   matrix,
   requests,
   specBuilds,
@@ -60,4 +61,5 @@ export const de = {
   requests,
   statPriorities,
   specBuilds,
+  guildNotes,
 } as const;

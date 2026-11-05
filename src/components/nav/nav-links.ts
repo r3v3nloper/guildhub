@@ -32,6 +32,7 @@ export function navGroups(showAdmin: boolean): NavGroup[] {
     {
       label: de.nav.guildGroup,
       links: [
+        { href: "/notizen", label: de.nav.guildNotes, icon: "pi-book" },
         { href: "/matrix", label: de.nav.matrix, icon: "pi-table" },
         { href: "/berufe", label: de.nav.directory, icon: "pi-wrench" },
         { href: "/antraege", label: de.nav.requests, icon: "pi-inbox" },

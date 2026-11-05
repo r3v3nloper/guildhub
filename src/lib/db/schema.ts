@@ -648,6 +648,26 @@ export const specBuilds = sqliteTable(
   (build) => [index("spec_build_spec").on(build.specEntryId)],
 );
 
+/**
+ * A note officers keep for the whole guild, e.g. rules or raid etiquette. Without a game
+ * it applies to every game; pinned notes show on everyone's overview (SPEC 7.5).
+ */
+export const guildNotes = sqliteTable("guild_note", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  gameId: text("game_id").references(() => games.id),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
+  pinned: integer("pinned", { mode: "boolean" }).notNull().default(false),
+  updatedBy: text("updated_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date())
+    .$onUpdateFn(() => new Date()),
+  createdAt: createdAt(),
+});
+
 // --- Logs (SPEC 4.1) ---
 
 export interface SyncSummary {

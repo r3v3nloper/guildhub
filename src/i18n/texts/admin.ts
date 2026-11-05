@@ -92,4 +92,9 @@ export const auditActions = {
   "statPriority.delete": "hat Stat-Priorität gelöscht",
   "specBuild.create": "hat Build-Empfehlung angelegt",
   "specBuild.delete": "hat Build-Empfehlung gelöscht",
+  "guildNote.create": "hat Gildennotiz angelegt",
+  "guildNote.update": "hat Gildennotiz geändert",
+  "guildNote.pin": "hat Gildennotiz angepinnt",
+  "guildNote.unpin": "hat Gildennotiz gelöst",
+  "guildNote.delete": "hat Gildennotiz gelöscht",
 } as Record<string, string>;

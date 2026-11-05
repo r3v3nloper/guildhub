@@ -12,6 +12,8 @@ export const PAGE_GROUPS = {
     "/charaktere/[id]",
     "/farmspots",
   ],
+  /** The notes page lists every note; the overview shows the pinned ones. */
+  guildNotes: ["/notizen", "/"],
   /** The stat page lists the recommendations; character pages show those of their specs. */
   specBuilds: ["/stat-prio", "/charaktere/[id]"],
   /** The stat page lists the rankings; character pages show those of their class. */

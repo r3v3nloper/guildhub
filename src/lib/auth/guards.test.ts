@@ -57,6 +57,12 @@ describe("permissions", () => {
     expect(permissions.manageGames(actor("owner")).allowed).toBe(true);
   });
 
+  it("reserves guild notes for officers and owners", () => {
+    expect(permissions.manageGuildNotes(actor("member")).allowed).toBe(false);
+    expect(permissions.manageGuildNotes(actor("officer")).allowed).toBe(true);
+    expect(permissions.manageGuildNotes(actor("owner")).allowed).toBe(true);
+  });
+
   it("lets officers disable members but nobody of equal or higher rank", () => {
     const officer = actor("officer");
 

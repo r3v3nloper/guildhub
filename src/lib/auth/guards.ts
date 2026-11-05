@@ -74,6 +74,13 @@ export const permissions = {
       : deny("Nur für Officer und Owner.");
   },
 
+  /** Rules and other guild notes are binding, so only officers write and pin them (SPEC 7.5). */
+  manageGuildNotes(actor: Actor): Permission {
+    return atLeast(actor, "officer")
+      ? allow
+      : deny("Nur für Officer und Owner.");
+  },
+
   manageGuildTasks(actor: Actor): Permission {
     return atLeast(actor, "officer")
       ? allow
