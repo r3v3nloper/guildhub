@@ -11,6 +11,7 @@ import { TodaySummary } from "@/components/today/TodaySummary";
 import { PageSuspense } from "@/components/ui/PageSuspense";
 import { PageHeader } from "@/components/ui/ui";
 import { currentActor, currentSession } from "@/lib/auth/current-actor";
+import { permissions } from "@/lib/auth/guards";
 import { getDb } from "@/lib/db/client";
 import { selectedGames } from "@/lib/game-filter";
 import { listCraftRequestsForCrafter } from "@/lib/guild/craft-requests";
@@ -87,6 +88,7 @@ async function HomeContent() {
         levelMax={LEVEL_MAX}
         skillMax={SKILL_LEVEL_MAX}
         deathCountMax={DEATH_COUNT_MAX}
+        canLowerDeathCount={permissions.lowerDeathCount(actor).allowed}
       />
       {enabledGames.length === 0 && (
         <p className="text-warning">{de.home.noGames}</p>

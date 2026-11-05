@@ -117,6 +117,12 @@ describe("permissions", () => {
     ).toBe(true);
   });
 
+  it("lets only owners lower a death count", () => {
+    expect(permissions.lowerDeathCount(actor("member")).allowed).toBe(false);
+    expect(permissions.lowerDeathCount(actor("officer")).allowed).toBe(false);
+    expect(permissions.lowerDeathCount(actor("owner")).allowed).toBe(true);
+  });
+
   it("reserves backups for owners", () => {
     expect(permissions.downloadBackup(actor("officer")).allowed).toBe(false);
     expect(permissions.downloadBackup(actor("owner")).allowed).toBe(true);

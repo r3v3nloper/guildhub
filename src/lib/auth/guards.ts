@@ -147,6 +147,13 @@ export const permissions = {
     return allow;
   },
 
+  /** Deaths only ever go up; lowering them is a correction reserved for owners (SPEC 7.4). */
+  lowerDeathCount(actor: Actor): Permission {
+    return atLeast(actor, "owner")
+      ? allow
+      : deny("Tode lassen sich nur vom Owner verringern.");
+  },
+
   downloadBackup(actor: Actor): Permission {
     return atLeast(actor, "owner") ? allow : deny("Nur für Owner.");
   },

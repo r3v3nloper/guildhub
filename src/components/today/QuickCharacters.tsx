@@ -57,11 +57,14 @@ export function QuickCharacters({
   levelMax,
   skillMax,
   deathCountMax,
+  canLowerDeathCount,
 }: {
   characters: RosterCharacter[];
   levelMax: number;
   skillMax: number;
   deathCountMax: number;
+  /** Members only count up; owners may also correct downwards (SPEC 7.4). */
+  canLowerDeathCount: boolean;
 }) {
   const [collapsed, setCollapsed] = useRememberedCollapsed();
   if (characters.length === 0) {
@@ -105,6 +108,7 @@ export function QuickCharacters({
                 levelMax={levelMax}
                 skillMax={skillMax}
                 deathCountMax={deathCountMax}
+                canLowerDeathCount={canLowerDeathCount}
               />
             ))}
           </ul>
@@ -119,11 +123,13 @@ function QuickCharacterRow({
   levelMax,
   skillMax,
   deathCountMax,
+  canLowerDeathCount,
 }: {
   character: RosterCharacter;
   levelMax: number;
   skillMax: number;
   deathCountMax: number;
+  canLowerDeathCount: boolean;
 }) {
   return (
     <li className="flex flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl bg-raised px-4 py-3">
@@ -147,7 +153,7 @@ function QuickCharacterRow({
           <Stepper
             label={de.today.quickDeathsOf(character.name)}
             value={character.deathCount}
-            min={0}
+            min={canLowerDeathCount ? 0 : character.deathCount}
             max={deathCountMax}
             onSave={(deathCount) =>
               setCharacterDeathCountAction(character.id, deathCount)

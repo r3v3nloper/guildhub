@@ -589,6 +589,69 @@ describe("characters and roster with the shipped packs", () => {
       );
       expect(getCharacter(db, id)!.deathCount).toBe(0);
     });
+
+    it("lets members only raise deaths, in the overview and in the editor", () => {
+      // Arrange
+      member(OWNER, "Anna");
+      const ben = memberAllowed("100000000000000002", "Ben");
+      const character = tailor(ben);
+      setCharacterDeathCount(db, ben, character.id, 4);
+      const editorInput = input({
+        name: character.name,
+        raceKey: "human",
+        classKey: "mage",
+        level: 10,
+        professionKeys: ["tailoring"],
+        deathCount: 2,
+      });
+
+      // Act
+      const lowerQuickly = () =>
+        setCharacterDeathCount(db, ben, character.id, 3);
+      const lowerInEditor = saveCharacter(
+        db,
+        ben,
+        "wow-forever",
+        editorInput,
+        character.id,
+      );
+
+      // Assert
+      expect(lowerQuickly).toThrow(ForbiddenError);
+      expect(lowerInEditor).toMatchObject({
+        ok: false,
+        errors: { deathCount: expect.any(String) },
+      });
+      expect(getCharacter(db, character.id)!.deathCount).toBe(4);
+    });
+
+    it("lets the owner correct deaths downwards", () => {
+      // Arrange
+      const anna = member(OWNER, "Anna");
+      const character = tailor(anna);
+      setCharacterDeathCount(db, anna, character.id, 4);
+
+      // Act
+      setCharacterDeathCount(db, anna, character.id, 3);
+      const saved = saveCharacter(
+        db,
+        anna,
+        "wow-forever",
+        input({
+          name: character.name,
+          raceKey: "human",
+          classKey: "mage",
+          level: 10,
+          professionKeys: ["tailoring"],
+          deathCount: 1,
+        }),
+        character.id,
+      );
+
+      // Assert
+      expect(saved.ok).toBe(true);
+      expect(getCharacter(db, character.id)!.deathCount).toBe(1);
+    });
   });
 });
 

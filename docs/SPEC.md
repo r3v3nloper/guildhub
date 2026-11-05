@@ -758,6 +758,9 @@ der Charakter zeigt aber „Zuletzt aus dem Spiel übernommen am …“.
 ### 7.4 Deathcount
 
 Ein reiner Zähler zum Spaß, ohne Folgen für den Charakter (kein Hardcore-Status).
+Er zählt nur nach oben: Mitglieder und Officer können ihn nicht verringern, weder in der
+Übersicht noch im Editor. Nur der Owner darf einen Fehlklick nach unten korrigieren
+(serverseitig geprüft, 8).
 Spiele schalten ihn über die Capability `death_count` ein; zuerst WoW Forever.
 
 - **Charakter-Editor:** Feld „Tode“ (ganze Zahl ab 0) bei den Grunddaten. Darüber

@@ -171,6 +171,16 @@ export function saveCharacter(
   }
 
   const { professionEntryIds, ...values } = resolved.value;
+  if (
+    existing &&
+    values.deathCount !== undefined &&
+    values.deathCount < existing.deathCount
+  ) {
+    const lowering = permissions.lowerDeathCount(actor);
+    if (!lowering.allowed) {
+      return { ok: false, errors: { deathCount: lowering.reason } };
+    }
+  }
   values.serverName = establishedServerName(db, catalog.game.id, values);
 
   const savedId = db.transaction((tx) => {
@@ -342,6 +352,9 @@ export function setCharacterDeathCount(
     deathCount > DEATH_COUNT_MAX
   ) {
     throw new DomainError(`Tode zwischen 0 und ${DEATH_COUNT_MAX}.`);
+  }
+  if (deathCount < character.deathCount) {
+    assertAllowed(permissions.lowerDeathCount(actor));
   }
   db.update(characters)
     .set({ deathCount })
