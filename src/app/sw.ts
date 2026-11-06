@@ -25,6 +25,12 @@ const serwist = new Serwist({
         sameOrigin && url.pathname.startsWith("/admin/backup"),
       handler: new NetworkOnly(),
     },
+    // Gallery pictures are private; the browser's HTTP cache keeps them, the worker must not.
+    {
+      matcher: ({ url, sameOrigin }) =>
+        sameOrigin && /^\/galerie\/\d+\/bild$/.test(url.pathname),
+      handler: new NetworkOnly(),
+    },
     // Serwist's default strategies: network-first for pages and API data, cache-first for static assets.
     ...defaultCache,
   ],

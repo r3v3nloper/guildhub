@@ -157,7 +157,9 @@ Volume `guildhub-data` und bleibt bei Updates und Neustarts erhalten.
 
 Das Script `scripts/backup.mjs` erstellt eine konsistente Kopie per SQLite-Online-Backup,
 auch während die App schreibt. Ziel ist `./backups/guildhub-YYYY-MM-DD.db`; die letzten 14
-Backups bleiben erhalten. Täglich per Host-Cron (`crontab -e`):
+Backups bleiben erhalten. Die Galerie-Bilder kommen nach `./backups/gallery/`: neue werden
+dazukopiert, und ein Bild verschwindet dort erst, wenn keines der 14 Backups es mehr kennt.
+Täglich per Host-Cron (`crontab -e`):
 
 ```
 30 4 * * * cd /pfad/zu/guildhub && docker compose exec -T guildhub node scripts/backup.mjs >> backups/backup.log 2>&1
@@ -173,16 +175,20 @@ Schlägt das Script mit „nicht beschreibbar“ fehl, fehlen die Rechte am Ordn
 (siehe Einrichtung, Schritt 5).
 
 Zusätzlich kann ein Owner unter **Admin → Backup** eine Kopie herunterladen. Darin fehlen
-Sessions und Tokens; nach einem Restore aus diesem Download müssen sich alle neu anmelden.
+Sessions, Tokens und die Galerie-Bilder; nach einem Restore aus diesem Download müssen sich
+alle neu anmelden.
 
 ### Restore
 
 1. `docker compose stop guildhub`
-2. Die Backup-Datei ins Volume kopieren, z. B.:
+2. Die Backup-Datei und die Galerie-Bilder ins Volume kopieren, z. B.:
 
    ```bash
    docker run --rm -v guildhub_guildhub-data:/data -v "$PWD/backups":/backups alpine \
-     sh -c 'cp /backups/guildhub-YYYY-MM-DD.db /data/guildhub.db && rm -f /data/guildhub.db-wal /data/guildhub.db-shm && chown 1000:1000 /data/guildhub.db'
+     sh -c 'cp /backups/guildhub-YYYY-MM-DD.db /data/guildhub.db && rm -f /data/guildhub.db-wal /data/guildhub.db-shm && mkdir -p /data/gallery && cp -n /backups/gallery/* /data/gallery/ ; chown -R 1000:1000 /data'
    ```
+
+   Bilder aus neueren Backups, die der wiederhergestellte Stand nicht kennt, schaden nicht:
+   Die App zeigt nur, was in der Datenbank steht.
 
 3. `docker compose start guildhub`

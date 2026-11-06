@@ -19,6 +19,8 @@ import {
   setChecklistPinned,
 } from "@/lib/lists/checklists";
 import { deleteBoss, saveBoss } from "@/lib/lists/dungeon-bosses";
+import { deleteWithGalleryFiles } from "@/lib/gallery/gallery";
+import { getImageStore } from "@/lib/gallery/image-store";
 import { de } from "@/i18n/de";
 
 // "/" shows pinned checklists on the dashboard.
@@ -100,7 +102,12 @@ export async function deleteChecklistAction(
   checklistId: number,
 ): Promise<ActionState> {
   const state = await guarded(async () => {
-    deleteChecklist(getDb(), await actorForAction(), checklistId);
+    const db = getDb();
+    const actor = await actorForAction();
+    const id = parseArg(idArg, checklistId);
+    deleteWithGalleryFiles(db, getImageStore(), { checklistId: id }, () =>
+      deleteChecklist(db, actor, id),
+    );
     return { ok: true };
   });
   if (state.ok) {

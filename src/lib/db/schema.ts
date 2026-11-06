@@ -668,6 +668,35 @@ export const guildNotes = sqliteTable("guild_note", {
   createdAt: createdAt(),
 });
 
+/**
+ * A picture in the guild gallery (SPEC 7.6). Without a checklist it belongs to the general
+ * gallery; with one it belongs to that dungeon page and shares its visibility. `file` names
+ * the stored image and its preview in the gallery folder, never a path.
+ */
+export const galleryImages = sqliteTable(
+  "gallery_image",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    uploadedBy: text("uploaded_by")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    checklistId: integer("checklist_id").references(() => checklists.id, {
+      onDelete: "cascade",
+    }),
+    caption: text("caption"),
+    /** The day the picture shows, YYYY-MM-DD; the upload day unless changed. */
+    takenOn: text("taken_on").notNull(),
+    file: text("file").notNull().unique(),
+    width: integer("width").notNull(),
+    height: integer("height").notNull(),
+    createdAt: createdAt(),
+  },
+  (image) => [
+    index("gallery_image_checklist").on(image.checklistId),
+    index("gallery_image_taken_on").on(image.takenOn),
+  ],
+);
+
 // --- Logs (SPEC 4.1) ---
 
 export interface SyncSummary {

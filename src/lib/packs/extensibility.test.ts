@@ -36,6 +36,7 @@ describe("a new game from a pack alone", () => {
     allowedDiscordIds: [],
     guildName: "Testgilde",
     defaultTimezone: "Europe/Berlin",
+    galleryPath: ":memory:",
   };
 
   beforeEach(() => {

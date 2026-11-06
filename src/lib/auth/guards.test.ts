@@ -57,6 +57,23 @@ describe("permissions", () => {
     expect(permissions.manageGames(actor("owner")).allowed).toBe(true);
   });
 
+  it("lets uploaders and officers delete gallery pictures, no other member", () => {
+    // Arrange
+    const uploader = "member-2";
+
+    // Act & Assert
+    expect(
+      permissions.deleteGalleryImage(actor("member", uploader), uploader)
+        .allowed,
+    ).toBe(true);
+    expect(
+      permissions.deleteGalleryImage(actor("member"), uploader).allowed,
+    ).toBe(false);
+    expect(
+      permissions.deleteGalleryImage(actor("officer"), uploader).allowed,
+    ).toBe(true);
+  });
+
   it("reserves guild notes for officers and owners", () => {
     expect(permissions.manageGuildNotes(actor("member")).allowed).toBe(false);
     expect(permissions.manageGuildNotes(actor("officer")).allowed).toBe(true);

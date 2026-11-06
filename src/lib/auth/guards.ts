@@ -81,6 +81,18 @@ export const permissions = {
       : deny("Nur für Officer und Owner.");
   },
 
+  /** Own pictures: their uploader; anyone else's: officers, to tidy up (SPEC 7.6). */
+  deleteGalleryImage(actor: Actor, uploaderId: string): Permission {
+    if (!isActive(actor)) {
+      return deny("Kein aktives Gildenmitglied.");
+    }
+    return actor.userId === uploaderId || atLeast(actor, "officer")
+      ? allow
+      : deny(
+          "Nur wer das Bild hochgeladen hat oder ein Officer darf es löschen.",
+        );
+  },
+
   manageGuildTasks(actor: Actor): Permission {
     return atLeast(actor, "officer")
       ? allow

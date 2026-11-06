@@ -28,6 +28,7 @@ export const AUDIT_ACTIONS = [
   "guildNote.pin",
   "guildNote.unpin",
   "guildNote.delete",
+  "galleryImage.delete",
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 

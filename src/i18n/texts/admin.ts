@@ -97,4 +97,5 @@ export const auditActions = {
   "guildNote.pin": "hat Gildennotiz angepinnt",
   "guildNote.unpin": "hat Gildennotiz gelöst",
   "guildNote.delete": "hat Gildennotiz gelöscht",
+  "galleryImage.delete": "hat ein fremdes Galerie-Bild gelöscht",
 } as Record<string, string>;

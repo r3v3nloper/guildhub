@@ -85,3 +85,95 @@ describe("runBackup", () => {
     ).rejects.toThrow(/nicht beschreibbar/);
   });
 });
+
+describe("backupGallery", () => {
+  let directory: string;
+  const kept = "0f8fad5b-d9cb-469f-a165-70867728950e";
+  const deleted = "7c9e6679-7425-40de-944b-e07fc1f90ae7";
+  // Referenced, but only an interrupted copy made it into the backup folder.
+  const interrupted = "16fd2706-8baf-433b-82eb-8c7fada847da";
+
+  beforeEach(() => {
+    directory = fs.mkdtempSync(path.join(os.tmpdir(), "guildhub-gallery-"));
+  });
+
+  afterEach(() => {
+    fs.rmSync(directory, { recursive: true, force: true });
+  });
+
+  function liveDatabase(files: string[]): string {
+    const databasePath = path.join(directory, "live.db");
+    const live = new Database(databasePath);
+    live.exec("CREATE TABLE gallery_image (file TEXT)");
+    const insert = live.prepare("INSERT INTO gallery_image VALUES (?)");
+    for (const file of files) {
+      insert.run(file);
+    }
+    live.close();
+    return databasePath;
+  }
+
+  it("copies the pictures with the database and keeps what a kept backup refers to", async () => {
+    // Arrange
+    const galleryPath = path.join(directory, "gallery");
+    fs.mkdirSync(galleryPath);
+    fs.writeFileSync(path.join(galleryPath, `${kept}.webp`), "bild");
+    fs.writeFileSync(path.join(galleryPath, `${kept}.preview.webp`), "klein");
+    const backupDirectory = path.join(directory, "backups");
+    fs.mkdirSync(path.join(backupDirectory, "gallery"), { recursive: true });
+    fs.writeFileSync(
+      path.join(backupDirectory, "gallery", `${deleted}.webp`),
+      "alt",
+    );
+    fs.writeFileSync(
+      path.join(backupDirectory, "gallery", `${interrupted}.webp.tmp`),
+      "halb",
+    );
+
+    // Act
+    const result = await runBackup({
+      databasePath: liveDatabase([kept, interrupted]),
+      backupDirectory,
+      galleryPath,
+      timeZone: "UTC",
+      now: new Date("2026-11-06T10:00:00Z"),
+    });
+
+    // Assert
+    expect(result.gallery).toEqual({ copied: 2, removed: 2 });
+    expect(
+      fs.readdirSync(path.join(backupDirectory, "gallery")).sort(),
+    ).toEqual([`${kept}.preview.webp`, `${kept}.webp`]);
+  });
+
+  it("keeps a deleted picture while an older kept backup still shows it", async () => {
+    // Arrange
+    const backupDirectory = path.join(directory, "backups");
+    fs.mkdirSync(path.join(backupDirectory, "gallery"), { recursive: true });
+    const older = new Database(
+      path.join(backupDirectory, "guildhub-2026-11-01.db"),
+    );
+    older.exec(
+      `CREATE TABLE gallery_image (file TEXT); INSERT INTO gallery_image VALUES ('${deleted}');`,
+    );
+    older.close();
+    fs.writeFileSync(
+      path.join(backupDirectory, "gallery", `${deleted}.webp`),
+      "alt",
+    );
+
+    // Act
+    await runBackup({
+      databasePath: liveDatabase([]),
+      backupDirectory,
+      galleryPath: path.join(directory, "missing"),
+      timeZone: "UTC",
+      now: new Date("2026-11-06T10:00:00Z"),
+    });
+
+    // Assert
+    expect(fs.readdirSync(path.join(backupDirectory, "gallery"))).toEqual([
+      `${deleted}.webp`,
+    ]);
+  });
+});

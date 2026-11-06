@@ -137,7 +137,8 @@ export function editableChecklist(
   return checklist;
 }
 
-function visibleChecklist(
+/** A checklist the actor may see; anything else counts as not found. */
+export function visibleChecklist(
   db: AppDatabase,
   actor: Actor,
   checklistId: number,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { daysSince, formatAge } from "./format";
+import { daysSince, formatAge, formatIsoDay } from "./format";
 
 const now = new Date("2026-10-29T12:00:00Z");
 const ago = (minutes: number) => new Date(now.getTime() - minutes * 60_000);
@@ -18,5 +18,11 @@ describe("formatAge", () => {
     // Act & Assert
     expect(daysSince(ago(47 * 60), now)).toBe(1);
     expect(daysSince(ago(-10), now)).toBe(0);
+  });
+});
+
+describe("formatIsoDay", () => {
+  it("shows a stored day the German way", () => {
+    expect(formatIsoDay("2026-11-04")).toBe("04.11.2026");
   });
 });

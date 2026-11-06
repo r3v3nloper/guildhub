@@ -12,6 +12,8 @@ export const PAGE_GROUPS = {
     "/charaktere/[id]",
     "/farmspots",
   ],
+  /** The gallery shows every picture; dungeon pages show their own. */
+  gallery: ["/galerie", "/dungeons/[id]"],
   /** The notes page lists every note; the overview shows the pinned ones. */
   guildNotes: ["/notizen", "/"],
   /** The stat page lists the recommendations; character pages show those of their specs. */
