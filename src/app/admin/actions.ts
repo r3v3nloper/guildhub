@@ -25,6 +25,8 @@ import {
   setGameEnabled,
   setGameRegion,
 } from "@/lib/guild/games-admin";
+import { deleteWithGalleryFiles } from "@/lib/gallery/gallery";
+import { getImageStore } from "@/lib/gallery/image-store";
 import { de } from "@/i18n/de";
 
 /** Every admin action: resolve the actor, run, refresh the affected pages. */
@@ -136,6 +138,8 @@ export async function purgeMemberAction(
     if (formText(formData, "confirm").trim() !== (member.name ?? "")) {
       throw new DomainError("Der eingetippte Name stimmt nicht.");
     }
-    purgeMember(db, actor, userId);
+    deleteWithGalleryFiles(db, getImageStore(), { uploadedBy: userId }, () =>
+      purgeMember(db, actor, userId),
+    );
   });
 }

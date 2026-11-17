@@ -9,6 +9,7 @@ import {
   stepper,
 } from "./texts/core";
 import { today } from "./texts/today";
+import { gallery } from "./texts/gallery";
 import { tasks } from "./texts/tasks";
 import { checklists, farmSpots, todos, visibility } from "./texts/lists";
 import {
@@ -23,6 +24,7 @@ import {
 import { admin, auditActions, catalogKinds } from "./texts/admin";
 import {
   directory,
+  guildNotes,
   matrix,
   requests,
   specBuilds,
@@ -60,4 +62,6 @@ export const de = {
   requests,
   statPriorities,
   specBuilds,
+  guildNotes,
+  gallery,
 } as const;

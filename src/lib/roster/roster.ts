@@ -10,6 +10,7 @@ import {
   type CatalogStatus,
 } from "@/lib/db/schema";
 import type { LocalizedString } from "@/lib/packs/schema";
+import { rankByDeaths, type DeathRank } from "./death-ranking";
 import { listEnabledGames } from "./game-catalog";
 
 export interface RosterEntryRef {
@@ -32,6 +33,8 @@ export interface RosterCharacter {
   gameId: string;
   name: string;
   level: number | null;
+  /** Null where the game does not count deaths (capability `death_count`). */
+  deathCount: number | null;
   spec: string | null;
   isMain: boolean;
   server: string | null;
@@ -83,6 +86,7 @@ export interface Roster {
   members: RosterMember[];
   classes: Distribution[];
   roles: Distribution[];
+  mostDeaths: DeathRank[];
 }
 
 /**
@@ -94,7 +98,13 @@ export function loadRosterMembers(
   guildId: number,
   onlyUserId?: string,
 ): RosterMember[] {
-  const enabledGameIds = listEnabledGames(db, guildId).map((game) => game.id);
+  const enabledGames = listEnabledGames(db, guildId);
+  const enabledGameIds = enabledGames.map((game) => game.id);
+  const gamesCountingDeaths = new Set(
+    enabledGames
+      .filter((game) => game.meta.capabilities.death_count)
+      .map((game) => game.id),
+  );
   const members = listMembers(db, guildId).filter(
     (member) => !onlyUserId || member.userId === onlyUserId,
   );
@@ -179,6 +189,7 @@ export function loadRosterMembers(
       gameId: row.gameId,
       name: row.name,
       level: row.level,
+      deathCount: gamesCountingDeaths.has(row.gameId) ? row.deathCount : null,
       spec: row.spec,
       isMain: row.isMain,
       server:
@@ -317,6 +328,7 @@ export function filterRoster(
         ? { key: character.role, label: character.role }
         : undefined,
     ),
+    mostDeaths: rankByDeaths(filtered),
   };
 }
 

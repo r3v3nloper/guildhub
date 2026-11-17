@@ -32,6 +32,7 @@ export interface CharacterFormValues {
   offSpecKey: string;
   spec: string;
   level: string;
+  deathCount: string;
   isMain: boolean;
   notes: string;
   professions: string[];
@@ -45,6 +46,8 @@ interface CharacterFormProps {
   knownServers: string[];
   /** New characters pick professions here and get a preview; edits save via a bar. */
   mode: "new" | "edit";
+  /** Lowest death count the actor may enter; only owners may go below the stored one. */
+  deathCountMin?: number;
   /** Edit mode: shown beside the form, e.g. stat priorities and delete. */
   aside?: ReactNode;
 }
@@ -75,6 +78,7 @@ export function CharacterForm({
   hints,
   knownServers,
   mode,
+  deathCountMin = 0,
   aside,
 }: CharacterFormProps) {
   const isNew = mode === "new";
@@ -269,6 +273,23 @@ export function CharacterForm({
               </div>
               {problem(errors.level)}
             </div>
+            {capabilities.death_count && (
+              <Field
+                label={de.characters.deathCount}
+                hint={de.characters.deathCountHint}
+                error={errors.deathCount}
+              >
+                <TextInput
+                  name="deathCount"
+                  type="number"
+                  inputMode="numeric"
+                  min={deathCountMin}
+                  defaultValue={values.deathCount}
+                  placeholder="0"
+                  className="max-w-24"
+                />
+              </Field>
+            )}
           </div>
           <button
             type="button"

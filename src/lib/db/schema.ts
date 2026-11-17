@@ -219,6 +219,7 @@ export const characters = sqliteTable(
     offSpecEntryId: catalogReference("off_spec_entry_id"),
     spec: text("spec"),
     level: integer("level"),
+    deathCount: integer("death_count").notNull().default(0),
     isMain: integer("is_main", { mode: "boolean" }).notNull().default(false),
     notes: text("notes"),
     createdAt: createdAt(),
@@ -645,6 +646,55 @@ export const specBuilds = sqliteTable(
       .$onUpdateFn(() => new Date()),
   },
   (build) => [index("spec_build_spec").on(build.specEntryId)],
+);
+
+/**
+ * A note officers keep for the whole guild, e.g. rules or raid etiquette. Without a game
+ * it applies to every game; pinned notes show on everyone's overview (SPEC 7.5).
+ */
+export const guildNotes = sqliteTable("guild_note", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  gameId: text("game_id").references(() => games.id),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
+  pinned: integer("pinned", { mode: "boolean" }).notNull().default(false),
+  updatedBy: text("updated_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date())
+    .$onUpdateFn(() => new Date()),
+  createdAt: createdAt(),
+});
+
+/**
+ * A picture in the guild gallery (SPEC 7.6). Without a checklist it belongs to the general
+ * gallery; with one it belongs to that dungeon page and shares its visibility. `file` names
+ * the stored image and its preview in the gallery folder, never a path.
+ */
+export const galleryImages = sqliteTable(
+  "gallery_image",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    uploadedBy: text("uploaded_by")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    checklistId: integer("checklist_id").references(() => checklists.id, {
+      onDelete: "cascade",
+    }),
+    caption: text("caption"),
+    /** The day the picture shows, YYYY-MM-DD; the upload day unless changed. */
+    takenOn: text("taken_on").notNull(),
+    file: text("file").notNull().unique(),
+    width: integer("width").notNull(),
+    height: integer("height").notNull(),
+    createdAt: createdAt(),
+  },
+  (image) => [
+    index("gallery_image_checklist").on(image.checklistId),
+    index("gallery_image_taken_on").on(image.takenOn),
+  ],
 );
 
 // --- Logs (SPEC 4.1) ---

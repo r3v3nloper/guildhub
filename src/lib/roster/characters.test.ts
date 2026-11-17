@@ -20,6 +20,7 @@ import {
 import {
   getCharacter,
   saveCharacter,
+  setCharacterDeathCount,
   setCharacterLevel,
   setCharacterProfessions,
 } from "./characters";
@@ -124,6 +125,45 @@ describe("characters and roster with the shipped packs", () => {
         expect.objectContaining({ key: "unknown", count: 1 }),
       ]),
     );
+  });
+
+  it("shows deaths only for games that count them and ranks them", () => {
+    // Arrange
+    const anna = member(OWNER, "Anna");
+    saveCharacter(
+      db,
+      anna,
+      "wow-forever",
+      input({
+        name: "Jaina",
+        raceKey: "human",
+        classKey: "mage",
+        deathCount: 3,
+      }),
+    );
+    saveCharacter(
+      db,
+      anna,
+      "aion2",
+      input({
+        name: "Lyra",
+        factionKey: "elyos",
+        classKey: "cleric",
+        deathCount: 7,
+      }),
+    );
+
+    // Act
+    const roster = filterRoster(loadRosterMembers(db, guildId), {});
+
+    // Assert
+    const deaths = Object.fromEntries(
+      roster.members[0].characters.map((c) => [c.name, c.deathCount]),
+    );
+    expect(deaths).toEqual({ Jaina: 3, Lyra: null });
+    expect(roster.mostDeaths).toEqual([
+      expect.objectContaining({ characterName: "Jaina", deathCount: 3 }),
+    ]);
   });
 
   it("filters the roster by game, role and class", () => {
@@ -507,6 +547,110 @@ describe("characters and roster with the shipped packs", () => {
       expect(() =>
         setProfessionSkill(db, anna, character.id, 999999, 10),
       ).toThrow(NotFoundError);
+    });
+
+    it("counts deaths within bounds and only for the owner", () => {
+      // Arrange
+      const anna = member(OWNER, "Anna");
+      const ben = memberAllowed("100000000000000002", "Ben");
+      const character = tailor(anna);
+
+      // Act
+      setCharacterDeathCount(db, anna, character.id, 4);
+
+      // Assert
+      expect(getCharacter(db, character.id)).toMatchObject({
+        deathCount: 4,
+        level: 10,
+      });
+      expect(() => setCharacterDeathCount(db, anna, character.id, -1)).toThrow(
+        DomainError,
+      );
+      expect(() => setCharacterDeathCount(db, ben, character.id, 5)).toThrow(
+        ForbiddenError,
+      );
+      expect(getCharacter(db, character.id)!.deathCount).toBe(4);
+    });
+
+    it("refuses deaths for a game that does not count them", () => {
+      // Arrange
+      const anna = member(OWNER, "Anna");
+      const saved = saveCharacter(
+        db,
+        anna,
+        "aion2",
+        input({ name: "Lyra", factionKey: "elyos", classKey: "cleric" }),
+      );
+      const id = saved.ok ? saved.characterId : -1;
+
+      // Act & Assert
+      expect(() => setCharacterDeathCount(db, anna, id, 1)).toThrow(
+        DomainError,
+      );
+      expect(getCharacter(db, id)!.deathCount).toBe(0);
+    });
+
+    it("lets members only raise deaths, in the overview and in the editor", () => {
+      // Arrange
+      member(OWNER, "Anna");
+      const ben = memberAllowed("100000000000000002", "Ben");
+      const character = tailor(ben);
+      setCharacterDeathCount(db, ben, character.id, 4);
+      const editorInput = input({
+        name: character.name,
+        raceKey: "human",
+        classKey: "mage",
+        level: 10,
+        professionKeys: ["tailoring"],
+        deathCount: 2,
+      });
+
+      // Act
+      const lowerQuickly = () =>
+        setCharacterDeathCount(db, ben, character.id, 3);
+      const lowerInEditor = saveCharacter(
+        db,
+        ben,
+        "wow-forever",
+        editorInput,
+        character.id,
+      );
+
+      // Assert
+      expect(lowerQuickly).toThrow(ForbiddenError);
+      expect(lowerInEditor).toMatchObject({
+        ok: false,
+        errors: { deathCount: expect.any(String) },
+      });
+      expect(getCharacter(db, character.id)!.deathCount).toBe(4);
+    });
+
+    it("lets the owner correct deaths downwards", () => {
+      // Arrange
+      const anna = member(OWNER, "Anna");
+      const character = tailor(anna);
+      setCharacterDeathCount(db, anna, character.id, 4);
+
+      // Act
+      setCharacterDeathCount(db, anna, character.id, 3);
+      const saved = saveCharacter(
+        db,
+        anna,
+        "wow-forever",
+        input({
+          name: character.name,
+          raceKey: "human",
+          classKey: "mage",
+          level: 10,
+          professionKeys: ["tailoring"],
+          deathCount: 1,
+        }),
+        character.id,
+      );
+
+      // Assert
+      expect(saved.ok).toBe(true);
+      expect(getCharacter(db, character.id)!.deathCount).toBe(1);
     });
   });
 });

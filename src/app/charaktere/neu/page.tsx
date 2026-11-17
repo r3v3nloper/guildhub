@@ -50,6 +50,7 @@ async function NewCharacterContent({
           offSpecKey: "",
           spec: "",
           level: "",
+          deathCount: "",
           isMain: false,
           notes: "",
           professions: [],

@@ -23,6 +23,12 @@ export const AUDIT_ACTIONS = [
   "statPriority.delete",
   "specBuild.create",
   "specBuild.delete",
+  "guildNote.create",
+  "guildNote.update",
+  "guildNote.pin",
+  "guildNote.unpin",
+  "guildNote.delete",
+  "galleryImage.delete",
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 

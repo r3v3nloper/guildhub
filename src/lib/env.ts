@@ -44,6 +44,7 @@ const serverEnvSchema = z.object({
   ALLOWED_DISCORD_IDS: z.string().optional(),
   GUILD_NAME: z.string().optional(),
   DEFAULT_TIMEZONE: z.string().min(1).default("Europe/Berlin"),
+  GALLERY_PATH: z.string().optional(),
 });
 
 export interface ServerEnv {
@@ -52,6 +53,8 @@ export interface ServerEnv {
   allowedDiscordIds: string[];
   guildName: string | undefined;
   defaultTimezone: string;
+  /** Folder of the gallery pictures (SPEC 7.6); next to the database unless set. */
+  galleryPath: string;
 }
 
 export function parseServerEnv(
@@ -64,6 +67,8 @@ export function parseServerEnv(
     allowedDiscordIds: parseDiscordIdList(env.ALLOWED_DISCORD_IDS),
     guildName: env.GUILD_NAME || undefined,
     defaultTimezone: env.DEFAULT_TIMEZONE,
+    galleryPath:
+      env.GALLERY_PATH || path.join(path.dirname(env.DATABASE_PATH), "gallery"),
   };
 }
 

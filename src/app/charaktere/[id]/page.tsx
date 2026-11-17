@@ -239,6 +239,11 @@ async function EditCharacterContent({
           )}
           options={options}
           knownServers={listKnownServers(db, character.gameId)}
+          deathCountMin={
+            permissions.lowerDeathCount(actor).allowed
+              ? 0
+              : character.deathCount
+          }
           hints={characterHints(catalog, selection)}
           values={{
             name: character.name,
@@ -250,6 +255,7 @@ async function EditCharacterContent({
             offSpecKey: key(character.offSpecEntryId),
             spec: character.spec ?? "",
             level: character.level?.toString() ?? "",
+            deathCount: character.deathCount.toString(),
             isMain: character.isMain,
             notes: character.notes ?? "",
             professions: professionKeys,

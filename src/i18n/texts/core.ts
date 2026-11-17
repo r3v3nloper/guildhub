@@ -33,6 +33,8 @@ export const nav = {
   directory: "Berufe",
   requests: "Crafting-Anträge",
   statPriorities: "Stat-Prioritäten",
+  guildNotes: "Gildennotizen",
+  gallery: "Galerie",
   menu: "Menü",
   tasks: "Aufgaben",
   todos: "To-do-Listen",

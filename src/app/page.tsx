@@ -4,6 +4,7 @@ import { DateTime } from "luxon";
 import { signOutAction } from "@/components/auth/auth-actions";
 import { SignInButton } from "@/components/auth/SignInButton";
 import { CraftRequestsToday } from "@/components/today/CraftRequestsToday";
+import { PinnedGuildNotes } from "@/components/today/PinnedGuildNotes";
 import { QuickCharacters } from "@/components/today/QuickCharacters";
 import { TodayBoard } from "@/components/today/TodayBoard";
 import { TodayLists } from "@/components/today/TodayLists";
@@ -11,18 +12,21 @@ import { TodaySummary } from "@/components/today/TodaySummary";
 import { PageSuspense } from "@/components/ui/PageSuspense";
 import { PageHeader } from "@/components/ui/ui";
 import { currentActor, currentSession } from "@/lib/auth/current-actor";
+import { permissions } from "@/lib/auth/guards";
 import { getDb } from "@/lib/db/client";
 import { selectedGames } from "@/lib/game-filter";
 import { listCraftRequestsForCrafter } from "@/lib/guild/craft-requests";
+import { listGuildNotes } from "@/lib/guild/guild-notes";
 import { listPinnedChecklists } from "@/lib/lists/checklists";
 import { listTodoLists } from "@/lib/lists/todo-lists";
-import { LEVEL_MAX } from "@/lib/roster/character-rules";
+import { DEATH_COUNT_MAX, LEVEL_MAX } from "@/lib/roster/character-rules";
 import { SKILL_LEVEL_MAX } from "@/lib/roster/character-professions";
 import { listCharactersOfUser } from "@/lib/roster/characters";
 import { loadRosterMembers } from "@/lib/roster/roster";
 import { buildDashboard } from "@/lib/tasks/dashboard";
 import { summarizeDashboard } from "@/lib/tasks/dashboard-summary";
 import { formatCountdown, formatDay } from "@/i18n/format";
+import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
 
 async function HomeContent() {
@@ -58,6 +62,14 @@ async function HomeContent() {
     actor,
     games.map((game) => game.id),
   );
+  const pinnedNotes = listGuildNotes(
+    db,
+    games.map((game) => game.id),
+    { pinnedOnly: true },
+  );
+  const gameNames = new Map(
+    shownGames.map((game) => [game.id, localize(game.name)]),
+  );
   const hasCharacters = listCharactersOfUser(db, actor.userId).length > 0;
   const shownGameIds = new Set(games.map((game) => game.id));
   const ownCharacters = (
@@ -86,7 +98,10 @@ async function HomeContent() {
         characters={ownCharacters}
         levelMax={LEVEL_MAX}
         skillMax={SKILL_LEVEL_MAX}
+        deathCountMax={DEATH_COUNT_MAX}
+        canLowerDeathCount={permissions.lowerDeathCount(actor).allowed}
       />
+      <PinnedGuildNotes notes={pinnedNotes} gameNames={gameNames} />
       {enabledGames.length === 0 && (
         <p className="text-warning">{de.home.noGames}</p>
       )}

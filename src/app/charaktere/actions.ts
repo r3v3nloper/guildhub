@@ -33,6 +33,7 @@ function characterInputOf(formData: FormData): CharacterInput {
     offSpecKey: formText(formData, "offSpecKey"),
     spec: formText(formData, "spec"),
     level: formNumber(formData, "level"),
+    deathCount: formNumber(formData, "deathCount"),
     isMain: formData.get("isMain") === "on",
     notes: formText(formData, "notes"),
     professionKeys: formData

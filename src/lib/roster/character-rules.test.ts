@@ -82,6 +82,7 @@ function catalog(
           servers: false,
           guild_overview: false,
           progress_tracking: false,
+          death_count: false,
           ...capabilities,
         },
       },
@@ -256,6 +257,53 @@ describe("resolveCharacter", () => {
     expect(
       resolveCharacter(wow, input({ professionKeys: ["cooking"] })).ok,
     ).toBe(false);
+  });
+});
+
+describe("death count", () => {
+  const countingDeaths = catalog({ classes: true, death_count: true }, [
+    warrior,
+  ]);
+  const deathsOf = (deathCount: number | null) =>
+    resolveCharacter(
+      countingDeaths,
+      characterInput({ classKey: "warrior", deathCount }),
+    );
+
+  it("stores the count and treats an empty field as no deaths", () => {
+    // Arrange, Act
+    const counted = deathsOf(3);
+    const empty = deathsOf(null);
+
+    // Assert
+    expect(counted).toMatchObject({ ok: true, value: { deathCount: 3 } });
+    expect(empty).toMatchObject({ ok: true, value: { deathCount: 0 } });
+  });
+
+  it.each([-1, 1.5, Number.NaN, 100_001])("rejects %s", (deathCount) => {
+    // Act
+    const result = deathsOf(deathCount);
+
+    // Assert
+    expect(result).toMatchObject({
+      ok: false,
+      errors: { deathCount: expect.any(String) },
+    });
+  });
+
+  it("leaves the stored count alone where the game does not count deaths", () => {
+    // Arrange
+    const withoutDeaths = catalog({ classes: true }, [warrior]);
+
+    // Act
+    const result = resolveCharacter(
+      withoutDeaths,
+      characterInput({ classKey: "warrior", deathCount: -5 }),
+    );
+
+    // Assert
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.value.deathCount).toBeUndefined();
   });
 });
 

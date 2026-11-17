@@ -40,6 +40,12 @@ export function formatIsoDate(date: Date): string {
   }).format(date);
 }
 
+/** A stored day (YYYY-MM-DD) as "04.11.2026"; the day itself, no time zone involved. */
+export function formatIsoDay(day: string): string {
+  const [year, month, date] = day.split("-");
+  return `${date}.${month}.${year}`;
+}
+
 const dayFormat = new Intl.DateTimeFormat("de-DE", {
   weekday: "long",
   day: "numeric",

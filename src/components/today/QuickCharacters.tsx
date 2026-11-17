@@ -7,6 +7,7 @@ import type { RosterCharacter } from "@/lib/roster/roster";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
 import {
+  setCharacterDeathCountAction,
   setCharacterLevelAction,
   setProfessionSkillAction,
 } from "./today-actions";
@@ -55,10 +56,15 @@ export function QuickCharacters({
   characters,
   levelMax,
   skillMax,
+  deathCountMax,
+  canLowerDeathCount,
 }: {
   characters: RosterCharacter[];
   levelMax: number;
   skillMax: number;
+  deathCountMax: number;
+  /** Members only count up; owners may also correct downwards (SPEC 7.4). */
+  canLowerDeathCount: boolean;
 }) {
   const [collapsed, setCollapsed] = useRememberedCollapsed();
   if (characters.length === 0) {
@@ -101,6 +107,8 @@ export function QuickCharacters({
                 character={character}
                 levelMax={levelMax}
                 skillMax={skillMax}
+                deathCountMax={deathCountMax}
+                canLowerDeathCount={canLowerDeathCount}
               />
             ))}
           </ul>
@@ -114,10 +122,14 @@ function QuickCharacterRow({
   character,
   levelMax,
   skillMax,
+  deathCountMax,
+  canLowerDeathCount,
 }: {
   character: RosterCharacter;
   levelMax: number;
   skillMax: number;
+  deathCountMax: number;
+  canLowerDeathCount: boolean;
 }) {
   return (
     <li className="flex flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl bg-raised px-4 py-3">
@@ -136,6 +148,19 @@ function QuickCharacterRow({
           onSave={(level) => setCharacterLevelAction(character.id, level)}
         />
       </QuickValue>
+      {character.deathCount !== null && (
+        <QuickValue label={de.today.quickDeaths}>
+          <Stepper
+            label={de.today.quickDeathsOf(character.name)}
+            value={character.deathCount}
+            min={canLowerDeathCount ? 0 : character.deathCount}
+            max={deathCountMax}
+            onSave={(deathCount) =>
+              setCharacterDeathCountAction(character.id, deathCount)
+            }
+          />
+        </QuickValue>
+      )}
       {character.professions.map((profession) => (
         <QuickValue key={profession.entryId} label={localize(profession.name)}>
           <Stepper

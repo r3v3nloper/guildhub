@@ -204,3 +204,40 @@ export const specBuilds = {
   deleteConfirm: "Diese Build-Empfehlung löschen?",
   offSpec: "Off-Spec",
 } as const;
+
+export const guildNotes = {
+  title: "Gildennotizen",
+  intro:
+    "Regeln, Absprachen und alles, was die Gilde wissen sollte. Angepinnte Notizen stehen für alle auf der Übersicht.",
+  pinnedTitle: "Angepinnt",
+  empty: "Noch keine Gildennotiz.",
+  emptyOfficer:
+    "Noch keine Gildennotiz. Leg die erste an, zum Beispiel mit den Gildenregeln.",
+  add: "Neue Notiz",
+  new: "Gildennotiz anlegen",
+  edit: "Gildennotiz bearbeiten",
+  menuFor: (title: string) => `Weitere Aktionen für ${title}`,
+  fieldTitle: "Titel",
+  fieldTitleHint: "Zum Beispiel „Gildenregeln“ oder „Raid-Etikette“.",
+  fieldGame: "Spiel",
+  allGames: "Alle Spiele",
+  fieldGameHint:
+    "Mit Spiel erscheint die Notiz nur, wenn das Spiel gewählt ist.",
+  fieldBody: "Text",
+  fieldBodyHint:
+    "Zeilenumbrüche bleiben erhalten, Links (https://…) werden anklickbar.",
+  fieldPinned: "Auf der Übersicht anpinnen",
+  pinned: "Angepinnt",
+  pin: "Anpinnen",
+  unpin: "Lösen",
+  pinFor: (title: string) => `${title} auf der Übersicht anpinnen`,
+  unpinFor: (title: string) => `${title} von der Übersicht lösen`,
+  updated: (name: string | null, date: string) =>
+    name
+      ? `Zuletzt geändert von ${name} am ${date}`
+      : `Zuletzt geändert am ${date}`,
+  showAll: "Alle Notizen",
+  deleteTitle: "Gildennotiz löschen",
+  deleteHint: "Weg ist weg: Die Gilde sieht diese Notiz danach nicht mehr.",
+  deleteConfirm: "Diese Gildennotiz löschen?",
+} as const;

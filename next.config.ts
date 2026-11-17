@@ -6,6 +6,13 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   serverExternalPackages: ["better-sqlite3"],
+  experimental: {
+    serverActions: {
+      // Gallery uploads of up to 10 MB plus multipart overhead (SPEC 7.6); keep the
+      // proxy's client_max_body_size in deploy/swag at least as high.
+      bodySizeLimit: "11mb",
+    },
+  },
   turbopack: {
     rules: {
       "*.css": {

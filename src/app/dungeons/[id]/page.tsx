@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BossList } from "@/components/lists/BossList";
 import { DungeonTabs } from "@/components/lists/DungeonTabs";
+import { GallerySection } from "@/components/gallery/GallerySection";
 import { FoldCard } from "@/components/lists/FoldCard";
 import { NotableLootCard } from "@/components/lists/NotableLootCard";
 import { TickItem } from "@/components/lists/TickItem";
@@ -10,6 +11,7 @@ import { PageSuspense } from "@/components/ui/PageSuspense";
 import { Button, ButtonLink, PageHeader } from "@/components/ui/ui";
 import { requireActor } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
+import { listGalleryImages } from "@/lib/gallery/gallery";
 import { getChecklist, type ChecklistView } from "@/lib/lists/checklists";
 import { listBosses } from "@/lib/lists/dungeon-bosses";
 import {
@@ -19,6 +21,7 @@ import {
 } from "@/lib/lists/dungeon-instances";
 import { idParam, orNotFound } from "@/lib/not-found";
 import { listGuildGames } from "@/lib/roster/game-catalog";
+import { formatIsoDate } from "@/i18n/format";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
 import {
@@ -26,6 +29,7 @@ import {
   setChecklistItemTickedAction,
   setChecklistPinnedAction,
 } from "../actions";
+import { uploadGalleryImageAction } from "@/app/galerie/actions";
 
 export const metadata: Metadata = { title: de.checklists.title };
 
@@ -49,6 +53,7 @@ async function DungeonContent({ params }: PageProps<"/dungeons/[id]">) {
     .map((line) => line.trim())
     .filter(Boolean);
   const hasLoot = Boolean(game) && notableLoot.length > 0;
+  const images = listGalleryImages(db, actor, { checklistId: checklist.id });
 
   return (
     <div className="flex flex-col gap-2">
@@ -157,6 +162,28 @@ async function DungeonContent({ params }: PageProps<"/dungeons/[id]">) {
           ) : null
         }
       />
+
+      <section
+        aria-labelledby="dungeon-gallery"
+        className="mt-6 flex flex-col gap-3"
+      >
+        <h2
+          id="dungeon-gallery"
+          className="font-display text-2xl font-semibold text-white"
+        >
+          {de.gallery.dungeonTitle}
+          {images.length > 0 && (
+            <span className="ml-2 text-base text-muted">{images.length}</span>
+          )}
+        </h2>
+        <GallerySection
+          images={images}
+          uploadAction={uploadGalleryImageAction.bind(null, checklist.id)}
+          today={formatIsoDate(new Date())}
+          showDungeon={false}
+          emptyText={de.gallery.emptyDungeon}
+        />
+      </section>
     </div>
   );
 }

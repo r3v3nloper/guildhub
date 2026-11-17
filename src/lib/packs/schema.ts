@@ -259,6 +259,7 @@ export const capabilitiesSchema = z.strictObject({
   servers: z.boolean().default(false),
   guild_overview: z.boolean().default(false),
   progress_tracking: z.boolean().default(false),
+  death_count: z.boolean().default(false),
 });
 export type Capabilities = z.infer<typeof capabilitiesSchema>;
 

@@ -6,6 +6,7 @@ import { builds, characterProfessions, characters } from "@/lib/db/schema";
 import { deleteCharacterProgress } from "@/lib/tasks/progress";
 import { deleteRecipes, formatRecipeLines, listRecipes } from "./recipes";
 import {
+  DEATH_COUNT_MAX,
   LEVEL_MAX,
   resolveCharacter,
   type CharacterInput,
@@ -170,6 +171,16 @@ export function saveCharacter(
   }
 
   const { professionEntryIds, ...values } = resolved.value;
+  if (
+    existing &&
+    values.deathCount !== undefined &&
+    values.deathCount < existing.deathCount
+  ) {
+    const lowering = permissions.lowerDeathCount(actor);
+    if (!lowering.allowed) {
+      return { ok: false, errors: { deathCount: lowering.reason } };
+    }
+  }
   values.serverName = establishedServerName(db, catalog.game.id, values);
 
   const savedId = db.transaction((tx) => {
@@ -255,6 +266,7 @@ export function setCharacterProfessions(
       offSpecKey: key(character.offSpecEntryId),
       spec: character.spec ?? "",
       level: character.level,
+      deathCount: character.deathCount,
       isMain: character.isMain,
       notes: character.notes ?? "",
       professionKeys,
@@ -317,6 +329,35 @@ export function setCharacterLevel(
   }
   db.update(characters)
     .set({ level })
+    .where(eq(characters.id, characterId))
+    .run();
+}
+
+/** Quick death count from the overview (SPEC 7.4), only where the game counts deaths. */
+export function setCharacterDeathCount(
+  db: AppDatabase,
+  actor: Actor,
+  characterId: number,
+  deathCount: number,
+): void {
+  const character = ownedCharacter(db, actor, characterId);
+  if (
+    !requireCatalog(db, character.gameId).game.meta.capabilities.death_count
+  ) {
+    throw new DomainError("Dieses Spiel zählt keine Tode.");
+  }
+  if (
+    !Number.isInteger(deathCount) ||
+    deathCount < 0 ||
+    deathCount > DEATH_COUNT_MAX
+  ) {
+    throw new DomainError(`Tode zwischen 0 und ${DEATH_COUNT_MAX}.`);
+  }
+  if (deathCount < character.deathCount) {
+    assertAllowed(permissions.lowerDeathCount(actor));
+  }
+  db.update(characters)
+    .set({ deathCount })
     .where(eq(characters.id, characterId))
     .run();
 }

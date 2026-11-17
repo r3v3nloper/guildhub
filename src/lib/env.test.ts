@@ -1,3 +1,4 @@
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_DATABASE_PATH,
@@ -35,7 +36,16 @@ describe("parseServerEnv", () => {
       allowedDiscordIds: [],
       guildName: undefined,
       defaultTimezone: "Europe/Berlin",
+      galleryPath: path.join(path.dirname(DEFAULT_DATABASE_PATH), "gallery"),
     });
+  });
+
+  it("keeps the gallery next to the database unless GALLERY_PATH is set", () => {
+    const beside = parseServerEnv({ DATABASE_PATH: "/data/guildhub.db" });
+    const own = parseServerEnv({ GALLERY_PATH: "/bilder" });
+
+    expect(beside.galleryPath).toBe(path.join("/data", "gallery"));
+    expect(own.galleryPath).toBe("/bilder");
   });
 
   it("treats an empty OWNER_DISCORD_ID as unset, as in a fresh .env.example copy", () => {

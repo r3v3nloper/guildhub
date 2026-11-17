@@ -114,7 +114,8 @@ GameCatalogEntry  game_id, kind: class | race | profession | faction | reset_rul
                 status: active | deprecated | removed, last_seen_pack_version, todo (bool)
                 -- DB-Kopie der Pack-Kataloge, wird beim Sync gepflegt, nie gelöscht
 Character       id, user_id, game_id, name, server?, faction_id?, race_id?, class_id?,
-                spec?, level?, is_main (bool), notes?
+                spec?, level?, death_count (int, Default 0), is_main (bool), notes?
+                -- death_count nur bei Capability `death_count` (7.4)
                 -- *_id sind Fremdschlüssel auf GameCatalogEntry, nicht direkt aufs Pack.
                 -- So bleibt die DB konsistent, auch wenn ein Pack-Update etwas entfernt (6.5)
                 -- server: Katalog-ID, falls das Pack `servers` listet, sonst normalisierter
@@ -142,6 +143,11 @@ SyncLog         id, game_id, started_at, finished_at,
                 error?
                 -- Verlauf aller Syncs. Game.last_sync_at/last_sync_error bleiben als
                 -- schneller Status für Banner und Health-Check. Kein Aufräumen nötig.
+GuildNote       id, game_id?, title, body, pinned (bool), updated_by?, updated_at, created_at
+                -- ohne game_id für alle Spiele; pinned = auf der Übersicht (7.5)
+GalleryImage    id, uploaded_by, checklist_id?, caption?, taken_on (Datum), file, created_at
+                -- ohne checklist_id in der allgemeinen Galerie, sonst Bild einer
+                -- Dungeon-Seite; Sichtbarkeit folgt der Seite (7.6)
 AuditLog        id, actor_user_id, action, target, details (JSON), at
                 -- Admin-Aktionen: Allowlist-Änderungen, Rollenwechsel, Deaktivieren,
                 -- endgültiges Löschen, Backup-Downloads, Gilde umbenennen
@@ -413,7 +419,8 @@ Pflichtfelder sind markiert, alle anderen sind optional mit dem genannten Defaul
     "characters": true, "classes": true, "races": false, "professions": true,
     "builds": true, "resets": true, "lockouts": false, "factions": true,
     "servers": true, "guild_overview": true, "progress_tracking": true,
-    "addon_import": false             // Abgleich per Spiel-Addon (7.3); braucht game_ref
+    "addon_import": false,            // Abgleich per Spiel-Addon (7.3); braucht game_ref
+    "death_count": false              // Tode je Charakter zählen (7.4)
   },
   "regions": [ { "id": "eu", "name": "Europa", "timezone": "Europe/Berlin" } ],
                                       // PFLICHT, wenn capabilities.resets = true
@@ -621,7 +628,7 @@ Fehler mitten im Sync.
      unabhängig vom Spiel-Filter
 4. **Roster** (Gilde): Tabelle bzw. Karten pro Mitglied mit Charakteren, Klasse
    (farbig), Rasse/Fraktion (falls im Pack), Rolle, Berufen, aktuellem Build (Link)
-   und geplanter nächster Klasse. Filter: Spiel, Klasse, Rolle, Beruf, Fraktion.
+   und geplanter nächster Klasse, bei Capability `death_count` auch den Toden (7.4). Filter: Spiel, Klasse, Rolle, Beruf, Fraktion.
    Zusätzlich eine Zusammenfassung der Klassen- und Rollenverteilung (wichtig für
    die Raidplanung). Deaktivierte Mitglieder sind standardmäßig ausgeblendet
    (Schalter „Ehemalige anzeigen“).
@@ -760,6 +767,15 @@ geraten. Die Capability heißt `addon_import`.
 - Rezept-Notizen, Freitext-Rezepte, Spezialisierung, Spec, Main-Markierung, Builds
   und Notizen bleiben unangetastet. Das Addon kennt sie nicht.
 
+**Tode** (nur bei Capability `death_count`, 7.4): Das Addon zählt jeden Tod des
+eingeloggten Charakters ab seiner Installation hoch. Das Spiel kennt in der Classic-Basis
+keine Gesamtzahl, ältere Tode trägt das Mitglied deshalb einmal von Hand nach. Damit
+Handeingabe und Addon sich nicht überschreiben, merkt sich GuildHub je Charakter den
+zuletzt übernommenen Addon-Stand und **addiert nur die Differenz** zum Deathcount.
+Ist der neue Addon-Stand kleiner als der gemerkte (Addon neu installiert, SavedVariables
+gelöscht), zählt er als Neubeginn: addiert wird der ganze neue Stand. Die Vorschau zeigt
+„+3 Tode“.
+
 **Vertrauen:** Der String kommt vom Mitglied und kann bearbeitet sein. Das ist
 gleichwertig zur Handeingabe, mit denselben Grenzen und Rechten (8): Ein Import ändert
 nur eigene Charaktere und nur Anträge, die das Mitglied auch im Web ändern dürfte. Ein
@@ -823,6 +839,72 @@ Sitzung eine Zeile im Chatfenster, nur für einen selbst: „Thrall ist online: 
 Antrag *Arkanitstange* (angenommen)“. Der Name ist anklickbar und öffnet das
 Flüstern, schickt aber nichts von selbst. Abschaltbar im Addon.
 
+### 7.4 Deathcount
+
+Ein reiner Zähler zum Spaß, ohne Folgen für den Charakter (kein Hardcore-Status).
+Er zählt nur nach oben: Mitglieder und Officer können ihn nicht verringern, weder in der
+Übersicht noch im Editor. Nur der Owner darf einen Fehlklick nach unten korrigieren
+(serverseitig geprüft, 8).
+Spiele schalten ihn über die Capability `death_count` ein; zuerst WoW Forever.
+
+- **Charakter-Editor:** Feld „Tode“ (ganze Zahl ab 0) bei den Grunddaten. Darüber
+  korrigiert das Mitglied den Stand oder trägt die Tode vor dem Addon nach (7.3).
+- **Übersicht** („Meine Charaktere“): −/+ für die Tode neben Stufe und Fertigkeit,
+  speichert sich selbst.
+- **Roster:** Die Charakterzeile zeigt die Tode, sobald es mindestens einen gibt.
+- **Gilden-Rangliste** in der Roster-Zusammenfassung: „Die meisten Tode“, die Charaktere
+  der aktuellen Auswahl mit mindestens einem Tod, absteigend, höchstens zehn. Bei
+  Gleichstand alphabetisch nach Name. Ohne Tode entfällt der Block.
+
+### 7.5 Gildennotizen
+
+Notizen für die ganze Gilde, etwa Regeln oder Raid-Absprachen. Officer und Owner legen
+sie an, bearbeiten, pinnen und löschen sie (8, Audit-Log); alle Mitglieder lesen sie.
+
+- **Inhalt:** Titel (höchstens 80 Zeichen), Text (höchstens 4.000 Zeichen) als reiner
+  Text: Zeilenumbrüche bleiben erhalten, http(s)-Links werden anklickbar, sonst kein
+  Markup. Optional ein Spiel: ohne Spiel gilt die Notiz für alle Spiele, mit Spiel nur,
+  solange es im Spiel-Umschalter gezeigt wird (bei „Alle Spiele“ also immer).
+- **Seite „Gildennotizen“** (`/notizen`, Navigation unter „Gilde“): alle Notizen der
+  gezeigten Spiele, angepinnte zuerst, dann die zuletzt geänderten. Jede Notiz nennt,
+  wer sie zuletzt geändert hat und wann.
+- **Übersicht:** Angepinnte Notizen stehen für alle direkt unter „Meine Charaktere“.
+  Ohne angepinnte Notiz entfällt der Block.
+- Anpinnen und Lösen ändert nur den Status; „zuletzt geändert“ bleibt beim Text.
+
+### 7.6 Bildergalerie
+
+Screenshots und Erinnerungen der Gilde: eine **allgemeine Galerie** und eine Galerie
+**auf jeder Dungeon-Seite**. Jedes Mitglied lädt Bilder hoch; löschen darf, wer das
+Bild hochgeladen hat, außerdem Officer und Owner (8, Audit-Log beim Löschen fremder Bilder).
+
+- **Angaben je Bild:** die Bilddatei, optional eine Bildunterschrift (höchstens 200
+  Zeichen) und ein Datum. Das Datum ist mit dem Tag des Hochladens vorbelegt und lässt
+  sich ändern, etwa für einen älteren Screenshot. Jedes Bild nennt, wer es hochgeladen
+  hat. Bildunterschrift und Datum ändert nur, wer das Bild hochgeladen hat.
+- **Allgemeine Galerie** (`/galerie`, Navigation unter „Gilde“): alle Bilder, die das
+  Mitglied sehen darf, neueste (nach Datum) zuerst. Bilder einer Dungeon-Seite stehen
+  ebenfalls darin, mit Hinweis und Link auf ihren Dungeon. Ein Umschalter „Dungeon-Bilder
+  anzeigen“ blendet sie aus und wieder ein. Er ist anfangs eingeschaltet; die zuletzt
+  gewählte Stellung bleibt auf dem Gerät erhalten, wie beim Spiel-Umschalter. Der
+  Spiel-Umschalter wirkt hier nicht, da
+  allgemeine Bilder an kein Spiel gebunden sind.
+- **Galerie auf der Dungeon-Seite:** eigener Abschnitt mit den Bildern dieser Seite.
+  Hochladen kann jeder, der die Seite sieht. Die Sichtbarkeit folgt der Seite: Bilder
+  einer privaten Seite sieht nur deren Ersteller, auch nicht in der allgemeinen
+  Galerie. Wird die Seite gelöscht, verschwinden ihre Bilder mit.
+- **Ansicht:** Vorschaubilder im Raster, ein Klick öffnet das Bild groß mit
+  Unterschrift, Datum und Uploader; Blättern zum nächsten und vorigen Bild.
+- **Dateien:** JPEG, PNG und WebP, höchstens 10 MB je Bild; eine Grenze für den Speicher
+  insgesamt gibt es vorerst nicht. Beim Hochladen wird das Bild auf höchstens 2560 Pixel
+  an der langen Kante verkleinert (kleinere bleiben, wie sie sind) und platzsparend
+  als WebP gespeichert; das Original wird nicht aufbewahrt, Metadaten wie GPS-Daten fallen
+  dabei weg. Für das Raster entsteht zusätzlich ein kleines Vorschaubild. Die Dateien liegen im Daten-Volume neben der Datenbank, nie im
+  Image, und werden nur an angemeldete Mitglieder mit Leserecht ausgeliefert, nie
+  öffentlich.
+- **Backup:** Das Server-Backup (11.4) sichert die Bilder mit. Der Backup-Download im
+  Admin-Bereich bleibt ohne Bilder.
+
 ---
 
 ## 8. Berechtigungen (serverseitig im App-Code)
@@ -838,6 +920,9 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
 | Gildendaten sehen (Roster, Matrix, Berufe) | ✓ | ✓ | ✓ |
 | Eigene Charaktere, Builds, Fortschritt, private Aufgaben | ✓ | ✓ | ✓ |
 | Gildenweite Aufgaben anlegen/ändern | | ✓ | ✓ |
+| Gildennotizen anlegen, ändern, anpinnen, löschen (7.5) | | ✓ | ✓ |
+| Bilder hochladen, eigene Bilder ändern und löschen (7.6) | ✓ | ✓ | ✓ |
+| Fremde Bilder löschen (7.6) | | ✓ | ✓ |
 | Spiele aktivieren, Region wählen | | ✓ | ✓ |
 | Mitglieder freischalten (Allowlist hinzufügen) | | ✓ | ✓ |
 | **member** deaktivieren | | ✓ | ✓ |
@@ -957,6 +1042,47 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
   Block „Herstellbar von“; ein Item ohne Treffer zeigt keinen GuildHub-Block
 - ✅ Das Addon funktioniert im Live-Client von WoW Forever (Handtest, Schritte in
   `addons/wow-forever/README.md`)
+- ✅ Tode (7.3): Charakter mit 5 Toden von Hand, Addon meldet 2 → 7. Nächster Import
+  meldet 3 → 8. Addon neu installiert und meldet 1 → 9.
+
+### Phase 7: Deathcount (7.4)
+- Capability `death_count` im Pack-Schema, im WoW-Forever-Pack eingeschaltet
+- Feld `death_count` am Charakter, Editor, Roster-Anzeige und Rangliste
+- Die Übernahme aus dem Addon folgt mit Phase 6
+- ✅ Ein Charakter mit 3 Toden zeigt sie im Roster; einer mit 0 zeigt nichts
+- ✅ Die Rangliste ordnet nach Toden absteigend, bei Gleichstand nach Name, höchstens zehn,
+  und folgt den Roster-Filtern
+- ✅ Negative oder nicht ganzzahlige Tode lehnt der Editor ab
+- ✅ Ein Spiel ohne `death_count` zeigt weder Feld noch Anzeige noch Rangliste
+
+### Phase 8: Gildennotizen (7.5)
+- Tabelle `guild_note`, Seite „Gildennotizen“, angepinnte Notizen auf der Übersicht
+- ✅ Ein Mitglied sieht die Notizen, kann aber weder anlegen noch anpinnen noch löschen
+- ✅ Eine angepinnte Notiz erscheint bei allen auf der Übersicht unter „Meine Charaktere“;
+  nach dem Lösen nur noch auf der Notizen-Seite
+- ✅ Eine Notiz mit Spiel verschwindet, wenn im Spiel-Umschalter ein anderes Spiel gewählt ist
+- ✅ Leerer Titel oder Text und ein nicht aktiviertes Spiel werden abgelehnt
+
+### Phase 9: Bildergalerie (7.6)
+- Tabelle `gallery_image`, Dateiablage im Daten-Volume, Seite „Galerie“, Galerie-Abschnitt
+  auf der Dungeon-Seite
+- ✅ Ein Mitglied lädt ein Bild mit Unterschrift hoch; es erscheint in der allgemeinen
+  Galerie mit Uploader und dem Datum des Tages
+- ✅ Ein Bild auf einer Gilden-Dungeon-Seite erscheint dort und in der allgemeinen Galerie
+  mit Link auf den Dungeon; eines auf einer privaten Seite sehen andere Mitglieder
+  weder dort noch in der allgemeinen Galerie, auch nicht über die Bild-Adresse
+- ✅ Mit ausgeschaltetem „Dungeon-Bilder anzeigen“ zeigt die allgemeine Galerie nur noch
+  Bilder ohne Dungeon; nach dem Einschalten wieder alle. Beim nächsten Öffnen der Galerie
+  auf demselben Gerät steht der Umschalter wie zuletzt gewählt
+- ✅ Ein Mitglied kann fremde Bilder nicht löschen, ein Officer schon (Eintrag im Audit-Log)
+- ✅ Eine Datei, die kein JPEG/PNG/WebP ist oder die Größengrenze überschreitet, wird mit
+  verständlicher Meldung abgelehnt
+- ✅ Nach dem Löschen einer Dungeon-Seite sind ihre Bilder samt Dateien weg
+- ✅ Ohne Anmeldung liefert die Bild-Adresse nichts aus
+- ✅ Ein Screenshot mit 3840 × 2160 Pixeln wird als 2560 × 1440 gespeichert, einer mit
+  1920 × 1080 bleibt so groß
+- ✅ Nach einem Server-Backup und dem Wiederherstellen laut README sind Datenbank und
+  Bilder wieder da und passen zusammen
 
 ---
 
@@ -1017,7 +1143,7 @@ server {
 
     include /config/nginx/ssl.conf;
 
-    client_max_body_size 10m;
+    client_max_body_size 12m;
 
     location / {
         include /config/nginx/proxy.conf;     # setzt u. a. X-Forwarded-Proto/-Host, WebSocket-Header
@@ -1079,7 +1205,9 @@ SWAG_NETWORK=                           # nur docker-compose: Netzwerk des SWAG-
   schreibt. Aufruf per Host-Cron:
   `docker compose exec -T guildhub node scripts/backup.mjs`.
   Ziel: `/backups/guildhub-YYYY-MM-DD.db` (Host: `./backups`), die letzten 14 behalten.
-  Kein Shell-Script.
+  Kein Shell-Script. Danach kopiert dasselbe Script neue Galerie-Bilder (7.6) nach
+  `/backups/gallery` und entfernt dort nur Bilder, die keines der behaltenen Backups mehr
+  kennt. So lässt sich jeder der 14 Datenbank-Stände samt seinen Bildern wiederherstellen.
 - `./backups` muss für UID 1000 beschreibbar sein. README:
   `mkdir -p backups && sudo chown 1000:1000 backups`. Das Script prüft die
   Schreibrechte und bricht mit klarer Meldung ab.
@@ -1155,6 +1283,13 @@ docker-compose.yml
   1803 Rezepten. Der Import liest sie bisher nur noch nicht ein
 - [ ] Gilden-Stand (7.3): Wie groß darf ein eingefügter String im Live-Client sein, bevor
   das Eingabefeld hängt? Bei Bedarf Rezepte nur als IDs und Namen erst im Addon auflösen
+- [ ] Deathcount per Addon (7.3, 7.4): ob `PLAYER_DEAD` in WoW Forever zuverlässig je Tod
+  feuert und Totstellen (Jäger) nicht mitzählt
+- [x] Bildergalerie (7.6): **höchstens 10 MB** je Bild, vorerst keine Gesamtgrenze
+- [x] Bildergalerie (7.6): Bilder kommen **ins Server-Backup** (11.4), nicht in den
+  Backup-Download
+- [x] Bildergalerie (7.6): Bilder werden beim Hochladen **auf 2560 px verkleinert**,
+  Original wird nicht aufbewahrt
 - [x] WoW Forever: neue Rasse **Himmelsgeborene** im Pack (`todo`)
 - [x] WoW Forever: Himmelsgeborene je Fraktion getrennt – „Hoher Orden“ (Allianz) und „Windformer“ (Horde) mit eigenen Klassen; englischer Name noch offen
 

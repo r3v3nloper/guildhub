@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageSuspense } from "@/components/ui/PageSuspense";
+import { DeathRanking } from "@/components/roster/DeathRanking";
 import { DistributionSummary } from "@/components/roster/DistributionSummary";
 import { MemberCard } from "@/components/roster/MemberCard";
 import { RosterFilterForm } from "@/components/roster/RosterFilterForm";
@@ -58,6 +59,7 @@ async function RosterContent({ searchParams }: PageProps<"/roster">) {
       />
       <RosterFilterForm filters={filters} choices={choices} />
       <DistributionSummary classes={roster.classes} roles={roster.roles} />
+      <DeathRanking ranks={roster.mostDeaths} gameNames={gameNames} />
       {roster.members.length === 0 ? (
         <p className="text-muted">{de.roster.empty}</p>
       ) : (

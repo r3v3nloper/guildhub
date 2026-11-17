@@ -74,6 +74,25 @@ export const permissions = {
       : deny("Nur für Officer und Owner.");
   },
 
+  /** Rules and other guild notes are binding, so only officers write and pin them (SPEC 7.5). */
+  manageGuildNotes(actor: Actor): Permission {
+    return atLeast(actor, "officer")
+      ? allow
+      : deny("Nur für Officer und Owner.");
+  },
+
+  /** Own pictures: their uploader; anyone else's: officers, to tidy up (SPEC 7.6). */
+  deleteGalleryImage(actor: Actor, uploaderId: string): Permission {
+    if (!isActive(actor)) {
+      return deny("Kein aktives Gildenmitglied.");
+    }
+    return actor.userId === uploaderId || atLeast(actor, "officer")
+      ? allow
+      : deny(
+          "Nur wer das Bild hochgeladen hat oder ein Officer darf es löschen.",
+        );
+  },
+
   manageGuildTasks(actor: Actor): Permission {
     return atLeast(actor, "officer")
       ? allow
@@ -145,6 +164,13 @@ export const permissions = {
       return deny("Der letzte aktive Owner kann nicht herabgestuft werden.");
     }
     return allow;
+  },
+
+  /** Deaths only ever go up; lowering them is a correction reserved for owners (SPEC 7.4). */
+  lowerDeathCount(actor: Actor): Permission {
+    return atLeast(actor, "owner")
+      ? allow
+      : deny("Tode lassen sich nur vom Owner verringern.");
   },
 
   downloadBackup(actor: Actor): Permission {
