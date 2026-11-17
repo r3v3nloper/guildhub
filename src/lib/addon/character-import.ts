@@ -17,6 +17,11 @@ import { requireAddonCatalog } from "./addon-catalog";
 import { decodeAddonString } from "./addon-string";
 import { parseCharacterExport } from "./export-payload";
 import {
+  applyRequestActions,
+  previewRequestActions,
+  type RequestActionOutcome,
+} from "./request-actions";
+import {
   previewCharacterImport,
   type CharacterPreview,
   type ForeignCharacter,
@@ -28,7 +33,12 @@ import {
 // again against the current state and writes only what the member ticked.
 
 export type CharacterImportPreview =
-  { ok: true; characters: CharacterPreview[] } | { ok: false; error: string };
+  | {
+      ok: true;
+      characters: CharacterPreview[];
+      requestActions: RequestActionOutcome[];
+    }
+  | { ok: false; error: string };
 
 export interface ImportChoices {
   /** Keys (previewKey) of new characters to create. */
@@ -49,12 +59,12 @@ export function previewKey(preview: { realm: string; name: string }): string {
   return `${preview.realm.toLowerCase()}|${preview.name.toLowerCase()}`;
 }
 
-export function previewImport(
+function readExport(
   db: AppDatabase,
   actor: Actor,
   gameId: string,
   text: string,
-): CharacterImportPreview {
+) {
   const catalog = requireAddonCatalog(db, gameId);
   const decoded = decodeAddonString(text, { gameId, kind: "export" });
   if (!decoded.ok) {
@@ -64,14 +74,35 @@ export function previewImport(
   if (!parsed.ok) {
     return parsed;
   }
+  const characters = previewCharacterImport({
+    catalog,
+    data: parsed.value,
+    own: ownCharacters(db, actor, gameId),
+    foreign: foreignCharacters(db, actor, gameId),
+  });
+  return { ok: true as const, catalog, data: parsed.value, characters };
+}
+
+export function previewImport(
+  db: AppDatabase,
+  actor: Actor,
+  gameId: string,
+  text: string,
+): CharacterImportPreview {
+  const read = readExport(db, actor, gameId, text);
+  if (!read.ok) {
+    return read;
+  }
   return {
     ok: true,
-    characters: previewCharacterImport({
-      catalog,
-      data: parsed.value,
-      own: ownCharacters(db, actor, gameId),
-      foreign: foreignCharacters(db, actor, gameId),
-    }),
+    characters: read.characters,
+    // Against the current state; a profession the same import adds is not counted yet.
+    requestActions: previewRequestActions(
+      db,
+      actor,
+      gameId,
+      read.data.requestActions,
+    ),
   };
 }
 
@@ -81,14 +112,20 @@ export function applyImport(
   gameId: string,
   text: string,
   choices: ImportChoices,
-): { ok: true; outcomes: ImportOutcome[] } | { ok: false; error: string } {
-  const preview = previewImport(db, actor, gameId, text);
-  if (!preview.ok) {
-    return preview;
+):
+  | {
+      ok: true;
+      outcomes: ImportOutcome[];
+      requestActions: RequestActionOutcome[];
+    }
+  | { ok: false; error: string } {
+  const read = readExport(db, actor, gameId, text);
+  if (!read.ok) {
+    return read;
   }
-  const catalog = requireAddonCatalog(db, gameId);
+  const { catalog } = read;
   const importedAt = new Date();
-  const outcomes = preview.characters.map((character): ImportOutcome => {
+  const outcomes = read.characters.map((character): ImportOutcome => {
     const key = previewKey(character);
     const outcome = { key, name: character.name };
     const wanted =
@@ -117,7 +154,14 @@ export function applyImport(
       throw error;
     }
   });
-  return { ok: true, outcomes };
+  // After the characters, so a profession the export adds already counts for accepting.
+  const requestActions = applyRequestActions(
+    db,
+    actor,
+    gameId,
+    read.data.requestActions,
+  );
+  return { ok: true, outcomes, requestActions };
 }
 
 /** Runs inside the caller's transaction, so a failing step undoes the whole character. */

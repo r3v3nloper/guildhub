@@ -38,6 +38,7 @@ local handlers = {
   end,
   GUILD_ROSTER_UPDATE = function()
     ns.RefreshOnline()
+    ns.NotifyOnline()
   end,
 }
 
@@ -52,6 +53,10 @@ local commands = {
   tooltip = function()
     GuildHubDB.tooltipOff = not GuildHubDB.tooltipOff
     print("GuildHub: Tooltip " .. (GuildHubDB.tooltipOff and "aus" or "an") .. ".")
+  end,
+  hinweise = function()
+    GuildHubDB.noticesOff = not GuildHubDB.noticesOff
+    print("GuildHub: Online-Hinweise " .. (GuildHubDB.noticesOff and "aus" or "an") .. ".")
   end,
 }
 

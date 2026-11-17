@@ -8,8 +8,10 @@ import type {
   ImportOutcome,
 } from "@/lib/addon/character-import";
 import type { ImportCharacterView } from "@/lib/addon/import-view";
+import type { RequestActionOutcome } from "@/lib/addon/request-actions";
 import { de } from "@/i18n/de";
 import { ImportCharacterCard } from "./ImportCharacterCard";
+import { RequestActionList } from "./RequestActionList";
 
 const NO_CHOICES: ImportChoices = { create: [], dropProfessions: {} };
 
@@ -21,19 +23,30 @@ export function AddonImport({
   preview,
   apply,
 }: {
-  preview: (
-    text: string,
-  ) => Promise<ActionState & { characters?: ImportCharacterView[] }>;
+  preview: (text: string) => Promise<
+    ActionState & {
+      characters?: ImportCharacterView[];
+      requestActions?: RequestActionOutcome[];
+    }
+  >;
   apply: (
     text: string,
     choices: ImportChoices,
-  ) => Promise<ActionState & { outcomes?: ImportOutcome[] }>;
+  ) => Promise<
+    ActionState & {
+      outcomes?: ImportOutcome[];
+      requestActions?: RequestActionOutcome[];
+    }
+  >;
 }) {
   const texts = de.addonImport;
   const [text, setText] = useState("");
   const [characters, setCharacters] = useState<ImportCharacterView[]>();
   const [choices, setChoices] = useState<ImportChoices>(NO_CHOICES);
   const [outcomes, setOutcomes] = useState<ImportOutcome[]>();
+  const [requestActions, setRequestActions] = useState<RequestActionOutcome[]>(
+    [],
+  );
   const [state, setState] = useState<ActionState>({});
   const [pending, startTransition] = useTransition();
 
@@ -42,6 +55,7 @@ export function AddonImport({
       const result = await preview(text);
       setState(result.ok ? {} : result);
       setCharacters(result.characters);
+      setRequestActions(result.requestActions ?? []);
       setChoices(NO_CHOICES);
       setOutcomes(undefined);
     });
@@ -51,11 +65,15 @@ export function AddonImport({
       const result = await apply(text, choices);
       setState(result);
       setOutcomes(result.outcomes);
+      if (result.requestActions) {
+        setRequestActions(result.requestActions);
+      }
     });
 
   const startOver = () => {
     setText("");
     setCharacters(undefined);
+    setRequestActions([]);
     setOutcomes(undefined);
     setState({});
   };
@@ -82,11 +100,13 @@ export function AddonImport({
       };
     });
 
-  const applicable = characters?.some(
-    (character) =>
-      character.status === "changed" ||
-      (character.status === "new" && choices.create.includes(character.key)),
-  );
+  const applicable =
+    requestActions.some((action) => action.result === "applied") ||
+    characters?.some(
+      (character) =>
+        character.status === "changed" ||
+        (character.status === "new" && choices.create.includes(character.key)),
+    );
 
   if (!characters) {
     return (
@@ -134,6 +154,10 @@ export function AddonImport({
           />
         ))}
       </ul>
+      <RequestActionList
+        actions={requestActions}
+        applied={outcomes !== undefined}
+      />
       <FormMessage state={state} />
       <div className="flex flex-wrap gap-2">
         {!outcomes && (

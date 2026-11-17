@@ -84,6 +84,7 @@ function ns.ImportGuild(text)
     return "Das ist ein Export aus dem Addon, er gehört in GuildHub."
   end
   GuildHubDB.guild = ReadRecords(payload)
+  ns.ClearPendingBefore(GuildHubDB.guild.createdAt or 0)
   return nil
 end
 

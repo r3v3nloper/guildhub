@@ -32,6 +32,15 @@ herstellen kann (online in Grün), bei Bauplänen und Rezepten, wer sie schon ke
 Reagenzien, wie viele Anträge sie brauchen. `/guildhub tooltip` schaltet ihn aus und
 wieder an.
 
+Der Reiter **Anträge** in `/guildhub` zeigt aus dem Gilden-Stand, was du erfüllen kannst,
+was du angenommen hast (mit Reagenzien in Taschen und Bank des eingeloggten Charakters)
+und deine eigenen Anträge. Annehmen, Erledigt und Zurückgeben wirken sofort im Addon und
+gehen mit dem nächsten Export an GuildHub, das sie beim Übernehmen prüft. Reihenfolge
+deshalb: erst exportieren und in GuildHub übernehmen, dann einen neuen Gilden-Stand
+holen; ein neuerer Gilden-Stand ersetzt die gemerkten Aktionen. Kommt jemand online, mit
+dem du einen angenommenen Antrag teilst, erscheint einmal pro Sitzung ein Hinweis im
+Chat; `/guildhub hinweise` schaltet das aus und wieder an.
+
 Die Daten liegen accountweit in `WTF/Account/<Account>/SavedVariables/GuildHub.lua`.
 Ein Export enthält alle Charaktere des Accounts, die seit der Installation eingeloggt
 waren.
@@ -73,3 +82,15 @@ Abnahme von Phase 6 (SPEC 10). Noch nicht durchgeführt.
 13. Ein Reagenz eines selbst angenommenen Antrags: „Du brauchst n für 1 angenommenen
     Antrag“. Auch per Chat-Link (Shift-Klick) geöffnete Items zeigen den Block.
 14. `/guildhub tooltip` zweimal: Block verschwindet und kommt wieder.
+15. Reiter „Anträge“: ein offener Antrag zu einem eigenen Beruf steht unter „Kann ich
+    erfüllen“ (ausgegraut, wenn kein eigener Charakter das Rezept kennt). „Annehmen“
+    verschiebt ihn nach „Von mir angenommen“ mit „(noch nicht übertragen)“.
+16. Exportieren und in GuildHub einfügen: die Vorschau zeigt „Anträge aus dem Spiel –
+    Annehmen: … wird übernommen“; nach dem Übernehmen ist der Antrag in GuildHub
+    angenommen.
+17. Hat jemand anderes den Antrag vorher in GuildHub angenommen, zeigt die Vorschau
+    „verworfen“ mit Grund.
+18. Neuen Gilden-Stand holen und einfügen: „(noch nicht übertragen)“ und der Hinweis auf
+    offene Antrags-Aktionen verschwinden.
+19. Mit zwei Accounts: Antragsteller loggt ein, während der Handwerker online ist: beim
+    Handwerker erscheint der Chat-Hinweis mit anklickbarem Namen, einmal pro Sitzung.

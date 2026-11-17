@@ -1,9 +1,10 @@
 local _, ns = ...
 
--- The /guildhub window: what the addon knows, and one text box in two modes —
--- "export" shows the character export for copying, "import" takes the guild snapshot.
+-- The /guildhub window: what the addon knows, and below it one of three views —
+-- "export" shows the character export for copying, "import" takes the guild snapshot,
+-- "requests" lists the guild's crafting requests.
 
-local WIDTH, HEIGHT = 520, 470
+local WIDTH, HEIGHT = 560, 470
 local window
 
 local function FormatDate(timestamp)
@@ -42,19 +43,30 @@ local function StatusText()
   end
   table.insert(lines, "")
   table.insert(lines, ns.GuildStatus())
+  local pending = #ns.PendingActions()
+  if pending > 0 then
+    table.insert(lines, "|cffffd100" .. pending .. " Antrags-Aktionen noch nicht übertragen: erst exportieren und in "
+      .. "GuildHub übernehmen, dann einen neuen Gilden-Stand holen.|r")
+  end
   return table.concat(lines, "\n")
 end
 
 local MODES = {
   export = "Export: Strg+C, dann in GuildHub unter „Aus dem Spiel übernehmen“ einfügen.",
   import = "Gilden-Stand aus GuildHub mit Strg+V einfügen, dann „Übernehmen“.",
+  requests = "Annehmen, Erledigt und Zurückgeben gehen mit dem nächsten Export an GuildHub.",
 }
 
 local function Refresh(frame)
   frame.status:SetText(StatusText())
   frame.hint:SetText(frame.message or MODES[frame.mode])
   frame.apply:SetShown(frame.mode == "import")
-  if frame.mode == "export" then
+  frame.scroll:SetShown(frame.mode ~= "requests")
+  frame.requests.frame:SetShown(frame.mode == "requests")
+  if frame.mode == "requests" then
+    frame.box:ClearFocus()
+    frame.requests:Refresh()
+  elseif frame.mode == "export" then
     frame.export = ns.BuildExport()
     frame.box:SetText(frame.export)
     frame.box:SetFocus()
@@ -110,6 +122,10 @@ local function CreateWindow()
     SetMode(frame, "import")
   end)
   importButton:SetPoint("LEFT", exportButton, "RIGHT", 6, 0)
+  local requestsButton = CreateButton(frame, "Anträge", 100, function()
+    SetMode(frame, "requests")
+  end)
+  requestsButton:SetPoint("LEFT", importButton, "RIGHT", 6, 0)
   frame.apply = CreateButton(frame, "Übernehmen", 110, function()
     frame.message = ns.ImportGuild(frame.box:GetText()) or "|cff60ff60Gilden-Stand übernommen.|r"
     frame.mode = "import"
@@ -144,6 +160,11 @@ local function CreateWindow()
   end)
   scroll:SetScrollChild(box)
   frame.box = box
+  frame.scroll = scroll
+
+  frame.requests = ns.CreateRequestsPanel(frame)
+  frame.requests.frame:SetPoint("TOPLEFT", 16, -276)
+  frame.requests.frame:SetPoint("BOTTOMRIGHT", -34, 16)
 
   return frame
 end

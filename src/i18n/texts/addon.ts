@@ -36,6 +36,21 @@ export const addonImport = {
   missingProfession: (profession: string) =>
     `${profession} im Spiel nicht mehr vorhanden – entfernen (mit Rezepten)`,
   unknown: "Unbekannt im Pack, wird übersprungen:",
+  requestsTitle: "Anträge aus dem Spiel",
+  requestAction: {
+    accept: "Annehmen",
+    done: "Erledigt",
+    return: "Zurückgeben",
+  } as Record<string, string>,
+  requestGone: "Antrag gelöscht",
+  requestResult: {
+    applied: "wird übernommen",
+    discarded: "verworfen",
+  } as Record<string, string>,
+  requestApplied: {
+    applied: "übernommen",
+    discarded: "verworfen",
+  } as Record<string, string>,
   snapshotTitle: "Gilden-Stand fürs Addon",
   snapshotIntro:
     "Handwerker und offene Anträge der Gilde fürs Spiel: kopieren, im Spiel /guildhub → Reiter „Import“ einfügen. Ab und zu neu holen.",

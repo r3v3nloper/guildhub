@@ -4,6 +4,7 @@ local _, ns = ...
 -- GH1:<game>:export:<checksum>:<records>, records separated by ";", fields by ",".
 --   C,<realm>,<name>,<faction>,<race>,<class>,<level>,<deaths>
 --   P,<skill line id>,<skill>[,<spell id>…]
+--   A,<request id>,<accept|done|return>,<unix seconds>   a request action from the game
 
 local FORMAT_VERSION = 1
 
@@ -49,6 +50,9 @@ function ns.BuildExport()
   local records = {}
   for _, character in ipairs(ns.SortedCharacters()) do
     CharacterRecords(character, records)
+  end
+  for _, action in ipairs(ns.PendingActions()) do
+    table.insert(records, table.concat({ "A", action.id, action.action, action.at }, ","))
   end
   local payload = table.concat(records, ";")
   local checksum = ns.Adler32(ns.gameId .. ":export:" .. payload)

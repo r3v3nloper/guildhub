@@ -14,5 +14,8 @@ Guild.lua
 Online.lua
 Crafters.lua
 Tooltip.lua
+Requests.lua
+Notices.lua
+RequestsPanel.lua
 Window.lua
 GuildHub.lua
