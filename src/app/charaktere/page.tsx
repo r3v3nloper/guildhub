@@ -38,13 +38,24 @@ async function CharactersContent() {
               <h2 className="font-display text-2xl font-semibold text-white">
                 {localize(game.name)}
               </h2>
-              <ButtonLink
-                href={`/charaktere/neu?spiel=${game.id}`}
-                variant="secondary"
-              >
-                <i className="pi pi-plus mr-2 text-xs" aria-hidden />
-                {localize(game.meta.characterLabel)}
-              </ButtonLink>
+              <div className="flex flex-wrap gap-2">
+                {game.meta.capabilities.addon_import && (
+                  <ButtonLink
+                    href={`/charaktere/abgleich?spiel=${game.id}`}
+                    variant="secondary"
+                  >
+                    <i className="pi pi-download mr-2 text-xs" aria-hidden />
+                    {de.addonImport.link}
+                  </ButtonLink>
+                )}
+                <ButtonLink
+                  href={`/charaktere/neu?spiel=${game.id}`}
+                  variant="secondary"
+                >
+                  <i className="pi pi-plus mr-2 text-xs" aria-hidden />
+                  {localize(game.meta.characterLabel)}
+                </ButtonLink>
+              </div>
             </div>
             {characters.length === 0 ? (
               <p className="rounded-[18px] border border-dashed border-[#2c2645] px-4.5 py-4 text-sm text-muted">

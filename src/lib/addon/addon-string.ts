@@ -20,7 +20,7 @@ export interface AddonString {
 export type DecodeResult =
   { ok: true; value: AddonString } | { ok: false; error: string };
 
-/** The longest string the import accepts; a whole guild stays far below it. */
+/** The longest string the import accepts; a whole account with every recipe stays far below. */
 export const ADDON_STRING_MAX_LENGTH = 2_000_000;
 
 const FRAME = /^GH(\d+):([a-z0-9-]+):([a-z]+):([0-9a-f]{8}):(.*)$/;

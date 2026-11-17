@@ -9,6 +9,7 @@ import {
   stepper,
 } from "./texts/core";
 import { today } from "./texts/today";
+import { addonImport } from "./texts/addon";
 import { gallery } from "./texts/gallery";
 import { tasks } from "./texts/tasks";
 import { checklists, farmSpots, todos, visibility } from "./texts/lists";
@@ -64,4 +65,5 @@ export const de = {
   specBuilds,
   guildNotes,
   gallery,
+  addonImport,
 } as const;

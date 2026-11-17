@@ -189,6 +189,7 @@ describe("previewCharacterImport", () => {
       status: "changed",
       characterId: 7,
       serverKey: "die aldor",
+      fillsInServer: true,
     });
   });
 

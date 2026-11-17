@@ -50,6 +50,13 @@ export interface NewRecipe {
   name: LocalizedString;
 }
 
+export interface CharacterValues {
+  factionEntryId: number | null;
+  raceEntryId: number | null;
+  classEntryId: number | null;
+  level: number | null;
+}
+
 export interface CharacterPreview {
   realm: string;
   name: string;
@@ -57,12 +64,11 @@ export interface CharacterPreview {
   characterId: number | null;
   serverKey: string | null;
   /** The game's values; null where the game sent nothing usable, so the old one stays. */
-  values: {
-    factionEntryId: number | null;
-    raceEntryId: number | null;
-    classEntryId: number | null;
-    level: number | null;
-  };
+  values: CharacterValues;
+  /** The values in GuildHub before the import; null for a new or foreign character. */
+  previous: CharacterValues | null;
+  /** The character was entered without a server; the import adds the realm. */
+  fillsInServer: boolean;
   changedFields: CharacterField[];
   professions: ProfessionChange[];
   /** Professions the character has in GuildHub, but no longer in the game. */
@@ -116,10 +122,11 @@ function previewCharacter(
     serverKey,
     values,
     unknown,
+    fillsInServer: false,
   };
 
   if (foreign.some((c) => sameName(c.name) && c.serverKey === serverKey)) {
-    return { ...base, ...nothingChanges(), status: "foreign" };
+    return { ...base, ...nothingChanges(), status: "foreign", previous: null };
   }
 
   // A character entered without a server is the same one; the import fills the server in.
@@ -166,20 +173,34 @@ function previewCharacter(
   };
 
   if (!existing) {
-    return { ...base, ...changes, status: "new", characterId: null };
+    return {
+      ...base,
+      ...changes,
+      status: "new",
+      characterId: null,
+      previous: null,
+    };
   }
+  const fillsInServer = existing.serverKey !== serverKey;
   const changed =
     changedFields.length > 0 ||
     professionChanges.length > 0 ||
     missingProfessionEntryIds.length > 0 ||
     newRecipes.length > 0 ||
     deaths.add > 0 ||
-    existing.serverKey !== serverKey;
+    fillsInServer;
   return {
     ...base,
     ...changes,
+    fillsInServer,
     status: changed ? "changed" : "unchanged",
     characterId: existing.id,
+    previous: {
+      factionEntryId: existing.factionEntryId,
+      raceEntryId: existing.raceEntryId,
+      classEntryId: existing.classEntryId,
+      level: existing.level,
+    },
   };
 }
 
