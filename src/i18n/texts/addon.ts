@@ -36,6 +36,13 @@ export const addonImport = {
   missingProfession: (profession: string) =>
     `${profession} im Spiel nicht mehr vorhanden – entfernen (mit Rezepten)`,
   unknown: "Unbekannt im Pack, wird übersprungen:",
+  snapshotTitle: "Gilden-Stand fürs Addon",
+  snapshotIntro:
+    "Handwerker und offene Anträge der Gilde fürs Spiel: kopieren, im Spiel /guildhub → Reiter „Import“ einfügen. Ab und zu neu holen.",
+  snapshotCopy: "Für das Addon kopieren",
+  snapshotCopied: "Kopiert. Jetzt im Spiel einfügen.",
+  snapshotManual:
+    "Kopieren hat nicht geklappt. Bitte den Text markieren und selbst kopieren.",
   outcome: {
     saved: "übernommen",
     skipped: "übersprungen",

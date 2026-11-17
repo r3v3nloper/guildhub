@@ -1,8 +1,9 @@
 local _, ns = ...
 
--- The /guildhub window: what the addon knows per character, and the export to copy.
+-- The /guildhub window: what the addon knows, and one text box in two modes —
+-- "export" shows the character export for copying, "import" takes the guild snapshot.
 
-local WIDTH, HEIGHT = 520, 440
+local WIDTH, HEIGHT = 520, 470
 local window
 
 local function FormatDate(timestamp)
@@ -39,7 +40,43 @@ local function StatusText()
   if ns.recipeApiMissing then
     table.insert(lines, "|cffff6060Dieser Client gibt keine Rezept-IDs heraus; Rezepte fehlen im Export.|r")
   end
+  table.insert(lines, "")
+  table.insert(lines, ns.GuildStatus())
   return table.concat(lines, "\n")
+end
+
+local MODES = {
+  export = "Export: Strg+C, dann in GuildHub unter „Aus dem Spiel übernehmen“ einfügen.",
+  import = "Gilden-Stand aus GuildHub mit Strg+V einfügen, dann „Übernehmen“.",
+}
+
+local function Refresh(frame)
+  frame.status:SetText(StatusText())
+  frame.hint:SetText(frame.message or MODES[frame.mode])
+  frame.apply:SetShown(frame.mode == "import")
+  if frame.mode == "export" then
+    frame.export = ns.BuildExport()
+    frame.box:SetText(frame.export)
+    frame.box:SetFocus()
+    frame.box:HighlightText()
+  else
+    frame.box:SetText("")
+    frame.box:SetFocus()
+  end
+end
+
+local function SetMode(frame, mode)
+  frame.mode = mode
+  frame.message = nil
+  Refresh(frame)
+end
+
+local function CreateButton(parent, label, width, onClick)
+  local button = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
+  button:SetSize(width, 22)
+  button:SetText(label)
+  button:SetScript("OnClick", onClick)
+  return button
 end
 
 local function CreateWindow()
@@ -63,14 +100,30 @@ local function CreateWindow()
   frame.status:SetPoint("TOPRIGHT", -16, -34)
   frame.status:SetJustifyH("LEFT")
   frame.status:SetJustifyV("TOP")
-  frame.status:SetHeight(180)
+  frame.status:SetHeight(190)
 
-  local hint = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-  hint:SetPoint("TOPLEFT", 16, -222)
-  hint:SetText("Export: Strg+C, dann in GuildHub unter „Aus dem Spiel übernehmen“ einfügen.")
+  local exportButton = CreateButton(frame, "Export", 110, function()
+    SetMode(frame, "export")
+  end)
+  exportButton:SetPoint("TOPLEFT", 14, -230)
+  local importButton = CreateButton(frame, "Gilden-Stand einfügen", 160, function()
+    SetMode(frame, "import")
+  end)
+  importButton:SetPoint("LEFT", exportButton, "RIGHT", 6, 0)
+  frame.apply = CreateButton(frame, "Übernehmen", 110, function()
+    frame.message = ns.ImportGuild(frame.box:GetText()) or "|cff60ff60Gilden-Stand übernommen.|r"
+    frame.mode = "import"
+    Refresh(frame)
+  end)
+  frame.apply:SetPoint("TOPRIGHT", -16, -230)
+
+  frame.hint = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+  frame.hint:SetPoint("TOPLEFT", 16, -258)
+  frame.hint:SetPoint("TOPRIGHT", -16, -258)
+  frame.hint:SetJustifyH("LEFT")
 
   local scroll = CreateFrame("ScrollFrame", nil, frame, "UIPanelScrollFrameTemplate")
-  scroll:SetPoint("TOPLEFT", 16, -242)
+  scroll:SetPoint("TOPLEFT", 16, -276)
   scroll:SetPoint("BOTTOMRIGHT", -34, 16)
 
   local box = CreateFrame("EditBox", nil, scroll)
@@ -82,9 +135,9 @@ local function CreateWindow()
   box:SetScript("OnEscapePressed", function()
     frame:Hide()
   end)
-  -- The text is for copying only; typing would break the checksum.
+  -- The export is for copying only; typing would break its checksum.
   box:SetScript("OnTextChanged", function(self, userInput)
-    if userInput then
+    if userInput and frame.mode == "export" then
       self:SetText(frame.export)
       self:HighlightText()
     end
@@ -97,10 +150,6 @@ end
 
 function ns.ShowWindow()
   window = window or CreateWindow()
-  window.status:SetText(StatusText())
-  window.export = ns.BuildExport()
-  window.box:SetText(window.export)
   window:Show()
-  window.box:SetFocus()
-  window.box:HighlightText()
+  SetMode(window, "export")
 end

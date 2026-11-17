@@ -9,14 +9,11 @@ import {
 } from "@/lib/db/schema";
 import { DomainError } from "@/lib/errors";
 import type { CharacterInput } from "@/lib/roster/character-rules";
-import {
-  getCharacter,
-  requireCatalog,
-  saveCharacter,
-} from "@/lib/roster/characters";
+import { getCharacter, saveCharacter } from "@/lib/roster/characters";
 import { keyOfEntry } from "@/lib/roster/form-options";
 import type { GameCatalog } from "@/lib/roster/game-catalog";
 import { linkedRecipeIds } from "@/lib/roster/recipes";
+import { requireAddonCatalog } from "./addon-catalog";
 import { decodeAddonString } from "./addon-string";
 import { parseCharacterExport } from "./export-payload";
 import {
@@ -58,7 +55,7 @@ export function previewImport(
   gameId: string,
   text: string,
 ): CharacterImportPreview {
-  const catalog = importCatalog(db, gameId);
+  const catalog = requireAddonCatalog(db, gameId);
   const decoded = decodeAddonString(text, { gameId, kind: "export" });
   if (!decoded.ok) {
     return decoded;
@@ -89,7 +86,7 @@ export function applyImport(
   if (!preview.ok) {
     return preview;
   }
-  const catalog = importCatalog(db, gameId);
+  const catalog = requireAddonCatalog(db, gameId);
   const importedAt = new Date();
   const outcomes = preview.characters.map((character): ImportOutcome => {
     const key = previewKey(character);
@@ -121,14 +118,6 @@ export function applyImport(
     }
   });
   return { ok: true, outcomes };
-}
-
-function importCatalog(db: AppDatabase, gameId: string): GameCatalog {
-  const catalog = requireCatalog(db, gameId, { withRecipes: true });
-  if (!catalog.game.meta.capabilities.addon_import) {
-    throw new DomainError("Dieses Spiel hat keinen Abgleich mit dem Addon.");
-  }
-  return catalog;
 }
 
 /** Runs inside the caller's transaction, so a failing step undoes the whole character. */

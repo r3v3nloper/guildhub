@@ -23,6 +23,10 @@ Lässt das Spiel das Addon als „veraltet“ nicht laden, passt die Zahl hinter
 3. `/guildhub` eingeben. Oben steht, was das Addon je Charakter weiß, unten der Export.
    Er ist schon markiert: Strg+C, dann in GuildHub einfügen.
 
+4. Für Handwerker und Anträge der Gilde im Spiel: in GuildHub auf derselben Seite
+   „Für das Addon kopieren“, im Spiel `/guildhub` → „Gilden-Stand einfügen“, Strg+V,
+   „Übernehmen“. Ab und zu neu holen; ab 7 Tagen weist das Fenster darauf hin.
+
 Die Daten liegen accountweit in `WTF/Account/<Account>/SavedVariables/GuildHub.lua`.
 Ein Export enthält alle Charaktere des Accounts, die seit der Installation eingeloggt
 waren.
@@ -51,3 +55,7 @@ Abnahme von Phase 6 (SPEC 10). Noch nicht durchgeführt.
 8. Mit einem zweiten Charakter einloggen: der Export enthält beide.
 9. Im Fertigkeitenfenster die Berufe-Gruppe zuklappen, `/guildhub`: der Hinweis auf die
    zugeklappte Gruppe erscheint, die Berufe bleiben im Export.
+10. In GuildHub „Für das Addon kopieren“, im Spiel einfügen und übernehmen: das Fenster
+    zeigt „Gilden-Stand vom …“ mit Mitgliedern und Anträgen. Ein gekürzter Text wird mit
+    „unvollständig“ abgelehnt. Dabei auch prüfen, ob das Einfügen bei einer großen Gilde
+    flüssig bleibt (offener Punkt in SPEC 12).

@@ -14,6 +14,7 @@ import {
   describeImport,
   type ImportCharacterView,
 } from "@/lib/addon/import-view";
+import { buildGuildSnapshot } from "@/lib/addon/guild-snapshot-loader";
 import { actorForAction } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { requireCatalog } from "@/lib/roster/characters";
@@ -83,4 +84,23 @@ export async function applyAddonImportAction(
     revalidatePath("/berufe");
   }
   return { ...state, outcomes };
+}
+
+export interface GuildSnapshotState extends ActionState {
+  text?: string;
+}
+
+export async function guildSnapshotAction(
+  gameId: string,
+): Promise<GuildSnapshotState> {
+  let text: string | undefined;
+  const state = await guarded(async () => {
+    text = buildGuildSnapshot(
+      getDb(),
+      await actorForAction(),
+      parseArg(gameArg, gameId),
+    );
+    return { ok: true };
+  });
+  return { ...state, text };
 }

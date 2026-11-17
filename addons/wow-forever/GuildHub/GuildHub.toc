@@ -10,5 +10,6 @@ Checksum.lua
 Store.lua
 Collect.lua
 Export.lua
+Guild.lua
 Window.lua
 GuildHub.lua

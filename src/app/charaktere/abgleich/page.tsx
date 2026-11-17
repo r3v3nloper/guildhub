@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AddonImport } from "@/components/addon/AddonImport";
+import { GuildSnapshotCopy } from "@/components/addon/GuildSnapshotCopy";
 import { FormPage } from "@/components/ui/FormPage";
 import { PageSuspense } from "@/components/ui/PageSuspense";
 import { requireActor } from "@/lib/auth/current-actor";
@@ -9,7 +10,11 @@ import { isGameEnabled, loadGameCatalog } from "@/lib/roster/game-catalog";
 import { textParam } from "@/lib/search-params";
 import { localize } from "@/i18n/localize";
 import { de } from "@/i18n/de";
-import { applyAddonImportAction, previewAddonImportAction } from "./actions";
+import {
+  applyAddonImportAction,
+  guildSnapshotAction,
+  previewAddonImportAction,
+} from "./actions";
 
 export const metadata: Metadata = { title: de.addonImport.title };
 
@@ -35,10 +40,14 @@ async function AddonImportContent({
       title={de.addonImport.title}
       eyebrow={localize(catalog.game.name)}
     >
-      <AddonImport
-        preview={previewAddonImportAction.bind(null, gameId)}
-        apply={applyAddonImportAction.bind(null, gameId)}
-      />
+      <div className="flex flex-col gap-6">
+        <AddonImport
+          preview={previewAddonImportAction.bind(null, gameId)}
+          apply={applyAddonImportAction.bind(null, gameId)}
+        />
+        <hr className="border-border" />
+        <GuildSnapshotCopy load={guildSnapshotAction.bind(null, gameId)} />
+      </div>
     </FormPage>
   );
 }
