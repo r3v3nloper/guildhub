@@ -41,7 +41,9 @@ export function knownRecipesOf(
   );
 }
 
-const MAX_RECIPES = 100;
+// The addon import brings every recipe a character knows; a tailor at 300 knows well
+// over a hundred, and the largest WoW profession has about 600.
+const MAX_RECIPES = 1000;
 const MAX_NAME = 100;
 const MAX_NOTES = 200;
 const NOTE_SEPARATOR = /^\s+[-–]\s+/;

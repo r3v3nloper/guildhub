@@ -63,6 +63,24 @@ describe("validatePack", () => {
     ]);
   });
 
+  it("reports a game_ref used twice within a catalog", () => {
+    const errors = errorsOf(
+      basePack({
+        classes: [
+          { id: "warrior", name: "Krieger", game_ref: "WARRIOR" },
+          { id: "berserker", name: "Berserker", game_ref: "WARRIOR" },
+        ],
+      }),
+    );
+
+    expect(errors).toEqual([
+      {
+        path: "classes[1].game_ref",
+        message: "doppelte game_ref 'WARRIOR'",
+      },
+    ]);
+  });
+
   it("reports a task with an unknown reset_rule_id", () => {
     const errors = errorsOf(
       basePack({

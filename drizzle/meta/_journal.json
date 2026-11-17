@@ -106,6 +106,13 @@
       "when": 1793962023573,
       "tag": "0014_gallery_images",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "6",
+      "when": 1794905747349,
+      "tag": "0015_character_addon_import",
+      "breakpoints": true
     }
   ]
 }

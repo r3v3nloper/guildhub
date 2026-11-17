@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { beastNodes, gatheredNodes } from "./gathering";
+import { beastNodes, gatheredNodes, zoneSkill } from "./gathering";
 
 const ore = (de: string, en: string) => ({ de, en });
 
@@ -43,5 +43,20 @@ describe("gathering nodes from ForeverDB", () => {
       { name: "Young Black Bear", skill: 1 },
       { name: "Wetlands Crocolisk", skill: 110 },
     ]);
+  });
+
+  it.each([
+    [75, { skill: 75, skill_max: undefined }],
+    [
+      { min: 100, max: 150 },
+      { skill: 100, skill_max: 150 },
+    ],
+    [null, { skill: undefined, skill_max: undefined }],
+  ])("reads the zone skill %j", (apiSkill, expected) => {
+    // Act
+    const result = zoneSkill(apiSkill);
+
+    // Assert
+    expect(result).toEqual(expected);
   });
 });

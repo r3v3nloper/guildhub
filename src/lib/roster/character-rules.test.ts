@@ -83,6 +83,7 @@ function catalog(
           guild_overview: false,
           progress_tracking: false,
           death_count: false,
+          addon_import: false,
           ...capabilities,
         },
       },

@@ -6,7 +6,9 @@ const recipe = (overrides: Partial<ApiRecipe>): ApiRecipe => ({
   name: "Leinenstoffballen",
   nameEn: "Bolt of Linen Cloth",
   skill: { orange: 1 },
-  reagents: [{ name: null, count: 2 }],
+  reagents: [{ name: null, count: 2, itemId: 2589 }],
+  makes: { itemId: 2996 },
+  learnedFrom: { recipeItems: [] },
   url: "https://foreverdb.net/spell/2963",
   leftoverOf: null,
   ...overrides,
@@ -30,9 +32,32 @@ describe("recipes from ForeverDB", () => {
           {
             name: { de: "Unbekannter Gegenstand", en: "Unknown item" },
             count: 2,
+            item: 2589,
           },
         ],
       }),
     ]);
+  });
+
+  it("keeps the item IDs of the product and of the recipe items", () => {
+    // Arrange
+    const plan = recipe({
+      learnedFrom: { recipeItems: [{ itemId: 4345 }, { itemId: 4346 }] },
+    });
+
+    // Act
+    const [result] = recipesForPack("tailoring", [plan]);
+
+    // Assert
+    expect(result.creates).toBe(2996);
+    expect(result.recipe_items).toEqual([4345, 4346]);
+  });
+
+  it("leaves out the product of a recipe that makes no item", () => {
+    // Act
+    const [result] = recipesForPack("enchanting", [recipe({ makes: null })]);
+
+    // Assert
+    expect(result.creates).toBeUndefined();
   });
 });

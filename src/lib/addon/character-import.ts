@@ -1,0 +1,284 @@
+import { and, eq, inArray, ne } from "drizzle-orm";
+import { localize } from "@/i18n/localize";
+import type { Actor } from "@/lib/auth/guards";
+import type { AppDatabase } from "@/lib/db/client";
+import {
+  characterProfessions,
+  characters,
+  recipeEntries,
+} from "@/lib/db/schema";
+import { DomainError } from "@/lib/errors";
+import type { CharacterInput } from "@/lib/roster/character-rules";
+import {
+  getCharacter,
+  requireCatalog,
+  saveCharacter,
+} from "@/lib/roster/characters";
+import { keyOfEntry } from "@/lib/roster/form-options";
+import type { GameCatalog } from "@/lib/roster/game-catalog";
+import { linkedRecipeIds } from "@/lib/roster/recipes";
+import { decodeAddonString } from "./addon-string";
+import { parseCharacterExport } from "./export-payload";
+import {
+  previewCharacterImport,
+  type CharacterPreview,
+  type ForeignCharacter,
+  type OwnCharacterState,
+} from "./import-preview";
+
+// Reading a character export into GuildHub (SPEC 7.3): the preview first, then applying
+// it. Applying never trusts a preview sent back by the browser; it works the export out
+// again against the current state and writes only what the member ticked.
+
+export type CharacterImportPreview =
+  { ok: true; characters: CharacterPreview[] } | { ok: false; error: string };
+
+export interface ImportChoices {
+  /** Keys (previewKey) of new characters to create. */
+  create: string[];
+  /** Per character key, professions the game no longer has that are to be dropped. */
+  dropProfessions: Record<string, number[]>;
+}
+
+export interface ImportOutcome {
+  key: string;
+  name: string;
+  result: "saved" | "skipped" | "failed";
+  error?: string;
+}
+
+/** Identifies a character of an export across preview and apply. */
+export function previewKey(preview: { realm: string; name: string }): string {
+  return `${preview.realm.toLowerCase()}|${preview.name.toLowerCase()}`;
+}
+
+export function previewImport(
+  db: AppDatabase,
+  actor: Actor,
+  gameId: string,
+  text: string,
+): CharacterImportPreview {
+  const catalog = importCatalog(db, gameId);
+  const decoded = decodeAddonString(text, { gameId, kind: "export" });
+  if (!decoded.ok) {
+    return decoded;
+  }
+  const parsed = parseCharacterExport(decoded.value.payload);
+  if (!parsed.ok) {
+    return parsed;
+  }
+  return {
+    ok: true,
+    characters: previewCharacterImport({
+      catalog,
+      data: parsed.value,
+      own: ownCharacters(db, actor, gameId),
+      foreign: foreignCharacters(db, actor, gameId),
+    }),
+  };
+}
+
+export function applyImport(
+  db: AppDatabase,
+  actor: Actor,
+  gameId: string,
+  text: string,
+  choices: ImportChoices,
+): { ok: true; outcomes: ImportOutcome[] } | { ok: false; error: string } {
+  const preview = previewImport(db, actor, gameId, text);
+  if (!preview.ok) {
+    return preview;
+  }
+  const catalog = importCatalog(db, gameId);
+  const importedAt = new Date();
+  const outcomes = preview.characters.map((character): ImportOutcome => {
+    const key = previewKey(character);
+    const outcome = { key, name: character.name };
+    const wanted =
+      character.status === "changed" ||
+      character.status === "unchanged" ||
+      (character.status === "new" && choices.create.includes(key));
+    if (!wanted) {
+      return { ...outcome, result: "skipped" };
+    }
+    try {
+      db.transaction(() =>
+        applyCharacter(
+          db,
+          actor,
+          catalog,
+          character,
+          choices.dropProfessions[key] ?? [],
+          importedAt,
+        ),
+      );
+      return { ...outcome, result: "saved" };
+    } catch (error) {
+      if (error instanceof DomainError) {
+        return { ...outcome, result: "failed", error: error.message };
+      }
+      throw error;
+    }
+  });
+  return { ok: true, outcomes };
+}
+
+function importCatalog(db: AppDatabase, gameId: string): GameCatalog {
+  const catalog = requireCatalog(db, gameId, { withRecipes: true });
+  if (!catalog.game.meta.capabilities.addon_import) {
+    throw new DomainError("Dieses Spiel hat keinen Abgleich mit dem Addon.");
+  }
+  return catalog;
+}
+
+/** Runs inside the caller's transaction, so a failing step undoes the whole character. */
+function applyCharacter(
+  db: AppDatabase,
+  actor: Actor,
+  catalog: GameCatalog,
+  preview: CharacterPreview,
+  dropProfessionIds: readonly number[],
+  importedAt: Date,
+): void {
+  const existing =
+    preview.characterId === null
+      ? undefined
+      : getCharacter(db, preview.characterId);
+  const key = (entryId: number | null) => keyOfEntry(catalog, entryId);
+  const professionIds = [
+    ...(existing?.professionEntryIds ?? []).filter(
+      (id) => !dropProfessionIds.includes(id),
+    ),
+    ...preview.professions
+      .filter((profession) => profession.previousSkillLevel === undefined)
+      .map((profession) => profession.entryId),
+  ];
+  const classChanged = preview.changedFields.includes("class");
+  const input: CharacterInput = {
+    name: existing?.name ?? preview.name,
+    server: preview.realm,
+    factionKey: key(
+      preview.values.factionEntryId ?? existing?.factionEntryId ?? null,
+    ),
+    raceKey: key(preview.values.raceEntryId ?? existing?.raceEntryId ?? null),
+    classKey: key(
+      preview.values.classEntryId ?? existing?.classEntryId ?? null,
+    ),
+    // A spec of the old class would no longer fit; the member picks a new one.
+    specKey: classChanged ? "" : key(existing?.specEntryId ?? null),
+    offSpecKey: classChanged ? "" : key(existing?.offSpecEntryId ?? null),
+    spec: existing?.spec ?? "",
+    level: preview.values.level ?? existing?.level ?? null,
+    deathCount: (existing?.deathCount ?? 0) + preview.deathsToAdd,
+    isMain: existing?.isMain ?? false,
+    notes: existing?.notes ?? "",
+    professionKeys: professionIds.map((id) => key(id)),
+  };
+
+  const saved = saveCharacter(db, actor, catalog.game.id, input, existing?.id);
+  if (!saved.ok) {
+    throw new DomainError(Object.values(saved.errors).join(" "));
+  }
+  const characterId = saved.characterId;
+
+  for (const profession of preview.professions) {
+    if (profession.skillLevel === null) {
+      continue;
+    }
+    db.update(characterProfessions)
+      .set({ skillLevel: profession.skillLevel })
+      .where(
+        and(
+          eq(characterProfessions.characterId, characterId),
+          eq(characterProfessions.professionEntryId, profession.entryId),
+        ),
+      )
+      .run();
+  }
+
+  // Only added, never removed: GuildHub may know recipes the addon has not read yet.
+  const linked = new Set(linkedRecipeIds(db, characterId));
+  const recipes = preview.newRecipes.filter(
+    (recipe) =>
+      !linked.has(recipe.recipeEntryId) &&
+      professionIds.includes(recipe.professionEntryId),
+  );
+  if (recipes.length > 0) {
+    db.insert(recipeEntries)
+      .values(
+        recipes.map((recipe) => ({
+          characterId,
+          professionEntryId: recipe.professionEntryId,
+          recipeEntryId: recipe.recipeEntryId,
+          name: localize(recipe.name),
+        })),
+      )
+      .run();
+  }
+
+  db.update(characters)
+    .set({
+      addonDeathCount: preview.addonDeathCount,
+      gameImportedAt: importedAt,
+    })
+    .where(eq(characters.id, characterId))
+    .run();
+}
+
+function ownCharacters(
+  db: AppDatabase,
+  actor: Actor,
+  gameId: string,
+): OwnCharacterState[] {
+  const rows = db
+    .select()
+    .from(characters)
+    .where(
+      and(eq(characters.userId, actor.userId), eq(characters.gameId, gameId)),
+    )
+    .all();
+  const professions = rows.length
+    ? db
+        .select()
+        .from(characterProfessions)
+        .where(
+          inArray(
+            characterProfessions.characterId,
+            rows.map((row) => row.id),
+          ),
+        )
+        .all()
+    : [];
+  return rows.map((row) => ({
+    id: row.id,
+    name: row.name,
+    serverKey: row.serverKey,
+    factionEntryId: row.factionEntryId,
+    raceEntryId: row.raceEntryId,
+    classEntryId: row.classEntryId,
+    level: row.level,
+    deathCount: row.deathCount,
+    addonDeathCount: row.addonDeathCount,
+    professions: professions
+      .filter((profession) => profession.characterId === row.id)
+      .map((profession) => ({
+        entryId: profession.professionEntryId,
+        skillLevel: profession.skillLevel,
+      })),
+    linkedRecipeIds: linkedRecipeIds(db, row.id),
+  }));
+}
+
+function foreignCharacters(
+  db: AppDatabase,
+  actor: Actor,
+  gameId: string,
+): ForeignCharacter[] {
+  return db
+    .select({ name: characters.name, serverKey: characters.serverKey })
+    .from(characters)
+    .where(
+      and(eq(characters.gameId, gameId), ne(characters.userId, actor.userId)),
+    )
+    .all();
+}
