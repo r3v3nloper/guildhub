@@ -27,6 +27,11 @@ Lässt das Spiel das Addon als „veraltet“ nicht laden, passt die Zahl hinter
    „Für das Addon kopieren“, im Spiel `/guildhub` → „Gilden-Stand einfügen“, Strg+V,
    „Übernehmen“. Ab und zu neu holen; ab 7 Tagen weist das Fenster darauf hin.
 
+Mit Gilden-Stand zeigt der Tooltip eines Items unten einen Block „GuildHub“: wer es
+herstellen kann (online in Grün), bei Bauplänen und Rezepten, wer sie schon kennt, und bei
+Reagenzien, wie viele Anträge sie brauchen. `/guildhub tooltip` schaltet ihn aus und
+wieder an.
+
 Die Daten liegen accountweit in `WTF/Account/<Account>/SavedVariables/GuildHub.lua`.
 Ein Export enthält alle Charaktere des Accounts, die seit der Installation eingeloggt
 waren.
@@ -59,3 +64,12 @@ Abnahme von Phase 6 (SPEC 10). Noch nicht durchgeführt.
     zeigt „Gilden-Stand vom …“ mit Mitgliedern und Anträgen. Ein gekürzter Text wird mit
     „unvollständig“ abgelehnt. Dabei auch prüfen, ob das Einfügen bei einer großen Gilde
     flüssig bleibt (offener Punkt in SPEC 12).
+11. Tooltip eines Items, das ein Gildenmitglied laut GuildHub herstellen kann (z. B. ein
+    Trank aus dessen Rezepten): Block „GuildHub“ mit „Herstellbar von:“, eigene
+    Charaktere zuerst mit „(du)“, Online-Charaktere grün. Ein beliebiges anderes Item
+    zeigt keinen Block.
+12. Tooltip eines Bauplans, den in der Gilde niemand kennt: „In der Gilde noch
+    unbekannt“; einer, den jemand kennt: „Schon bekannt bei:“.
+13. Ein Reagenz eines selbst angenommenen Antrags: „Du brauchst n für 1 angenommenen
+    Antrag“. Auch per Chat-Link (Shift-Klick) geöffnete Items zeigen den Block.
+14. `/guildhub tooltip` zweimal: Block verschwindet und kommt wieder.

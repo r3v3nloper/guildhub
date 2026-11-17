@@ -11,5 +11,8 @@ Store.lua
 Collect.lua
 Export.lua
 Guild.lua
+Online.lua
+Crafters.lua
+Tooltip.lua
 Window.lua
 GuildHub.lua
