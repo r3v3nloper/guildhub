@@ -2,9 +2,7 @@ local _, ns = ...
 
 -- Questions the tooltip asks about the guild snapshot (SPEC 7.3.1): who can craft an
 -- item, who already knows a recipe, and which requests need a reagent. Item → recipe
--- comes from Data.lua (ns.recipes), who knows which recipe from GuildHubDB.guild.
-
-local MADE_ITEM, RECIPE_ITEMS, REAGENTS = 1, 2, 3
+-- comes from Data.lua (ns.RecipeData), who knows which recipe from GuildHubDB.guild.
 
 local byMadeItem, byRecipeItem
 
@@ -15,17 +13,15 @@ local function BuildItemIndex()
     index[item] = index[item] or {}
     table.insert(index[item], entry)
   end
-  for profession, spells in pairs(ns.recipes) do
-    for spell, data in pairs(spells) do
-      local entry = { profession = profession, spell = spell }
-      if data[MADE_ITEM] then
-        Add(byMadeItem, data[MADE_ITEM], entry)
-      end
-      for _, item in ipairs(data[RECIPE_ITEMS]) do
-        Add(byRecipeItem, item, entry)
-      end
+  ns.EachRecipe(function(profession, spell, recipe)
+    local entry = { profession = profession, spell = spell }
+    if recipe.made then
+      Add(byMadeItem, recipe.made, entry)
     end
-  end
+    for _, item in ipairs(recipe.recipeItems) do
+      Add(byRecipeItem, item, entry)
+    end
+  end)
 end
 
 -- Characters of the guild that know one of the recipes, each once, with their skill.
@@ -81,15 +77,10 @@ function ns.KnowersOfRecipeItem(itemId)
 end
 
 local function ReagentCount(request, itemId)
-  local data = request.spell and ns.recipes[request.profession]
-    and ns.recipes[request.profession][request.spell]
-  if not data then
-    return 0
-  end
-  local reagents = data[REAGENTS]
-  for i = 1, #reagents, 2 do
-    if reagents[i] == itemId then
-      return reagents[i + 1] * (request.quantity or 1)
+  local recipe = ns.RecipeData(request.profession, request.spell)
+  for _, reagent in ipairs(recipe and recipe.reagents or {}) do
+    if reagent.itemId == itemId then
+      return reagent.count * (request.quantity or 1)
     end
   end
   return 0

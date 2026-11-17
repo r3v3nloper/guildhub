@@ -9,7 +9,11 @@ import {
 } from "@/lib/db/schema";
 import { DomainError } from "@/lib/errors";
 import type { CharacterInput } from "@/lib/roster/character-rules";
-import { getCharacter, saveCharacter } from "@/lib/roster/characters";
+import {
+  getCharacter,
+  saveCharacter,
+  type CharacterDetails,
+} from "@/lib/roster/characters";
 import { keyOfEntry } from "@/lib/roster/form-options";
 import type { GameCatalog } from "@/lib/roster/game-catalog";
 import { linkedRecipeIds } from "@/lib/roster/recipes";
@@ -177,7 +181,6 @@ function applyCharacter(
     preview.characterId === null
       ? undefined
       : getCharacter(db, preview.characterId);
-  const key = (entryId: number | null) => keyOfEntry(catalog, entryId);
   const professionIds = [
     ...(existing?.professionEntryIds ?? []).filter(
       (id) => !dropProfessionIds.includes(id),
@@ -186,6 +189,35 @@ function applyCharacter(
       .filter((profession) => profession.previousSkillLevel === undefined)
       .map((profession) => profession.entryId),
   ];
+  const characterId = saveBaseValues(
+    db,
+    actor,
+    catalog,
+    preview,
+    existing,
+    professionIds,
+  );
+  setSkills(db, characterId, preview);
+  addRecipes(db, characterId, preview, professionIds);
+  db.update(characters)
+    .set({
+      addonDeathCount: preview.addonDeathCount,
+      gameImportedAt: importedAt,
+    })
+    .where(eq(characters.id, characterId))
+    .run();
+}
+
+/** Through the editor's own save, so the same rules and rights apply. */
+function saveBaseValues(
+  db: AppDatabase,
+  actor: Actor,
+  catalog: GameCatalog,
+  preview: CharacterPreview,
+  existing: CharacterDetails | undefined,
+  professionIds: readonly number[],
+): number {
+  const key = (entryId: number | null) => keyOfEntry(catalog, entryId);
   const classChanged = preview.changedFields.includes("class");
   const input: CharacterInput = {
     name: existing?.name ?? preview.name,
@@ -207,13 +239,18 @@ function applyCharacter(
     notes: existing?.notes ?? "",
     professionKeys: professionIds.map((id) => key(id)),
   };
-
   const saved = saveCharacter(db, actor, catalog.game.id, input, existing?.id);
   if (!saved.ok) {
     throw new DomainError(Object.values(saved.errors).join(" "));
   }
-  const characterId = saved.characterId;
+  return saved.characterId;
+}
 
+function setSkills(
+  db: AppDatabase,
+  characterId: number,
+  preview: CharacterPreview,
+): void {
   for (const profession of preview.professions) {
     if (profession.skillLevel === null) {
       continue;
@@ -228,33 +265,33 @@ function applyCharacter(
       )
       .run();
   }
+}
 
-  // Only added, never removed: GuildHub may know recipes the addon has not read yet.
+/** Only added, never removed: GuildHub may know recipes the addon has not read yet. */
+function addRecipes(
+  db: AppDatabase,
+  characterId: number,
+  preview: CharacterPreview,
+  professionIds: readonly number[],
+): void {
   const linked = new Set(linkedRecipeIds(db, characterId));
   const recipes = preview.newRecipes.filter(
     (recipe) =>
       !linked.has(recipe.recipeEntryId) &&
       professionIds.includes(recipe.professionEntryId),
   );
-  if (recipes.length > 0) {
-    db.insert(recipeEntries)
-      .values(
-        recipes.map((recipe) => ({
-          characterId,
-          professionEntryId: recipe.professionEntryId,
-          recipeEntryId: recipe.recipeEntryId,
-          name: localize(recipe.name),
-        })),
-      )
-      .run();
+  if (recipes.length === 0) {
+    return;
   }
-
-  db.update(characters)
-    .set({
-      addonDeathCount: preview.addonDeathCount,
-      gameImportedAt: importedAt,
-    })
-    .where(eq(characters.id, characterId))
+  db.insert(recipeEntries)
+    .values(
+      recipes.map((recipe) => ({
+        characterId,
+        professionEntryId: recipe.professionEntryId,
+        recipeEntryId: recipe.recipeEntryId,
+        name: localize(recipe.name),
+      })),
+    )
     .run();
 }
 
@@ -282,6 +319,21 @@ function ownCharacters(
         )
         .all()
     : [];
+  const linkedRecipes = rows.length
+    ? db
+        .select({
+          characterId: recipeEntries.characterId,
+          recipeEntryId: recipeEntries.recipeEntryId,
+        })
+        .from(recipeEntries)
+        .where(
+          inArray(
+            recipeEntries.characterId,
+            rows.map((row) => row.id),
+          ),
+        )
+        .all()
+    : [];
   return rows.map((row) => ({
     id: row.id,
     name: row.name,
@@ -298,7 +350,10 @@ function ownCharacters(
         entryId: profession.professionEntryId,
         skillLevel: profession.skillLevel,
       })),
-    linkedRecipeIds: linkedRecipeIds(db, row.id),
+    linkedRecipeIds: linkedRecipes
+      .filter((recipe) => recipe.characterId === row.id)
+      .map((recipe) => recipe.recipeEntryId)
+      .filter((id): id is number => id !== null),
   }));
 }
 

@@ -9,6 +9,7 @@ import {
   recipeEntries,
 } from "@/lib/db/schema";
 import { NotFoundError } from "@/lib/errors";
+import { spellIdOfRecipeKey } from "@/lib/packs/recipe-key";
 import { catalogOfKind, isGameEnabled } from "@/lib/roster/game-catalog";
 import { requireAddonCatalog } from "./addon-catalog";
 import { encodeAddonString } from "./addon-string";
@@ -40,11 +41,13 @@ export function buildGuildSnapshot(
       .map((entry) => [entry.id, entry.data.game_ref as string]),
   );
   const spellIds = new Map(
-    catalogOfKind(catalog, "recipe").map((entry) => [
-      entry.id,
-      // Pack recipe IDs are "<profession>-<spell id>" (ForeverDB import).
-      Number(entry.key.slice(String(entry.data.profession).length + 1)),
-    ]),
+    catalogOfKind(catalog, "recipe").flatMap((entry) => {
+      const spellId = spellIdOfRecipeKey(
+        entry.key,
+        String(entry.data.profession),
+      );
+      return spellId === undefined ? [] : [[entry.id, spellId] as const];
+    }),
   );
 
   const members = listMembers(db, actor.guildId).filter(
@@ -99,9 +102,7 @@ export function buildGuildSnapshot(
               recipe.recipeEntryId !== null,
           )
           .map((recipe) => spellIds.get(recipe.recipeEntryId!))
-          .filter(
-            (id): id is number => id !== undefined && Number.isInteger(id),
-          )
+          .filter((id): id is number => id !== undefined)
           .sort((a, b) => a - b),
       }));
 

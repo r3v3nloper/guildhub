@@ -2,6 +2,26 @@ local addonName, ns = ...
 
 local events = CreateFrame("Frame")
 
+-- The profession windows fire their update event on every scroll and filter change;
+-- reading all recipes once things have settled is enough.
+local READ_DELAY = 0.5
+local scheduled = {}
+
+local function ReadSoon(read)
+  if not C_Timer then
+    read()
+    return
+  end
+  if scheduled[read] then
+    return
+  end
+  scheduled[read] = true
+  C_Timer.After(READ_DELAY, function()
+    scheduled[read] = nil
+    read()
+  end)
+end
+
 local handlers = {
   ADDON_LOADED = function(loaded)
     if loaded == addonName then
@@ -24,13 +44,13 @@ local handlers = {
     ns.ReadTradeSkill()
   end,
   TRADE_SKILL_UPDATE = function()
-    ns.ReadTradeSkill()
+    ReadSoon(ns.ReadTradeSkill)
   end,
   CRAFT_SHOW = function()
     ns.ReadCraft()
   end,
   CRAFT_UPDATE = function()
-    ns.ReadCraft()
+    ReadSoon(ns.ReadCraft)
   end,
   -- Feign Death does not fire PLAYER_DEAD, so hunters are not counted twice.
   PLAYER_DEAD = function()

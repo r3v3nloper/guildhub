@@ -2,7 +2,11 @@ import { de } from "@/i18n/de";
 import { localize } from "@/i18n/localize";
 import type { GameCatalog } from "@/lib/roster/game-catalog";
 import { previewKey } from "./character-import";
-import type { CharacterPreview, PreviewStatus } from "./import-preview";
+import type {
+  CharacterPreview,
+  PreviewStatus,
+  UnknownValue,
+} from "./import-preview";
 
 /** One character of the preview, in words, as the import page shows it. */
 export interface ImportCharacterView {
@@ -14,6 +18,13 @@ export interface ImportCharacterView {
   newRecipes: string[];
   missingProfessions: Array<{ entryId: number; label: string }>;
   unknown: string[];
+}
+
+function describeUnknown(value: UnknownValue): string {
+  const texts = de.addonImport;
+  return value.kind === "recipes"
+    ? texts.unknownRecipes(value.count)
+    : texts.unknownValue(texts.unknownKinds[value.kind], value.ref);
 }
 
 export function describeImport(
@@ -74,7 +85,7 @@ export function describeImport(
         entryId,
         label: texts.missingProfession(nameOf(entryId)),
       })),
-      unknown: preview.unknown,
+      unknown: preview.unknown.map(describeUnknown),
     };
   });
 }

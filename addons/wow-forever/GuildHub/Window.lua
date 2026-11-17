@@ -1,55 +1,11 @@
 local _, ns = ...
 
--- The /guildhub window: what the addon knows, and below it one of three views —
+-- The /guildhub window: the status (Status.lua), and below it one of three views —
 -- "export" shows the character export for copying, "import" takes the guild snapshot,
 -- "requests" lists the guild's crafting requests.
 
 local WIDTH, HEIGHT = 560, 470
 local window
-
-local function FormatDate(timestamp)
-  return timestamp and date("%d.%m.%Y", timestamp) or nil
-end
-
-local function ProfessionName(skillLineId)
-  local names = ns.professionNames[skillLineId]
-  if not names then
-    return tostring(skillLineId)
-  end
-  return names[GetLocale():sub(1, 2)] or names.en or select(2, next(names))
-end
-
-local function StatusText()
-  local lines = {}
-  for _, character in ipairs(ns.SortedCharacters()) do
-    local professions = {}
-    for skillLineId, profession in pairs(character.professions) do
-      local readAt = FormatDate(profession.readAt)
-      table.insert(professions, ProfessionName(skillLineId) .. " " .. (profession.skill or "?")
-        .. (readAt and (" (Rezepte " .. readAt .. ")") or " (Berufsfenster noch nicht geöffnet)"))
-    end
-    table.sort(professions)
-    table.insert(lines, "|cffffd100" .. character.name .. "|r – " .. character.realm .. ", Stufe "
-      .. (character.level or "?") .. ", Tode " .. (character.deaths or 0))
-    for _, line in ipairs(professions) do
-      table.insert(lines, "   " .. line)
-    end
-  end
-  if ns.skillsIncomplete then
-    table.insert(lines, "|cffff6060Im Fertigkeitenfenster ist eine Gruppe zugeklappt; Berufe darin fehlen evtl.|r")
-  end
-  if ns.recipeApiMissing then
-    table.insert(lines, "|cffff6060Dieser Client gibt keine Rezept-IDs heraus; Rezepte fehlen im Export.|r")
-  end
-  table.insert(lines, "")
-  table.insert(lines, ns.GuildStatus())
-  local pending = #ns.PendingActions()
-  if pending > 0 then
-    table.insert(lines, "|cffffd100" .. pending .. " Antrags-Aktionen noch nicht übertragen: erst exportieren und in "
-      .. "GuildHub übernehmen, dann einen neuen Gilden-Stand holen.|r")
-  end
-  return table.concat(lines, "\n")
-end
 
 local MODES = {
   export = "Export: Strg+C, dann in GuildHub unter „Aus dem Spiel übernehmen“ einfügen.",
@@ -58,7 +14,7 @@ local MODES = {
 }
 
 local function Refresh(frame)
-  frame.status:SetText(StatusText())
+  frame.status:SetText(ns.StatusText())
   frame.hint:SetText(frame.message or MODES[frame.mode])
   frame.apply:SetShown(frame.mode == "import")
   frame.scroll:SetShown(frame.mode ~= "requests")

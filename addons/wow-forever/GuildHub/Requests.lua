@@ -5,8 +5,6 @@ local _, ns = ...
 -- export; GuildHub checks them against its current state. A newer guild snapshot already
 -- contains their effect, so it clears them.
 
-local REAGENTS = 3
-
 local function Pending()
   GuildHubDB.pending = GuildHubDB.pending or {}
   return GuildHubDB.pending
@@ -85,19 +83,13 @@ end
 
 -- Reagents of a request with what the logged-in character has in bags and bank.
 function ns.RequestReagents(request)
-  local data = request.spell and ns.recipes[request.profession]
-    and ns.recipes[request.profession][request.spell]
+  local recipe = ns.RecipeData(request.profession, request.spell)
   local reagents = {}
-  if not data then
-    return reagents
-  end
-  local list = data[REAGENTS]
-  for i = 1, #list, 2 do
-    local itemId = list[i]
+  for _, reagent in ipairs(recipe and recipe.reagents or {}) do
     table.insert(reagents, {
-      itemId = itemId,
-      need = list[i + 1] * (request.quantity or 1),
-      have = GetItemCount(itemId, true),
+      itemId = reagent.itemId,
+      need = reagent.count * (request.quantity or 1),
+      have = GetItemCount(reagent.itemId, true),
     })
   end
   return reagents

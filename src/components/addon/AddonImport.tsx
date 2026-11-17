@@ -12,8 +12,7 @@ import type { RequestActionOutcome } from "@/lib/addon/request-actions";
 import { de } from "@/i18n/de";
 import { ImportCharacterCard } from "./ImportCharacterCard";
 import { RequestActionList } from "./RequestActionList";
-
-const NO_CHOICES: ImportChoices = { create: [], dropProfessions: {} };
+import { useImportChoices } from "./use-import-choices";
 
 /**
  * Paste the addon's export, see what would change, then apply it. The preview is only
@@ -42,7 +41,7 @@ export function AddonImport({
   const texts = de.addonImport;
   const [text, setText] = useState("");
   const [characters, setCharacters] = useState<ImportCharacterView[]>();
-  const [choices, setChoices] = useState<ImportChoices>(NO_CHOICES);
+  const { choices, toggleCreate, toggleDrop, reset } = useImportChoices();
   const [outcomes, setOutcomes] = useState<ImportOutcome[]>();
   const [requestActions, setRequestActions] = useState<RequestActionOutcome[]>(
     [],
@@ -56,7 +55,7 @@ export function AddonImport({
       setState(result.ok ? {} : result);
       setCharacters(result.characters);
       setRequestActions(result.requestActions ?? []);
-      setChoices(NO_CHOICES);
+      reset();
       setOutcomes(undefined);
     });
 
@@ -77,28 +76,6 @@ export function AddonImport({
     setOutcomes(undefined);
     setState({});
   };
-
-  const toggleCreate = (key: string, create: boolean) =>
-    setChoices((current) => ({
-      ...current,
-      create: create
-        ? [...current.create, key]
-        : current.create.filter((entry) => entry !== key),
-    }));
-
-  const toggleDrop = (key: string, entryId: number, drop: boolean) =>
-    setChoices((current) => {
-      const dropped = current.dropProfessions[key] ?? [];
-      return {
-        ...current,
-        dropProfessions: {
-          ...current.dropProfessions,
-          [key]: drop
-            ? [...dropped, entryId]
-            : dropped.filter((id) => id !== entryId),
-        },
-      };
-    });
 
   const applicable =
     requestActions.some((action) => action.result === "applied") ||

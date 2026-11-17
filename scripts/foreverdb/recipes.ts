@@ -1,4 +1,5 @@
 import type { PackRecipe } from "../../src/lib/packs/schema";
+import { recipeKey } from "../../src/lib/packs/recipe-key";
 import { API, fetchJson, localized, PAGE_SIZE, type ApiName } from "./api";
 
 // Recipes per profession from ForeverDB's /professions/{slug}, in German.
@@ -22,8 +23,7 @@ interface ApiRecipePage {
 
 function toPackRecipe(professionId: string, recipe: ApiRecipe): PackRecipe {
   return {
-    // A few recipes belong to two professions, so the spell ID alone is not unique.
-    id: `${professionId}-${recipe.spellId}`,
+    id: recipeKey(professionId, recipe.spellId),
     name: localized(recipe),
     profession: professionId,
     skill: recipe.skill?.orange ?? undefined,

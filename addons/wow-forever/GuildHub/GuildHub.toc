@@ -12,10 +12,12 @@ Collect.lua
 Export.lua
 Guild.lua
 Online.lua
+Recipes.lua
 Crafters.lua
 Tooltip.lua
 Requests.lua
 Notices.lua
 RequestsPanel.lua
+Status.lua
 Window.lua
 GuildHub.lua

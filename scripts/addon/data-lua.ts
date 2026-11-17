@@ -1,4 +1,5 @@
 import { allTranslations } from "../../src/i18n/localize";
+import { spellIdOfRecipeKey } from "../../src/lib/packs/recipe-key";
 import type {
   LocalizedString,
   Pack,
@@ -21,17 +22,14 @@ function namesByLanguage(name: LocalizedString): string {
     .join(", ");
 }
 
-/** The spell ID from a pack recipe ID "<profession>-<spell id>" (ForeverDB import). */
-function spellIdOf(recipe: PackRecipe): number | undefined {
-  const spellId = Number(recipe.id.slice(recipe.profession.length + 1));
-  return Number.isInteger(spellId) && spellId > 0 ? spellId : undefined;
-}
-
 function recipeLine(recipe: PackRecipe, spellId: number): string {
+  const made = recipe.creates ?? "false";
+  const recipeItems = recipe.recipe_items.join(", ");
   const reagents = recipe.reagents
     .filter((reagent) => reagent.item !== undefined)
-    .flatMap((reagent) => [reagent.item, reagent.count]);
-  return `    [${spellId}] = { ${recipe.creates ?? "false"}, { ${recipe.recipe_items.join(", ")} }, { ${reagents.join(", ")} } },`;
+    .flatMap((reagent) => [reagent.item, reagent.count])
+    .join(", ");
+  return `    [${spellId}] = { ${made}, { ${recipeItems} }, { ${reagents} } },`;
 }
 
 function recipeLines(pack: Pack, refs: ReadonlyMap<string, string>): string[] {
@@ -39,7 +37,7 @@ function recipeLines(pack: Pack, refs: ReadonlyMap<string, string>): string[] {
     const lines = pack.recipes
       .filter((recipe) => recipe.profession === professionId)
       .flatMap((recipe) => {
-        const spellId = spellIdOf(recipe);
+        const spellId = spellIdOfRecipeKey(recipe.id, recipe.profession);
         return spellId === undefined ? [] : [recipeLine(recipe, spellId)];
       });
     return lines.length === 0 ? [] : [`  [${ref}] = {`, ...lines, "  },"];

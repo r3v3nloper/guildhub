@@ -224,9 +224,9 @@ describe("previewCharacterImport", () => {
     expect(result.values.raceEntryId).toBeNull();
     expect(result.changedFields).not.toContain("race");
     expect(result.unknown).toEqual([
-      "Rasse „Dracthyr“",
-      "Beruf „773“",
-      "1 Rezepte ohne Eintrag im Pack",
+      { kind: "race", ref: "Dracthyr" },
+      { kind: "profession", ref: "773" },
+      { kind: "recipes", count: 1 },
     ]);
   });
 

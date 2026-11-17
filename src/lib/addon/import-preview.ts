@@ -1,5 +1,5 @@
 import { allTranslations } from "@/i18n/localize";
-import type { CatalogKind } from "@/lib/packs/catalog";
+import { recipeKey } from "@/lib/packs/recipe-key";
 import type { LocalizedString } from "@/lib/packs/schema";
 import {
   catalogOfKind,
@@ -50,6 +50,13 @@ export interface NewRecipe {
   name: LocalizedString;
 }
 
+/** Catalogs whose entries the game names itself (game_ref). */
+const REF_KINDS = ["faction", "race", "class", "profession"] as const;
+type RefKind = (typeof REF_KINDS)[number];
+
+export type UnknownValue =
+  { kind: RefKind | "realm"; ref: string } | { kind: "recipes"; count: number };
+
 export interface CharacterValues {
   factionEntryId: number | null;
   raceEntryId: number | null;
@@ -76,8 +83,8 @@ export interface CharacterPreview {
   newRecipes: NewRecipe[];
   deathsToAdd: number;
   addonDeathCount: number | null;
-  /** What the pack does not know, in words for the preview. */
-  unknown: string[];
+  /** What the pack does not know and the import therefore skips. */
+  unknown: UnknownValue[];
 }
 
 export interface PreviewInput {
@@ -106,7 +113,7 @@ function previewCharacter(
   own: readonly OwnCharacterState[],
   foreign: readonly ForeignCharacter[],
 ): CharacterPreview {
-  const unknown: string[] = [];
+  const unknown: UnknownValue[] = [];
   const serverKey = refs.serverKey(exported.realm, unknown);
   const sameName = (name: string) =>
     name.toLowerCase() === exported.name.toLowerCase();
@@ -261,7 +268,7 @@ class GameRefs {
   private readonly recipesByKey: Map<string, CatalogEntry>;
 
   public constructor(private readonly catalog: GameCatalog) {
-    for (const kind of ["faction", "race", "class", "profession"] as const) {
+    for (const kind of REF_KINDS) {
       for (const entry of catalogOfKind(catalog, kind)) {
         const ref = entry.data.game_ref;
         if (typeof ref === "string") {
@@ -276,9 +283,9 @@ class GameRefs {
   }
 
   public entryId(
-    kind: CatalogKind,
+    kind: RefKind,
     ref: string | null,
-    unknown: string[],
+    unknown: UnknownValue[],
   ): number | null {
     return ref === null ? null : (this.lookup(kind, ref, unknown)?.id ?? null);
   }
@@ -287,7 +294,7 @@ class GameRefs {
     return this.withRef.has(entryId);
   }
 
-  public professions(exported: ExportedCharacter, unknown: string[]) {
+  public professions(exported: ExportedCharacter, unknown: UnknownValue[]) {
     return exported.professions.flatMap((profession) => {
       const entry = this.lookup("profession", profession.ref, unknown);
       return entry
@@ -303,26 +310,25 @@ class GameRefs {
   }
 
   private lookup(
-    kind: CatalogKind,
+    kind: RefKind,
     ref: string,
-    unknown: string[],
+    unknown: UnknownValue[],
   ): CatalogEntry | undefined {
     const entry = this.byRef.get(`${kind}:${ref}`);
     if (!entry) {
-      unknown.push(`${KIND_LABELS[kind]} „${ref}“`);
+      unknown.push({ kind, ref });
     }
     return entry;
   }
 
   public recipes(
     professions: ReturnType<GameRefs["professions"]>,
-    unknown: string[],
+    unknown: UnknownValue[],
   ): NewRecipe[] {
     let missing = 0;
     const recipes = professions.flatMap(({ entry, spellIds }) =>
       spellIds.flatMap((spellId) => {
-        // Pack recipe IDs carry the profession, as a few spells belong to two of them.
-        const recipe = this.recipesByKey.get(`${entry.key}-${spellId}`);
+        const recipe = this.recipesByKey.get(recipeKey(entry.key, spellId));
         if (!recipe) {
           missing += 1;
           return [];
@@ -337,12 +343,12 @@ class GameRefs {
       }),
     );
     if (missing > 0) {
-      unknown.push(`${missing} Rezepte ohne Eintrag im Pack`);
+      unknown.push({ kind: "recipes", count: missing });
     }
     return recipes;
   }
 
-  public serverKey(realm: string, unknown: string[]): string | null {
+  public serverKey(realm: string, unknown: UnknownValue[]): string | null {
     if (!this.catalog.game.meta.capabilities.servers) {
       return null;
     }
@@ -357,15 +363,8 @@ class GameRefs {
       ),
     );
     if (!entry) {
-      unknown.push(`Realm „${realm}“`);
+      unknown.push({ kind: "realm", ref: realm });
     }
     return entry?.key ?? null;
   }
 }
-
-const KIND_LABELS: Partial<Record<CatalogKind, string>> = {
-  faction: "Fraktion",
-  race: "Rasse",
-  class: "Klasse",
-  profession: "Beruf",
-};
