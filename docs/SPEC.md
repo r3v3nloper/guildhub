@@ -433,8 +433,9 @@ Pflichtfelder sind markiert, alle anderen sind optional mit dem genannten Defaul
                                       // kind: primary | secondary | gathering; requests: recipes | free (Crafting-Anträge)
   "recipes": [ { "id": "alchemy-2330", "name": { "de": "...", "en": "..." }, "profession": "alchemy",
                  "skill": 1, "reagents": [ { "name": "...", "count": 1, "item": 2447 } ], "link": "https://...",
-                 "creates": 2454 } ],
-                                      // creates / reagents[].item: Item-IDs des Spiels, optional (Tooltip, 7.3.1)
+                 "creates": 2454, "recipe_items": [ 2555 ] } ],
+                                      // creates, reagents[].item, recipe_items: Item-IDs des Spiels, optional
+                                      // (Tooltip, 7.3.1); recipe_items = Items, aus denen man das Rezept lernt
                                       // optional; Charaktere wählen Rezepte daraus, Freitext bleibt möglich
   "instances": [ { "id": "deadmines", "name": "Deadmines", "kind": "dungeon", "players": 5, "level_min": 17, "level_max": 26,
                    "bosses": [ "..." ], "loot": [ { "name": "...", "reason": "...", "link": "https://..." } ] } ],
@@ -788,9 +789,11 @@ Fährt man im Spiel über ein Item, zeigt der Tooltip unten einen Block „Guild
 - Ohne Treffer zeigt der Tooltip nichts, auch keine leere Überschrift. Ohne
   Gilden-Stand ist der Tooltip aus.
 
-Zuordnung Item ↔ Rezept über die Item-ID. Dafür braucht das Pack zu jedem Rezept die
-Item-ID des hergestellten Items (`creates`) und je Reagenz die Item-ID (siehe 12).
-Rezepte ohne Item (z. B. Verzauberungen) erscheinen im Tooltip nicht.
+Zuordnung Item ↔ Rezept nur über die Item-ID, nie über den Namen. Das Pack führt
+dafür je Rezept das hergestellte Item (`creates`), die Reagenzien (`reagents[].item`)
+und die Rezept-Items (`recipe_items`); alle drei liefert die ForeverDB-API (siehe 12).
+Rezepte ohne Item (Verzauberungen auf Ausrüstung, einige Ingenieursrezepte)
+erscheinen nur im Antragsfenster, nicht im Tooltip.
 
 #### 7.3.2 Anträge im Spiel
 
@@ -931,7 +934,9 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
   Formatversion, Art und Prüfsumme
 - `game_ref` im Pack-Schema und im WoW-Pack für Klassen, Rassen, Fraktionen und Berufe;
   Capability `addon_import`
-- `creates` und Reagenz-Item-IDs an den Pack-Rezepten, vom ForeverDB-Import gefüllt
+- `creates`, `reagents[].item` und `recipe_items` an den Pack-Rezepten, vom
+  ForeverDB-Import gefüllt (`makes.itemId`, `reagents[].itemId`,
+  `learnedFrom.recipeItems[].itemId`)
 - Import-Seite mit Vorschau und „Für das Addon kopieren“; Parser, Zuordnung,
   Gilden-Stand und das Anwenden von Antrags-Aktionen als reine Funktionen mit Vitest
 - ✅ Ein Export mit zwei Charakteren (einer vorhanden, einer neu) zeigt die richtige
@@ -1143,10 +1148,11 @@ docker-compose.yml
   die TOC; ob Rezepte über die Classic-Schnittstellen (`GetTradeSkill…`, für
   Verzauberkunst `GetCraft…`) mit Spell-ID lesbar sind; Token und IDs für die
   Himmelsgeborenen und für neue Forever-Berufe, falls es welche gibt
-- [ ] Handwerker-Tooltip (7.3.1): Liefert die ForeverDB-API zu Rezepten die Item-ID des
-  hergestellten Items und der Reagenzien? Der Import liest sie bisher nicht. Ohne sie
-  bleibt nur der Abgleich über den deutschen Namen, der bei Namensgleichheit von
-  Rezept und Item meist, aber nicht immer passt
+- [x] Handwerker-Tooltip (7.3.1): Die ForeverDB-API liefert die Item-IDs (geprüft am
+  17.11.2026 über alle 12 Berufe, 2490 Rezepte): `makes.itemId` bei allen Rezepten außer
+  180 Verzauberungen und 3 Ingenieursrezepten (die kein Item herstellen),
+  `reagents[].itemId` bei allen 8406 Reagenzien, `learnedFrom.recipeItems[].itemId` bei
+  1803 Rezepten. Der Import liest sie bisher nur noch nicht ein
 - [ ] Gilden-Stand (7.3): Wie groß darf ein eingefügter String im Live-Client sein, bevor
   das Eingabefeld hängt? Bei Bedarf Rezepte nur als IDs und Namen erst im Addon auflösen
 - [x] WoW Forever: neue Rasse **Himmelsgeborene** im Pack (`todo`)
