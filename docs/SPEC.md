@@ -718,7 +718,9 @@ Strings und denselben Import nutzen kann.
 
 **Im Spiel (Addon `GuildHub`, Lua, unter `addons/wow-forever/`):**
 - Merkt sich beim Einloggen pro Charakter Name, Realm, Fraktion, Rasse, Klasse und
-  Stufe, außerdem Berufe mit Fertigkeit aus dem Fertigkeitenfenster.
+  Stufe, außerdem Berufe mit Fertigkeit aus dem Berufsbuch. Der Client von WoW Forever
+  basiert auf dem Mainline-(Retail-)Client 12.x samt dessen Addon-Schnittstellen
+  (`GetProfessions`, `C_TradeSkillUI`), nicht auf Classic.
 - Rezepte kennt das Spiel nur, wenn das Berufsfenster offen ist. Das Addon liest sie
   deshalb beim Öffnen jedes Berufsfensters aus. Jeder Beruf muss also einmal geöffnet
   werden, danach nur noch bei neuen Rezepten.
@@ -768,8 +770,8 @@ geraten. Die Capability heißt `addon_import`.
   und Notizen bleiben unangetastet. Das Addon kennt sie nicht.
 
 **Tode** (nur bei Capability `death_count`, 7.4): Das Addon zählt jeden Tod des
-eingeloggten Charakters ab seiner Installation hoch. Das Spiel kennt in der Classic-Basis
-keine Gesamtzahl, ältere Tode trägt das Mitglied deshalb einmal von Hand nach. Damit
+eingeloggten Charakters ab seiner Installation hoch. Das Spiel liefert dem Addon keine
+verlässliche Gesamtzahl, ältere Tode trägt das Mitglied deshalb einmal von Hand nach. Damit
 Handeingabe und Addon sich nicht überschreiben, merkt sich GuildHub je Charakter den
 zuletzt übernommenen Addon-Stand und **addiert nur die Differenz** zum Deathcount.
 Ist der neue Addon-Stand kleiner als der gemerkte (Addon neu installiert, SavedVariables
@@ -1273,10 +1275,12 @@ docker-compose.yml
 - [ ] WoW Forever: Raid-IDs und Reset-Tage (ab 04.11.)
 - [ ] Gewünschte Akzentfarbe/Logo der Gilde (optional)
 - [x] Addon-Abgleich (7.3): Interface-Version des Clients 1.60.1 ist `16001` (im Spiel
-  geprüft am 17.11.2026); die TOC nennt zusätzlich `11507` für Classic-1.15-Clients
-- [ ] Addon-Abgleich (7.3), im Live-Client von WoW Forever prüfen: ob Rezepte über die Classic-Schnittstellen (`GetTradeSkill…`, für
-  Verzauberkunst `GetCraft…`) mit Spell-ID lesbar sind; Token und IDs für die
-  Himmelsgeborenen und für neue Forever-Berufe, falls es welche gibt
+  geprüft am 17.11.2026); die TOC nennt dazu `16000`. Der Client basiert auf Mainline 12.x;
+  Grundlage für die Schnittstellen ist der Branch `forever` von `Gethe/wow-ui-source`
+- [ ] Addon-Abgleich (7.3), im Live-Client von WoW Forever prüfen: ob `GetProfessionInfo`
+  und `C_TradeSkillUI.GetBaseProfessionInfo` die Skill-Line-IDs des Packs (171 usw.)
+  liefern und `C_TradeSkillUI.GetRecipeInfo` die Spell-IDs der Rezepte; Token und IDs für
+  die Himmelsgeborenen und für neue Forever-Berufe, falls es welche gibt
 - [x] Handwerker-Tooltip (7.3.1): Die ForeverDB-API liefert die Item-IDs (geprüft am
   17.11.2026 über alle 12 Berufe, 2490 Rezepte): `makes.itemId` bei allen Rezepten außer
   180 Verzauberungen und 3 Ingenieursrezepten (die kein Item herstellen),
@@ -1353,6 +1357,6 @@ Entscheidungen, die beim Bauen getroffen wurden und das Modell aus 4.1 ergänzen
 - **Übernehmen** geht über `saveCharacter`, also mit denselben Regeln und Rechten wie der Editor, je Charakter in einer eigenen Transaktion. Meldet das Spiel eine andere Klasse, wird die Spezialisierung geleert. Ein eigener Charakter gleichen Namens ohne Server gilt als derselbe; der Import trägt den Realm nach. Neue Spalten: `character.addon_death_count`, `character.game_imported_at`.
 - **Rezepte pro Beruf** dürfen jetzt bis zu 1000 sein (vorher 100), weil der Import alle bekannten Rezepte bringt.
 - **Gilden-Stand** enthält nur Spell-IDs. Welches Item ein Rezept herstellt, aus welchen Items man es lernt und welche Reagenzien es braucht, steht in der generierten `Data.lua` des Addons (`npm run addon:data`, aus dem Pack), ebenso die Berufsnamen je Sprache. Anträge ehemaliger Mitglieder und Anträge zu Berufen ohne `game_ref` bleiben draußen.
-- **Addon**: liest die Rezepte nur bei offenem Berufsfenster und ergänzt sie nur, damit ein Filter im Fenster nichts entfernt. Ist im Fertigkeitenfenster eine Gruppe zugeklappt, klappt es sie nicht auf, sondern entfernt keine Berufe und zeigt einen Hinweis.
+- **Addon**: liest die Rezepte nur bei offenem Berufsfenster und ergänzt sie nur, damit ein Filter im Fenster nichts entfernt. Ein verlinktes, Gilden- oder NPC-Berufsfenster zeigt fremde Rezepte und wird übergangen. Meldet der Client eine Unter-Skill-Line (wie Retail je Erweiterung), zählt ihre Eltern-Skill-Line.
 - **Pack-Daten**: Für die Item-IDs wurde nur `creates`, `reagents[].item` und `recipe_items` aus ForeverDB übernommen; ein vollständiger Import hätte auch 164 Rezepte, Instanzen und Sammel-Wegweiser geändert und steht noch aus.
 - **Antrags-Aktionen aus dem Spiel** laufen über dieselben Funktionen wie die Knöpfe auf der Antragsseite (`acceptCraftRequest` usw.), in der Reihenfolge, in der sie im Spiel geklickt wurden. Die Vorschau führt sie in einer Transaktion aus und rollt sie zurück; sie rechnet also mit dem Stand vor dem Import, ein Beruf, den derselbe Import erst hinzufügt, zählt dort noch nicht. Übernommen werden sie nach den Charakteren. Ein Zeitpunkt aus der Zukunft wird auf „jetzt“ gesetzt. Im Addon gelten gemerkte Aktionen als erledigt, sobald ein Gilden-Stand eingelesen wird, der nach ihnen erstellt wurde.

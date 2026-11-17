@@ -10,7 +10,8 @@ Den Ordner `GuildHub` nach `World of Warcraft/<Client-Ordner>/Interface/AddOns/`
 kopieren, sodass dort `AddOns/GuildHub/GuildHub.toc` liegt. Im Spiel in der
 Addon-Liste „GuildHub“ aktivieren.
 
-Die TOC nennt `16001` (WoW Forever 1.60.1) und `11507`. Lässt das Spiel das Addon als
+Der Client von WoW Forever basiert auf Retail 12.x; das Addon nutzt dessen
+Schnittstellen. Die TOC nennt `16001` (WoW Forever 1.60.1) und `16000`. Lässt das Spiel das Addon als
 „veraltet“ oder „inkompatibel“ nicht laden, passt keine Zahl hinter `## Interface:` in
 `GuildHub.toc` zum Client, etwa nach einem Update von WoW Forever. Die richtige Zahl zeigt im Spiel
 `/dump select(4, GetBuildInfo())`.
@@ -60,16 +61,16 @@ Abnahme von Phase 6 (SPEC 10). Noch nicht durchgeführt.
 1. Addon laden; es erscheint keine Fehlermeldung.
 2. `/guildhub` öffnet das Fenster; der eingeloggte Charakter steht mit Stufe und Berufen
    darin, die Berufe mit „Berufsfenster noch nicht geöffnet“.
-3. Ein Berufsfenster öffnen (auch Verzauberkunst, das ein eigenes Fenster hat),
-   `/guildhub` erneut: beim Beruf steht „Rezepte <Datum>“.
+3. Ein Berufsfenster öffnen, `/guildhub` erneut: beim Beruf steht „Rezepte <Datum>“.
+   Ein per Chat-Link geöffnetes fremdes Berufsfenster ändert nichts.
 4. Der Export beginnt mit `GH1:wow-forever:export:`. In GuildHub einfügen, Vorschau: der
    Charakter mit Stufe, Berufen und Rezepten erscheint, nichts davon unter „Unbekannt“.
 5. Übernehmen; in GuildHub stimmen Stufe, Fertigkeit und Rezepte.
 6. Sterben, `/reload`, erneut exportieren und übernehmen: die Tode steigen um 1.
 7. Jäger: Totstellen zählt nicht als Tod.
 8. Mit einem zweiten Charakter einloggen: der Export enthält beide.
-9. Im Fertigkeitenfenster die Berufe-Gruppe zuklappen, `/guildhub`: der Hinweis auf die
-   zugeklappte Gruppe erscheint, die Berufe bleiben im Export.
+9. Einen Beruf verlernen, `/guildhub`: er fehlt; die GuildHub-Vorschau bietet an, ihn zu
+   entfernen.
 10. In GuildHub „Für das Addon kopieren“, im Spiel einfügen und übernehmen: das Fenster
     zeigt „Gilden-Stand vom …“ mit Mitgliedern und Anträgen. Ein gekürzter Text wird mit
     „unvollständig“ abgelehnt. Dabei auch prüfen, ob das Einfügen bei einer großen Gilde
