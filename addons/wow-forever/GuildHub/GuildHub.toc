@@ -1,4 +1,4 @@
-## Interface: 11507
+## Interface: 16001, 11507
 ## Title: GuildHub
 ## Notes: Charaktere, Berufe und Rezepte für GuildHub sammeln (/guildhub)
 ## Author: GuildHub

@@ -10,8 +10,9 @@ Den Ordner `GuildHub` nach `World of Warcraft/<Client-Ordner>/Interface/AddOns/`
 kopieren, sodass dort `AddOns/GuildHub/GuildHub.toc` liegt. Im Spiel in der
 Addon-Liste „GuildHub“ aktivieren.
 
-Lässt das Spiel das Addon als „veraltet“ nicht laden, passt die Zahl hinter
-`## Interface:` in `GuildHub.toc` nicht zum Client. Die richtige Zahl zeigt im Spiel
+Die TOC nennt `16001` (WoW Forever 1.60.1) und `11507`. Lässt das Spiel das Addon als
+„veraltet“ oder „inkompatibel“ nicht laden, passt keine Zahl hinter `## Interface:` in
+`GuildHub.toc` zum Client, etwa nach einem Update von WoW Forever. Die richtige Zahl zeigt im Spiel
 `/dump select(4, GetBuildInfo())`.
 
 ## Benutzen

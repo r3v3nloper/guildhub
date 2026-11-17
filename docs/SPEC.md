@@ -1272,8 +1272,9 @@ docker-compose.yml
 - [x] WoW Forever: Berufe gegen ForeverDB-API geprüft (IDs, Art, englische Namen; Build 1.60.1)
 - [ ] WoW Forever: Raid-IDs und Reset-Tage (ab 04.11.)
 - [ ] Gewünschte Akzentfarbe/Logo der Gilde (optional)
-- [ ] Addon-Abgleich (7.3), im Live-Client von WoW Forever prüfen: Interface-Version für
-  die TOC; ob Rezepte über die Classic-Schnittstellen (`GetTradeSkill…`, für
+- [x] Addon-Abgleich (7.3): Interface-Version des Clients 1.60.1 ist `16001` (im Spiel
+  geprüft am 17.11.2026); die TOC nennt zusätzlich `11507` für Classic-1.15-Clients
+- [ ] Addon-Abgleich (7.3), im Live-Client von WoW Forever prüfen: ob Rezepte über die Classic-Schnittstellen (`GetTradeSkill…`, für
   Verzauberkunst `GetCraft…`) mit Spell-ID lesbar sind; Token und IDs für die
   Himmelsgeborenen und für neue Forever-Berufe, falls es welche gibt
 - [x] Handwerker-Tooltip (7.3.1): Die ForeverDB-API liefert die Item-IDs (geprüft am
