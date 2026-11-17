@@ -1,0 +1,14 @@
+## Interface: 11507
+## Title: GuildHub
+## Notes: Charaktere, Berufe und Rezepte für GuildHub sammeln (/guildhub)
+## Author: GuildHub
+## Version: 0.1.0
+## SavedVariables: GuildHubDB
+
+Data.lua
+Checksum.lua
+Store.lua
+Collect.lua
+Export.lua
+Window.lua
+GuildHub.lua
