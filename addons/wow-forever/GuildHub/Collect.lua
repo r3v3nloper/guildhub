@@ -1,8 +1,8 @@
 local _, ns = ...
 
--- Reads what the game tells about the logged-in character. Professions come from the
--- skill list, recipes only from an open profession window: the game knows them nowhere
--- else.
+-- Reads what the game tells about the logged-in character. WoW Forever runs on the Mainline
+-- (Retail) client, so professions come from the profession book and recipes from the
+-- profession window through C_TradeSkillUI; the game knows the recipes nowhere else.
 
 function ns.ReadCharacter()
   local character = ns.CurrentCharacter()
@@ -14,22 +14,32 @@ function ns.ReadCharacter()
   character.level = UnitLevel("player")
 end
 
+-- The pack knows professions by their skill line. Should the client report a child skill
+-- line (as Retail does per expansion), its parent is the one the pack knows.
+local function PackSkillLine(skillLineId, name)
+  if skillLineId and ns.professionNames[skillLineId] then
+    return skillLineId
+  end
+  if name and ns.professionIds[name] then
+    return ns.professionIds[name]
+  end
+  local info = skillLineId and C_TradeSkillUI.GetProfessionInfoBySkillLineID(skillLineId)
+  local parent = info and info.parentProfessionID
+  if parent and ns.professionNames[parent] then
+    return parent
+  end
+end
+
 function ns.ReadSkills()
   local character = ns.CurrentCharacter()
-  local seen, complete = {}, true
-  for i = 1, GetNumSkillLines() do
-    local name, isHeader, isExpanded, rank = GetSkillLineInfo(i)
-    if isHeader then
-      -- Skills under a collapsed header are not listed; the player's choice stays.
-      complete = complete and isExpanded
-    elseif ns.professionIds[name] then
-      seen[ns.professionIds[name]] = true
-      ns.Profession(character, ns.professionIds[name]).skill = rank
+  local seen = {}
+  for _, index in pairs({ GetProfessions() }) do
+    local name, _, rank, _, _, _, skillLine = GetProfessionInfo(index)
+    local skillLineId = PackSkillLine(skillLine, name)
+    if skillLineId then
+      seen[skillLineId] = true
+      ns.Profession(character, skillLineId).skill = rank
     end
-  end
-  ns.skillsIncomplete = not complete
-  if not complete then
-    return
   end
   -- A profession given up in the game is dropped here; GuildHub asks before it follows.
   for skillLineId in pairs(character.professions) do
@@ -39,54 +49,41 @@ function ns.ReadSkills()
   end
 end
 
-local function SpellIdOf(link)
-  if not link then
-    return nil
-  end
-  return tonumber(link:match("enchant:(%d+)") or link:match("spell:(%d+)"))
+-- A linked, guild or NPC profession window shows someone else's recipes.
+local function ShowsOwnProfession()
+  return not (C_TradeSkillUI.IsTradeSkillLinked() or C_TradeSkillUI.IsTradeSkillGuild()
+    or C_TradeSkillUI.IsNPCCrafting())
+end
+
+-- GetAllRecipeIDs is not in Forever's API documentation, while Blizzard's own profession
+-- window uses GetFilteredRecipeIDs; the filtered list suffices because recipes are only added.
+local function RecipeIds()
+  local list = C_TradeSkillUI.GetAllRecipeIDs or C_TradeSkillUI.GetFilteredRecipeIDs
+  return list and list() or {}
 end
 
 -- Recipes are only ever added: a filter in the profession window hides some of them,
 -- and that must not look as if they were forgotten.
-local function StoreRecipes(professionName, rank, count, readRecipe)
-  local skillLineId = ns.professionIds[professionName]
+function ns.ReadTradeSkill()
+  if not C_TradeSkillUI or not ShowsOwnProfession() then
+    return
+  end
+  local info = C_TradeSkillUI.GetBaseProfessionInfo()
+  local skillLineId = info and PackSkillLine(info.professionID, info.professionName)
   if not skillLineId then
     return
   end
   local profession = ns.Profession(ns.CurrentCharacter(), skillLineId)
-  profession.skill = rank or profession.skill
-  for i = 1, count do
-    local spellId = readRecipe(i)
-    if spellId then
-      profession.recipes[spellId] = true
+  if info.skillLevel and info.skillLevel > 0 then
+    profession.skill = info.skillLevel
+  end
+  for _, recipeId in ipairs(RecipeIds()) do
+    local recipe = C_TradeSkillUI.GetRecipeInfo(recipeId)
+    if recipe and recipe.learned then
+      profession.recipes[recipe.recipeID] = true
     end
   end
   profession.readAt = time()
-end
-
-function ns.ReadTradeSkill()
-  if not GetTradeSkillRecipeLink then
-    ns.recipeApiMissing = true
-    return
-  end
-  local name, rank = GetTradeSkillLine()
-  StoreRecipes(name, rank, GetNumTradeSkills(), function(i)
-    local _, skillType = GetTradeSkillInfo(i)
-    return skillType ~= "header" and SpellIdOf(GetTradeSkillRecipeLink(i))
-  end)
-end
-
--- Enchanting uses the older craft window in the Classic client.
-function ns.ReadCraft()
-  if not GetCraftRecipeLink then
-    ns.recipeApiMissing = true
-    return
-  end
-  local name, rank = GetCraftDisplaySkillLine()
-  StoreRecipes(name, rank, GetNumCrafts(), function(i)
-    local _, _, craftType = GetCraftInfo(i)
-    return craftType ~= "header" and SpellIdOf(GetCraftRecipeLink(i))
-  end)
 end
 
 function ns.CountDeath()

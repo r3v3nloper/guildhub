@@ -14,7 +14,7 @@ end
 local function ReagentText(request)
   local parts = {}
   for _, reagent in ipairs(ns.RequestReagents(request)) do
-    local name = GetItemInfo(reagent.itemId) or ("Item " .. reagent.itemId)
+    local name = C_Item.GetItemNameByID(reagent.itemId) or ("Item " .. reagent.itemId)
     local color = reagent.have >= reagent.need and "|cff40ff40" or "|cffff6060"
     table.insert(parts, color .. reagent.have .. "/" .. reagent.need .. "|r " .. name)
   end

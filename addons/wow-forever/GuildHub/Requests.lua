@@ -89,7 +89,7 @@ function ns.RequestReagents(request)
     table.insert(reagents, {
       itemId = reagent.itemId,
       need = reagent.count * (request.quantity or 1),
-      have = GetItemCount(reagent.itemId, true),
+      have = C_Item.GetItemCount(reagent.itemId, true),
     })
   end
   return reagents

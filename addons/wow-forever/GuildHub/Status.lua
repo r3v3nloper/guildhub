@@ -31,12 +31,6 @@ function ns.StatusText()
       table.insert(lines, "   " .. line)
     end
   end
-  if ns.skillsIncomplete then
-    table.insert(lines, "|cffff6060Im Fertigkeitenfenster ist eine Gruppe zugeklappt; Berufe darin fehlen evtl.|r")
-  end
-  if ns.recipeApiMissing then
-    table.insert(lines, "|cffff6060Dieser Client gibt keine Rezept-IDs heraus; Rezepte fehlen im Export.|r")
-  end
   table.insert(lines, "")
   table.insert(lines, ns.GuildStatus())
   local pending = #ns.PendingActions()

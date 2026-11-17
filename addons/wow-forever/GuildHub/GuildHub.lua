@@ -8,10 +8,6 @@ local READ_DELAY = 0.5
 local scheduled = {}
 
 local function ReadSoon(read)
-  if not C_Timer then
-    read()
-    return
-  end
   if scheduled[read] then
     return
   end
@@ -40,17 +36,15 @@ local handlers = {
   SKILL_LINES_CHANGED = function()
     ns.ReadSkills()
   end,
+  -- The recipe list is not filled yet when the window opens; it follows with LIST_UPDATE.
   TRADE_SKILL_SHOW = function()
-    ns.ReadTradeSkill()
-  end,
-  TRADE_SKILL_UPDATE = function()
     ReadSoon(ns.ReadTradeSkill)
   end,
-  CRAFT_SHOW = function()
-    ns.ReadCraft()
+  TRADE_SKILL_LIST_UPDATE = function()
+    ReadSoon(ns.ReadTradeSkill)
   end,
-  CRAFT_UPDATE = function()
-    ReadSoon(ns.ReadCraft)
+  TRADE_SKILL_DATA_SOURCE_CHANGED = function()
+    ReadSoon(ns.ReadTradeSkill)
   end,
   -- Feign Death does not fire PLAYER_DEAD, so hunters are not counted twice.
   PLAYER_DEAD = function()

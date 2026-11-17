@@ -64,16 +64,23 @@ local function Lines(itemId)
   return lines
 end
 
-local function ItemIdOf(tooltip)
+-- Item tooltip data carries the item ID; the link is the way back should it be missing.
+local function ItemIdOf(tooltip, data)
+  if data and type(data.id) == "number" then
+    return data.id
+  end
+  if not tooltip.GetItem then
+    return nil
+  end
   local _, link = tooltip:GetItem()
   return link and tonumber(link:match("item:(%d+)"))
 end
 
-local function AddGuildHubBlock(tooltip)
+local function AddGuildHubBlock(tooltip, data)
   if not GuildHubDB or not GuildHubDB.guild or GuildHubDB.tooltipOff then
     return
   end
-  local itemId = ItemIdOf(tooltip)
+  local itemId = ItemIdOf(tooltip, data)
   if not itemId then
     return
   end
@@ -89,18 +96,6 @@ local function AddGuildHubBlock(tooltip)
   tooltip:Show()
 end
 
--- Newer Classic clients route item tooltips through TooltipDataProcessor; older ones
--- fire OnTooltipSetItem. Only one of the two is used, so no block appears twice.
 function ns.HookTooltips()
-  if TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall and Enum.TooltipDataType then
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip)
-      if tooltip.GetItem then
-        AddGuildHubBlock(tooltip)
-      end
-    end)
-    return
-  end
-  for _, tooltip in ipairs({ GameTooltip, ItemRefTooltip }) do
-    tooltip:HookScript("OnTooltipSetItem", AddGuildHubBlock)
-  end
+  TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, AddGuildHubBlock)
 end

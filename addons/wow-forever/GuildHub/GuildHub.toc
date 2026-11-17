@@ -1,8 +1,8 @@
-## Interface: 16001, 11507
+## Interface: 16001, 16000
 ## Title: GuildHub
 ## Notes: Charaktere, Berufe und Rezepte für GuildHub sammeln (/guildhub)
 ## Author: GuildHub
-## Version: 0.1.0
+## Version: 0.2.0
 ## SavedVariables: GuildHubDB
 
 Data.lua
