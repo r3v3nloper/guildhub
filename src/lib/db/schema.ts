@@ -220,6 +220,9 @@ export const characters = sqliteTable(
     spec: text("spec"),
     level: integer("level"),
     deathCount: integer("death_count").notNull().default(0),
+    // The game addon's own count at the last import; only the difference is added (SPEC 7.3).
+    addonDeathCount: integer("addon_death_count"),
+    gameImportedAt: integer("game_imported_at", { mode: "timestamp_ms" }),
     isMain: integer("is_main", { mode: "boolean" }).notNull().default(false),
     notes: text("notes"),
     createdAt: createdAt(),

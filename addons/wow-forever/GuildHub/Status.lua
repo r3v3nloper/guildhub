@@ -1,0 +1,48 @@
+local _, ns = ...
+
+-- The status at the top of the /guildhub window: what the addon knows per character,
+-- the guild snapshot, and what is still waiting to go to GuildHub.
+
+local function FormatDate(timestamp)
+  return timestamp and date("%d.%m.%Y", timestamp) or nil
+end
+
+local function ProfessionName(skillLineId)
+  local names = ns.professionNames[skillLineId]
+  if not names then
+    return tostring(skillLineId)
+  end
+  return names[GetLocale():sub(1, 2)] or names.en or select(2, next(names))
+end
+
+function ns.StatusText()
+  local lines = {}
+  for _, character in ipairs(ns.SortedCharacters()) do
+    local professions = {}
+    for skillLineId, profession in pairs(character.professions) do
+      local readAt = FormatDate(profession.readAt)
+      table.insert(professions, ProfessionName(skillLineId) .. " " .. (profession.skill or "?")
+        .. (readAt and (" (Rezepte " .. readAt .. ")") or " (Berufsfenster noch nicht geöffnet)"))
+    end
+    table.sort(professions)
+    table.insert(lines, "|cffffd100" .. character.name .. "|r – " .. character.realm .. ", Stufe "
+      .. (character.level or "?") .. ", Tode " .. (character.deaths or 0))
+    for _, line in ipairs(professions) do
+      table.insert(lines, "   " .. line)
+    end
+  end
+  if ns.skillsIncomplete then
+    table.insert(lines, "|cffff6060Im Fertigkeitenfenster ist eine Gruppe zugeklappt; Berufe darin fehlen evtl.|r")
+  end
+  if ns.recipeApiMissing then
+    table.insert(lines, "|cffff6060Dieser Client gibt keine Rezept-IDs heraus; Rezepte fehlen im Export.|r")
+  end
+  table.insert(lines, "")
+  table.insert(lines, ns.GuildStatus())
+  local pending = #ns.PendingActions()
+  if pending > 0 then
+    table.insert(lines, "|cffffd100" .. pending .. " Antrags-Aktionen noch nicht übertragen: erst exportieren und in "
+      .. "GuildHub übernehmen, dann einen neuen Gilden-Stand holen.|r")
+  end
+  return table.concat(lines, "\n")
+end

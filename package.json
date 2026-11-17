@@ -15,7 +15,8 @@
     "db:generate": "drizzle-kit generate",
     "packs:validate": "tsx scripts/packs-validate.ts",
     "theme": "node scripts/build-theme.mjs",
-    "packs:foreverdb": "tsx scripts/foreverdb-import.ts"
+    "packs:foreverdb": "tsx scripts/foreverdb-import.ts",
+    "addon:data": "tsx scripts/addon-data.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.3",

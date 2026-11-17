@@ -65,6 +65,7 @@ export function validatePack(
   }
 
   checkUniqueIds(pack, error);
+  checkUniqueGameRefs(pack, error);
   checkCapabilities(pack, error);
   checkReferences(pack, error);
   checkResetRules(pack, error, warnings);
@@ -92,6 +93,26 @@ function checkUniqueIds(pack: Pack, error: Report) {
         error(`${listName}[${index}].id`, `doppelte ID '${entry.id}'`);
       }
       seen.add(entry.id);
+    });
+  }
+}
+
+/** The addon import maps game values back through game_ref, so one value names one entry. */
+function checkUniqueGameRefs(pack: Pack, error: Report) {
+  const lists = ["factions", "races", "classes", "professions"] as const;
+  for (const listName of lists) {
+    const seen = new Set<string>();
+    pack[listName].forEach((entry, index) => {
+      if (entry.game_ref === undefined) {
+        return;
+      }
+      if (seen.has(entry.game_ref)) {
+        error(
+          `${listName}[${index}].game_ref`,
+          `doppelte game_ref '${entry.game_ref}'`,
+        );
+      }
+      seen.add(entry.game_ref);
     });
   }
 }

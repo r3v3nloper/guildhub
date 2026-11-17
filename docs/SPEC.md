@@ -439,7 +439,10 @@ Pflichtfelder sind markiert, alle anderen sind optional mit dem genannten Defaul
   "professions": [ { "id": "...", "name": "...", "kind": "primary", "requests": "recipes" } ],
                                       // kind: primary | secondary | gathering; requests: recipes | free (Crafting-Anträge)
   "recipes": [ { "id": "alchemy-2330", "name": { "de": "...", "en": "..." }, "profession": "alchemy",
-                 "skill": 1, "reagents": [ { "name": "...", "count": 1 } ], "link": "https://..." } ],
+                 "skill": 1, "reagents": [ { "name": "...", "count": 1, "item": 2447 } ], "link": "https://...",
+                 "creates": 2454, "recipe_items": [ 2555 ] } ],
+                                      // creates, reagents[].item, recipe_items: Item-IDs des Spiels, optional
+                                      // (Tooltip, 7.3.1); recipe_items = Items, aus denen man das Rezept lernt
                                       // optional; Charaktere wählen Rezepte daraus, Freitext bleibt möglich
   "instances": [ { "id": "deadmines", "name": "Deadmines", "kind": "dungeon", "players": 5, "level_min": 17, "level_max": 26,
                    "bosses": [ "..." ], "loot": [ { "name": "...", "reason": "...", "link": "https://..." } ] } ],
@@ -691,18 +694,27 @@ Fehler mitten im Sync.
 - **Endgültig löschen:** Nur ein Owner kann die Daten einer deaktivierten Person
   komplett löschen (mit Bestätigung durch Eingabe des Namens).
 
-### 7.3 Addon-Abgleich (Roster und Rezepte aus dem Spiel)
+### 7.3 Spiel-Addon (Abgleich, Handwerker-Tooltip, Anträge)
 
-Ziel: Stufe, Berufe und gelernte Rezepte müssen nicht mehr von Hand gepflegt werden.
-Ein Spiel-Addon sammelt sie, das Mitglied überträgt sie per Kopieren/Einfügen in
-GuildHub. Zuerst nur für WoW Forever, angelegt als Fähigkeit, die jedes Pack
-einschalten kann (Leitprinzip 2).
+Ziel: Stufe, Berufe und gelernte Rezepte müssen nicht mehr von Hand gepflegt werden,
+und was GuildHub über Handwerker und Crafting-Anträge weiß, steht im Spiel dort, wo
+man es braucht. Ein Spiel-Addon tauscht die Daten in beide Richtungen per
+Kopieren/Einfügen aus:
+
+- **Charakter-Export** (Spiel → GuildHub): eigene Charaktere, Berufe, Rezepte und
+  Antrags-Aktionen aus dem Spiel.
+- **Gilden-Stand** (GuildHub → Spiel): Handwerker der Gilde und offene Anträge, für
+  Tooltip und Antragsfenster (7.3.1, 7.3.2).
+
+Zuerst nur für WoW Forever, angelegt als Fähigkeit, die jedes Pack einschalten kann
+(Leitprinzip 2). Eine Gilden-Karte gehört nicht dazu, dafür nutzt die Gilde ein
+anderes Addon.
 
 **Warum Kopieren/Einfügen:** WoW-Addons haben keinen Netzwerkzugriff und schreiben
 nur in ihre SavedVariables (erst beim Ausloggen bzw. `/reload`). Ein Begleitprogramm,
 das diese Datei automatisch hochlädt, wäre bequemer, aber jedes Mitglied müsste es
-installieren. Es bleibt als spätere Ausbaustufe möglich (Phase 5), weil es denselben
-Export-String und denselben Import nutzen kann.
+installieren. Es bleibt als spätere Ausbaustufe möglich (Phase 5), weil es dieselben
+Strings und denselben Import nutzen kann.
 
 **Im Spiel (Addon `GuildHub`, Lua, unter `addons/wow-forever/`):**
 - Merkt sich beim Einloggen pro Charakter Name, Realm, Fraktion, Rasse, Klasse und
@@ -712,16 +724,25 @@ Export-String und denselben Import nutzen kann.
   werden, danach nur noch bei neuen Rezepten.
 - Speichert die Daten **accountweit**, damit ein Export alle Charaktere dieses
   WoW-Accounts enthält, die seit der Installation eingeloggt waren.
-- `/guildhub` öffnet ein Fenster mit dem Export-String (vorausgewählt, Strg+C),
-  dem Stand je Charakter („Rezepte zuletzt gelesen am …“) und den Berufen, deren
-  Fenster noch nie offen war.
-- Liest nichts über andere Spieler aus und sendet nichts in Chat- oder Addon-Kanäle.
+- `/guildhub` öffnet ein Fenster mit zwei Reitern:
+  - **Export:** der Charakter-Export (vorausgewählt, Strg+C), der Stand je Charakter
+    („Rezepte zuletzt gelesen am …“), die Berufe, deren Fenster noch nie offen war, und
+    die Zahl der Antrags-Aktionen, die noch nicht übertragen sind.
+  - **Import:** Feld zum Einfügen des Gilden-Stands, mit Datum des aktuellen Stands.
+    Ist er älter als 7 Tage, steht dort ein Hinweis, ihn neu zu holen.
+- Liest über andere Spieler nur den Online-Status der Gildenmitglieder aus der
+  Gildenliste, und das nur für die Anzeige im Spiel. Exportiert wird nur, was die
+  eigenen Charaktere betrifft. Das Addon sendet nichts in Chat- oder Addon-Kanäle und
+  flüstert niemanden an.
 
-**Export-String:** `GH<Formatversion>:<game_id>:<Nutzdaten>` mit Prüfsumme, damit
-abgeschnittene Kopien auffallen. Die Nutzdaten verwenden die IDs des Spiels
-(Klassen- und Rassen-Token, Berufs-IDs, Spell-IDs der Rezepte). Die Formatversion
-wird nur bei inkompatiblen Änderungen erhöht. GuildHub nimmt die aktuelle und die
-vorherige Version an, damit nicht alle das Addon am selben Tag aktualisieren müssen.
+**Strings:** `GH<Formatversion>:<game_id>:<art>:<Nutzdaten>` mit Prüfsumme, damit
+abgeschnittene Kopien auffallen; `<art>` ist `export` (Charakter-Export) oder
+`guild` (Gilden-Stand). Die Nutzdaten verwenden die IDs des Spiels (Klassen- und
+Rassen-Token, Berufs-IDs, Spell-IDs der Rezepte, Item-IDs). Die Formatversion wird
+nur bei inkompatiblen Änderungen erhöht. GuildHub und Addon nehmen die aktuelle und
+die vorherige Version an, damit nicht alle das Addon am selben Tag aktualisieren
+müssen. Ein String der falschen Art wird mit Hinweis abgelehnt („Das ist der
+Gilden-Stand, er gehört ins Addon“).
 
 **Zuordnung im Pack:** Katalogeinträge bekommen ein optionales Feld `game_ref`
 (z. B. Klasse `"WARRIOR"`, Beruf `171`). Rezepte brauchen keins, ihre ID enthält die
@@ -757,8 +778,66 @@ gelöscht), zählt er als Neubeginn: addiert wird der ganze neue Stand. Die Vors
 
 **Vertrauen:** Der String kommt vom Mitglied und kann bearbeitet sein. Das ist
 gleichwertig zur Handeingabe, mit denselben Grenzen und Rechten (8): Ein Import ändert
-nur eigene Charaktere. Ein Import landet nicht im `AuditLog` (keine Admin-Aktion),
-der Charakter zeigt aber „Zuletzt aus dem Spiel übernommen am …“.
+nur eigene Charaktere und nur Anträge, die das Mitglied auch im Web ändern dürfte. Ein
+Import landet nicht im `AuditLog` (keine Admin-Aktion), der Charakter zeigt aber
+„Zuletzt aus dem Spiel übernommen am …“.
+
+**Gilden-Stand holen:** Auf derselben Seite erzeugt „Für das Addon kopieren“ den
+Gilden-Stand des gewählten Spiels. Er enthält nur, was das Mitglied in GuildHub ohnehin
+sieht: aktive Mitglieder mit ihren Charakternamen, deren Pack-Rezepte und Berufe mit
+Fertigkeit, und alle offenen und angenommenen Anträge. Freitext-Rezepte sind nicht
+enthalten, weil sie sich keinem Item zuordnen lassen.
+
+#### 7.3.1 Handwerker im Tooltip
+
+Fährt man im Spiel über ein Item, zeigt der Tooltip unten einen Block „GuildHub“:
+
+- **Herstellbares Item:** „Herstellbar von:“ mit bis zu drei Charakteren, die das Rezept
+  haben (Charaktername, Fertigkeit im Beruf), danach „+ n weitere“. Reihenfolge: eigene
+  Charaktere, dann online, dann nach Fertigkeit. Online-Charaktere stehen in Grün.
+  Eigene Charaktere sind als „(du)“ markiert.
+- **Rezept-Item** (z. B. „Bauplan: …“): „Schon bekannt bei:“ mit derselben Liste, damit
+  niemand ein Rezept kauft, das die Gilde schon hat. Fehlt es allen: „In der Gilde noch
+  unbekannt“.
+- **Reagenz:** „Gebraucht für n offene Anträge“, falls Anträge mit Pack-Rezept es als
+  Reagenz brauchen. Für Anträge, die man selbst angenommen hat, mit Menge
+  („Du brauchst 12 für 2 angenommene Anträge“).
+- Ohne Treffer zeigt der Tooltip nichts, auch keine leere Überschrift. Ohne
+  Gilden-Stand ist der Tooltip aus.
+
+Zuordnung Item ↔ Rezept nur über die Item-ID, nie über den Namen. Das Pack führt
+dafür je Rezept das hergestellte Item (`creates`), die Reagenzien (`reagents[].item`)
+und die Rezept-Items (`recipe_items`); alle drei liefert die ForeverDB-API (siehe 12).
+Rezepte ohne Item (Verzauberungen auf Ausrüstung, einige Ingenieursrezepte)
+erscheinen nur im Antragsfenster, nicht im Tooltip.
+
+#### 7.3.2 Anträge im Spiel
+
+Das Antragsfenster (Reiter **Anträge** in `/guildhub`) zeigt aus dem Gilden-Stand drei
+Listen:
+
+- **Kann ich erfüllen:** offene Anträge zu Berufen eines eigenen Charakters. Hat ein
+  eigener Charakter das Rezept, steht er dabei; ohne passendes Rezept bleibt der Antrag
+  sichtbar, aber ausgegraut.
+- **Von mir angenommen:** mit Reagenzien und dem, was davon im Inventar und auf der
+  Bank der eigenen Charaktere liegt (soweit das Addon die Bank schon gesehen hat).
+- **Meine Anträge:** eigene Anträge mit Status und, falls angenommen, wer sie
+  angenommen hat.
+
+Aktionen im Spiel: **Annehmen**, **Erledigt**, **Zurückgeben**, mit denselben Regeln
+wie im Web (Crafting-Anträge, Umsetzungsnotizen Phase 3). Neue Anträge legt man weiter in GuildHub
+an. Das Addon merkt sich jede Aktion mit Zeitpunkt und schickt sie mit dem nächsten
+Charakter-Export. GuildHub wendet sie in der Vorschau sichtbar an und prüft dabei den
+aktuellen Stand: Ist ein Antrag inzwischen von jemand anderem angenommen, gelöscht oder
+schon erledigt, wird die Aktion verworfen und in der Vorschau genannt („Antrag
+*Arkanitstange* hat Jaina schon angenommen“). Bis dahin zeigt das Addon die Aktion als
+„noch nicht übertragen“.
+
+**Online-Hinweis:** Kommt ein Mitglied online, mit dem man einen angenommenen Antrag
+gemeinsam hat (man ist Antragsteller oder Handwerker), zeigt das Addon einmal pro
+Sitzung eine Zeile im Chatfenster, nur für einen selbst: „Thrall ist online: dein
+Antrag *Arkanitstange* (angenommen)“. Der Name ist anklickbar und öffnet das
+Flüstern, schickt aber nichts von selbst. Abschaltbar im Addon.
 
 ### 7.4 Deathcount
 
@@ -935,12 +1014,16 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
 - Begleitprogramm für den Addon-Abgleich (7.3): beobachtet die SavedVariables und
   überträgt den Export-String automatisch, mit persönlichem Token statt Discord-Login
 
-### Phase 6: Addon-Abgleich WoW Forever (7.3)
-- Addon unter `addons/wow-forever/GuildHub/` (TOC + Lua), Export-String mit Formatversion
-  und Prüfsumme
+### Phase 6: Spiel-Addon WoW Forever (7.3)
+- Addon unter `addons/wow-forever/GuildHub/` (TOC + Lua), beide Strings mit
+  Formatversion, Art und Prüfsumme
 - `game_ref` im Pack-Schema und im WoW-Pack für Klassen, Rassen, Fraktionen und Berufe;
   Capability `addon_import`
-- Import-Seite mit Vorschau; Parser und Zuordnung als reine Funktionen mit Vitest
+- `creates`, `reagents[].item` und `recipe_items` an den Pack-Rezepten, vom
+  ForeverDB-Import gefüllt (`makes.itemId`, `reagents[].itemId`,
+  `learnedFrom.recipeItems[].itemId`)
+- Import-Seite mit Vorschau und „Für das Addon kopieren“; Parser, Zuordnung,
+  Gilden-Stand und das Anwenden von Antrags-Aktionen als reine Funktionen mit Vitest
 - ✅ Ein Export mit zwei Charakteren (einer vorhanden, einer neu) zeigt die richtige
   Vorschau; nach dem Übernehmen stimmen Stufe, Berufe und Fertigkeit, neue Pack-Rezepte
   sind ergänzt, Freitext-Rezepte und Notizen unverändert
@@ -950,6 +1033,13 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
   übernommen
 - ✅ Ein Pack ohne `addon_import` zeigt die Seite nicht an; ein String für ein anderes
   Spiel wird abgelehnt
+- ✅ Der Gilden-Stand enthält Pack-Rezepte und offene/angenommene Anträge, aber keine
+  Freitext-Rezepte, keine erledigten Anträge und keine deaktivierten Mitglieder
+- ✅ Ein Export mit „Annehmen“ für einen offenen Antrag nimmt ihn an; dieselbe Aktion für
+  einen inzwischen von jemand anderem angenommenen Antrag wird verworfen und in der
+  Vorschau genannt; „Erledigt“ für einen fremden Antrag wird abgelehnt
+- ✅ Im Spiel zeigt der Tooltip eines Items, dessen Rezept ein Gildenmitglied hat, den
+  Block „Herstellbar von“; ein Item ohne Treffer zeigt keinen GuildHub-Block
 - ✅ Das Addon funktioniert im Live-Client von WoW Forever (Handtest, Schritte in
   `addons/wow-forever/README.md`)
 - ✅ Tode (7.3): Charakter mit 5 Toden von Hand, Addon meldet 2 → 7. Nächster Import
@@ -1186,6 +1276,13 @@ docker-compose.yml
   die TOC; ob Rezepte über die Classic-Schnittstellen (`GetTradeSkill…`, für
   Verzauberkunst `GetCraft…`) mit Spell-ID lesbar sind; Token und IDs für die
   Himmelsgeborenen und für neue Forever-Berufe, falls es welche gibt
+- [x] Handwerker-Tooltip (7.3.1): Die ForeverDB-API liefert die Item-IDs (geprüft am
+  17.11.2026 über alle 12 Berufe, 2490 Rezepte): `makes.itemId` bei allen Rezepten außer
+  180 Verzauberungen und 3 Ingenieursrezepten (die kein Item herstellen),
+  `reagents[].itemId` bei allen 8406 Reagenzien, `learnedFrom.recipeItems[].itemId` bei
+  1803 Rezepten. Der Import liest sie bisher nur noch nicht ein
+- [ ] Gilden-Stand (7.3): Wie groß darf ein eingefügter String im Live-Client sein, bevor
+  das Eingabefeld hängt? Bei Bedarf Rezepte nur als IDs und Namen erst im Addon auflösen
 - [ ] Deathcount per Addon (7.3, 7.4): ob `PLAYER_DEAD` in WoW Forever zuverlässig je Tod
   feuert und Totstellen (Jäger) nicht mitzählt
 - [x] Bildergalerie (7.6): **höchstens 10 MB** je Bild, vorerst keine Gesamtgrenze
@@ -1248,3 +1345,13 @@ Entscheidungen, die beim Bauen getroffen wurden und das Modell aus 4.1 ergänzen
 - Das Beispiel-Pack liegt unter `packs/_examples/beispiel-rpg/` (wird nur validiert, nie geladen) und als Kopie unter `test/fixtures/packs/beispiel-rpg/`. Ein Test stellt sicher, dass beide Dateien inhaltlich gleich bleiben.
 - Der Akzeptanztest (`src/lib/packs/extensibility.test.ts`) läuft über denselben Startweg wie die Produktion (`runStartup` mit `PACKS_DIR` auf den Fixtures): Das Spiel kommt deaktiviert an, ein Owner aktiviert es, ein Mitglied legt einen „Durchlauf“ an, hakt „Akt 1“ ab und zählt optionale Bosse. Der Fortschritt bleibt auch Wochen später bestehen (kein Reset), und die Gilden-Matrix zeigt „✓“ und „7/12“.
 - Für Phase 4 war keine Codeänderung außerhalb von `packs/` und den Fixtures nötig.
+
+### Umsetzungsnotizen Phase 6
+
+- **Austauschformat** (`src/lib/addon/`): Rahmen `GH1:<spiel>:<art>:<adler32>:<daten>`; Adler-32, weil das Addon es in Lua 5.1 ohne Bit-Operationen gleich berechnet. Datensätze mit `;`, Felder mit `,`. Der Export kommt ohne Escaping aus (Namen enthalten die Trennzeichen nie); im Gilden-Stand sind Freitexte (Antrag, Notiz) prozentkodiert. Unbekannte Datensatzarten werden auf beiden Seiten übersprungen, damit Erweiterungen keine neue Formatversion brauchen.
+- **Übernehmen** geht über `saveCharacter`, also mit denselben Regeln und Rechten wie der Editor, je Charakter in einer eigenen Transaktion. Meldet das Spiel eine andere Klasse, wird die Spezialisierung geleert. Ein eigener Charakter gleichen Namens ohne Server gilt als derselbe; der Import trägt den Realm nach. Neue Spalten: `character.addon_death_count`, `character.game_imported_at`.
+- **Rezepte pro Beruf** dürfen jetzt bis zu 1000 sein (vorher 100), weil der Import alle bekannten Rezepte bringt.
+- **Gilden-Stand** enthält nur Spell-IDs. Welches Item ein Rezept herstellt, aus welchen Items man es lernt und welche Reagenzien es braucht, steht in der generierten `Data.lua` des Addons (`npm run addon:data`, aus dem Pack), ebenso die Berufsnamen je Sprache. Anträge ehemaliger Mitglieder und Anträge zu Berufen ohne `game_ref` bleiben draußen.
+- **Addon**: liest die Rezepte nur bei offenem Berufsfenster und ergänzt sie nur, damit ein Filter im Fenster nichts entfernt. Ist im Fertigkeitenfenster eine Gruppe zugeklappt, klappt es sie nicht auf, sondern entfernt keine Berufe und zeigt einen Hinweis.
+- **Pack-Daten**: Für die Item-IDs wurde nur `creates`, `reagents[].item` und `recipe_items` aus ForeverDB übernommen; ein vollständiger Import hätte auch 164 Rezepte, Instanzen und Sammel-Wegweiser geändert und steht noch aus.
+- **Antrags-Aktionen aus dem Spiel** laufen über dieselben Funktionen wie die Knöpfe auf der Antragsseite (`acceptCraftRequest` usw.), in der Reihenfolge, in der sie im Spiel geklickt wurden. Die Vorschau führt sie in einer Transaktion aus und rollt sie zurück; sie rechnet also mit dem Stand vor dem Import, ein Beruf, den derselbe Import erst hinzufügt, zählt dort noch nicht. Übernommen werden sie nach den Charakteren. Ein Zeitpunkt aus der Zukunft wird auf „jetzt“ gesetzt. Im Addon gelten gemerkte Aktionen als erledigt, sobald ein Gilden-Stand eingelesen wird, der nach ihnen erstellt wurde.

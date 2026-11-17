@@ -1,12 +1,12 @@
 import path from "node:path";
 import { and, eq } from "drizzle-orm";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { seedAllowlistFromEnv } from "@/lib/auth/allowlist";
 import { ForbiddenError, type Actor } from "@/lib/auth/guards";
 import { ensureMembershipOnSignIn, getActor } from "@/lib/auth/membership";
 import type { AppDatabase } from "@/lib/db/client";
 import { guildGames } from "@/lib/db/schema";
-import { createDiscordUser, createTestDb } from "@/lib/db/test-db";
+import { copyTestDb, createDiscordUser, createTestDb } from "@/lib/db/test-db";
 import { DomainError, NotFoundError } from "@/lib/errors";
 import { ensureGuild } from "@/lib/guild/guild";
 import { loadPacks } from "@/lib/packs/loader";
@@ -35,14 +35,24 @@ describe("characters and roster with the shipped packs", () => {
   let db: AppDatabase;
   let guildId: number;
 
-  beforeEach(() => {
-    db = createTestDb();
-    guildId = ensureGuild(db, {
+  // Syncing the shipped packs (thousands of recipes) is most of the work; it runs once,
+  // and every test starts from a copy, so tests stay independent and fast.
+  let template: AppDatabase;
+  beforeAll(() => {
+    template = createTestDb();
+    guildId = ensureGuild(template, {
       guildName: "Gilde",
       defaultTimezone: "Europe/Berlin",
     }).id;
-    syncPacks(db, loadPacks(path.resolve("packs"), { includeHidden: false }));
-    db.update(guildGames).set({ enabled: true }).run();
+    syncPacks(
+      template,
+      loadPacks(path.resolve("packs"), { includeHidden: false }),
+    );
+    template.update(guildGames).set({ enabled: true }).run();
+  });
+
+  beforeEach(() => {
+    db = copyTestDb(template);
   });
 
   function member(discordId: string, name: string): Actor {

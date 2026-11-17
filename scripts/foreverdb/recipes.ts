@@ -1,4 +1,5 @@
 import type { PackRecipe } from "../../src/lib/packs/schema";
+import { recipeKey } from "../../src/lib/packs/recipe-key";
 import { API, fetchJson, localized, PAGE_SIZE, type ApiName } from "./api";
 
 // Recipes per profession from ForeverDB's /professions/{slug}, in German.
@@ -6,7 +7,10 @@ import { API, fetchJson, localized, PAGE_SIZE, type ApiName } from "./api";
 export interface ApiRecipe extends ApiName {
   spellId: number;
   skill: { orange: number | null } | null;
-  reagents: Array<ApiName & { count: number }>;
+  reagents: Array<ApiName & { count: number; itemId: number }>;
+  /** Null for recipes that make no item, e.g. enchantments on gear. */
+  makes: { itemId: number } | null;
+  learnedFrom: { recipeItems: Array<{ itemId: number }> } | null;
   url: string;
   /** Set on a leftover copy of another recipe with the same name. */
   leftoverOf: number | null;
@@ -19,8 +23,7 @@ interface ApiRecipePage {
 
 function toPackRecipe(professionId: string, recipe: ApiRecipe): PackRecipe {
   return {
-    // A few recipes belong to two professions, so the spell ID alone is not unique.
-    id: `${professionId}-${recipe.spellId}`,
+    id: recipeKey(professionId, recipe.spellId),
     name: localized(recipe),
     profession: professionId,
     skill: recipe.skill?.orange ?? undefined,
@@ -28,7 +31,12 @@ function toPackRecipe(professionId: string, recipe: ApiRecipe): PackRecipe {
     reagents: recipe.reagents.map((reagent) => ({
       name: localized(reagent),
       count: reagent.count,
+      item: reagent.itemId,
     })),
+    creates: recipe.makes?.itemId,
+    recipe_items: (recipe.learnedFrom?.recipeItems ?? []).map(
+      (item) => item.itemId,
+    ),
     deprecated: false,
     replaces: [],
     todo: false,

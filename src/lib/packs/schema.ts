@@ -39,6 +39,11 @@ const catalogEntry = {
   ...lifecycleFields,
 };
 
+/** How the game itself names the entry (token or ID), for the game addon (SPEC 7.3). */
+const gameRef = { game_ref: z.string().min(1).optional() };
+
+const itemId = z.number().int().positive();
+
 // "dps" stays for games that do not split damage dealers by range (AION 2).
 export const ROLES = [
   "tank",
@@ -51,10 +56,11 @@ export const ROLES = [
 export type Role = (typeof ROLES)[number];
 export const PROFESSION_KINDS = ["primary", "secondary", "gathering"] as const;
 
-export const factionSchema = z.strictObject(catalogEntry);
+export const factionSchema = z.strictObject({ ...catalogEntry, ...gameRef });
 
 export const classSchema = z.strictObject({
   ...catalogEntry,
+  ...gameRef,
   role: z.enum(ROLES).optional(),
   color: z
     .string()
@@ -72,12 +78,14 @@ export const specSchema = z.strictObject({
 
 export const raceSchema = z.strictObject({
   ...catalogEntry,
+  ...gameRef,
   faction: slug.optional(),
   allowed_classes: z.array(slug).default([]),
 });
 
 export const professionSchema = z.strictObject({
   ...catalogEntry,
+  ...gameRef,
   kind: z.enum(PROFESSION_KINDS).default("primary"),
   /**
    * What a crafting request names: "recipes" = only one of the pack's recipes, "free" =
@@ -100,10 +108,15 @@ export const recipeSchema = z.strictObject({
       z.strictObject({
         name: localizedStringSchema,
         count: z.number().int().positive(),
+        item: itemId.optional(),
       }),
     )
     .default([]),
   link: httpLink.optional(),
+  /** The item the recipe makes; enchantments on gear make none. */
+  creates: itemId.optional(),
+  /** Items the recipe is learned from (plans, patterns …). */
+  recipe_items: z.array(itemId).default([]),
 });
 
 export const INSTANCE_KINDS = ["dungeon", "raid"] as const;
@@ -260,6 +273,7 @@ export const capabilitiesSchema = z.strictObject({
   guild_overview: z.boolean().default(false),
   progress_tracking: z.boolean().default(false),
   death_count: z.boolean().default(false),
+  addon_import: z.boolean().default(false),
 });
 export type Capabilities = z.infer<typeof capabilitiesSchema>;
 

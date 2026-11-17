@@ -25,13 +25,23 @@ interface ApiZoneRef {
   name: string;
 }
 
+/** A single value (fishing) or a range (skinning); null where ForeverDB knows none. */
+type ApiZoneSkill = number | { min: number; max: number } | null;
+
+export function zoneSkill(skill: ApiZoneSkill | undefined) {
+  if (typeof skill === "number") {
+    return { skill, skill_max: undefined };
+  }
+  return { skill: skill?.min, skill_max: skill?.max };
+}
+
 export interface ApiGathering {
   url: string;
   nodes?: Array<{ name: string; item: (ApiName & { itemId: number }) | null }>;
   zones: Array<
     ApiZoneRef & {
       nodes?: Array<{ name: string; skill: number | null }>;
-      skill?: number | { min: number; max: number };
+      skill?: ApiZoneSkill;
       loot?: Array<ApiName & { chance: number }>;
       beasts?: ApiBeast[];
     }
@@ -140,8 +150,7 @@ function toGuide(
     })),
     zones: data.zones.map((zone) => ({
       ...zoneRef(zone),
-      skill: typeof zone.skill === "number" ? zone.skill : zone.skill?.min,
-      skill_max: typeof zone.skill === "object" ? zone.skill.max : undefined,
+      ...zoneSkill(zone.skill),
       nodes: beasts.get(zone.mapId) ?? gatheredNodes(zone.nodes, nodeItems),
       catches: [...(zone.loot ?? [])]
         .sort((a, b) => b.chance - a.chance)

@@ -1,5 +1,8 @@
+import Database from "better-sqlite3";
+import { drizzle } from "drizzle-orm/better-sqlite3";
 import { openDatabase, type AppDatabase } from "./client";
 import { migrateDatabase } from "./migrate";
+import * as schema from "./schema";
 import { accounts, guildMembers, users, type MemberRole } from "./schema";
 
 /** A migrated in-memory database for tests; the same migrations production runs. */
@@ -7,6 +10,13 @@ export function createTestDb(): AppDatabase {
   const db = openDatabase(":memory:");
   migrateDatabase(db);
   return db;
+}
+
+/** An independent in-memory copy, for tests that share an expensive starting state. */
+export function copyTestDb(source: AppDatabase): AppDatabase {
+  const sqlite = new Database(source.$client.serialize());
+  sqlite.pragma("foreign_keys = ON");
+  return drizzle(sqlite, { schema });
 }
 
 export function createDiscordUser(
