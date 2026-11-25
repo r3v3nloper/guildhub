@@ -44,17 +44,52 @@ function ns.InitStore()
   end
 end
 
+local function NameKey(name)
+  return (name:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%s+", " "):lower())
+end
+
+-- Whether a name from GuildHub means this character's name. GuildHub may know a
+-- character by its first name only (see src/lib/addon/character-name.ts).
+function ns.SameName(gameName, storedName)
+  local game, stored = NameKey(gameName), NameKey(storedName)
+  if game == stored then
+    return true
+  end
+  local firstName = game:match("^(%S+) ")
+  return firstName ~= nil and not stored:find(" ") and stored == firstName
+end
+
 -- The character of this account with that realm and name, if the addon knows it.
 function ns.OwnCharacter(realm, name)
-  return GuildHubDB.characters[realm .. "|" .. name]
+  for _, character in pairs(GuildHubDB.characters) do
+    if character.realm == realm and ns.SameName(character.name, name) then
+      return character
+    end
+  end
+end
+
+-- WoW Forever gives characters a first name and a surname; UnitName returns both. The
+-- full name is what members see and type into GuildHub.
+function ns.PlayerName()
+  local firstName, surname = UnitName("player")
+  if surname and surname ~= "" then
+    return firstName .. " " .. surname, firstName
+  end
+  return firstName, firstName
 end
 
 function ns.CurrentCharacter()
-  local realm, name = GetRealmName(), UnitName("player")
+  local realm = GetRealmName()
+  local name, firstName = ns.PlayerName()
   local key = realm .. "|" .. name
   local character = GuildHubDB.characters[key]
   if not character then
-    character = { realm = realm, name = name, deaths = 0, professions = {} }
+    -- Versions before 0.4 stored the character under its first name only.
+    local oldKey = realm .. "|" .. firstName
+    character = GuildHubDB.characters[oldKey]
+      or { realm = realm, deaths = 0, professions = {} }
+    GuildHubDB.characters[oldKey] = nil
+    character.name = name
     GuildHubDB.characters[key] = character
   end
   return character

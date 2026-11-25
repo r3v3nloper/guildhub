@@ -243,6 +243,79 @@ describe("character import", () => {
     return saved.characterId;
   }
 
+  describe("first names and surnames (WoW Forever)", () => {
+    it("recognizes a character typed with other case and spacing", () => {
+      // Arrange
+      const id = createCharacter(anna, "relitia  Relikt");
+      const text = exportText(
+        "C,Die Aldor,Relitia Relikt,Horde,Orc,SHAMAN,30,",
+      );
+
+      // Act
+      const preview = previewImport(db, anna, "wow-test", text);
+
+      // Assert
+      expect(preview).toMatchObject({
+        ok: true,
+        characters: [{ characterId: id, status: "changed", renamesFrom: null }],
+      });
+    });
+
+    it("adds the surname to a character GuildHub knows by its first name", () => {
+      // Arrange
+      const id = createCharacter(anna, "Relitia");
+      const text = exportText(
+        "C,Die Aldor,Relitia Relikt,Horde,Orc,SHAMAN,20,",
+      );
+
+      // Act
+      const preview = previewImport(db, anna, "wow-test", text);
+      applyImport(db, anna, "wow-test", text, NO_CHOICES);
+
+      // Assert
+      expect(preview).toMatchObject({
+        ok: true,
+        characters: [{ characterId: id, renamesFrom: "Relitia" }],
+      });
+      expect(getCharacter(db, id)!.name).toBe("Relitia Relikt");
+    });
+
+    it("prefers the full name over a first-name duplicate", () => {
+      // Arrange
+      createCharacter(anna, "Relitia");
+      const full = createCharacter(anna, "Relitia Relikt");
+      const text = exportText(
+        "C,Die Aldor,Relitia Relikt,Horde,Orc,SHAMAN,20,",
+      );
+
+      // Act
+      const preview = previewImport(db, anna, "wow-test", text);
+
+      // Assert
+      expect(preview).toMatchObject({
+        ok: true,
+        characters: [{ characterId: full, renamesFrom: null }],
+      });
+    });
+
+    it("does not take another member's first name for the same character", () => {
+      // Arrange
+      createCharacter(ben, "Relitia");
+      const text = exportText(
+        "C,Die Aldor,Relitia Relikt,Horde,Orc,SHAMAN,20,",
+      );
+
+      // Act
+      const preview = previewImport(db, anna, "wow-test", text);
+
+      // Assert
+      expect(preview).toMatchObject({
+        ok: true,
+        characters: [{ status: "new" }],
+      });
+    });
+  });
+
   describe("blocks other addons passed on in the game (SPEC 7.3.3)", () => {
     it("lets an officer update a member's account and create its new characters for them", () => {
       // Arrange

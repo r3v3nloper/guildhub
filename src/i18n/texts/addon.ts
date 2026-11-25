@@ -32,6 +32,7 @@ export const addonImport = {
       : `Neuer Beruf: ${profession} ${skill}`,
   deaths: (count: number) => (count === 1 ? "+1 Tod" : `+${count} Tode`),
   realm: (realm: string) => `Realm „${realm}“ wird eingetragen`,
+  rename: (from: string, to: string) => `Name: ${from} → ${to}`,
   newRecipes: (count: number) =>
     count === 1 ? "1 neues Rezept" : `${count} neue Rezepte`,
   missingProfession: (profession: string) =>

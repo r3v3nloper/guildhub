@@ -232,8 +232,12 @@ local function OnData(key, at, seq, total, sum, chunk)
   end
 end
 
+-- The sender may come with or without surname. A message of one's own that slips through
+-- does no harm: its versions equal this addon's.
 local function IsSelf(sender)
-  return Ambiguate(sender, "none") == UnitName("player")
+  local name = Ambiguate(sender, "none")
+  local fullName, firstName = ns.PlayerName()
+  return name == fullName or name == firstName
 end
 
 function ns.OnAddonMessage(prefix, text, channel, sender)

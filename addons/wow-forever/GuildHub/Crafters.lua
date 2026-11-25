@@ -40,7 +40,7 @@ local function Knowers(recipes)
             name = character.name,
             skill = profession.skill,
             isSelf = memberNumber == guild.self,
-            online = ns.IsOnline(character.name),
+            online = ns.IsOnline(character.name) ~= nil,
           })
           break
         end

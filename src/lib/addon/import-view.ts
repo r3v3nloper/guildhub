@@ -57,6 +57,9 @@ export function describeImport(
     const shows = (field: CharacterPreview["changedFields"][number]) =>
       isNew || preview.changedFields.includes(field);
 
+    if (preview.renamesFrom !== null) {
+      changes.push(texts.rename(preview.renamesFrom, preview.name));
+    }
     if (shows("race") && values.raceEntryId !== null) {
       changes.push(texts.field(de.characters.race, nameOf(values.raceEntryId)));
     }

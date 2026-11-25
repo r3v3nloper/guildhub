@@ -5,6 +5,7 @@ import type { AppDatabase } from "@/lib/db/client";
 import { characters } from "@/lib/db/schema";
 import type { GameCatalog } from "@/lib/roster/game-catalog";
 import type { ExportedAccount } from "./export-payload";
+import { matchCharacterName } from "./character-name";
 import { resolveServerKey } from "./import-preview";
 
 // Which member a block another account's addon passed on in the game belongs to
@@ -81,10 +82,9 @@ function ownersOf(
   const owners = new Set<string>();
   for (const character of account.characters) {
     const { serverKey } = resolveServerKey(catalog, character.realm);
-    const name = character.name.toLowerCase();
     for (const row of known) {
       if (
-        row.name.toLowerCase() === name &&
+        matchCharacterName(character.name, row.name) !== "none" &&
         (row.serverKey === serverKey || row.serverKey === null)
       ) {
         owners.add(row.userId);
