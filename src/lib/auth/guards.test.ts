@@ -80,6 +80,12 @@ describe("permissions", () => {
     expect(permissions.manageGuildNotes(actor("owner")).allowed).toBe(true);
   });
 
+  it("lets only officers and owners bring in other members' addon data", () => {
+    expect(permissions.importForMembers(actor("member")).allowed).toBe(false);
+    expect(permissions.importForMembers(actor("officer")).allowed).toBe(true);
+    expect(permissions.importForMembers(actor("owner")).allowed).toBe(true);
+  });
+
   it("lets officers disable members but nobody of equal or higher rank", () => {
     const officer = actor("officer");
 

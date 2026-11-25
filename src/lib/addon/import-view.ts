@@ -1,7 +1,11 @@
 import { de } from "@/i18n/de";
 import { localize } from "@/i18n/localize";
 import type { GameCatalog } from "@/lib/roster/game-catalog";
-import { previewKey } from "./character-import";
+import {
+  previewKey,
+  type ImportCharacter,
+  type SkippedAccount,
+} from "./character-import";
 import type {
   CharacterPreview,
   PreviewStatus,
@@ -13,11 +17,22 @@ export interface ImportCharacterView {
   key: string;
   name: string;
   realm: string;
+  /** The member an officer imports this character for; null for the actor's own. */
+  memberName: string | null;
   status: PreviewStatus;
   changes: string[];
   newRecipes: string[];
   missingProfessions: Array<{ entryId: number; label: string }>;
   unknown: string[];
+}
+
+/** A skipped account, in words: its characters and why it was left out. */
+export function describeSkipped(account: SkippedAccount): string {
+  const texts = de.addonImport;
+  return texts.skippedAccount(
+    account.characterNames.join(", ") || texts.noCharacters,
+    texts.skipReason[account.reason],
+  );
 }
 
 function describeUnknown(value: UnknownValue): string {
@@ -29,7 +44,7 @@ function describeUnknown(value: UnknownValue): string {
 
 export function describeImport(
   catalog: GameCatalog,
-  previews: readonly CharacterPreview[],
+  previews: readonly ImportCharacter[],
 ): ImportCharacterView[] {
   const nameOf = (entryId: number | null) =>
     localize(catalog.entries.find((entry) => entry.id === entryId)?.name);
@@ -78,6 +93,7 @@ export function describeImport(
       key: previewKey(preview),
       name: preview.name,
       realm: preview.realm,
+      memberName: preview.memberName,
       status: preview.status,
       changes,
       newRecipes: preview.newRecipes.map((recipe) => localize(recipe.name)),

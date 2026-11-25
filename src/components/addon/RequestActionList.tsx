@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/ui";
-import type { RequestActionOutcome } from "@/lib/addon/request-actions";
+import type { ImportRequestAction } from "@/lib/addon/character-import";
 import { de } from "@/i18n/de";
 
 /** Request actions from the game: in the preview what will happen, afterwards what did. */
@@ -7,7 +7,7 @@ export function RequestActionList({
   actions,
   applied,
 }: {
-  actions: RequestActionOutcome[];
+  actions: ImportRequestAction[];
   /** True once the import ran; the labels then say what happened. */
   applied: boolean;
 }) {
@@ -32,6 +32,12 @@ export function RequestActionList({
                   {texts.requestAction[action.action]}:
                 </span>{" "}
                 {action.item ?? texts.requestGone}
+                {action.memberName && (
+                  <span className="text-muted">
+                    {" "}
+                    ({texts.forMember(action.memberName)})
+                  </span>
+                )}
               </span>
               <Badge tone={action.result === "applied" ? "accent" : "danger"}>
                 {resultLabels[action.result]}

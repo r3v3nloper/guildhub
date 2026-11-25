@@ -19,7 +19,11 @@ import type { GameCatalog } from "@/lib/roster/game-catalog";
 import { linkedRecipeIds } from "@/lib/roster/recipes";
 import { requireAddonCatalog } from "./addon-catalog";
 import { decodeAddonString } from "./addon-string";
-import { parseCharacterExport } from "./export-payload";
+import {
+  parseCharacterExport,
+  type ExportedCharacter,
+  type ExportedRequestAction,
+} from "./export-payload";
 import {
   applyRequestActions,
   previewRequestActions,
@@ -31,16 +35,31 @@ import {
   type ForeignCharacter,
   type OwnCharacterState,
 } from "./import-preview";
+import { assignRelayedAccounts, type SkipReason } from "./relayed-accounts";
 
 // Reading a character export into GuildHub (SPEC 7.3): the preview first, then applying
 // it. Applying never trusts a preview sent back by the browser; it works the export out
 // again against the current state and writes only what the member ticked.
 
+/** A character of the preview, with the member it is imported for when not the actor. */
+export type ImportCharacter = CharacterPreview & { memberName: string | null };
+
+export type ImportRequestAction = RequestActionOutcome & {
+  memberName: string | null;
+};
+
+/** A block passed on in the game that the import leaves out (SPEC 7.3.3). */
+export interface SkippedAccount {
+  characterNames: string[];
+  reason: SkipReason;
+}
+
 export type CharacterImportPreview =
   | {
       ok: true;
-      characters: CharacterPreview[];
-      requestActions: RequestActionOutcome[];
+      characters: ImportCharacter[];
+      requestActions: ImportRequestAction[];
+      skippedAccounts: SkippedAccount[];
     }
   | { ok: false; error: string };
 
@@ -63,6 +82,15 @@ export function previewKey(preview: { realm: string; name: string }): string {
   return `${preview.realm.toLowerCase()}|${preview.name.toLowerCase()}`;
 }
 
+/** The part of an export imported with one member's rights. */
+interface ImportGroup {
+  actor: Actor;
+  /** Null for the actor's own data. */
+  memberName: string | null;
+  characters: CharacterPreview[];
+  requestActions: ExportedRequestAction[];
+}
+
 function readExport(
   db: AppDatabase,
   actor: Actor,
@@ -78,13 +106,84 @@ function readExport(
   if (!parsed.ok) {
     return parsed;
   }
-  const characters = previewCharacterImport({
+  const preview = (
+    member: Actor,
+    exported: ExportedCharacter[],
+    offerProfessionDrop: boolean,
+  ) =>
+    previewCharacterImport({
+      catalog,
+      data: { characters: exported },
+      own: ownCharacters(db, member, gameId),
+      foreign: foreignCharacters(db, member, gameId),
+      offerProfessionDrop,
+    });
+
+  const assignments = assignRelayedAccounts(
+    db,
+    actor,
     catalog,
-    data: parsed.value,
-    own: ownCharacters(db, actor, gameId),
-    foreign: foreignCharacters(db, actor, gameId),
-  });
-  return { ok: true as const, catalog, data: parsed.value, characters };
+    parsed.value.relayed,
+  );
+  const groups: ImportGroup[] = [
+    {
+      actor,
+      memberName: null,
+      characters: preview(actor, parsed.value.characters, true),
+      requestActions: parsed.value.requestActions,
+    },
+    ...assignments.flatMap((assignment) =>
+      "member" in assignment
+        ? [
+            {
+              actor: assignment.member.actor,
+              memberName:
+                assignment.member.actor.userId === actor.userId
+                  ? null
+                  : assignment.member.name,
+              characters: preview(
+                assignment.member.actor,
+                assignment.account.characters,
+                false,
+              ),
+              requestActions: assignment.account.requestActions,
+            },
+          ]
+        : [],
+    ),
+  ];
+  const skippedAccounts = assignments.flatMap((assignment) =>
+    "skipped" in assignment
+      ? [
+          {
+            characterNames: assignment.account.characters.map((c) => c.name),
+            reason: assignment.skipped,
+          },
+        ]
+      : [],
+  );
+  return {
+    ok: true as const,
+    catalog,
+    groups: withoutRepeatedCharacters(groups),
+    skippedAccounts,
+  };
+}
+
+/** A character two blocks both carry (a stale copy) is taken from the first only. */
+function withoutRepeatedCharacters(groups: ImportGroup[]): ImportGroup[] {
+  const seen = new Set<string>();
+  return groups.map((group) => ({
+    ...group,
+    characters: group.characters.filter((character) => {
+      const key = previewKey(character);
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    }),
+  }));
 }
 
 export function previewImport(
@@ -99,14 +198,16 @@ export function previewImport(
   }
   return {
     ok: true,
-    characters: read.characters,
-    // Against the current state; a profession the same import adds is not counted yet.
-    requestActions: previewRequestActions(
-      db,
-      actor,
-      gameId,
-      read.data.requestActions,
+    characters: read.groups.flatMap(({ characters, memberName }) =>
+      characters.map((character) => ({ ...character, memberName })),
     ),
+    // Against the current state; a profession the same import adds is not counted yet.
+    requestActions: read.groups.flatMap((group) =>
+      previewRequestActions(db, group.actor, gameId, group.requestActions).map(
+        (outcome) => ({ ...outcome, memberName: group.memberName }),
+      ),
+    ),
+    skippedAccounts: read.skippedAccounts,
   };
 }
 
@@ -120,52 +221,67 @@ export function applyImport(
   | {
       ok: true;
       outcomes: ImportOutcome[];
-      requestActions: RequestActionOutcome[];
+      requestActions: ImportRequestAction[];
     }
   | { ok: false; error: string } {
   const read = readExport(db, actor, gameId, text);
   if (!read.ok) {
     return read;
   }
-  const { catalog } = read;
   const importedAt = new Date();
-  const outcomes = read.characters.map((character): ImportOutcome => {
-    const key = previewKey(character);
-    const outcome = { key, name: character.name };
-    const wanted =
-      character.status === "changed" ||
-      character.status === "unchanged" ||
-      (character.status === "new" && choices.create.includes(key));
-    if (!wanted) {
-      return { ...outcome, result: "skipped" };
-    }
-    try {
-      db.transaction(() =>
-        applyCharacter(
-          db,
-          actor,
-          catalog,
-          character,
-          choices.dropProfessions[key] ?? [],
-          importedAt,
-        ),
-      );
-      return { ...outcome, result: "saved" };
-    } catch (error) {
-      if (error instanceof DomainError) {
-        return { ...outcome, result: "failed", error: error.message };
-      }
-      throw error;
-    }
-  });
+  const outcomes = read.groups.flatMap((group) =>
+    group.characters.map((character) =>
+      applyChoice(db, group, read.catalog, character, choices, importedAt),
+    ),
+  );
   // After the characters, so a profession the export adds already counts for accepting.
-  const requestActions = applyRequestActions(
-    db,
-    actor,
-    gameId,
-    read.data.requestActions,
+  const requestActions = read.groups.flatMap((group) =>
+    applyRequestActions(db, group.actor, gameId, group.requestActions).map(
+      (outcome) => ({ ...outcome, memberName: group.memberName }),
+    ),
   );
   return { ok: true, outcomes, requestActions };
+}
+
+function applyChoice(
+  db: AppDatabase,
+  group: ImportGroup,
+  catalog: GameCatalog,
+  character: CharacterPreview,
+  choices: ImportChoices,
+  importedAt: Date,
+): ImportOutcome {
+  const key = previewKey(character);
+  const outcome = { key, name: character.name };
+  const wanted =
+    character.status === "changed" ||
+    character.status === "unchanged" ||
+    (character.status === "new" && choices.create.includes(key));
+  if (!wanted) {
+    return { ...outcome, result: "skipped" };
+  }
+  // Only the actor's own professions may be dropped, and only those the preview offered.
+  const dropProfessionIds = (choices.dropProfessions[key] ?? []).filter((id) =>
+    character.missingProfessionEntryIds.includes(id),
+  );
+  try {
+    db.transaction(() =>
+      applyCharacter(
+        db,
+        group.actor,
+        catalog,
+        character,
+        dropProfessionIds,
+        importedAt,
+      ),
+    );
+    return { ...outcome, result: "saved" };
+  } catch (error) {
+    if (error instanceof DomainError) {
+      return { ...outcome, result: "failed", error: error.message };
+    }
+    throw error;
+  }
 }
 
 /** Runs inside the caller's transaction, so a failing step undoes the whole character. */

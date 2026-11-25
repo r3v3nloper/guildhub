@@ -2,6 +2,10 @@
 //   C,<realm>,<name>,<faction>,<race>,<class>,<level>,<deaths>   starts a character
 //   P,<profession>,<skill>[,<spell id>…]                        a profession of that character
 //   A,<request id>,<accept|done|return>,<unix seconds>          a crafting request action
+//   O,<account id>                                              the exporting account
+//   U,<account id>,<unix seconds>    starts a block another account's addon passed on in
+//                                    the game (SPEC 7.3.3); C, P and A after it belong to it
+// Records before the first U, and a U block of the exporting account, are its own data.
 // Faction, race, class and profession are the game's own names (game_ref in the pack).
 // Character and realm names never contain the separators, so nothing needs escaping.
 // Unknown record types are skipped, so a newer addon can add some without a new version.
@@ -33,9 +37,19 @@ export interface ExportedRequestAction {
   at: Date;
 }
 
+export interface ExportedAccount {
+  accountId: string;
+  /** When the account's addon last changed the block. */
+  updatedAt: Date;
+  characters: ExportedCharacter[];
+  requestActions: ExportedRequestAction[];
+}
+
 export interface CharacterExport {
   characters: ExportedCharacter[];
   requestActions: ExportedRequestAction[];
+  /** Blocks of other accounts, passed on in the game. */
+  relayed: ExportedAccount[];
 }
 
 export type ParseResult =
@@ -44,6 +58,8 @@ export type ParseResult =
 const MAX_CHARACTERS = 50;
 const MAX_ACTIONS = 500;
 const MAX_NAME_LENGTH = 40;
+const MAX_RELAYED_ACCOUNTS = 200;
+const ACCOUNT_ID = /^[0-9a-z]{6,32}$/;
 
 class PayloadError extends Error {}
 
@@ -58,31 +74,96 @@ export function parseCharacterExport(payload: string): ParseResult {
   }
 }
 
+type Block = Pick<ExportedAccount, "characters" | "requestActions">;
+
 function readRecords(payload: string): CharacterExport {
-  const result: CharacterExport = { characters: [], requestActions: [] };
-  const records = payload.split(";").filter((record) => record !== "");
-  for (const [index, record] of records.entries()) {
-    const [type, ...fields] = record.split(",");
-    const where = `Eintrag ${index + 1}`;
-    if (type === "C") {
-      result.characters.push(readCharacter(fields, where));
+  const records = payload
+    .split(";")
+    .filter((record) => record !== "")
+    .map((record, index) => ({
+      fields: record.split(","),
+      where: `Eintrag ${index + 1}`,
+    }));
+  const ownAccountId = records
+    .filter(({ fields }) => fields[0] === "O")
+    .map(({ fields, where }) => accountId(fields[1], where))
+    .at(-1);
+  const result: CharacterExport = {
+    characters: [],
+    requestActions: [],
+    relayed: [],
+  };
+  let block: Block = result;
+  for (const {
+    fields: [type, ...fields],
+    where,
+  } of records) {
+    if (type === "U") {
+      block = startAccount(result, fields, where, ownAccountId);
+    } else if (type === "C") {
+      block.characters.push(readCharacter(fields, where));
     } else if (type === "P") {
-      const character = result.characters.at(-1);
+      const character = block.characters.at(-1);
       if (!character) {
         throw new PayloadError(`${where}: Beruf ohne Charakter.`);
       }
       character.professions.push(readProfession(fields, where));
     } else if (type === "A") {
-      result.requestActions.push(readAction(fields, where));
+      block.requestActions.push(readAction(fields, where));
     }
   }
-  if (result.characters.length > MAX_CHARACTERS) {
-    throw new PayloadError(`Höchstens ${MAX_CHARACTERS} Charaktere.`);
+  if (result.relayed.length > MAX_RELAYED_ACCOUNTS) {
+    throw new PayloadError(`Höchstens ${MAX_RELAYED_ACCOUNTS} Accounts.`);
   }
-  if (result.requestActions.length > MAX_ACTIONS) {
-    throw new PayloadError(`Höchstens ${MAX_ACTIONS} Antrags-Aktionen.`);
+  for (const each of [result, ...result.relayed]) {
+    checkLimits(each);
   }
   return result;
+}
+
+/** The block the following records belong to; the exporting account's own is the top level. */
+function startAccount(
+  result: CharacterExport,
+  fields: string[],
+  where: string,
+  ownAccountId: string | undefined,
+): Block {
+  const id = accountId(fields[0], where);
+  if (id === ownAccountId) {
+    return result;
+  }
+  const known = result.relayed.find((account) => account.accountId === id);
+  if (known) {
+    return known;
+  }
+  const account: ExportedAccount = {
+    accountId: id,
+    updatedAt: new Date(requiredCount(fields[1], where) * 1000),
+    characters: [],
+    requestActions: [],
+  };
+  result.relayed.push(account);
+  return account;
+}
+
+function checkLimits(block: Block): void {
+  if (block.characters.length > MAX_CHARACTERS) {
+    throw new PayloadError(
+      `Höchstens ${MAX_CHARACTERS} Charaktere je Account.`,
+    );
+  }
+  if (block.requestActions.length > MAX_ACTIONS) {
+    throw new PayloadError(
+      `Höchstens ${MAX_ACTIONS} Antrags-Aktionen je Account.`,
+    );
+  }
+}
+
+function accountId(value: string | undefined, where: string): string {
+  if (!value || !ACCOUNT_ID.test(value)) {
+    throw new PayloadError(`${where}: ungültige Account-Kennung.`);
+  }
+  return value;
 }
 
 function readCharacter(fields: string[], where: string): ExportedCharacter {

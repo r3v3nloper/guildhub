@@ -38,6 +38,7 @@ function ns.RequestAction(id, action)
   end
   table.insert(Pending(), { id = id, action = action, at = time() })
   ApplyLocally(request, action, guild.self)
+  ns.SyncChanged()
 end
 
 function ns.PendingActions()

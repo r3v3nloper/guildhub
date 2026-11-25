@@ -9,13 +9,14 @@ import {
   applyImport,
   previewImport,
   type ImportOutcome,
+  type ImportRequestAction,
 } from "@/lib/addon/character-import";
 import {
   describeImport,
+  describeSkipped,
   type ImportCharacterView,
 } from "@/lib/addon/import-view";
 import { buildGuildSnapshot } from "@/lib/addon/guild-snapshot-loader";
-import type { RequestActionOutcome } from "@/lib/addon/request-actions";
 import { actorForAction } from "@/lib/auth/current-actor";
 import { getDb } from "@/lib/db/client";
 import { requireCatalog } from "@/lib/roster/characters";
@@ -30,12 +31,13 @@ const choicesArg = z.strictObject({
 
 export interface ImportPreviewState extends ActionState {
   characters?: ImportCharacterView[];
-  requestActions?: RequestActionOutcome[];
+  requestActions?: ImportRequestAction[];
+  skippedAccounts?: string[];
 }
 
 export interface ImportApplyState extends ActionState {
   outcomes?: ImportOutcome[];
-  requestActions?: RequestActionOutcome[];
+  requestActions?: ImportRequestAction[];
 }
 
 export async function previewAddonImportAction(
@@ -43,7 +45,8 @@ export async function previewAddonImportAction(
   text: string,
 ): Promise<ImportPreviewState> {
   let characters: ImportCharacterView[] | undefined;
-  let requestActions: RequestActionOutcome[] | undefined;
+  let requestActions: ImportRequestAction[] | undefined;
+  let skippedAccounts: string[] | undefined;
   const state = await guarded(async () => {
     const db = getDb();
     const game = parseArg(gameArg, gameId);
@@ -58,9 +61,10 @@ export async function previewAddonImportAction(
     }
     characters = describeImport(requireCatalog(db, game), preview.characters);
     requestActions = preview.requestActions;
+    skippedAccounts = preview.skippedAccounts.map(describeSkipped);
     return { ok: true };
   });
-  return { ...state, characters, requestActions };
+  return { ...state, characters, requestActions, skippedAccounts };
 }
 
 export async function applyAddonImportAction(
@@ -69,7 +73,7 @@ export async function applyAddonImportAction(
   choices: unknown,
 ): Promise<ImportApplyState> {
   let outcomes: ImportOutcome[] | undefined;
-  let requestActions: RequestActionOutcome[] | undefined;
+  let requestActions: ImportRequestAction[] | undefined;
   const state = await guarded(async () => {
     const result = applyImport(
       getDb(),

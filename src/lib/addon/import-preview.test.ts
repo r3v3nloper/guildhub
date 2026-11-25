@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { GameMeta } from "@/lib/db/schema";
 import type { CatalogKind } from "@/lib/packs/catalog";
 import type { CatalogEntry, GameCatalog } from "@/lib/roster/game-catalog";
-import type { CharacterExport, ExportedCharacter } from "./export-payload";
+import type { ExportedCharacter } from "./export-payload";
 import {
   previewCharacterImport,
   type ForeignCharacter,
@@ -120,8 +120,12 @@ function preview(
   foreign: ForeignCharacter[] = [],
   meta: Partial<GameMeta["capabilities"]> = {},
 ) {
-  const data: CharacterExport = { characters, requestActions: [] };
-  return previewCharacterImport({ catalog: catalog(meta), data, own, foreign });
+  return previewCharacterImport({
+    catalog: catalog(meta),
+    data: { characters },
+    own,
+    foreign,
+  });
 }
 
 describe("previewCharacterImport", () => {

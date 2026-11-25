@@ -15,6 +15,7 @@ local function ReadSoon(read)
   C_Timer.After(READ_DELAY, function()
     scheduled[read] = nil
     read()
+    ns.SyncChanged()
   end)
 end
 
@@ -29,12 +30,18 @@ local handlers = {
     ns.ReadCharacter()
     ns.ReadSkills()
     ns.RequestGuildRoster()
+    ns.StartSync()
   end,
   PLAYER_LEVEL_UP = function()
     ns.ReadCharacter()
+    ns.SyncChanged()
   end,
   SKILL_LINES_CHANGED = function()
     ns.ReadSkills()
+    ns.SyncChanged()
+  end,
+  CHAT_MSG_ADDON = function(...)
+    ns.OnAddonMessage(...)
   end,
   -- The recipe list is not filled yet when the window opens; it follows with LIST_UPDATE.
   TRADE_SKILL_SHOW = function()
@@ -49,6 +56,7 @@ local handlers = {
   -- Feign Death does not fire PLAYER_DEAD, so hunters are not counted twice.
   PLAYER_DEAD = function()
     ns.CountDeath()
+    ns.SyncChanged()
   end,
   GUILD_ROSTER_UPDATE = function()
     ns.RefreshOnline()

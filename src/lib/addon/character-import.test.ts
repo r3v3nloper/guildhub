@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+﻿import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Actor } from "@/lib/auth/guards";
 import type { AppDatabase } from "@/lib/db/client";
@@ -220,6 +220,144 @@ describe("character import", () => {
     // Assert
     expect(result).toMatchObject({ ok: false });
     expect(getCharacter(db, thrallId)!.level).toBe(40);
+  });
+
+  function createCharacter(owner: Actor, name: string, deathCount = 0): number {
+    const saved = saveCharacter(
+      db,
+      owner,
+      "wow-test",
+      characterInput({
+        name,
+        server: "Die Aldor",
+        raceKey: "orc",
+        classKey: "shaman",
+        level: 20,
+        deathCount,
+        professionKeys: ["alchemy"],
+      }),
+    );
+    if (!saved.ok) {
+      throw new Error("Testcharakter nicht gespeichert");
+    }
+    return saved.characterId;
+  }
+
+  describe("blocks other addons passed on in the game (SPEC 7.3.3)", () => {
+    it("lets an officer update a member's account and create its new characters for them", () => {
+      // Arrange
+      const jainaId = createCharacter(ben, "Jaina", 4);
+      const text = exportText(
+        "O,annaacc1",
+        "U,benacc01,1794916800",
+        "C,Die Aldor,Jaina,,,,30,2",
+        "P,171,80,2330",
+        "C,Die Aldor,Kael,Horde,Orc,WARRIOR,12,",
+      );
+      const kael = previewKey({ realm: "Die Aldor", name: "Kael" });
+
+      // Act
+      const preview = previewImport(db, anna, "wow-test", text);
+      const result = applyImport(db, anna, "wow-test", text, {
+        create: [kael],
+        dropProfessions: {},
+      });
+
+      // Assert
+      expect(preview).toMatchObject({
+        ok: true,
+        characters: [
+          { name: "Jaina", status: "changed", memberName: "User 0002" },
+          { name: "Kael", status: "new", memberName: "User 0002" },
+        ],
+        skippedAccounts: [],
+      });
+      expect(result).toMatchObject({
+        ok: true,
+        outcomes: [
+          { name: "Jaina", result: "saved" },
+          { name: "Kael", result: "saved" },
+        ],
+      });
+      expect(getCharacter(db, jainaId)).toMatchObject({
+        userId: ben.userId,
+        level: 30,
+        deathCount: 6,
+      });
+      expect(
+        db.select().from(characters).where(eq(characters.name, "Kael")).get(),
+      ).toMatchObject({ userId: ben.userId, level: 12 });
+    });
+
+    it("never offers to drop a profession of another member", () => {
+      // Arrange
+      createCharacter(ben, "Jaina");
+      const text = exportText(
+        "U,benacc01,1794916800",
+        "C,Die Aldor,Jaina,,,,20,",
+      );
+
+      // Act
+      const preview = previewImport(db, anna, "wow-test", text);
+
+      // Assert
+      expect(preview).toMatchObject({
+        ok: true,
+        characters: [{ name: "Jaina", missingProfessionEntryIds: [] }],
+      });
+    });
+
+    it("imports only a member's own account and names the others", () => {
+      // Arrange
+      const thrallId = createThrall();
+      createCharacter(ben, "Jaina");
+      const text = exportText(
+        "O,benacc01",
+        "C,Die Aldor,Jaina,,,,25,",
+        "U,annaacc1,1794916800",
+        "C,Die Aldor,Thrall,,,,60,",
+      );
+
+      // Act
+      const preview = previewImport(db, ben, "wow-test", text);
+      applyImport(db, ben, "wow-test", text, NO_CHOICES);
+
+      // Assert
+      expect(preview).toMatchObject({
+        ok: true,
+        characters: [{ name: "Jaina", memberName: null }],
+        skippedAccounts: [{ characterNames: ["Thrall"], reason: "notOfficer" }],
+      });
+      expect(getCharacter(db, thrallId)!.level).toBe(40);
+    });
+
+    it.each([
+      [
+        "no character GuildHub knows",
+        ["C,Die Aldor,Kael,,,,12,"],
+        "unknownCharacters",
+      ],
+      [
+        "characters of two members",
+        ["C,Die Aldor,Thrall,,,,40,", "C,Die Aldor,Jaina,,,,20,"],
+        "severalMembers",
+      ],
+    ])("skips an account with %s", (_, records, reason) => {
+      // Arrange
+      createThrall();
+      createCharacter(ben, "Jaina");
+      const text = exportText("U,someacc1,1794916800", ...records);
+
+      // Act
+      const preview = previewImport(db, anna, "wow-test", text);
+
+      // Assert
+      expect(preview).toMatchObject({
+        ok: true,
+        characters: [],
+        skippedAccounts: [{ reason }],
+      });
+    });
   });
 
   it("refuses games without the addon import", () => {

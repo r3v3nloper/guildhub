@@ -854,6 +854,40 @@ Sitzung eine Zeile im Chatfenster, nur für einen selbst: „Thrall ist online: 
 Antrag *Arkanitstange* (angenommen)“. Der Name ist anklickbar und öffnet das
 Flüstern, schickt aber nichts von selbst. Abschaltbar im Addon.
 
+#### 7.3.3 Abgleich über die Gilde
+
+Damit nicht jedes Mitglied selbst kopieren muss, reichen die Addons ihre Daten im Spiel
+untereinander weiter. Ein Officer überträgt dann für alle.
+
+- **Account-Block:** Jedes Addon erzeugt einmal eine zufällige Account-Kennung. Die
+  Charaktere des Accounts, ihre Berufe und Rezepte, die Tode und die noch nicht
+  übertragenen Antrags-Aktionen bilden einen Block mit Zeitstempel der letzten Änderung.
+- **Im Spiel:** Die Addons tauschen Blöcke und den Gilden-Stand über den unsichtbaren
+  Addon-Kanal der Gilde (Präfix `GuildHub`). Beim Einloggen und alle 15 Minuten nennt
+  jedes Addon, welche Blöcke es in welchem Stand hat. Wer einen neueren Stand hat, sendet
+  ihn an die ganze Gilde, nach einer zufälligen Pause, damit nur einer sendet. Wer einen
+  älteren sieht, nennt seinen Stand erneut. Gesendet wird in Stücken unter 255 Zeichen,
+  gedrosselt auf etwa eine Nachricht pro Sekunde; jedes Stück trägt die Prüfsumme des
+  ganzen Blocks. In Instanzen sperrt das Spiel den Kanal, dann wartet das Addon.
+- **Export:** enthält den eigenen Account und alle weitergereichten Blöcke (Datensätze
+  `O` und `U`, siehe `export-payload.ts`).
+- **Import durch einen Officer:** Die eigenen Charaktere wie bisher. Für jeden
+  weitergereichten Account sucht GuildHub das Mitglied über die schon bekannten
+  Charaktere des Accounts. Gehören sie genau einem aktiven Mitglied, wird der Block für
+  dieses Mitglied übernommen, mit dessen Rechten (Tode nur erhöhen, Antrags-Aktionen nach
+  den Antragsregeln). Neue Charaktere des Accounts legt der Officer per Haken für dieses
+  Mitglied an. Berufe entfernt der Import für andere nie. Kennt GuildHub keinen
+  Charakter des Accounts oder gehören sie mehreren Mitgliedern, wird der Account
+  übersprungen und in der Vorschau genannt.
+- **Import durch ein Mitglied:** nur der eigene Account, weitergereichte Blöcke werden
+  mit Hinweis übersprungen.
+- **Gilden-Stand:** Wer ihn einfügt, reicht ihn ebenso weiter. Jedes Addon bestimmt sein
+  eigenes Mitglied selbst über die eigenen Charaktere im Gilden-Stand, weil der Stand für
+  den Officer erstellt wurde.
+- **Vertrauen:** Weitergereichte Daten kommen aus fremden Addons und lassen sich
+  fälschen. Das ist innerhalb der Gilde vertretbar; deshalb darf nur ein Officer sie
+  übernehmen, und nur für Charaktere, die schon einem Mitglied gehören.
+
 ### 7.4 Deathcount
 
 Ein reiner Zähler zum Spaß, ohne Folgen für den Charakter (kein Hardcore-Status).
@@ -938,6 +972,7 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
 | Gildennotizen anlegen, ändern, anpinnen, löschen (7.5) | | ✓ | ✓ |
 | Bilder hochladen, eigene Bilder ändern und löschen (7.6) | ✓ | ✓ | ✓ |
 | Fremde Bilder löschen (7.6) | | ✓ | ✓ |
+| Addon-Daten anderer Mitglieder übernehmen (7.3.3) | | ✓ | ✓ |
 | Spiele aktivieren, Region wählen | | ✓ | ✓ |
 | Mitglieder freischalten (Allowlist hinzufügen) | | ✓ | ✓ |
 | **member** deaktivieren | | ✓ | ✓ |
@@ -950,6 +985,8 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
 - Der **letzte aktive Owner** kann weder herabgestuft noch deaktiviert werden
   (auch nicht durch sich selbst).
 - Fremde Charaktere, Builds und Fortschritt kann niemand bearbeiten, auch kein Owner.
+  Einzige Ausnahme: Ein Officer übernimmt im Spiel weitergereichte Addon-Daten eines
+  Mitglieds (7.3.3); das läuft mit den Rechten dieses Mitglieds.
 - Private Custom-Aufgaben sieht nur der Ersteller.
 - Tests für die Guards (mindestens: fremden Progress ändern schlägt fehl,
   Nicht-Officer kann keine gildenweite Aufgabe anlegen, Officer kann keine Rollen
@@ -1059,6 +1096,18 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
   `addons/wow-forever/README.md`)
 - ✅ Tode (7.3): Charakter mit 5 Toden von Hand, Addon meldet 2 → 7. Nächster Import
   meldet 3 → 8. Addon neu installiert und meldet 1 → 9.
+
+**Abgleich über die Gilde (7.3.3):**
+- ✅ Ein Officer-Import mit dem Block eines anderen Accounts, dessen bekannte Charaktere
+  einem Mitglied gehören, aktualisiert diese Charaktere und legt neue per Haken für das
+  Mitglied an; Tode und Antrags-Aktionen gelten für das Mitglied
+- ✅ Derselbe Import durch ein Mitglied ändert nur die eigenen Charaktere und nennt die
+  übersprungenen Accounts
+- ✅ Ein Account ohne bekannten Charakter oder mit Charakteren mehrerer Mitglieder wird
+  übersprungen und genannt
+- ✅ Im Spiel: Zwei Accounts sind gleichzeitig online; nach kurzer Zeit enthält der
+  Export des einen auch die Charaktere des anderen. Ein eingefügter Gilden-Stand kommt
+  beim anderen an, und dessen Antragsfenster zeigt die eigenen Anträge richtig
 
 ### Phase 7: Deathcount (7.4)
 - Capability `death_count` im Pack-Schema, im WoW-Forever-Pack eingeschaltet

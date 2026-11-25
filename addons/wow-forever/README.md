@@ -29,6 +29,21 @@ Schnittstellen. Die TOC nennt `16001` (WoW Forever 1.60.1) und `16000`. Lässt d
    „Für das Addon kopieren“, im Spiel `/guildhub` → „Gilden-Stand einfügen“, Strg+V,
    „Übernehmen“. Ab und zu neu holen; ab 7 Tagen weist das Fenster darauf hin.
 
+### Abgleich über die Gilde
+
+Schritt 3 und 4 muss nicht jeder selbst machen. Die Addons reichen ihre Daten im Spiel
+untereinander weiter, über den unsichtbaren Addon-Kanal der Gilde, sobald zwei Mitglieder
+gleichzeitig online sind. Dazu ist nichts einzustellen.
+
+- Ein **Officer** kopiert ab und zu seinen Export nach GuildHub. Er enthält die Daten
+  aller Accounts, die sein Addon gesammelt hat; GuildHub ordnet sie den Mitgliedern über
+  ihre schon bekannten Charaktere zu. Ein neuer Charakter muss nicht vorher angelegt
+  werden, wenn ein anderer Charakter desselben Accounts GuildHub schon bekannt ist.
+- Den **Gilden-Stand** fügt einer ein, die anderen bekommen ihn über die Gilde.
+- Gesendet wird langsam, etwa eine Nachricht pro Sekunde, in Instanzen gar nicht. Das
+  Fenster zeigt, ob noch etwas zu senden ist.
+- Ein Mitglied, das selbst exportiert, überträgt nur seine eigenen Charaktere.
+
 Mit Gilden-Stand zeigt der Tooltip eines Items unten einen Block „GuildHub“: wer es
 herstellen kann (online in Grün), bei Bauplänen und Rezepten, wer sie schon kennt, und bei
 Reagenzien, wie viele Anträge sie brauchen. `/guildhub tooltip` schaltet ihn aus und
@@ -96,3 +111,13 @@ Abnahme von Phase 6 (SPEC 10). Noch nicht durchgeführt.
     offene Antrags-Aktionen verschwinden.
 19. Mit zwei Accounts: Antragsteller loggt ein, während der Handwerker online ist: beim
     Handwerker erscheint der Chat-Hinweis mit anklickbarem Namen, einmal pro Sitzung.
+20. Gilden-Abgleich mit zwei Accounts A (Officer) und B (Mitglied), beide in der Gilde
+    online, B hat in GuildHub schon einen Charakter: nach spätestens einer Minute zeigt
+    `/guildhub` bei A „Daten von 1 weiteren Account im Export“.
+21. A exportiert und fügt in GuildHub ein: B's Charaktere stehen mit „für <B>“ in der
+    Vorschau; ein neuer Charakter von B lässt sich per Haken für B anlegen.
+22. A fügt einen Gilden-Stand ein: kurz darauf meldet B „Gilden-Stand vom …“, und B's
+    Antragsfenster zeigt B's eigene Anträge unter „Meine Anträge“.
+23. B exportiert selbst und fügt ein: nur B's Charaktere werden übernommen, A's Account
+    steht unter „Nicht übernommene Accounts“.
+24. In einer Instanz sendet das Addon nichts; nach dem Verlassen geht es weiter.

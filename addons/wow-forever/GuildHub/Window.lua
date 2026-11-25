@@ -125,6 +125,13 @@ local function CreateWindow()
   return frame
 end
 
+-- Only the status: the export box stays as it is, so a selection for copying survives.
+function ns.RefreshStatus()
+  if window and window:IsShown() then
+    window.status:SetText(ns.StatusText())
+  end
+end
+
 function ns.ShowWindow()
   window = window or CreateWindow()
   window:Show()

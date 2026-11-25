@@ -15,6 +15,19 @@ local function ProfessionName(skillLineId)
   return names[GetLocale():sub(1, 2)] or names.en or select(2, next(names))
 end
 
+local function SyncStatus()
+  local relayed = ns.RelayedAccountCount()
+  local text = relayed == 0
+    and "Abgleich über die Gilde: noch keine Daten anderer Accounts"
+    or ("Abgleich über die Gilde: Daten von " .. relayed .. " weiteren Account"
+      .. (relayed == 1 and "" or "s") .. " im Export")
+  local queued = ns.SyncQueueLength()
+  if queued > 0 then
+    text = text .. " |cffffd100– sendet noch (" .. queued .. " Teile)|r"
+  end
+  return text
+end
+
 function ns.StatusText()
   local lines = {}
   for _, character in ipairs(ns.SortedCharacters()) do
@@ -33,6 +46,7 @@ function ns.StatusText()
   end
   table.insert(lines, "")
   table.insert(lines, ns.GuildStatus())
+  table.insert(lines, SyncStatus())
   local pending = #ns.PendingActions()
   if pending > 0 then
     table.insert(lines, "|cffffd100" .. pending .. " Antrags-Aktionen noch nicht übertragen: erst exportieren und in "
