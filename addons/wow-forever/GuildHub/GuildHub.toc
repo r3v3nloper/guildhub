@@ -2,7 +2,7 @@
 ## Title: GuildHub
 ## Notes: Charaktere, Berufe und Rezepte für GuildHub sammeln (/guildhub)
 ## Author: GuildHub
-## Version: 0.4.0
+## Version: 0.4.1
 ## SavedVariables: GuildHubDB
 
 Data.lua

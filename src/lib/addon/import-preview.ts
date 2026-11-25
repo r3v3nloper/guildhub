@@ -157,7 +157,7 @@ function previewCharacter(
     foreign.some(
       (c) =>
         matchCharacterName(exported.name, c.name) === "exact" &&
-        c.serverKey === serverKey,
+        mayBeSameServer(serverKey, c.serverKey),
     )
   ) {
     return { ...base, ...nothingChanges(), status: "foreign", previous: null };
@@ -214,7 +214,7 @@ function previewCharacter(
       previous: null,
     };
   }
-  const fillsInServer = existing.serverKey !== serverKey;
+  const fillsInServer = serverKey !== null && existing.serverKey !== serverKey;
   const changed =
     renamesFrom !== null ||
     changedFields.length > 0 ||
@@ -240,8 +240,23 @@ function previewCharacter(
 }
 
 /**
- * The member's character the game's one is. The full name wins over a first-name match;
- * a character entered without a server is the same one, and the import fills it in.
+ * Whether a character of the export may be one GuildHub knows, by server. A character
+ * entered without a server may be on any; so may one the game named no realm for (WoW
+ * Forever 1.60.1 names none to addons).
+ */
+export function mayBeSameServer(
+  exportedKey: string | null,
+  storedKey: string | null,
+): boolean {
+  return (
+    exportedKey === null || storedKey === null || exportedKey === storedKey
+  );
+}
+
+/**
+ * The member's character the game's one is. The full name wins over a first-name match,
+ * the same server over one entered without; without a realm from the game, a name that is
+ * unique among the member's characters suffices.
  */
 function findOwn(
   gameName: string,
@@ -252,9 +267,13 @@ function findOwn(
     own.filter((c) => matchCharacterName(gameName, c.name) === match);
   for (const match of ["exact", "firstName"] as const) {
     const named = candidates(match);
+    const anyServer = named.filter((c) =>
+      mayBeSameServer(serverKey, c.serverKey),
+    );
     const existing =
       named.find((c) => c.serverKey === serverKey) ??
-      named.find((c) => c.serverKey === null);
+      named.find((c) => c.serverKey === null) ??
+      (anyServer.length === 1 ? anyServer[0] : undefined);
     if (existing) {
       return {
         existing,
@@ -416,7 +435,7 @@ export function resolveServerKey(
   catalog: GameCatalog,
   realm: string,
 ): { serverKey: string | null; unknownRealm: boolean } {
-  if (!catalog.game.meta.capabilities.servers) {
+  if (!catalog.game.meta.capabilities.servers || realm.trim() === "") {
     return { serverKey: null, unknownRealm: false };
   }
   const servers = catalogOfKind(catalog, "server");

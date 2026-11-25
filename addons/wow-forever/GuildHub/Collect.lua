@@ -6,6 +6,9 @@ local _, ns = ...
 
 function ns.ReadCharacter()
   local character = ns.CurrentCharacter()
+  if not character then
+    return
+  end
   character.faction = UnitFactionGroup("player")
   local _, raceToken = UnitRace("player")
   local _, classToken = UnitClass("player")
@@ -32,6 +35,9 @@ end
 
 function ns.ReadSkills()
   local character = ns.CurrentCharacter()
+  if not character then
+    return
+  end
   local seen = {}
   for _, index in pairs({ GetProfessions() }) do
     local name, _, rank, _, _, _, skillLine = GetProfessionInfo(index)
@@ -70,10 +76,11 @@ function ns.ReadTradeSkill()
   end
   local info = C_TradeSkillUI.GetBaseProfessionInfo()
   local skillLineId = info and PackSkillLine(info.professionID, info.professionName)
-  if not skillLineId then
+  local character = ns.CurrentCharacter()
+  if not skillLineId or not character then
     return
   end
-  local profession = ns.Profession(ns.CurrentCharacter(), skillLineId)
+  local profession = ns.Profession(character, skillLineId)
   if info.skillLevel and info.skillLevel > 0 then
     profession.skill = info.skillLevel
   end
@@ -88,5 +95,8 @@ end
 
 function ns.CountDeath()
   local character = ns.CurrentCharacter()
+  if not character then
+    return
+  end
   character.deaths = (character.deaths or 0) + 1
 end

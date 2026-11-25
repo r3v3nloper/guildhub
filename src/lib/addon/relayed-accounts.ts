@@ -6,7 +6,7 @@ import { characters } from "@/lib/db/schema";
 import type { GameCatalog } from "@/lib/roster/game-catalog";
 import type { ExportedAccount } from "./export-payload";
 import { matchCharacterName } from "./character-name";
-import { resolveServerKey } from "./import-preview";
+import { mayBeSameServer, resolveServerKey } from "./import-preview";
 
 // Which member a block another account's addon passed on in the game belongs to
 // (SPEC 7.3.3). GuildHub links characters to members, not WoW accounts, so the
@@ -69,7 +69,7 @@ export function assignRelayedAccounts(
   });
 }
 
-/** Members owning a character of the account; one entered without server counts too. */
+/** Members owning a character of the account, by name and a server it may be on. */
 function ownersOf(
   catalog: GameCatalog,
   account: ExportedAccount,
@@ -85,7 +85,7 @@ function ownersOf(
     for (const row of known) {
       if (
         matchCharacterName(character.name, row.name) !== "none" &&
-        (row.serverKey === serverKey || row.serverKey === null)
+        mayBeSameServer(serverKey, row.serverKey)
       ) {
         owners.add(row.userId);
       }

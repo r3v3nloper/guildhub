@@ -38,7 +38,8 @@ function ns.StatusText()
         .. (readAt and (" (Rezepte " .. readAt .. ")") or " (Berufsfenster noch nicht geöffnet)"))
     end
     table.sort(professions)
-    table.insert(lines, "|cffffd100" .. character.name .. "|r – " .. character.realm .. ", Stufe "
+    local realm = (character.realm or "") ~= "" and (character.realm .. ", ") or ""
+    table.insert(lines, "|cffffd100" .. character.name .. "|r – " .. realm .. "Stufe "
       .. (character.level or "?") .. ", Tode " .. (character.deaths or 0))
     for _, line in ipairs(professions) do
       table.insert(lines, "   " .. line)

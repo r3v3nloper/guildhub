@@ -341,7 +341,8 @@ function saveBaseValues(
       preview.renamesFrom === null
         ? (existing?.name ?? preview.name)
         : preview.name,
-    server: preview.realm,
+    // Without a realm from the game the character keeps the server it has.
+    server: preview.realm || existing?.serverName || existing?.serverKey || "",
     factionKey: key(
       preview.values.factionEntryId ?? existing?.factionEntryId ?? null,
     ),

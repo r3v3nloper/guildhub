@@ -171,7 +171,8 @@ function readCharacter(fields: string[], where: string): ExportedCharacter {
   if (!name?.trim() || name.length > MAX_NAME_LENGTH) {
     throw new PayloadError(`${where}: Charaktername fehlt oder ist zu lang.`);
   }
-  if (!realm?.trim() || realm.length > MAX_NAME_LENGTH) {
+  // WoW Forever 1.60.1 names no realm to addons, so the field may be empty.
+  if (realm === undefined || realm.length > MAX_NAME_LENGTH) {
     throw new PayloadError(`${where}: Realm fehlt oder ist zu lang.`);
   }
   return {

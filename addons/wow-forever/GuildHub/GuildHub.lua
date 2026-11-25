@@ -32,6 +32,12 @@ local handlers = {
     ns.RequestGuildRoster()
     ns.StartSync()
   end,
+  -- The game may name the character fully only after PLAYER_LOGIN.
+  PLAYER_ENTERING_WORLD = function()
+    ns.ReadCharacter()
+    ns.ReadSkills()
+    ns.SyncChanged()
+  end,
   PLAYER_LEVEL_UP = function()
     ns.ReadCharacter()
     ns.SyncChanged()
