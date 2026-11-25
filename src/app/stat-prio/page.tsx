@@ -4,6 +4,7 @@ import {
   ClassAvatar,
   classTextColor,
 } from "@/components/characters/ClassAvatar";
+import { BestInSlotLinks } from "@/components/guild/BestInSlotLinks";
 import { RequestMenu } from "@/components/guild/RequestMenu";
 import { BuildRow } from "@/components/guild/SpecBuildList";
 import { SpecBuildForm } from "@/components/guild/SpecBuildForm";
@@ -15,6 +16,7 @@ import { permissions } from "@/lib/auth/guards";
 import { getDb } from "@/lib/db/client";
 import type { CharacterRow } from "@/lib/roster/characters";
 import { selectedGames } from "@/lib/game-filter";
+import { bestInSlotKey, specsWithBestInSlot } from "@/lib/guild/best-in-slot";
 import { listSpecBuilds, type SpecBuildView } from "@/lib/guild/spec-builds";
 import {
   listStatPriorities,
@@ -39,6 +41,8 @@ interface ClassView {
   entry: ClassStatPriorities;
   name: string;
   specs: CatalogEntry[];
+  /** The specs with a best in slot list from the pack. */
+  bisSpecs: CatalogEntry[];
   builds: SpecBuildView[];
   /** The member's characters of this class. */
   own: CharacterRow[];
@@ -59,6 +63,7 @@ async function StatPrioritiesContent({
   const gameIds = withClasses.map((game) => game.id);
   const canEdit = permissions.manageStatPriorities(actor).allowed;
   const builds = listSpecBuilds(db, gameIds);
+  const withBestInSlot = specsWithBestInSlot(db, gameIds);
   const characters = listCharactersOfUser(db, actor.userId);
   const catalogs = new Map(
     gameIds.map((gameId) => [gameId, loadGameCatalog(db, gameId)]),
@@ -66,14 +71,18 @@ async function StatPrioritiesContent({
   const views: ClassView[] = listStatPriorities(db, gameIds).map((entry) => {
     const catalog = catalogs.get(entry.gameId);
     const classKey = catalog ? keyOfEntry(catalog, entry.classEntryId) : "";
+    const specs = catalog
+      ? selectableOfKind(catalog, "spec").filter(
+          (spec) => spec.data.class === classKey,
+        )
+      : [];
     return {
       entry,
       name: localize(entry.className),
-      specs: catalog
-        ? selectableOfKind(catalog, "spec").filter(
-            (spec) => spec.data.class === classKey,
-          )
-        : [],
+      specs,
+      bisSpecs: specs.filter((spec) =>
+        withBestInSlot.has(bestInSlotKey(entry.gameId, spec.key)),
+      ),
       builds: builds.filter(
         (build) => build.gameId === entry.gameId && build.classKey === classKey,
       ),
@@ -285,6 +294,8 @@ function ClassDetail({ view, canEdit }: { view: ClassView; canEdit: boolean }) {
           </ul>
         )}
       </div>
+
+      <BestInSlotLinks specs={view.bisSpecs} ownSpecIds={ownSpecs} />
 
       {view.specs.length > 0 && (
         <div className="flex flex-col gap-3">

@@ -24,6 +24,7 @@ import {
 } from "./texts/roster";
 import { admin, auditActions, catalogKinds } from "./texts/admin";
 import {
+  bestInSlot,
   directory,
   guildNotes,
   matrix,
@@ -63,6 +64,7 @@ export const de = {
   requests,
   statPriorities,
   specBuilds,
+  bestInSlot,
   guildNotes,
   gallery,
   addonImport,

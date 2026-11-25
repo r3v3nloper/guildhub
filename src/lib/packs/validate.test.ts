@@ -268,6 +268,50 @@ describe("validatePack", () => {
     expect(errors.map((e) => e.path)).toEqual(["abilities[1].class"]);
   });
 
+  it("checks best in slot lists against specs and professions, one list per mode", () => {
+    // Arrange
+    const enchantedSlot = (profession: string) => ({
+      slot: "chest",
+      best: { item: 1, name: "Brustplatte", quality: 4 },
+      enhancements: [{ rank: 1, name: "Werte", kind: "enchant", profession }],
+    });
+
+    // Act
+    const errors = errorsOf(
+      basePack({
+        capabilities: { classes: true, resets: true, professions: true },
+        professions: [{ id: "enchanting", name: "Verzauberkunst" }],
+        specs: [
+          {
+            id: "warrior-arms",
+            name: "Waffen",
+            class: "warrior",
+            role: "melee",
+          },
+        ],
+        best_in_slot: [
+          {
+            id: "warrior-arms",
+            name: "Waffen",
+            spec: "warrior-arms",
+            lists: [
+              { mode: "pve", level: 60, slots: [enchantedSlot("enchanting")] },
+              { mode: "pve", level: 60, slots: [enchantedSlot("tailoring")] },
+            ],
+          },
+          { id: "warrior-fury", name: "Furor", spec: "warrior-fury" },
+        ],
+      }),
+    );
+
+    // Assert
+    expect(errors.map((e) => e.path)).toEqual([
+      "best_in_slot[0].lists[1].mode",
+      "best_in_slot[0].lists[1].slots[0].enhancements[0].profession",
+      "best_in_slot[1].spec",
+    ]);
+  });
+
   it("rejects replaces pointing at an ID that is still active", () => {
     const errors = errorsOf(
       basePack({

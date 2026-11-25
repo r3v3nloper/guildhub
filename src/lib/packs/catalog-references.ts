@@ -135,6 +135,8 @@ export const CATALOG_REFERENCES: Record<CatalogKind, CatalogReference[]> = {
   gathering: [],
   // Read per class as a whole, like the gathering guides.
   abilities: [],
+  // Read per spec as a whole, like the class abilities.
+  best_in_slot: [],
   server: [
     {
       table: characters,

@@ -10,6 +10,7 @@ export const CATALOG_KINDS = [
   "instance",
   "gathering",
   "abilities",
+  "best_in_slot",
   "boss",
   "server",
   "reset_rule",
@@ -28,6 +29,7 @@ interface CatalogDefinition {
     | "instances"
     | "gathering"
     | "abilities"
+    | "best_in_slot"
     | "bosses"
     | "servers"
     | "reset_rules"
@@ -46,6 +48,7 @@ export const CATALOG_DEFINITIONS: Record<CatalogKind, CatalogDefinition> = {
   instance: { packKey: "instances" },
   gathering: { packKey: "gathering", capability: "professions" },
   abilities: { packKey: "abilities", capability: "classes" },
+  best_in_slot: { packKey: "best_in_slot", capability: "classes" },
   boss: { packKey: "bosses", capability: "lockouts" },
   server: { packKey: "servers", capability: "servers" },
   reset_rule: { packKey: "reset_rules" },

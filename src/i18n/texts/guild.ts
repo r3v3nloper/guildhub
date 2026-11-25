@@ -205,6 +205,86 @@ export const specBuilds = {
   offSpec: "Off-Spec",
 } as const;
 
+export const bestInSlot = {
+  title: "Best in Slot",
+  hint: "Die beste Ausrüstung pro Spezialisierung auf Stufe 60, mit den zwei nächstbesten Teilen und den passenden Verzauberungen.",
+  heading: (spec: string) => `Best in Slot: ${spec}`,
+  open: (spec: string) => `Best in Slot für ${spec}`,
+  credits: "BiS-Daten",
+  modes: { pve: "PvE", pvp: "PvP" } as Record<string, string>,
+  modeLabel: "Modus",
+  level: (level: number) => `Stufe ${level}`,
+  weapons: { "2h": "Zweihandwaffe", "1h": "Einhandwaffen" } as Record<
+    string,
+    string
+  >,
+  groups: {
+    armor: "Rüstung",
+    jewelry: "Schmuck",
+    weapons: "Waffen",
+    other: "Weitere",
+  } as Record<string, string>,
+  slots: {
+    head: "Kopf",
+    neck: "Hals",
+    shoulder: "Schultern",
+    back: "Rücken",
+    chest: "Brust",
+    wrist: "Handgelenke",
+    hands: "Hände",
+    waist: "Taille",
+    legs: "Beine",
+    feet: "Füße",
+    finger1: "Finger 1",
+    finger2: "Finger 2",
+    trinket1: "Schmuckstück 1",
+    trinket2: "Schmuckstück 2",
+    main: "Haupthand",
+    off: "Nebenhand",
+    ranged: "Distanz",
+  } as Record<string, string>,
+  /** How hard an item is to get: filled dots (of three) and the words behind them. */
+  ease: {
+    easy: { dots: 1, label: "leicht zu bekommen" },
+    "some effort": { dots: 2, label: "etwas Aufwand" },
+    hard: { dots: 3, label: "schwer zu bekommen" },
+  } as Record<string, { dots: number; label: string }>,
+  easeUnknown: "Quelle noch unbekannt",
+  legendLabel: "Legende",
+  legendEase: "Aufwand: leicht · mittel · schwer",
+  kinds: {
+    enchant: "Verzauberung",
+    kit: "Rüstungsset",
+    arcanum: "Arkanum",
+    scroll: "Schriftrolle",
+    attach: "Aufsatz",
+    scope: "Zielfernrohr",
+  } as Record<string, string>,
+  emptySlot: "Entfällt",
+  emptySlotHint: "Belegt durch die Zweihandwaffe",
+  alternatives: "Alternativen",
+  /** An alternative or lower-ranked enchantment, measured against the slot's pick. */
+  belowBest: (percent: number) =>
+    percent === 0 ? "gleichwertig" : `−${percent} %`,
+  belowBestLabel: (percent: number) =>
+    percent === 0
+      ? "so gut wie die Bestwahl"
+      : `${percent} % schwächer als die Bestwahl`,
+  itemLevelShort: (level: number) => `iLvl ${level}`,
+  itemLevel: (level: number) => `Itemlevel ${level}`,
+  fromLevel: (level: number) => `ab Stufe ${level}`,
+  seenInForever: "in WoW Forever gesehen",
+  enhancements: "Verzauberungen",
+  hardToGet: "Schwer zu bekommen",
+  sourceNote: "Effekte und Hinweise kommen von ForeverDB und sind englisch.",
+  profession: (name: string, skill: number | null) =>
+    skill === null ? name : `${name} ${skill}`,
+  materials: "Materialien",
+  none: "Für diese Spezialisierung gibt es keine BiS-Liste.",
+  sourcePage: "Auf ForeverDB ansehen",
+  itemPage: "Item auf ForeverDB",
+} as const;
+
 export const guildNotes = {
   title: "Gildennotizen",
   intro:
