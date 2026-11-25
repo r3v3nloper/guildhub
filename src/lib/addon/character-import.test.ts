@@ -316,6 +316,69 @@ describe("character import", () => {
     });
   });
 
+  describe("exports without realm (WoW Forever 1.60.1)", () => {
+    it("matches a character on its server by name and keeps the server", () => {
+      // Arrange
+      const id = createCharacter(anna, "Relitia Relikt");
+      const text = exportText("C,,Relitia Relikt,Horde,Orc,SHAMAN,27,");
+
+      // Act
+      const preview = previewImport(db, anna, "wow-test", text);
+      applyImport(db, anna, "wow-test", text, NO_CHOICES);
+
+      // Assert
+      expect(preview).toMatchObject({
+        ok: true,
+        characters: [{ characterId: id, fillsInServer: false, unknown: [] }],
+      });
+      expect(getCharacter(db, id)).toMatchObject({
+        level: 27,
+        serverName: "Die Aldor",
+      });
+    });
+
+    it("treats another member's character of that name as theirs", () => {
+      // Arrange
+      createCharacter(ben, "Relitia Relikt");
+      const text = exportText("C,,Relitia Relikt,Horde,Orc,SHAMAN,27,");
+
+      // Act
+      const preview = previewImport(db, anna, "wow-test", text);
+
+      // Assert
+      expect(preview).toMatchObject({
+        ok: true,
+        characters: [{ status: "foreign" }],
+      });
+    });
+
+    it("does not guess between two own characters of that name", () => {
+      // Arrange
+      createCharacter(anna, "Relitia Relikt");
+      saveCharacter(
+        db,
+        anna,
+        "wow-test",
+        characterInput({
+          name: "Relitia Relikt",
+          server: "Zuluhed",
+          raceKey: "orc",
+          classKey: "shaman",
+        }),
+      );
+      const text = exportText("C,,Relitia Relikt,Horde,Orc,SHAMAN,27,");
+
+      // Act
+      const preview = previewImport(db, anna, "wow-test", text);
+
+      // Assert
+      expect(preview).toMatchObject({
+        ok: true,
+        characters: [{ status: "new" }],
+      });
+    });
+  });
+
   describe("blocks other addons passed on in the game (SPEC 7.3.3)", () => {
     it("lets an officer update a member's account and create its new characters for them", () => {
       // Arrange

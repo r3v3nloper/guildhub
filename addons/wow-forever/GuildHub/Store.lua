@@ -59,10 +59,25 @@ function ns.SameName(gameName, storedName)
   return firstName ~= nil and not stored:find(" ") and stored == firstName
 end
 
+-- WoW Forever 1.60.1 names no realm to addons (GetRealmName and GetNormalizedRealmName
+-- return "", and UnitFullName gives the surname where Retail has the realm). Characters are
+-- then stored with realm "", and realms count only where both sides name one.
+local function SameRealm(a, b)
+  return a == "" or b == "" or a == b
+end
+
+local function RealmName()
+  local realm = GetRealmName()
+  if (not realm or realm == "") and GetNormalizedRealmName then
+    realm = GetNormalizedRealmName()
+  end
+  return realm or ""
+end
+
 -- The character of this account with that realm and name, if the addon knows it.
 function ns.OwnCharacter(realm, name)
   for _, character in pairs(GuildHubDB.characters) do
-    if character.realm == realm and ns.SameName(character.name, name) then
+    if SameRealm(character.realm or "", realm or "") and ns.SameName(character.name, name) then
       return character
     end
   end
@@ -78,20 +93,62 @@ function ns.PlayerName()
   return firstName, firstName
 end
 
+-- Folds what another entry of the same character knows into this one: recipes are only
+-- ever added, and deaths only ever count up.
+local function Absorb(character, other)
+  character.deaths = math.max(character.deaths or 0, other.deaths or 0)
+  for skillLineId, theirs in pairs(other.professions or {}) do
+    local mine = character.professions[skillLineId]
+    if mine then
+      for spellId in pairs(theirs.recipes) do
+        mine.recipes[spellId] = true
+      end
+      mine.skill = math.max(mine.skill or 0, theirs.skill or 0)
+      mine.readAt = math.max(mine.readAt or 0, theirs.readAt or 0)
+    end
+  end
+end
+
+-- Keys of other entries of the logged-in character, left by earlier versions: before 0.4
+-- under the first name alone, with the realm the client named then; 0.4.0 without realm.
+local function EarlierKeys(key, realm, name, firstName)
+  local keys = {}
+  for otherKey, other in pairs(GuildHubDB.characters) do
+    local otherName = NameKey(other.name or "")
+    if otherKey ~= key and SameRealm(other.realm or "", realm)
+        and (otherName == NameKey(name) or otherName == NameKey(firstName)) then
+      table.insert(keys, otherKey)
+    end
+  end
+  -- The realm-less entry holds the most recent data, so it becomes the base if needed.
+  table.sort(keys, function(a, b)
+    return (GuildHubDB.characters[a].realm or "") < (GuildHubDB.characters[b].realm or "")
+  end)
+  return keys
+end
+
+-- Nil while the game does not name the character yet.
 function ns.CurrentCharacter()
-  local realm = GetRealmName()
+  local realm = RealmName()
   local name, firstName = ns.PlayerName()
+  if not name or name == "" then
+    return nil
+  end
   local key = realm .. "|" .. name
   local character = GuildHubDB.characters[key]
-  if not character then
-    -- Versions before 0.4 stored the character under its first name only.
-    local oldKey = realm .. "|" .. firstName
-    character = GuildHubDB.characters[oldKey]
-      or { realm = realm, deaths = 0, professions = {} }
-    GuildHubDB.characters[oldKey] = nil
-    character.name = name
-    GuildHubDB.characters[key] = character
+  for _, otherKey in ipairs(EarlierKeys(key, realm, name, firstName)) do
+    local other = GuildHubDB.characters[otherKey]
+    GuildHubDB.characters[otherKey] = nil
+    if character then
+      Absorb(character, other)
+    else
+      character = other
+    end
   end
+  character = character or { deaths = 0, professions = {} }
+  GuildHubDB.characters[key] = character
+  character.realm = realm
+  character.name = name
   return character
 end
 

@@ -22,6 +22,10 @@ Schnittstellen. Die TOC nennt `16001` (WoW Forever 1.60.1) und `16000`. Lässt d
    Addon dabei von selbst. Der Name geht mit Nachnamen an GuildHub („Relitia Relikt“);
    so sollte er dort auch eingetragen sein. Ein Charakter, den GuildHub nur unter dem
    Vornamen kennt, bekommt beim Import den Nachnamen ergänzt.
+   Einen Realm nennt WoW Forever Addons nicht; GuildHub ordnet über den Namen zu und
+   lässt den eingetragenen Server stehen. Einträge älterer Addon-Versionen (nur Vorname,
+   oder ohne Realm aus 0.4.0) führt das Addon beim nächsten Einloggen des Charakters
+   zusammen.
 2. Jedes Berufsfenster einmal öffnen. Rezepte gibt das Spiel nur heraus, solange das
    Fenster offen ist. Danach nur noch, wenn neue Rezepte dazukommen.
 3. `/guildhub` eingeben. Oben steht, was das Addon je Charakter weiß, unten der Export.

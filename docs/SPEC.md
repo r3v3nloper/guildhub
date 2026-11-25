@@ -776,6 +776,8 @@ geraten. Die Capability heißt `addon_import`.
 2. **Vorschau** je Charakter, vor jeder Änderung: neu anlegen / ändern / unverändert,
    mit den Feldern, die sich ändern, und den neuen Rezepten.
 3. Charaktere werden über Spiel + Realm + Name den **eigenen** Charakteren zugeordnet.
+   WoW Forever 1.60.1 nennt Addons keinen Realm; ein Export ohne Realm ordnet nur über
+   den Namen zu (eindeutig unter den eigenen Charakteren) und lässt den Server unverändert.
    Unbekannte bietet die Vorschau zum Anlegen an (abwählbar). Ein Name, der in der
    Gilde schon einem anderen Mitglied gehört, wird nie übernommen.
 4. Übernehmen schreibt für jeden gewählten Charakter in einer Transaktion.
@@ -1348,6 +1350,9 @@ docker-compose.yml
 - [x] Addon-Abgleich (7.3): Interface-Version des Clients 1.60.1 ist `16001` (im Spiel
   geprüft am 17.11.2026); die TOC nennt dazu `16000`. Der Client basiert auf Mainline 12.x;
   Grundlage für die Schnittstellen ist der Branch `forever` von `Gethe/wow-ui-source`
+- [x] Addon-Abgleich (7.3): WoW Forever 1.60.1 nennt keinen Realm (`GetRealmName` und
+  `GetNormalizedRealmName` leer, `UnitFullName` liefert den Nachnamen, die Gildenliste Namen
+  ohne Realm; im Spiel geprüft am 25.11.2026). Das Addon exportiert deshalb ohne Realm.
 - [ ] Addon-Abgleich (7.3), im Live-Client von WoW Forever prüfen: ob `GetProfessionInfo`
   und `C_TradeSkillUI.GetBaseProfessionInfo` die Skill-Line-IDs des Packs (171 usw.)
   liefern und `C_TradeSkillUI.GetRecipeInfo` die Spell-IDs der Rezepte; Token und IDs für
