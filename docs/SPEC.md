@@ -734,6 +734,12 @@ Strings und denselben Import nutzen kann.
   Stufe, außerdem Berufe mit Fertigkeit aus dem Berufsbuch. Der Client von WoW Forever
   basiert auf dem Mainline-(Retail-)Client 12.x samt dessen Addon-Schnittstellen
   (`GetProfessions`, `C_TradeSkillUI`), nicht auf Classic.
+- **Namen:** Charaktere in WoW Forever haben Vor- und Nachnamen; `UnitName` liefert beide
+  getrennt. Das Addon schickt sie mit Leerzeichen („Relitia Relikt“). GuildHub vergleicht
+  Namen ohne Rücksicht auf Groß-/Kleinschreibung und Leerzeichen. Kennt GuildHub einen
+  eigenen Charakter nur unter dem Vornamen, erkennt der Import ihn daran und ergänzt den
+  Nachnamen; ein Treffer mit vollem Namen geht vor. Charaktere anderer Mitglieder zählen
+  nur mit vollem Namen, weil Vornamen nicht eindeutig sind.
 - Rezepte kennt das Spiel nur, wenn das Berufsfenster offen ist. Das Addon liest sie
   deshalb beim Öffnen jedes Berufsfensters aus. Jeder Beruf muss also einmal geöffnet
   werden, danach nur noch bei neuen Rezepten.
@@ -1083,6 +1089,9 @@ Komponenten. Server Actions und API-Routen prüfen immer Session + Berechtigung.
   abgelehnt, ohne dass sich etwas ändert
 - ✅ Ein Charakter, dessen Name in der Gilde einem anderen Mitglied gehört, wird nicht
   übernommen
+- ✅ „Relitia Relikt“ aus dem Spiel trifft „relitia  Relikt“ in GuildHub; ein nur als
+  „Relitia“ bekannter eigener Charakter bekommt den Nachnamen, statt doppelt angelegt zu
+  werden
 - ✅ Ein Pack ohne `addon_import` zeigt die Seite nicht an; ein String für ein anderes
   Spiel wird abgelehnt
 - ✅ Der Gilden-Stand enthält Pack-Rezepte und offene/angenommene Anträge, aber keine

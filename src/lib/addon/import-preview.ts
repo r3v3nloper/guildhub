@@ -7,6 +7,7 @@ import {
   type GameCatalog,
 } from "@/lib/roster/game-catalog";
 import { normalizeServerKey } from "@/lib/roster/server-name";
+import { matchCharacterName } from "./character-name";
 import type { ExportedCharacter } from "./export-payload";
 
 // What a character export would change (SPEC 7.3), worked out before anything is written,
@@ -76,6 +77,11 @@ export interface CharacterPreview {
   previous: CharacterValues | null;
   /** The character was entered without a server; the import adds the realm. */
   fillsInServer: boolean;
+  /**
+   * GuildHub knew the character by its first name only; the import renames it to the
+   * game's full name. The name GuildHub had, or null.
+   */
+  renamesFrom: string | null;
   changedFields: CharacterField[];
   professions: ProfessionChange[];
   /** Professions the character has in GuildHub, but no longer in the game. */
@@ -129,8 +135,6 @@ function previewCharacter(
 ): CharacterPreview {
   const unknown: UnknownValue[] = [];
   const serverKey = refs.serverKey(exported.realm, unknown);
-  const sameName = (name: string) =>
-    name.toLowerCase() === exported.name.toLowerCase();
   const values = {
     factionEntryId: refs.entryId("faction", exported.factionRef, unknown),
     raceEntryId: refs.entryId("race", exported.raceRef, unknown),
@@ -144,16 +148,22 @@ function previewCharacter(
     values,
     unknown,
     fillsInServer: false,
+    renamesFrom: null,
   };
 
-  if (foreign.some((c) => sameName(c.name) && c.serverKey === serverKey)) {
+  // Only the full name counts here: another member's "Relitia" may be a different
+  // character than this "Relitia Relikt".
+  if (
+    foreign.some(
+      (c) =>
+        matchCharacterName(exported.name, c.name) === "exact" &&
+        c.serverKey === serverKey,
+    )
+  ) {
     return { ...base, ...nothingChanges(), status: "foreign", previous: null };
   }
 
-  // A character entered without a server is the same one; the import fills the server in.
-  const existing =
-    own.find((c) => sameName(c.name) && c.serverKey === serverKey) ??
-    own.find((c) => sameName(c.name) && c.serverKey === null);
+  const { existing, renamesFrom } = findOwn(exported.name, serverKey, own);
 
   const professions = refs.professions(exported, unknown);
   const professionChanges = professions
@@ -206,6 +216,7 @@ function previewCharacter(
   }
   const fillsInServer = existing.serverKey !== serverKey;
   const changed =
+    renamesFrom !== null ||
     changedFields.length > 0 ||
     professionChanges.length > 0 ||
     missingProfessionEntryIds.length > 0 ||
@@ -216,6 +227,7 @@ function previewCharacter(
     ...base,
     ...changes,
     fillsInServer,
+    renamesFrom,
     status: changed ? "changed" : "unchanged",
     characterId: existing.id,
     previous: {
@@ -225,6 +237,32 @@ function previewCharacter(
       level: existing.level,
     },
   };
+}
+
+/**
+ * The member's character the game's one is. The full name wins over a first-name match;
+ * a character entered without a server is the same one, and the import fills it in.
+ */
+function findOwn(
+  gameName: string,
+  serverKey: string | null,
+  own: readonly OwnCharacterState[],
+): { existing: OwnCharacterState | undefined; renamesFrom: string | null } {
+  const candidates = (match: "exact" | "firstName") =>
+    own.filter((c) => matchCharacterName(gameName, c.name) === match);
+  for (const match of ["exact", "firstName"] as const) {
+    const named = candidates(match);
+    const existing =
+      named.find((c) => c.serverKey === serverKey) ??
+      named.find((c) => c.serverKey === null);
+    if (existing) {
+      return {
+        existing,
+        renamesFrom: match === "firstName" ? existing.name : null,
+      };
+    }
+  }
+  return { existing: undefined, renamesFrom: null };
 }
 
 function nothingChanges() {

@@ -19,7 +19,9 @@ Schnittstellen. Die TOC nennt `16001` (WoW Forever 1.60.1) und `16000`. Lässt d
 ## Benutzen
 
 1. Mit jedem Charakter einmal einloggen. Stufe, Klasse, Rasse und Berufe liest das
-   Addon dabei von selbst.
+   Addon dabei von selbst. Der Name geht mit Nachnamen an GuildHub („Relitia Relikt“);
+   so sollte er dort auch eingetragen sein. Ein Charakter, den GuildHub nur unter dem
+   Vornamen kennt, bekommt beim Import den Nachnamen ergänzt.
 2. Jedes Berufsfenster einmal öffnen. Rezepte gibt das Spiel nur heraus, solange das
    Fenster offen ist. Danach nur noch, wenn neue Rezepte dazukommen.
 3. `/guildhub` eingeben. Oben steht, was das Addon je Charakter weiß, unten der Export.

@@ -12,8 +12,9 @@ end
 
 local function OnlineName(memberNumber)
   for _, name in ipairs(ns.MemberNames(memberNumber)) do
-    if ns.IsOnline(name) then
-      return name
+    local gameName = ns.IsOnline(name)
+    if gameName then
+      return gameName
     end
   end
 end

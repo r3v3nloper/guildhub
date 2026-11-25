@@ -36,6 +36,7 @@ import {
   type OwnCharacterState,
 } from "./import-preview";
 import { assignRelayedAccounts, type SkipReason } from "./relayed-accounts";
+import { characterNameKey } from "./character-name";
 
 // Reading a character export into GuildHub (SPEC 7.3): the preview first, then applying
 // it. Applying never trusts a preview sent back by the browser; it works the export out
@@ -79,7 +80,7 @@ export interface ImportOutcome {
 
 /** Identifies a character of an export across preview and apply. */
 export function previewKey(preview: { realm: string; name: string }): string {
-  return `${preview.realm.toLowerCase()}|${preview.name.toLowerCase()}`;
+  return `${preview.realm.toLowerCase()}|${characterNameKey(preview.name)}`;
 }
 
 /** The part of an export imported with one member's rights. */
@@ -336,7 +337,10 @@ function saveBaseValues(
   const key = (entryId: number | null) => keyOfEntry(catalog, entryId);
   const classChanged = preview.changedFields.includes("class");
   const input: CharacterInput = {
-    name: existing?.name ?? preview.name,
+    name:
+      preview.renamesFrom === null
+        ? (existing?.name ?? preview.name)
+        : preview.name,
     server: preview.realm,
     factionKey: key(
       preview.values.factionEntryId ?? existing?.factionEntryId ?? null,
