@@ -201,6 +201,8 @@ function checkReferences(pack: Pack, error: Report) {
     }
   });
 
+  checkBestInSlot(pack, error, professionIds);
+
   pack.gathering.forEach((entry, index) => {
     if (!professionIds.has(entry.profession)) {
       error(
@@ -248,6 +250,41 @@ function checkReferences(pack: Pack, error: Report) {
       }),
     );
   }
+}
+
+function checkBestInSlot(
+  pack: Pack,
+  error: Report,
+  professionIds: ReadonlySet<string>,
+) {
+  const specIds = new Set(pack.specs.map((spec) => spec.id));
+  pack.best_in_slot.forEach((entry, index) => {
+    const path = `best_in_slot[${index}]`;
+    if (!specIds.has(entry.spec)) {
+      error(`${path}.spec`, `unbekannte Spezialisierung '${entry.spec}'`);
+    }
+    const modes = new Set<string>();
+    entry.lists.forEach((list, listIndex) => {
+      const listPath = `${path}.lists[${listIndex}]`;
+      if (modes.has(list.mode)) {
+        error(`${listPath}.mode`, `'${list.mode}' ist doppelt`);
+      }
+      modes.add(list.mode);
+      list.slots.forEach((slot, slotIndex) =>
+        slot.enhancements.forEach((enhancement, i) => {
+          if (
+            enhancement.profession &&
+            !professionIds.has(enhancement.profession)
+          ) {
+            error(
+              `${listPath}.slots[${slotIndex}].enhancements[${i}].profession`,
+              `unbekannter Beruf '${enhancement.profession}'`,
+            );
+          }
+        }),
+      );
+    });
+  });
 }
 
 function checkResetRules(pack: Pack, error: Report, warnings: PackIssue[]) {

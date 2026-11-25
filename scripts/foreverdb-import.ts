@@ -3,14 +3,16 @@ import path from "node:path";
 import { packsDirectory, PACK_FILE_NAME } from "../src/lib/packs/loader";
 import { abilitiesOf, knownAbilityNames } from "./foreverdb/abilities";
 import { apiKey } from "./foreverdb/api";
+import { bestInSlotOf, compactBestInSlot } from "./foreverdb/best-in-slot";
 import { gatheringOf } from "./foreverdb/gathering";
 import { instancesOf } from "./foreverdb/instances";
 import { compact, withKeyAfter } from "./foreverdb/pack-json";
 import { recipesOf } from "./foreverdb/recipes";
 
 // Pulls the recipes and gathering guides of the pack's professions, the abilities of its
-// classes and the dungeons and raids from the ForeverDB API into pack.json, so the app
-// itself never needs the API key or a connection to ForeverDB at runtime. The transforms
+// classes, the best in slot lists of its specs and the dungeons and raids from the
+// ForeverDB API into pack.json, so the app itself never needs the API key or a connection
+// to ForeverDB at runtime. The transforms
 // live in ./foreverdb, one module per kind of data.
 // Usage: npm run packs:foreverdb [-- <pack-id>]   (needs FOREVERDB_API_KEY, e.g. in .env.local)
 
@@ -29,6 +31,7 @@ async function main() {
     professions: Array<{ id: string; name: unknown }>;
     instances?: Array<{ id: string; name: unknown }>;
     classes: Array<{ id: string; name: unknown }>;
+    specs: Array<{ id: string; name: unknown; class: string }>;
     abilities?: Array<{ abilities?: Array<{ name: unknown }> }>;
   };
   const key = apiKey();
@@ -55,6 +58,16 @@ async function main() {
     await abilitiesOf(key, pack.classes, knownAbilityNames(pack.abilities))
   ).map((entry) => compact({ ...entry }));
   console.log(`Fähigkeiten für ${abilities.length} Klassen`);
+  const bis = await bestInSlotOf(
+    key,
+    pack.specs,
+    pack.classes,
+    pack.professions,
+  );
+  console.log(`BiS-Listen für ${bis.entries.length} Specs`);
+  if (bis.unmatched.length > 0) {
+    console.warn(`Ohne BiS-Zuordnung: ${bis.unmatched.join(", ")}`);
+  }
   const gathering = (await gatheringOf(key, pack.professions)).map((guide) =>
     compact({
       ...guide,
@@ -67,6 +80,12 @@ async function main() {
   updated = withKeyAfter(updated, "recipes", "instances", instances);
   updated = withKeyAfter(updated, "instances", "gathering", gathering);
   updated = withKeyAfter(updated, "gathering", "abilities", abilities);
+  updated = withKeyAfter(
+    updated,
+    "abilities",
+    "best_in_slot",
+    bis.entries.map(compactBestInSlot),
+  );
   updated = withKeyAfter(updated, "build_sources", "credits", [CREDIT]);
   fs.writeFileSync(file, `${JSON.stringify(updated, null, 2)}\n`);
   console.log(`Nach ${file} geschrieben.`);

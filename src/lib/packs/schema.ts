@@ -97,21 +97,20 @@ export const professionSchema = z.strictObject({
 
 const httpLink = z.url().refine(isHttpUrl, "nur http(s)-Links");
 
+/** A material and how many of it, for recipes and enchantments alike. */
+const reagentSchema = z.strictObject({
+  name: localizedStringSchema,
+  count: z.number().int().positive(),
+  item: itemId.optional(),
+});
+
 /** A recipe a profession can learn; characters pick them instead of typing names. */
 export const recipeSchema = z.strictObject({
   ...catalogEntry,
   profession: slug,
   /** Skill at which the recipe can be learned. */
   skill: z.number().int().min(0).optional(),
-  reagents: z
-    .array(
-      z.strictObject({
-        name: localizedStringSchema,
-        count: z.number().int().positive(),
-        item: itemId.optional(),
-      }),
-    )
-    .default([]),
+  reagents: z.array(reagentSchema).default([]),
   link: httpLink.optional(),
   /** The item the recipe makes; enchantments on gear make none. */
   creates: itemId.optional(),
@@ -216,6 +215,78 @@ export const classAbilitiesSchema = z.strictObject({
     .default([]),
 });
 
+export const BIS_MODES = ["pve", "pvp"] as const;
+export type BisMode = (typeof BIS_MODES)[number];
+
+/** How far an item or enchantment is behind the slot's first pick, in percent. */
+const percentBelowBest = z.number().min(0).default(0);
+
+const bisItemSchema = z.strictObject({
+  item: itemId,
+  name: localizedStringSchema,
+  /** 0 poor to 5 legendary, as the game colours item names. */
+  quality: z.number().int().min(0).max(7),
+  item_level: z.number().int().positive().optional(),
+  /** Level from which it can be worn. */
+  from_level: z.number().int().positive().optional(),
+  percent_below_best: percentBelowBest,
+  /**
+   * How hard it is to get, in the data source's words ("easy", "some effort", "hard",
+   * "source not known yet"). Kept open: a new rating must not break the import.
+   */
+  ease: z.string().min(1).optional(),
+  /** Players' addons saw it in the game, not only in the client data. */
+  seen_in_forever: z.boolean().default(false),
+  link: httpLink.optional(),
+});
+
+/** An enchantment, armor kit, arcanum … for the slot's pick, ranked from 1. */
+const bisEnhancementSchema = z.strictObject({
+  rank: z.number().int().positive(),
+  name: localizedStringSchema,
+  /** "enchant", "kit", "arcanum", "scroll" … in the data source's words. */
+  kind: z.string().min(1),
+  effect: z.string().min(1).optional(),
+  percent_below_best: percentBelowBest,
+  /** Why it is hard to get, in the data source's words; empty when it is not. */
+  hard_to_get: z.array(z.string().min(1)).default([]),
+  /** The profession that makes it. */
+  profession: slug.optional(),
+  skill: z.number().int().min(0).optional(),
+  spell: z.number().int().positive().optional(),
+  item: itemId.optional(),
+  materials: z.array(reagentSchema).default([]),
+});
+
+/** One slot of a best in slot list: the pick, the next best and how to enchant the pick. */
+const bisSlotSchema = z.strictObject({
+  /** "head", "finger1", "main" … in the data source's words, in the list's order. */
+  slot: z.string().min(1),
+  /** Null where the setup leaves the slot empty (an off-hand beside a two-hander). */
+  best: bisItemSchema.nullable(),
+  alternatives: z.array(bisItemSchema).default([]),
+  enhancements: z.array(bisEnhancementSchema).default([]),
+});
+
+/** The best gear of one spec, per mode (PvE, PvP). One entry per spec. */
+export const bestInSlotSchema = z.strictObject({
+  ...catalogEntry,
+  spec: slug,
+  lists: z
+    .array(
+      z.strictObject({
+        mode: z.enum(BIS_MODES),
+        /** The character level the list is for. */
+        level: z.number().int().positive(),
+        /** The weapon setup it assumes, e.g. "2h" or "1h". */
+        weapons: z.string().min(1).optional(),
+        link: httpLink.optional(),
+        slots: z.array(bisSlotSchema).default([]),
+      }),
+    )
+    .default([]),
+});
+
 /** Where pack data comes from; shown wherever the app displays that data. */
 export const creditSchema = z.strictObject({
   label: z.string().min(1),
@@ -313,6 +384,7 @@ export const packSchema = z.strictObject({
   instances: z.array(instanceSchema).default([]),
   gathering: z.array(gatheringSchema).default([]),
   abilities: z.array(classAbilitiesSchema).default([]),
+  best_in_slot: z.array(bestInSlotSchema).default([]),
   bosses: z.array(bossSchema).default([]),
   servers: z.array(serverSchema).default([]),
   build_sources: z.array(buildSourceSchema).default([]),
@@ -328,6 +400,7 @@ export type PackRecipe = z.infer<typeof recipeSchema>;
 export type PackInstance = z.infer<typeof instanceSchema>;
 export type PackGathering = z.infer<typeof gatheringSchema>;
 export type PackClassAbilities = z.infer<typeof classAbilitiesSchema>;
+export type PackBestInSlot = z.infer<typeof bestInSlotSchema>;
 export type PackRace = z.infer<typeof raceSchema>;
 export type PackTask = z.infer<typeof taskSchema>;
 export type PackResetRule = z.infer<typeof resetRuleSchema>;

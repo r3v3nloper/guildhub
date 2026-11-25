@@ -26,10 +26,10 @@ export interface GameCatalog {
 }
 
 /**
- * Gathering guides and class abilities are large and read on their own
- * (gathering-guide.ts, class-abilities.ts), never here.
+ * Gathering guides, class abilities and best in slot lists are large and read on their
+ * own (gathering-guide.ts, class-abilities.ts, best-in-slot.ts), never here.
  */
-const NEVER_LOADED: CatalogKind[] = ["gathering", "abilities"];
+const NEVER_LOADED: CatalogKind[] = ["gathering", "abilities", "best_in_slot"];
 
 export function catalogOfKind(
   catalog: GameCatalog,
