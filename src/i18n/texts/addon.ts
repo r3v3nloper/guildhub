@@ -72,6 +72,17 @@ export const addonImport = {
   snapshotCopied: "Kopiert. Jetzt im Spiel einfügen.",
   snapshotManual:
     "Kopieren hat nicht geklappt. Bitte den Text markieren und selbst kopieren.",
+  forMember: (name: string) => `für ${name}`,
+  skippedTitle: "Nicht übernommene Accounts",
+  skippedAccount: (characters: string, reason: string) =>
+    `${characters}: ${reason}`,
+  noCharacters: "ohne Charaktere",
+  skipReason: {
+    notOfficer: "Daten anderer Mitglieder übernehmen nur Officer",
+    unknownCharacters: "keiner der Charaktere ist in GuildHub bekannt",
+    severalMembers: "die Charaktere gehören verschiedenen Mitgliedern",
+    inactiveMember: "das Mitglied ist nicht aktiv",
+  } as Record<string, string>,
   outcome: {
     saved: "übernommen",
     skipped: "übersprungen",

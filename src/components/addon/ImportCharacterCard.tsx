@@ -39,7 +39,11 @@ export function ImportCharacterCard({
           <span className="truncate text-base font-bold text-white">
             {character.name}
           </span>
-          <span className="text-[13px] text-muted">{character.realm}</span>
+          <span className="text-[13px] text-muted">
+            {character.realm}
+            {character.memberName &&
+              ` · ${texts.forMember(character.memberName)}`}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           {outcome && (

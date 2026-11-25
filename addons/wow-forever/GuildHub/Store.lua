@@ -8,12 +8,45 @@ local _, ns = ...
 --   professions = { [skillLineId] = { skill, readAt, recipes = { [spellId] = true } } },
 -- }
 
+--
+-- GuildHubDB.accountId   random ID of this WoW account, so GuildHub can keep the blocks of
+--                        different accounts apart (SPEC 7.3.3)
+-- GuildHubDB.ownBlock    { at, content }: this account's export records and when they last
+--                        changed
+-- GuildHubDB.relay[id]   { at, content }: blocks other accounts' addons passed on in the game
+
 local STORE_VERSION = 1
+local ACCOUNT_ID_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz"
+local ACCOUNT_ID_LENGTH = 12
+local RELAY_KEPT_DAYS = 60
+
+local function NewAccountId()
+  local id = {}
+  for i = 1, ACCOUNT_ID_LENGTH do
+    local index = math.random(1, #ACCOUNT_ID_CHARS)
+    id[i] = ACCOUNT_ID_CHARS:sub(index, index)
+  end
+  return table.concat(id)
+end
 
 function ns.InitStore()
   if type(GuildHubDB) ~= "table" or GuildHubDB.version ~= STORE_VERSION then
     GuildHubDB = { version = STORE_VERSION, characters = {} }
   end
+  GuildHubDB.accountId = GuildHubDB.accountId or NewAccountId()
+  GuildHubDB.relay = GuildHubDB.relay or {}
+  -- Accounts nobody has heard of for this long have most likely left the guild.
+  local oldest = time() - RELAY_KEPT_DAYS * 24 * 60 * 60
+  for accountId, block in pairs(GuildHubDB.relay) do
+    if block.at < oldest then
+      GuildHubDB.relay[accountId] = nil
+    end
+  end
+end
+
+-- The character of this account with that realm and name, if the addon knows it.
+function ns.OwnCharacter(realm, name)
+  return GuildHubDB.characters[realm .. "|" .. name]
 end
 
 function ns.CurrentCharacter()

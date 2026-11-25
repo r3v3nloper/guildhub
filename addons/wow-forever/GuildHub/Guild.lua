@@ -64,8 +64,21 @@ local function ReadRecords(payload)
   return guild
 end
 
--- Returns nil on success, otherwise the message to show.
-function ns.ImportGuild(text)
+-- The snapshot is made for whoever copied it in GuildHub, and the guild sync passes it on
+-- (SPEC 7.3.3); so the member this account belongs to is found by its own characters.
+local function OwnMember(guild)
+  for number, member in ipairs(guild.members) do
+    for _, character in ipairs(member.characters) do
+      if ns.OwnCharacter(character.realm, character.name) then
+        return number
+      end
+    end
+  end
+end
+
+-- Returns nil on success, otherwise the message to show. With onlyNewer, as for a
+-- snapshot passed on in the game, an older one than the current is ignored.
+function ns.ImportGuild(text, onlyNewer)
   local cleaned = text:gsub("[\r\n]", ""):match("^%s*(.-)%s*$")
   local version, gameId, kind, checksum, payload = cleaned:match("^GH(%d+):([%w%-]+):(%a+):(%x+):(.*)$")
   if not version then
@@ -83,15 +96,22 @@ function ns.ImportGuild(text)
   if kind ~= "guild" then
     return "Das ist ein Export aus dem Addon, er gehört in GuildHub."
   end
-  GuildHubDB.guild = ReadRecords(payload)
-  ns.ClearPendingBefore(GuildHubDB.guild.createdAt or 0)
+  local guild = ReadRecords(payload)
+  if onlyNewer and GuildHubDB.guild and (guild.createdAt or 0) <= (GuildHubDB.guild.createdAt or 0) then
+    return nil
+  end
+  guild.self = OwnMember(guild) or guild.self
+  GuildHubDB.guild = guild
+  GuildHubDB.guildText = cleaned
+  ns.ClearPendingBefore(guild.createdAt or 0)
   return nil
 end
 
 function ns.GuildStatus()
   local guild = GuildHubDB.guild
   if not guild or not guild.createdAt then
-    return "Noch kein Gilden-Stand. In GuildHub „Für das Addon kopieren“ und hier einfügen."
+    return "Noch kein Gilden-Stand. Er kommt über die Gilde, sobald jemand ihn eingefügt hat, "
+      .. "oder: in GuildHub „Für das Addon kopieren“ und hier einfügen."
   end
   local text = "Gilden-Stand vom " .. date("%d.%m.%Y %H:%M", guild.createdAt)
     .. ": " .. #guild.members .. " Mitglieder, " .. #guild.requests .. " Anträge"

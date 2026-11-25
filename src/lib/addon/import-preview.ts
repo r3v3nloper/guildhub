@@ -7,7 +7,7 @@ import {
   type GameCatalog,
 } from "@/lib/roster/game-catalog";
 import { normalizeServerKey } from "@/lib/roster/server-name";
-import type { CharacterExport, ExportedCharacter } from "./export-payload";
+import type { ExportedCharacter } from "./export-payload";
 
 // What a character export would change (SPEC 7.3), worked out before anything is written,
 // so the member sees it first and applying uses exactly what was shown.
@@ -89,9 +89,14 @@ export interface CharacterPreview {
 
 export interface PreviewInput {
   catalog: GameCatalog;
-  data: CharacterExport;
+  data: { characters: readonly ExportedCharacter[] };
   own: readonly OwnCharacterState[];
   foreign: readonly ForeignCharacter[];
+  /**
+   * Whether professions the game no longer has are offered for removal. Not for data
+   * an officer brings in for another member (SPEC 7.3.3).
+   */
+  offerProfessionDrop?: boolean;
 }
 
 export function previewCharacterImport({
@@ -99,10 +104,18 @@ export function previewCharacterImport({
   data,
   own,
   foreign,
+  offerProfessionDrop = true,
 }: PreviewInput): CharacterPreview[] {
   const refs = new GameRefs(catalog);
   return data.characters.map((character) =>
-    previewCharacter(character, refs, catalog, own, foreign),
+    previewCharacter(
+      character,
+      refs,
+      catalog,
+      own,
+      foreign,
+      offerProfessionDrop,
+    ),
   );
 }
 
@@ -112,6 +125,7 @@ function previewCharacter(
   catalog: GameCatalog,
   own: readonly OwnCharacterState[],
   foreign: readonly ForeignCharacter[],
+  offerProfessionDrop: boolean,
 ): CharacterPreview {
   const unknown: UnknownValue[] = [];
   const serverKey = refs.serverKey(exported.realm, unknown);
@@ -159,9 +173,11 @@ function previewCharacter(
         : { entryId, skillLevel },
     );
   const keptIds = new Set(professions.map(({ entry }) => entry.id));
-  const missingProfessionEntryIds = (existing?.professions ?? [])
-    .map((p) => p.entryId)
-    .filter((entryId) => !keptIds.has(entryId) && refs.hasGameRef(entryId));
+  const missingProfessionEntryIds = offerProfessionDrop
+    ? (existing?.professions ?? [])
+        .map((p) => p.entryId)
+        .filter((entryId) => !keptIds.has(entryId) && refs.hasGameRef(entryId))
+    : [];
 
   const linked = new Set(existing?.linkedRecipeIds ?? []);
   const newRecipes = refs
@@ -349,22 +365,29 @@ class GameRefs {
   }
 
   public serverKey(realm: string, unknown: UnknownValue[]): string | null {
-    if (!this.catalog.game.meta.capabilities.servers) {
-      return null;
-    }
-    const servers = catalogOfKind(this.catalog, "server");
-    if (servers.length === 0) {
-      return normalizeServerKey(realm);
-    }
-    const wanted = realm.toLowerCase();
-    const entry = servers.find((server) =>
-      allTranslations(server.name).some(
-        (name) => name.toLowerCase() === wanted,
-      ),
-    );
-    if (!entry) {
+    const resolved = resolveServerKey(this.catalog, realm);
+    if (resolved.unknownRealm) {
       unknown.push({ kind: "realm", ref: realm });
     }
-    return entry?.key ?? null;
+    return resolved.serverKey;
   }
+}
+
+/** The server a realm name of the game stands for in GuildHub. */
+export function resolveServerKey(
+  catalog: GameCatalog,
+  realm: string,
+): { serverKey: string | null; unknownRealm: boolean } {
+  if (!catalog.game.meta.capabilities.servers) {
+    return { serverKey: null, unknownRealm: false };
+  }
+  const servers = catalogOfKind(catalog, "server");
+  if (servers.length === 0) {
+    return { serverKey: normalizeServerKey(realm), unknownRealm: false };
+  }
+  const wanted = realm.toLowerCase();
+  const entry = servers.find((server) =>
+    allTranslations(server.name).some((name) => name.toLowerCase() === wanted),
+  );
+  return { serverKey: entry?.key ?? null, unknownRealm: !entry };
 }

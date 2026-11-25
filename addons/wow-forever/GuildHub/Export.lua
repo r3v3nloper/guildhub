@@ -5,6 +5,8 @@ local _, ns = ...
 --   C,<realm>,<name>,<faction>,<race>,<class>,<level>,<deaths>
 --   P,<skill line id>,<skill>[,<spell id>…]
 --   A,<request id>,<accept|done|return>,<unix seconds>   a request action from the game
+--   O,<account id>                     this account
+--   U,<account id>,<unix seconds>      starts a block another account passed on in the game
 
 local FORMAT_VERSION = 1
 
@@ -46,7 +48,7 @@ local function CharacterRecords(character, records)
   end
 end
 
-function ns.BuildExport()
+local function OwnContent()
   local records = {}
   for _, character in ipairs(ns.SortedCharacters()) do
     CharacterRecords(character, records)
@@ -54,7 +56,44 @@ function ns.BuildExport()
   for _, action in ipairs(ns.PendingActions()) do
     table.insert(records, table.concat({ "A", action.id, action.action, action.at }, ","))
   end
+  return table.concat(records, ";")
+end
+
+-- This account's records, stamped with the time they last changed; the stamp is what
+-- the guild sync compares (SPEC 7.3.3).
+function ns.OwnBlock()
+  local content = OwnContent()
+  local block = GuildHubDB.ownBlock
+  if not block or block.content ~= content then
+    -- Strictly rising, so two changes within one second still count as two versions.
+    block = { at = math.max(time(), block and block.at + 1 or 0), content = content }
+    GuildHubDB.ownBlock = block
+  end
+  return block
+end
+
+-- The own account first, then every block passed on in the game, each after a U record.
+function ns.BuildExport()
+  local records = { "O," .. GuildHubDB.accountId }
+  local own = ns.OwnBlock().content
+  if own ~= "" then
+    table.insert(records, own)
+  end
+  for accountId, block in pairs(GuildHubDB.relay) do
+    table.insert(records, "U," .. accountId .. "," .. block.at)
+    if block.content ~= "" then
+      table.insert(records, block.content)
+    end
+  end
   local payload = table.concat(records, ";")
   local checksum = ns.Adler32(ns.gameId .. ":export:" .. payload)
   return "GH" .. FORMAT_VERSION .. ":" .. ns.gameId .. ":export:" .. checksum .. ":" .. payload
+end
+
+function ns.RelayedAccountCount()
+  local count = 0
+  for _ in pairs(GuildHubDB.relay) do
+    count = count + 1
+  end
+  return count
 end

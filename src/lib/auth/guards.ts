@@ -93,6 +93,16 @@ export const permissions = {
         );
   },
 
+  /**
+   * Addon data other members' addons passed on in the game (SPEC 7.3.3). It is applied
+   * with that member's own rights; officers may only bring it in.
+   */
+  importForMembers(actor: Actor): Permission {
+    return atLeast(actor, "officer")
+      ? allow
+      : deny("Nur Officer und Owner übernehmen Daten anderer Mitglieder.");
+  },
+
   manageGuildTasks(actor: Actor): Permission {
     return atLeast(actor, "officer")
       ? allow

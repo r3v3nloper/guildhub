@@ -6,12 +6,13 @@ import type { ActionState } from "@/lib/actions/action-state";
 import type {
   ImportChoices,
   ImportOutcome,
+  ImportRequestAction,
 } from "@/lib/addon/character-import";
 import type { ImportCharacterView } from "@/lib/addon/import-view";
-import type { RequestActionOutcome } from "@/lib/addon/request-actions";
 import { de } from "@/i18n/de";
 import { ImportCharacterCard } from "./ImportCharacterCard";
 import { RequestActionList } from "./RequestActionList";
+import { SkippedAccountList } from "./SkippedAccountList";
 import { useImportChoices } from "./use-import-choices";
 
 /**
@@ -25,7 +26,8 @@ export function AddonImport({
   preview: (text: string) => Promise<
     ActionState & {
       characters?: ImportCharacterView[];
-      requestActions?: RequestActionOutcome[];
+      requestActions?: ImportRequestAction[];
+      skippedAccounts?: string[];
     }
   >;
   apply: (
@@ -34,7 +36,7 @@ export function AddonImport({
   ) => Promise<
     ActionState & {
       outcomes?: ImportOutcome[];
-      requestActions?: RequestActionOutcome[];
+      requestActions?: ImportRequestAction[];
     }
   >;
 }) {
@@ -43,9 +45,10 @@ export function AddonImport({
   const [characters, setCharacters] = useState<ImportCharacterView[]>();
   const { choices, toggleCreate, toggleDrop, reset } = useImportChoices();
   const [outcomes, setOutcomes] = useState<ImportOutcome[]>();
-  const [requestActions, setRequestActions] = useState<RequestActionOutcome[]>(
+  const [requestActions, setRequestActions] = useState<ImportRequestAction[]>(
     [],
   );
+  const [skippedAccounts, setSkippedAccounts] = useState<string[]>([]);
   const [state, setState] = useState<ActionState>({});
   const [pending, startTransition] = useTransition();
 
@@ -55,6 +58,7 @@ export function AddonImport({
       setState(result.ok ? {} : result);
       setCharacters(result.characters);
       setRequestActions(result.requestActions ?? []);
+      setSkippedAccounts(result.skippedAccounts ?? []);
       reset();
       setOutcomes(undefined);
     });
@@ -73,6 +77,7 @@ export function AddonImport({
     setText("");
     setCharacters(undefined);
     setRequestActions([]);
+    setSkippedAccounts([]);
     setOutcomes(undefined);
     setState({});
   };
@@ -135,6 +140,7 @@ export function AddonImport({
         actions={requestActions}
         applied={outcomes !== undefined}
       />
+      <SkippedAccountList accounts={skippedAccounts} />
       <FormMessage state={state} />
       <div className="flex flex-wrap gap-2">
         {!outcomes && (
